@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+    web:                       
+        container_name: react-nginx-container                                                  
+        build: 
+            dockerfile: Dockerfile
+            context: ./
+
+        restart: always
+
+        ports:                                       
+            - 80:80
+
+        logging:
+            options:
+                max-size: "1m"
+                max-file: "2"
+        
+        
