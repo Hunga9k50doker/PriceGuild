@@ -7,6 +7,7 @@ import DefaultLayout from 'Layouts/index'
 import 'bootstrap/dist/css/bootstrap.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'react-magic-slider-dots/dist/magic-dots.css';
 import "scss/style.scss";
 import "scss/config.scss";
 import "scss/custom.scss";
@@ -21,7 +22,6 @@ import { ToastContainer } from 'react-toastify';
 import UsesCookiesPage from "components/usesCookiesPage"
 import { UtilsColorGrade } from "model/data_sport/pricing_grid";
 import ArrowUp from "assets/images/long-arrow-up.svg";
-import 'react-magic-slider-dots/dist/magic-dots.css';
 // @ts-ignore
 import $ from "jquery";
 
@@ -51,10 +51,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     };
   }, [])
 
-
-  React.useEffect(() => {
-    
-  }, []);
   
   // @ts-ignore
   const Layout = Component.Layout || DefaultLayout;
