@@ -3,7 +3,7 @@ import { FilterType } from "interfaces"
 import { cloneDeep, sumBy, isEmpty } from "lodash";
 import { formatNumber } from "utils/helper";
 import Skeleton from 'react-loading-skeleton'
-import { useLocation } from "react-router-dom";
+import { useRouter } from 'next/router'
 // @ts-ignore
 import $ from "jquery";
 import useWindowDimensions from "utils/useWindowDimensions";
@@ -38,7 +38,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
   const [options, setOptions] = useState<Array<FilterType>>([])
   const [checkedState, setCheckedState] = useState<Array<FilterType>>([]);
   const [optionsSearch, setOptionsSearch] = useState<Array<FilterType> | undefined>()
-  const location = useLocation();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [readMore, setReadMore] = useState<boolean>(true)
   const [optionData, setOptionData] = useState({
@@ -66,7 +66,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
     if (isLoadingState) {
       setIsLoading(true) 
     }
-  }, [location])
+  }, [router.query])
 
 
   useEffect(() => {
@@ -117,6 +117,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
   }
 
   const renderCheckBox = (e: FilterType, i: number) => {
+    //@ts-ignore
     return <li key={i} className={`${!optionData.isOption && width < 768 ? (i > LIMIT ? 'hide-checklist-input' : '') : ''}`} >
       <div className="form-check no-input">
         <input
@@ -225,7 +226,10 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
               <input onChange={onSearch} name={props.name} type="text" placeholder="Search" />
             </div>
           }
-          <ul className={`${props.isSearch === false ? "mt-0" : ""} ${!isFullHeight ? "filter-sport checkbox-select__filters-wrapp" : ""}  ${width > 768 ? 'customScroll' : ''}  mb-0`}>
+          
+          <ul className={`${props.isSearch === false ? "mt-0" : ""} ${!isFullHeight ? "filter-sport checkbox-select__filters-wrapp" : ""}  ${
+            //@ts-ignore
+            width > 768 ? 'customScroll' : ''}  mb-0`}>
     
             {
               isLoading ?  <>
@@ -258,7 +262,9 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
             }
            
           </ul>
-          {readMore && !optionData.isOption && optionData.count > LIMIT && width < 768 &&
+          {
+            //@ts-ignore
+            readMore && !optionData.isOption && optionData.count > LIMIT && width < 768 &&
               <div className={`btn-see-more-checklist`}>
                 <div className="text-see-more" onClick={() => {hideReadMore()}}>See more (
                   {optionData.count - (LIMIT + 1)}
