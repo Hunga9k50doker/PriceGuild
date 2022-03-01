@@ -179,6 +179,11 @@ const Header = (props: any) => {
     setShowMenuContent(!showMenuContent);
   }
 
+  const [loginState, setLoginState] = useState(false)
+   
+  useEffect(() => {
+    setLoginState(Boolean(loggingIn))
+  }, [loggingIn])
 
   return (
     <div className="position-relative container-fluid header-page-content">
@@ -402,7 +407,7 @@ const Header = (props: any) => {
                       > {cards.length} </div>}
                     </div>
                   </li>
-                  {loggingIn ? <>
+                  {loginState ? <>
                     <li className="nav-item dropdown user">
                       <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <i style={{ fontSize: 40 }} className="fa fa-user-circle-o" aria-hidden="true" /> </a>
                       <ul className="dropdown-menu dropdown-user-login" aria-labelledby="navbarDropdown">
