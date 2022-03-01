@@ -149,12 +149,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const [groupRef, setGroupRef] = useState<GroupRefType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
   let resizeWindow = () => {
     setWindowWidth(window.innerWidth);
   };
+  
   const [showContentAddCollection, SetShowContentAddCollection] =
     React.useState<boolean>(false);
   const { width } = useWindowDimensions();
@@ -246,6 +247,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     };
     getDataCards();
     getDataGrade();
+    setWindowWidth(window.innerWidth);
   }, []);
 
   const onUploadFileInput = (e: any, name: string) => {
@@ -1209,13 +1211,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}{" "}
               </h2>
               { // @ts-ignore
-                isEdit && Boolean(cards?.cards.length) && Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && undoChangeStatus && (
+                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && undoChangeStatus && (
                 <button type="button" onClick={onUndo} className="btn btn-undo m-0">
                   <img src={rotateLeft} alt="Undo Changes" title="Undo Changes"/> Undo Changes
                 </button>
               )}
               {// @ts-ignore
-                Boolean(cards?.cards.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && renderTextButton() === "s" && (
+                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && renderTextButton() === "s" && (
                 <button
                   type="button"
                   onClick={onRemoveEntry}
@@ -1593,7 +1595,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               > Duplicate Entry </button>
             </div>
             { // @ts-ignore
-              isEdit && Boolean(cards?.cards.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
+              isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
               <div className="d-flex justify-content-center btn-remove-card-collection">
                 <button
                   disabled={isLoadingDelete}

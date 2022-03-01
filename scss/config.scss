@@ -4798,6 +4798,9 @@ th .form-check-input.form-check-input-head {
   padding: 0!important;
   .sub-content {
     padding: 60px 16px!important;
+    @media screen and (min-width: 768px) {
+      padding: 60px 25.52%!important;
+    }
   }
 }
 .leaderboard-page  ~ .personal-portfolio{
