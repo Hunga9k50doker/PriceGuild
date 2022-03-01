@@ -5,7 +5,7 @@ import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
 import { ManageCollectionType } from "interfaces"
 import { isEmpty } from "lodash"
-import LoginComponent from "./LoginComponent"
+import LoginComponent from "./loginComponent"
 
 
 
