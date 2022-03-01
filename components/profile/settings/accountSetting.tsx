@@ -11,7 +11,7 @@ import { ToastSystem } from "helper/toast_system";
 import { PgAppProfileType } from "interfaces"
 import { isEmpty } from "lodash"
 import IconEditBook from 'assets/images/edit_book_icon.svg'
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type Inputs = {
   default_currency: any,
@@ -47,7 +47,7 @@ const AccountSetting = ({ profileData }: PropsType) => {
     setProfile(profileData)
   }, [profileData])
   
-  const history = useHistory();
+  const router = useRouter();
 
   const onSubmit = async (data: Inputs) => {
     try {
@@ -68,7 +68,7 @@ const AccountSetting = ({ profileData }: PropsType) => {
       if (!res.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
       return ToastSystem.show(res.message, { status: res.success ? 'success' : 'error' });

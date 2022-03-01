@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Chart from 'react-chartjs-2';
 import { ChartData } from 'chart.js'
-import { useHistory, Link } from "react-router-dom";
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { formatCurrency } from "utils/helper"
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,7 +11,7 @@ import { api } from 'configs/axios';
 import { AnalyticsType, WidgetSettings } from "interfaces"
 import { MetaData } from "utils/constant"
 import Swal from 'sweetalert2'
-import 'sweetalert2/src/sweetalert2.scss'
+// import 'sweetalert2/src/sweetalert2.scss'
 import { ToastSystem } from "helper/toast_system";
 import { isEmpty } from "lodash"
 import PieChart from 'components/chart/pieChart';
@@ -51,7 +52,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   const [analytics, setAnalytics] = useState<AnalyticsType[]>();
   const [chartDetail, setChartDetail] = useState<WidgetSettings | undefined>();
   const [collectionDetail, setCollectionDetail] = useState<any>();
-  const history = useHistory();
+  const router = useRouter();
   const [t, i18n] = useTranslation("common")
   const { register, control, handleSubmit, reset, setValue, formState: { errors } } = useForm<ChartForm>();
   const getData = async () => {
@@ -391,19 +392,29 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
       {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb">
         <li className="breadcrumb-item">
-            <Link to={`/profile/portfolio`} title={t('portfolio.text')}> {t('portfolio.text')} </Link>
+            <Link href={`/profile/portfolio`}>
+              <a title={t('portfolio.text')}>
+                {t('portfolio.text')}
+              </a>
+            </Link>
           </li>
           <li className="breadcrumb-item">
-            <Link to={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id }/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>{collectionDetail?.[0]?.name ?? collectionDetail?.name} </Link>
+            <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+              <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
+                {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+              </a>
+            </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">Analytics </li>
         </ol>
       </nav>}
 
       {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
-        <Link title={collectionDetail?.[0]?.name ?? collectionDetail?.name} to={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} className="profile-collections-analytics-head">
-          <img  src={ArrowProfile} alt="" />
-          {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+        <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+          <a className="profile-collections-analytics-head" title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
+            <img  src={ArrowProfile} alt="" />
+            {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+          </a>
         </Link>
       </div>} 
       

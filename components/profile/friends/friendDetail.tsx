@@ -3,7 +3,7 @@ import { UserInfoType, ManageCollectionType, PgAppProfileType } from "interfaces
 import UserDetail from 'components/profile/personal/userDetail';
 import HeaderUser from "components/user/headerUser"
 import Collection from "components/profile/collection"
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 import CardListCollection from "components/profile/collection/cardListCollection"
 import ListFriend from "components/profile/friends"
 import { useDispatch } from 'react-redux';
@@ -23,7 +23,7 @@ export type TabType = {
 
 const FriendDetail = ({ isFriend = false, userId }: PropTypes) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const router = useRouter();
   const [friend, setFriend] = useState<UserInfoType>()
   const [isFriendUser, setIsFriendUser] = useState<boolean>()
   const onSuccess = (user: UserInfoType, is_friend: boolean) => {
@@ -54,7 +54,7 @@ const FriendDetail = ({ isFriend = false, userId }: PropTypes) => {
   }
 
   const sendMessage = () => {
-    history.push(`/profile/messages/${userId}`)
+    router.push(`/profile/messages/${userId}`)
   }
 
   const gotoCard = (item: ManageCollectionType) => {

@@ -3,7 +3,7 @@ import { api } from 'configs/axios';
 import CollectionList, { DataCollectionType } from "components/profile/collection/collectionList"
 import { ManageCollectionType } from "interfaces"
 import {  PgAppProfileType } from "interfaces"
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type PropTypes = {
   isButtonRight?: boolean,
@@ -23,7 +23,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
     data: [],
     isLoading: true
   });
-  const history = useHistory();
+  const router = useRouter();
 
   const getData = async () => {
     try {
@@ -48,7 +48,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
         if (!res.success) {
           // @ts-ignore
           if (res.data?.verify_redirect) {
-            history.push('/verify-email')
+            router.push('/verify-email')
           }
         }
       } else {
@@ -66,7 +66,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
         if (!result.success) {
           // @ts-ignore
           if (result.data?.verify_redirect) {
-            return history.push('/verify-email')
+            return router.push('/verify-email')
           }
         }
       }

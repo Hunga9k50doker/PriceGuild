@@ -248,12 +248,29 @@ export class Api<
         });
         return result.data;
       },
+      checkUsername: async (body: any) => {
+        const result = await this.request({
+          path: "/account/check-username",
+          method: "POST",
+          body,
+        });
+        return result.data;
+      },
+      pg_profile_setting: async (body: any) => {
+        const result = await this.request({
+          path: "/profile/pg_app_profile_settings",
+          method: "POST",
+          body,
+        });
+        return result.data;
+      }
     },
     account: {
-      deleteAccount: async () => {
+      deleteAccount: async (body: any) => {
         const result = await this.request({
           path: "/account/delete",
           method: "patch",
+          body,
         });
         return result.data;
       },
@@ -289,7 +306,14 @@ export class Api<
         });
         return result.data;
       },
-
+      restoreAcounnt: async (body: any) => {
+        const result = await this.request({
+          path: "/account/restore",
+          method: "patch",
+          body,
+        });
+        return result.data;
+      },
     },
     getListSport: async () => {
       const result = await this.request<SportType[]>({

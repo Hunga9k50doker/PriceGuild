@@ -11,7 +11,7 @@ import { api } from "configs/axios";
 import { MetaData } from "utils/constant";
 import { ToastSystem } from "helper/toast_system";
 import { firestore } from "firebase";
-import { useHistory, Link } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type PropTypes = {
   userId?: number;
@@ -34,7 +34,7 @@ const Messages = ({ ...props }: PropTypes) => {
   const [startMessage, setStartMessage] = useState<boolean | undefined>();
   const [userData, setUserData] = useState<UserMessageType[] | undefined>();
   const [messageData, setMessageData] = useState<MessageType>();
-  const history = useHistory();
+  const router = useRouter();
 
   React.useEffect(() => {
     dispatch(MessagesAction.getListUserMessages());
@@ -240,7 +240,7 @@ const Messages = ({ ...props }: PropTypes) => {
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
     } catch (err) {

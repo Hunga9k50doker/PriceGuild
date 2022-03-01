@@ -18,15 +18,15 @@ import backgroundImageUpload from "assets/images/ImageUpload.png";
 import { cloneDeep, isEmpty, sumBy, isEqual } from "lodash";
 import { useForm, Controller } from "react-hook-form";
 import queryString from "query-string";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import { formatCurrencyCustom, isFirefox } from "utils/helper";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 import { ToastSystem } from "helper/toast_system";
 import IconArrow from "assets/images/arrow_nav.png";
 import IconQuestion from "assets/images/icon_question.png";
 import IconDelete from "assets/images/delete.png";
-import { Link } from "react-router-dom";
+import Link from 'next/link'
 import useWindowDimensions from "utils/useWindowDimensions";
 import ArrowProfile from "assets/images/arrow_profile.svg";
 import rotateLeft from "assets/images/rotate-left.svg";
@@ -79,8 +79,8 @@ const defaultCard: Datum = {
   front_image: "",
   back_image: "",
   image_upload: {
-    front: backgroundImage,
-    back: backgroundImage,
+    front: backgroundImage.src,
+    back: backgroundImage.src,
   },
 };
 
@@ -94,16 +94,16 @@ type GroupRefType = {
   name?: string;
 };
 const AddCard = ({ isEdit = false }: PropTypes) => {
-  let history = useHistory();
+  let router = useRouter();
   const imageBackRef = React.useRef<HTMLInputElement>(null);
   const imageFrontRef = React.useRef<HTMLInputElement>(null);
   const EditImageRef = React.useRef<EditImageType>(null);
   const [imageFront, setImageFront] = useState<ImageType>({
-    url: imageUpload,
+    url: imageUpload.src,
     path: "",
   });
   const [imageBack, setImageBack] = useState<ImageType>({
-    url: imageUpload,
+    url: imageUpload.src,
     path: "",
   });
   const [gradeCompanys, setGradeCompanys] = useState<Array<GradeCompanyType>>(
@@ -118,14 +118,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     control,
     formState: { errors },
   } = useForm<CardForm>();
-  const location = useLocation();
   const [gradeValue, setGradeValue] = useState<Array<any>>([]);
   const watchGrade = watch("grade_company");
   const watchUserPrice = watch("user_price");
   const watchNote = watch("note");
   const watchGradeValue = watch("grade_value");
   const watchAgreeShare = watch("agree_share");
-  const dataQueries = queryString.parse(location.search);
+  const dataQueries = router.query;
   const [cards, setCards] = useState<CardsAddType>({
     groups: [],
     cards: [],
@@ -184,7 +183,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (result.success) {
         let data = result.data;
         if (data?.cards?.length === 0 && isEdit) {
-          history.goBack();
+          router.back();
         }
         if (data?.cards?.length && isEdit) {
           setCardsOld(cloneDeep(data));
@@ -383,13 +382,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
-        history.push("/profile/collections");
+        router.push("/profile/collections");
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
       setIsLoading(false);
@@ -428,7 +427,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   const onNewEntry = () => {
-
+    // @ts-ignore
     if(width < 768) {
       $('.d-block-add-collection').animate({
         scrollTop: 0
@@ -461,8 +460,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
       );
       newEntry.image_upload = {
-        front: backgroundImage,
-        back: backgroundImage,
+        front: backgroundImage.src,
+        back: backgroundImage.src,
       }
       newData?.cards[activeEntry.cardIndex].data.push({ ...newEntry });
       
@@ -474,7 +473,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1 };
       });
       isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      if(width < 768) {
+       // @ts-ignore
+      if (width < 768) {
         $('.d-block-add-collection').animate({
           scrollTop: 0
         }, 300);
@@ -534,12 +534,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       );
     }
     setImageBack({
-      url: dataEntry?.image_upload?.back ?? imageUpload,
+      url: dataEntry?.image_upload?.back ?? imageUpload.src,
       path: dataEntry.back_image,
     });
   
     setImageFront({
-      url: dataEntry?.image_upload?.front ?? imageUpload,
+      url: dataEntry?.image_upload?.front ?? imageUpload.src,
       path: dataEntry.front_image,
     });
     
@@ -547,7 +547,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     setValue("agree_share", dataEntry.agree_share);
   };
   const onCancle = () => {
-    history.push("/profile/collections");
+    router.push("/profile/collections");
   };
 
   const onSubmitForm = () => {
@@ -618,6 +618,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     );
   };
   React.useEffect(() => {
+     // @ts-ignore
     if (is_show_card_detail_collection && width < 768) {
       
     } else {
@@ -626,6 +627,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [is_show_card_detail_collection]);
 
   React.useEffect(() => {
+     // @ts-ignore
     if (width > 768) {
       document.body.removeAttribute("style");
     }
@@ -788,6 +790,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
 
   const renderTitleRemove = () => {
+    //@ts-ignore
     if (width < 768) {
       return "Remove Card";
     }
@@ -813,27 +816,29 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <Link
-              className="container-collection-profile-head"
-              to={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
+              href={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
             >
-              <img
-                // onClick={() => history.push("profile/collections")}
-                src={ArrowProfile}
-                alt=""
-              />
-              {groupRef?.name}
+              <a className="container-collection-profile-head">
+                <img
+                  // onClick={() => history.push("profile/collections")}
+                  src={ArrowProfile}
+                  alt=""
+                />
+                {groupRef?.name}
+              </a>
             </Link>
           ) : (
             <Link
-              className="container-collection-profile-head"
-              to={`/profile/collections`}
+              href={`/profile/collections`}
             >
+            <a className="container-collection-profile-head">
               <img
                 // onClick={() => history.push("profile/collections")}
                 src={ArrowProfile}
                 alt=""
               />
               {t('portfolio.text')}
+             </a>
             </Link>
           )}
           {/* <Link to="/profile/collections" className="container-collection-profile-head">
@@ -901,6 +906,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <div
                     key={k}
                     onClick={(e) => {
+                      //@ts-ignore
                       if (width >= 768) {
                         onActiveEntry(key, k, entry);
                       }
@@ -915,6 +921,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           : ""
                       }  rounded border border-1 p-2`}
                       onClick={() => {
+                        //@ts-ignore
                         if (width < 768) {
                           onActiveEntry(key, k, entry);
                           // setCards(cloneDeep(cardsMobile));
@@ -976,7 +983,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             src={
                               entry?.image_upload?.front
                                 ? entry?.image_upload?.front
-                                : backgroundImage
+                                : backgroundImage.src
                             }
                             alt=""
                           />
@@ -987,13 +994,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             src={
                               entry?.image_upload?.back
                                 ? entry?.image_upload?.back
-                                : backgroundImage
+                                : backgroundImage.src
                             }
                             alt=""
                           />
                         </div>
                         <span>
-                          <img src={IconArrow} alt="" />
+                          <img src={IconArrow.src} alt="" />
                         </span>
                       </div>
                     </div>
@@ -1035,7 +1042,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             is_show_card_detail_collection ? "d-block-add-collection" : ""
           }`}
         >
-          {width < 768 && is_show_card_detail_collection === true && (
+          
+          {
+            //@ts-ignore
+            width < 768 && is_show_card_detail_collection === true && (
             // <div>
             //   <div className={`d-flex align-items-center active rounded border border-1 p-2`} onClick={ () => {SetShowContentAddCollection(width < 768 ? false : false)}}>
             //     <div className='arrowBack'>
@@ -1078,7 +1088,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         }}
                       >
                         <div className="arrowBack">
-                          <img src={IconArrow} className="revertArrow" alt="" />
+                          <img src={IconArrow.src} className="revertArrow" alt="" />
                         </div>
                         <div className="content-card">
                           <div className="d-block justify-content-between align-items-center card-add-detail__txt box-left">
@@ -1132,7 +1142,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               src={
                                 entry?.image_upload?.front
                                   ? entry?.image_upload?.front
-                                  : backgroundImage
+                                  : backgroundImage.src
                               }
                               alt=""
                             />
@@ -1143,7 +1153,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               src={
                                 entry?.image_upload?.back
                                   ? entry?.image_upload?.back
-                                  : backgroundImage
+                                  : backgroundImage.src
                               }
                               alt=""
                             />
@@ -1156,7 +1166,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               ))}
             </>
           )}
-          {width >= 768 && (
+          {
+            //@ts-ignore
+            width >= 768 && (
             <>
               {isEdit && isEmpty(groupRef) ? (
                 <Skeleton style={{ width: 100 }} />
@@ -1164,12 +1176,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb breadcrumb-edit-card mt-1">
                     <li className="breadcrumb-item">
-                        <Link to="/profile/portfolio">{ t('portfolio.text') }</Link>
+                        <Link href="/profile/portfolio">{ t('portfolio.text') }</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
                         <Link
-                          to={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
+                          href={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
                         >
                           {groupRef?.name}
                         </Link>
@@ -1342,7 +1354,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         ref={ref}
                         {...triggerHandler}
                         className="ml-1 label-icon cursor-pointer"
-                        src={IconQuestion}
+                        src={IconQuestion.src}
                         alt=""
                     />
                         )}
@@ -1402,7 +1414,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         ref={ref}
                         {...triggerHandler}
                         className="ml-1 label-icon cursor-pointer"
-                        src={IconQuestion}
+                        src={IconQuestion.src}
                         alt=""
                     />
                         )}
@@ -1485,7 +1497,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <img
                     className="cursor-pointer w-100"
                     src={
-                      imageFront.url ? imageFront.url : backgroundImageUpload
+                      imageFront.url ? imageFront.url : backgroundImageUpload.src
                     }
                     alt=""
                   />
@@ -1499,7 +1511,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <div className="border-img">
                   <img
                     className="cursor-pointer w-100"
-                    src={imageBack.url ? imageBack.url : backgroundImageUpload}
+                    src={imageBack.url ? imageBack.url : backgroundImageUpload.src}
                     alt=""
                   />
                   <input
@@ -1545,7 +1557,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       ref={ref}
                       {...triggerHandler}
                       className="ml-1 label-icon cursor-pointer"
-                      src={IconQuestion}
+                      src={IconQuestion.src}
                       alt=""
                     />
                   )}
@@ -1560,7 +1572,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               ></textarea>
             </div>
             <div className="mt-56 mb-5 d-flex justify-content-between align-items-center btn-group-entry">
-              {width < 768 && (
+              {
+                //@ts-ignore
+                width < 768 && (
                 <button
                   onClick={onSaveEntry}
                   type="button"
@@ -1584,8 +1598,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <button
                   disabled={isLoadingDelete}
                   onClick={onRemoveCard}
-                  className="btn btn-remove "
-                > <img src={IconDelete} alt="" /> {renderTitleRemove()} </button>
+                  className="btn btn-remove"
+                > <img src={IconDelete.src} alt="" /> {renderTitleRemove()} </button>
               </div>
             )}
             {
@@ -1595,8 +1609,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <button
                   disabled={isLoadingDelete}
                   onClick={onRemoveEntry}
-                  className="btn btn-remove "
-                > <img src={IconDelete} alt="Remove Entry" title="Remove Entry" /> Remove Entry </button>
+                  className="btn btn-remove"
+                > <img src={IconDelete.src} alt="Remove Entry" title="Remove Entry" /> Remove Entry </button>
               </div>
             )}
             { // @ts-ignore
