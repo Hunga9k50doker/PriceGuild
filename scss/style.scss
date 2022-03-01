@@ -238,6 +238,14 @@ div.header {
     font-size: 16px;
     color: #18213a;
   }
+  .custom-select {
+    .react-select__control {
+      border: none !important;
+      min-height: 56px;
+      border-radius: 6px;
+      box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.05);
+    }
+  }
 }
 
 /* footer */
@@ -2468,7 +2476,8 @@ input[type="number"] {
       background-color: rgb(255, 255, 255);
       border-left: 1px solid #e9f1ff;
       h3 {
-        padding: 28px;
+        padding: 28px 28px 20px 28px;
+        margin-bottom: 0;
         color: #0b0e61;
         font-size: 1.75rem;
         font-weight: bold;
@@ -2520,9 +2529,8 @@ input[type="number"] {
 
       .tab-content {
         .tab-pane {
-          height: calc(100% - 10px);
-          overflow-y: auto;
-          overflow-x: hidden;
+          height: 100%;
+          overflow: hidden;
           div.border-under {
             padding: 0.5rem;
             border-top: 1px solid rgba(109, 117, 136, 0.15);
@@ -2537,7 +2545,7 @@ input[type="number"] {
           }
           .nav-pills-image {
             height: 5.75rem;
-            width: 15.063rem;
+            width: 100%;
             background: #ffffff;
             border-radius: 6px;
             &-item {
@@ -2554,8 +2562,7 @@ input[type="number"] {
             }
           }
         }
-        padding-left: 15px;
-        // width: 100%;
+        padding: 0 15px;
         background-color: rgba(233, 241, 255, 0.45);
       }
     }
@@ -2580,7 +2587,7 @@ input[type="number"] {
         border-color: #124de3;
       }
       &__name {
-        font-weight: bold;
+        font-weight: 600;
         font-size: 18px;
         color: #18213a;
       }
