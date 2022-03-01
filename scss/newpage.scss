@@ -2734,3 +2734,17 @@ ul {
     padding-left: calc(var(--bs-gutter-x) * 0.5);
     margin: 0 1px;
 }
+
+.cs-mar--15 {
+    margin: 0 -8px;
+    @media (min-width: 768px) {
+        margin: 0 -15px; 
+    }
+}
+
+.product__item--latest, .cs-padd-15 {
+    padding: 0 8px;
+    @media (min-width: 768px) {
+        padding: 0 15px;
+    }
+}

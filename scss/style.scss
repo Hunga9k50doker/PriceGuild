@@ -3651,7 +3651,7 @@ input[type="number"] {
     }
     .content-slick {
       background-color: #fff;
-      width: 165px;
+      width: calc(100% - 30px);
       height: 165px;
       border-radius: 12px;
       box-shadow: 0px 1px 0px rgba(109, 117, 136, 0.12);

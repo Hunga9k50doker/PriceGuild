@@ -15,7 +15,7 @@ const LatestCollectionItem = (props: PropTypes) => {
   }
 
   return (
-    <div style={{ width: '100%' }} className="col-lg-2 col-md-2 p-2 product__item--latest">
+    <div style={{ width: '100%' }} className="col-lg-2 col-md-2 product__item--latest">
       <div className="product__item product__item   mb-4">
         <div onClick={onPressCollection}  className="product__item__img cursor-pointer" >
         <ImageBlurHash

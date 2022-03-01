@@ -173,7 +173,7 @@ const CardSlick: FC<PropTypes> = ({
             onAddWishList(item)
           }}
           namePrice={namePrice}
-          className="col-lg-2 col-md-2 p-2"
+          className="cs-padd-15"
           item={item}
           key={index}
         />)}
