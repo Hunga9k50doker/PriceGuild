@@ -44,11 +44,12 @@ const lineTooltip = (tooltip, x = this.x, points = this.points) => {
 }
 
 export const navigatorHangle = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCA0NCA0NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGc+CjxjaXJjbGUgY3g9IjIyIiBjeT0iMjAiIHI9IjE2IiBmaWxsPSJ3aGl0ZSIvPgo8Y2lyY2xlIGN4PSIyMiIgY3k9IjIwIiByPSIxNS41IiBzdHJva2U9IiNFOUVBRUQiLz4KPC9nPgo8bGluZSB4MT0iMTYuNSIgeTE9IjE0IiB4Mj0iMTYuNSIgeTI9IjI2IiBzdHJva2U9IiM2RDc1ODgiLz4KPGxpbmUgeDE9IjIyLjUiIHkxPSIxNCIgeDI9IjIyLjUiIHkyPSIyNiIgc3Ryb2tlPSIjNkQ3NTg4Ii8+CjxsaW5lIHgxPSIyOC41IiB5MT0iMTQiIHgyPSIyOC41IiB5Mj0iMjYiIHN0cm9rZT0iIzZENzU4OCIvPgo8L3N2Zz4K)'
-
-//@ts-ignore
-Highcharts.SVGRenderer.prototype.symbols.cross = function (x, y, w, h) {
-    return ['M', x, y + h / 2, 'L', x + w / 2, y, 'L', x + w, y + h / 2, 'L', x + w / 2, y + h, 'Z'];
-};
+    if (!ISSERVER) {
+        //@ts-ignore
+        Highcharts.SVGRenderer.prototype.symbols.cross = function (x, y, w, h) {
+            return ['M', x, y + h / 2, 'L', x + w / 2, y, 'L', x + w, y + h / 2, 'L', x + w / 2, y + h, 'Z'];
+        };
+    }
 
 //@ts-ignore
 if (Highcharts.VMLRenderer) {

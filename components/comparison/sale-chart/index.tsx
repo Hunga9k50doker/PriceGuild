@@ -22,8 +22,11 @@ import ModalZoomImage from "components/modal/zoomImage/modalZoomImage"
 import ReportImage from "components/modal/reportImage"
 import { isEmpty } from "lodash";
 import { checkImageExist } from "components/cardDetail/components/sale_chart/data";
+const ISSERVER = typeof window === "undefined";
 
-require('highcharts/modules/series-label')(Highcharts)
+if (!ISSERVER) {
+  require('highcharts/modules/series-label')(Highcharts)
+}
 export interface RefType {
   addData: (data: ArgumentType) => Promise<void>;
   removeSeries: (cardId: string) => void;

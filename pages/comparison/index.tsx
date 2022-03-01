@@ -23,11 +23,11 @@ import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
 import { CardModel } from "model/data_sport/card_sport";
 import SaleChartComparison, {RefType as RefTypeSaleChart} from 'components/comparison/sale-chart'
-import queryString from "query-string";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import PlaceholderChart from "components/cardDetail/components/placeholder_chart"
 import ImageLineChart from "assets/images/line_chart_placeholder.png";
 import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
+const ISSERVER = typeof window === "undefined";
 
   const Comparison: React.FC = () => {
   const refCompare = useRef<RefTypeSaleChart>(null)
@@ -45,7 +45,7 @@ import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
   const [isCopy, SetIsCopy] = useState<boolean>(false);
   let router = useRouter();
   const dispatch = useDispatch();
-  const {cards} = queryString.parse(location.search);
+  const {cards} = router.query;
   const getCardData = (data: any) => {
     let arrayCards: Array<any> = [];
     
@@ -73,14 +73,14 @@ import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
     !isEmpty(cards) ?
       getCardData(cards)
     : 
-    JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? []
+    !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
   );  
 
   const [cardState] = React.useState<Array<CardItemType>>(
     !isEmpty(cards) ?
       getCardData(cards)
     : 
-    JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? []
+    !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
   ); 
     
   const { userInfo } = useSelector(Selectors.auth);

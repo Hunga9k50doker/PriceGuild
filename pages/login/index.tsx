@@ -1,0 +1,25 @@
+import React, { useState } from 'react';
+import LoginComponent from "components/modal/login/loginComponent"
+import { useSelector } from 'react-redux';
+import Selectors from 'redux/selectors';
+
+
+
+const LoginPage: React.FC = () => {
+  const { is_set_username, is_email_verify } = useSelector(Selectors.config);
+  return (
+    <>
+      <div className="container authenticate-page">
+        <div className="">
+          <div className="mb-5 d-flex align-items-center flex-column ">
+            <h1 className="text-center mt-4 p-4 text-title pb-0">Login</h1>
+            <LoginComponent />
+          </div>
+        </div>
+      </div>
+    </>
+    
+  );
+}
+
+export default LoginPage;
