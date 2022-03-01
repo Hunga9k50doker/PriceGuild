@@ -5,7 +5,7 @@ import { ToastSystem } from "helper/toast_system";
 import { api } from 'configs/axios';
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
-import { useParams, useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 import {userClass} from "utils/constant"
 import userPicture from "assets/images/user-picture.svg";
 import Skeleton from 'react-loading-skeleton'
@@ -31,9 +31,9 @@ type ParamTypes = {
 }
 
 const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
-  const history = useHistory();
+  const router = useRouter();
   const { loggingIn } = useSelector(Selectors.auth);
-  const {friendId} = useParams<ParamTypes>();
+  const {friendId} = router.query;
   const [profile, setProfile] = useState<PgAppProfileType | undefined>();
   const [t, i18n] = useTranslation("common");
   const getUserDetail = async () => {
@@ -48,7 +48,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
       if (!res.success) {
         // @ts-ignore
         if (res.data?.verify_redirect) {
-          history.push('/verify-email')
+          router.push('/verify-email')
         }
       }
     } catch (error) {
@@ -68,7 +68,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
   const addFriend = async () => {
     if (!loggingIn) {
       ToastSystem.error("Please login to continue");
-      return history.push("/login")
+      return router.push("/login")
     }
     try {
       const params = {
@@ -82,7 +82,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
     }

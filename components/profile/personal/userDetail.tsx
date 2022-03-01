@@ -9,8 +9,8 @@ import { MetaData } from "utils/constant";
 import { ToastSystem } from "helper/toast_system";
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
-import { useHistory } from "react-router-dom";
-import { matchPath } from "react-router";
+import { useRouter } from 'next/router'
+// import { matchPath } from "react-router";
 import IconFolderTim from "assets/images/folder_tim.png";
 import IconHeartTim from "assets/images/heart_tim.png";
 import Progress_bar from 'components/progress-bar';
@@ -33,7 +33,7 @@ type PropTypes = {
 
 const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfileFriend, ...props }: PropTypes) => {
   const [profile, setProfile] = useState<PgAppProfileType | undefined>()
-  const history = useHistory();
+  const router = useRouter();
   const { loggingIn } = useSelector(Selectors.auth);
   const [isModal, setIsModal] = useState<boolean>(false);
   const [pointlv, setPointLv] = useState<number>(0);
@@ -54,7 +54,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       if (!res.success) {
         // @ts-ignore
         if (res.data?.verify_redirect) {
-          history.push('/verify-email')
+          router.push('/verify-email')
         }
       }
     } catch (error) {
@@ -69,11 +69,13 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
     if(MyStorage.user.userid === userId) {
       setIsUser(true);
     }
-    const matchPatchRoute = matchPath(history.location.pathname, {
-      path:  "/profile/personal",
-      exact: true,
-      strict: false
-    });
+    // cần check lại
+    // const matchPatchRoute = matchPath(history.location.pathname, {
+    //   path:  "/profile/personal",
+    //   exact: true,
+    //   strict: false
+    // });
+    let matchPatchRoute = true;
     if(matchPatchRoute) {
       setIsUser(true);
     }
@@ -89,7 +91,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
   const addFriend = async () => {
     if (!loggingIn) {
       ToastSystem.error("Please login to continue");
-      return history.push("/login")
+      return router.push("/login")
     }
     try {
       const params = {
@@ -103,7 +105,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
       return ToastSystem.error(result.error);
@@ -208,7 +210,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
             <div className="text-center content-user-profile-card-item p-3">
               <div className="content-user-profile-card-item-icon d-flex align-items-center justify-content-center">
                 <div className="icon">
-                  <img src={IconFolderTim} alt="" />
+                  <img src={IconFolderTim.src} alt="" />
                 </div>
               </div>
               <div style={{ height: "calc(100% - 50px)" }} className="d-flex justify-content-start align-items-end content-user-profile-card-item-detail">
@@ -226,7 +228,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
             <div className="text-center content-user-profile-card-item p-3">
               <div className="content-user-profile-card-item-icon d-flex align-items-center justify-content-center">
                 <div className="icon ">
-                  <img src={IconHeartTim} alt="" />
+                  <img src={IconHeartTim.src} alt="" />
                 </div>
               </div>
               <div  className="d-flex justify-content-start align-items-end content-user-profile-card-item-detail">

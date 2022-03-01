@@ -8,16 +8,16 @@ import { PgAppProfileType } from "interfaces"
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
 import { api } from 'configs/axios';
-import { useParams, useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type ParamTypes = {
   action?: string
 }
 
 const Settings = () => {
-  const history = useHistory();
+  const router = useRouter();
 
-  const { action } = useParams<ParamTypes>();
+  const { action }: ParamTypes = router.query;
 
   const [key, setKey] = useState<string>(action ?? "Profile");
 
@@ -36,7 +36,7 @@ const Settings = () => {
         if (!res.success) {
           // @ts-ignore
           if (res.data?.verify_redirect) {
-            return history.push('/verify-email')
+            return router.push('/verify-email')
           }
         }
       } catch (error) {
@@ -51,7 +51,7 @@ const Settings = () => {
       <Tab.Container
         activeKey={key}
         onSelect={(k: any) => {
-          history.push(`/profile/settings${k === "Profile" ? "" : `/${k}`}`)
+          router.push(`/profile/settings${k === "Profile" ? "" : `/${k}`}`)
           setKey(k)
         }}
         transition={true}

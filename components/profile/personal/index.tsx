@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
 import { api } from 'configs/axios';
 import { PgAppProfileType } from "interfaces"
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 import UserDetail from 'components/profile/personal/userDetail';
 
 type PropTypes = {
@@ -12,14 +12,14 @@ type PropTypes = {
 
 const Personal = ({ isFriend = false }: PropTypes) => {
   const { userInfo } = useSelector(Selectors.auth);
-  const history = useHistory();
+  const router = useRouter();
   const onTabDetail = (value: string) => {
     switch (value) {
       case "collection":
-        history.push("/profile/collections")
+        router.push("/profile/collections")
         break;
       default:
-        history.push("/profile/wishlists")
+        router.push("/profile/wishlists")
     }
   }
   return (

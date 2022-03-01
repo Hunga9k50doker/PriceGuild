@@ -3,7 +3,7 @@ import { StatsAnalytics, WidgetSettings } from "interfaces"
 import "react-datepicker/dist/react-datepicker.css";
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
-import { navigatorHangle } from "pages/comparison/sale-chart/data";
+import { navigatorHangle } from "components/comparison/sale-chart/data";
 import { formatCurrency } from "utils/helper";
 
 type PropTypes = {

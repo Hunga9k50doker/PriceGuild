@@ -12,7 +12,7 @@ import { MyStorage } from "helper/local_storage";
 import { User } from "model/user";
 import { AuthActions } from 'redux/actions/auth_action';
 import IconEditBook from 'assets/images/edit_book_icon.svg'
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type Inputs = {
   firstname: string,
@@ -33,7 +33,7 @@ const ProfileSetting = ({ profileData }: PropsType) => {
   const avatarRef = React.useRef<HTMLInputElement>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!isEmpty(profileData)) {
@@ -67,7 +67,7 @@ const ProfileSetting = ({ profileData }: PropsType) => {
       if (!res.success) {
         // @ts-ignore
         if (res.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
       return ToastSystem.error(res.message);
@@ -115,7 +115,7 @@ const ProfileSetting = ({ profileData }: PropsType) => {
   const recalculate = async (e: any) => {
     ChangeTextAreaCount(e.target.value.length);
   };
-  console.log(profile, 'profile')
+  // console.log(profile, 'profile')
   return (
     <div className="profile-setting maxw-430">
       <div className='profile-setting-title'>

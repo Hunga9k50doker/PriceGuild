@@ -24,8 +24,8 @@ import { ToastSystem } from 'helper/toast_system';
 import ChosseCollection from "components/modal/chosseCollection"
 import Skeleton from 'react-loading-skeleton';
 import Collection from "components/modal/collection"
-import { useHistory, Link } from "react-router-dom";
-import { matchPath } from "react-router";
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useDebouncedCallback } from "utils/useDebouncedEffect"
 import IconSearch from "assets/images/search.png"
 import ListLine from "components/icon/listLine";
@@ -93,7 +93,7 @@ const CardListCollection = ({
   isFriend = false,
   ...props }: PropTypes) => {
   const { userInfo, loggingIn } = useSelector(Selectors.auth);
-  const history = useHistory();
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const [sortCards, setSortCards] = useState<SelectDefultType>(defaultSort);
   const publisherRef = React.useRef<FilterHandle>(null);
@@ -589,7 +589,7 @@ const CardListCollection = ({
     setIsShow(false)
     if (table === "wishlist" || isFriend) {
     const cardCode = data.cards?.filter(item=> cardSelected.includes(item.portid))?.map(item=> item.code)
-    return  history.push(
+    return  router.push(
         `/collections-add-card?collection=${item.group_ref}&code=${cardCode.toString()}`
       );
     }
@@ -639,7 +639,7 @@ const CardListCollection = ({
   }
 
   const onAnalytics = () => {
-    history.push(`/profile/portfolio/${collection}/analytics`)
+    router.push(`/profile/portfolio/${collection}/analytics`)
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
@@ -928,20 +928,22 @@ const CardListCollection = ({
     if (!isOpenModal && !isSelect) {
       setCardSelected([]);
     }
-  },[isOpenModal])
-  const matchPatchRoute = matchPath(history.location.pathname, {
-    path:  "/friends/:friendId",
-    exact: true,
-    strict: false
-  });
-  React.useEffect(() => {
-    if(userId) {
-      if(matchPatchRoute) {
-        if(userId !== MyStorage.user.userid.toString())
-          setIsMatchUser(true);
-      }
-    }
-  }, [])
+  }, [isOpenModal])
+  
+  // Cần xử lí lại
+  // const matchPatchRoute = matchPath(history.location.pathname, {
+  //   path:  "/friends/:friendId",
+  //   exact: true,
+  //   strict: false
+  // });
+  // React.useEffect(() => {
+  //   if(userId) {
+  //     if(matchPatchRoute) {
+  //       if(userId !== MyStorage.user.userid.toString())
+  //         setIsMatchUser(true);
+  //     }
+  //   }
+  // }, [])
 
   const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
@@ -1047,7 +1049,7 @@ const CardListCollection = ({
     if(isFriend) {
       props.setGotoFriend &&   props.setGotoFriend(title)
     } else {
-      history.push("profile/collections")
+      router.push("profile/collections")
     }
   }
   const removeCollection = async () => {
@@ -1059,7 +1061,7 @@ const CardListCollection = ({
       const result = await api.v1.collection.removeCollection(params);
       if (result.success) {
         setIsOpenModalDelete(false);
-        history.push(`/profile/${title === "wishlist" ? "wishlists" : t('portfolio.text_normal')}`)
+        router.push(`/profile/${title === "wishlist" ? "wishlists" : t('portfolio.text_normal')}`)
         return ToastSystem.success(result.message ?? result.error);
       }
       return ToastSystem.error(result.message ?? result.error);
@@ -1081,7 +1083,12 @@ const CardListCollection = ({
       </div> */}
       <div className="container-fluid p-0 container-collection-profile">
         <div className="only-mobile">
-          <Link to="/profile/portfolio" onClick={ goToFriend} className="container-collection-profile-head text-capitalize"> <img onClick={() =>backToCollection}  src={ArrowProfile} alt="" /> {title === "wishlist" ? "wishlists": t('portfolio.text_normal')} </Link>
+          <Link href="/profile/portfolio">
+            <a onClick={goToFriend} className="container-collection-profile-head text-capitalize">
+               <img onClick={() => backToCollection} src={ArrowProfile} alt="" />
+              {title === "wishlist" ? "wishlists" : t('portfolio.text_normal')}
+           </a>
+          </Link>
         </div>
         <ChosseCollection selectCollection={selectCollection} isOpen={isShow} setIsOpen={setIsShow} />
         <div className="row container-collection-profile-row">
@@ -1092,7 +1099,7 @@ const CardListCollection = ({
               <div className="col-4 d-flex justify-content-end align-items-center" >
                 <div className="search-form d-none d-md-block">
                   <div className="input-group">
-                    <button type="submit"> <img src={IconSearch} alt="" title="" /> </button>
+                    <button type="submit"> <img src={IconSearch.src} alt="" title="" /> </button>
                     <input type="text" className="form-control" ref={inputSearchRef}  onChange={handleChange} defaultValue={defaultSearch} placeholder="Search" />
                   </div>
                 </div>
@@ -1113,7 +1120,7 @@ const CardListCollection = ({
             <div className="only-mobile">
               <div className="container-collection-content-search--mobile d-flex">
                 <div className={`search d-flex ${inputSearchRef?.current?.value ? 'active' : ''} `}>
-                  <i className="icon-search"> <img src={IconSearch} alt="" /> </i>
+                  <i className="icon-search"> <img src={IconSearch.src} alt="" /> </i>
                   <input ref={inputSearchRef} onChange={handleChange} defaultValue={defaultSearch} type="text" className="form-control" placeholder="Search" />
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M6.99985 8.2801L12.1199 13.4001L13.3999 12.1201L8.27985 7.0001L13.3999 1.8801L12.1199 0.600098L6.99985 5.7201L1.87985 0.600098L0.599854 1.8801L5.71985 7.0001L0.599854 12.1201L1.87985 13.4001L6.99985 8.2801Z" fill="#18213A"/>
@@ -1213,7 +1220,9 @@ const CardListCollection = ({
                 </div>
               </div>
               <div className="filter-content">
-                {width >= 768 ?
+                {
+                  //@ts-ignore
+                  width >= 768 ?
                     <div className="filter-top mb-2 filter-list">
                     <div className={renderClassButtonFilter("sports")}>
                       <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenupublisher" data-bs-toggle="dropdown" aria-expanded="false"> Sport {

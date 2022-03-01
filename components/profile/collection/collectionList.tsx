@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { api } from "configs/axios";
 import { ManageCollectionType, PgAppProfileType } from "interfaces";
-import { matchPath } from "react-router";
+// import { matchPath } from "react-router";
 import Collection from "components/modal/collection";
 import CollectionSkeleton from "components/profile/collection/skeleton/collection";
-import Swal from "sweetalert2";
-import "sweetalert2/src/sweetalert2.scss";
+// import Swal from "sweetalert2";
+// import "sweetalert2/src/sweetalert2.scss";
 import { ToastSystem } from "helper/toast_system";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import { useDispatch } from "react-redux";
@@ -63,7 +64,7 @@ const CollectionList = ({
 }: CollectionListType) => {
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { ids } = useSelector(Selectors.claimPhoto);
   const [collectionDetail, setCollectionDetail] = useState<
@@ -76,13 +77,14 @@ const CollectionList = ({
   const [searchKey, setSearchKey] = useState<string>('');
   const [dataSearch, setDataSearch] = useState<Array<ManageCollectionType>>([]);
   const { userInfo } = useSelector(Selectors.auth);
-  const { action } = useParams<ParamTypes>();
+  const { action } = router.query;
   const [dataSelect, setDataSelect] = useState<string>('');
-  const matchPatchRoute = matchPath(history.location.pathname, {
-    path:  "/friends/:friendId",
-    exact: true,
-    strict: false
-  });
+  // cần check lại
+  // const matchPatchRoute = matchPath(history.location.pathname, {
+  //   path:  "/friends/:friendId",
+  //   exact: true,
+  //   strict: false
+  // });
   React.useEffect(() => {
     if (collections.data.length) {
       setData(paginate(collections.data, rowsPerPage, [1]));
@@ -167,11 +169,11 @@ const CollectionList = ({
   const gotoCard = (item: ManageCollectionType) => {
     props.gotoCard
       ? props.gotoCard(item)
-      : history.push(`/profile/${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${item.group_name}`);
+      : router.push(`/profile/${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${item.group_name}`);
   };
 
   const gotoAnalytics = (item: ManageCollectionType) => {
-    history.push(`/profile/portfolio/${item.group_ref}/analytics`);
+    router.push(`/profile/portfolio/${item.group_ref}/analytics`);
   };
 
   const onClaimPhoto = async (id?: number) => {
@@ -277,6 +279,7 @@ const CollectionList = ({
   }
 
   useEffect(() => {
+    //@ts-ignore
     if (width > 768) {
       setSearchMobbile(false)
     }
@@ -298,13 +301,13 @@ const CollectionList = ({
             </div>
           </form> */}
           <div className="search-mobile" onClick={() => {setSearchMobbile(true)}}>
-            <img className="pr-2 icon-search" src={IconSearch} alt="" title="" />
+            <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
           </div>
           {searchMobbile && 
             <div className="search-form search-only-mobile w-100 position-absolute d-flex align-items-center">
                <div className="input-group position-relative">
                 <button type="submit">
-                  <img src={IconSearch} alt="" title="" />
+                  <img src={IconSearch.src} alt="" title="" />
                 </button>
                 <input type="text" className="form-control" placeholder="Search" value={searchKey} onChange={(e) => onChangeSearch(e)} />
                 {searchKey &&
@@ -322,14 +325,18 @@ const CollectionList = ({
         {Boolean(dataSearch.length > 0 || searchKey!== '') && <div className="d-flex justify-content-between align-items-center mt-3">
           <div className="search-form d-none d-md-block">
             <div className="input-group">
-              <button type="submit"> <img src={IconSearch} alt="" title="" /> </button>
+              <button type="submit"> <img src={IconSearch.src} alt="" title="" /> </button>
               <input type="text" className="form-control" placeholder="Search" onChange={(e) => onChangeSearch(e)} />
             </div>
           </div>
           {isButtonRight && (
             <div className="d-flex btn-group-filter">
               {isAnalytics && (
-                <Link to="/profile/portfolio/analytics" className="fw-bold btn-collection-outline" title="Analytics"> Analytics </Link>
+                <Link href="/profile/portfolio/analytics">
+                  <a className="fw-bold btn-collection-outline" title="Analytics">
+                    Analytics
+                  </a>
+                </Link>
               )}
               <button
                 type="button"
@@ -458,7 +465,9 @@ const CollectionList = ({
           {/* {data.length !== collections.data.length && <div className="d-flex justify-content-center align-items-center"> <button onClick={onLoadMore} type="button" className="btn btn-secondary btn-load-more">Load more</button> </div>} */}
       </div>
         {/* } */}
-      {collections.data.length === 0 && !collections.isLoading && searchKey === '' && Boolean(!matchPatchRoute) &&<div className="empty-collection">
+      {collections.data.length === 0 && !collections.isLoading && searchKey === '' &&
+        // Boolean(!matchPatchRoute)  &&  //cần check lại
+         <div className="empty-collection">
         <div className="box-content">
           <p>You don't have any {title ==="wishlist" ? "wishlist": t('portfolio.text_normal')}s yet.</p>
           <p>Let’s create your first {title ==="wishlist" ? "wishlist": t('portfolio.text_normal')} now!</p>
@@ -466,7 +475,7 @@ const CollectionList = ({
         </div>
       </div>}
       {
-       matchPatchRoute && collections && collections.data.length ===0 && searchKey === '' && 
+        // matchPatchRoute && //cần check lại
         !collections.isLoading &&
         <div className="message-profile-null">
             { 

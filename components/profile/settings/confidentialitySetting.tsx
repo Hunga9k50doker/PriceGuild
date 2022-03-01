@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select'
 // import Swal from 'sweetalert2'
-import 'sweetalert2/src/sweetalert2.scss'
+// import 'sweetalert2/src/sweetalert2.scss'
 import { ToastSystem } from "helper/toast_system";
 import { api } from 'configs/axios';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import Selectors from 'redux/selectors';
 import { PgAppProfileType } from 'interfaces';
 import { useTranslation } from "react-i18next";
 import ModalDeleteAccount from "components/modal/delete/account"
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type Props = {
   profile: PgAppProfileType | undefined,
@@ -28,7 +28,7 @@ const ConfidentialitySetting = (props: Props) => {
     { value: 0, label: 'Private', text: "Your name and location will be hidden from other members and non-members of the site, only your username will be visible." },
     { value: 1, label: 'Public', text: `Your name and location as entered in the profile section will be displayed to other members and non-members of the site when they are browsing your profile, public ${t('portfolio.portfolios')} or interacting with you through messaging on the site.` },
   ]
-  const history = useHistory();
+  const router = useRouter();
   const [confidentiality, setConfidentiality] = useState<{ value: number, label: string, text: string }>(options[props.profile?.user_info?.confidentiality ?? 0]);
   useEffect(() => {
     setConfidentiality(options[props.profile?.user_info?.confidentiality ?? 0]);
@@ -64,7 +64,7 @@ const ConfidentialitySetting = (props: Props) => {
       } else {
         // @ts-ignore
           if (res.data?.verify_redirect) {
-            return history.push('/verify-email')
+            return router.push('/verify-email')
           }
         ToastSystem.error(res?.message);
       }

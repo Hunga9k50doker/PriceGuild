@@ -6,7 +6,8 @@ import { FriendType } from "interfaces"
 import { api } from 'configs/axios';
 import { MetaData } from "utils/constant"
 import { ToastSystem } from "helper/toast_system";
-import { useHistory, Link } from "react-router-dom";
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 type PropTypes = {
   userId?: number,
@@ -21,7 +22,7 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
   const [friendsState, setFriendsState] = useState<FriendType[]>();
   const [requestsState, setRequestsState] = useState<FriendType[]>();
   const [blockedState, setBlockedState] = useState<FriendType[]>();
-  const history = useHistory();
+  const router = useRouter();
 
   React.useEffect(() => {
     dispatch(FriendAction.getListFriend({
@@ -89,7 +90,7 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return history.push('/verify-email')
+          return router.push('/verify-email')
         }
       }
     }
@@ -127,11 +128,11 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
   }
 
   const goToFriendDetail = (id: number) => {
-    history.push(`/profile/friends/${id}`)
+    router.push(`/profile/friends/${id}`)
   }
 
   const sendMessage = (friend: FriendType) => {
-    history.push(`/profile/messages/${friend.id}`)
+    router.push(`/profile/messages/${friend.id}`)
   }
 
   return (

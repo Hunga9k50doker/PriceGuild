@@ -7,7 +7,7 @@ import { ManageCollectionType } from "interfaces"
 import { isEmpty } from "lodash"
 import closeImge from "assets/images/close.png"
 import { CardModel } from "model/data_sport/card_sport";
-import { useHistory } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 type PropTypes = {
   isOpen: boolean,
@@ -23,7 +23,7 @@ type CollectionForm = {
 
 const EditNote = ({ cardDetail, isOpen = false, ...props }: PropTypes) => {
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<CollectionForm>();
-  const history = useHistory();
+  const router = useRouter();
 
   const onClickSubmit: SubmitHandler<CollectionForm> = async data => {
     onUpdate(data)
@@ -31,7 +31,7 @@ const EditNote = ({ cardDetail, isOpen = false, ...props }: PropTypes) => {
 
   const onUpdate = async (data: CollectionForm) => {
     // @ts-ignore
-    history.push(`/profile/collections/edit-card?collection=${cardDetail.group_ref}&code=${cardDetail.code}`)
+    router.push(`/profile/collections/edit-card?collection=${cardDetail.group_ref}&code=${cardDetail.code}`)
     // try {
     //   const params = {
     //     table: "portfolio",
