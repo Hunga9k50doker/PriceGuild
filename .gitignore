@@ -3,8 +3,15 @@
 
 # production
 /build
+/.next
 
 # /.env
 # /.env.staging
 # /.env.production
 
+package-lock.json
+yarn.lock
+.DS_Store
+/src/pages/TyTest/*
+
+/dist

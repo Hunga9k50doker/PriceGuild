@@ -2,12 +2,12 @@
 ## RUN Using docker compose
 # Server
 # -d: run in background
-docker compose -f docker-compose.yml up -d 
+docker-compose -f docker-compose.yml up -d 
 # Local
-docker compose -f docker-compose-local.yml up -d
+docker-compose -f docker-compose-local.yml up -d
 
 ## STOP docker container
-docker compose down
+docker-compose down
 
 ### ------------------------------------------------------------------
 ## OR build image

@@ -1,0 +1,50 @@
+.treeSelect.treeSelect {
+    max-width: 220px;
+    min-width: 138px;
+    width: auto !important;
+
+    ul {
+        display: flex;
+        padding-bottom: 4px;
+        padding-left: 4px !important;
+
+        li {
+            padding: 0 5px;
+        }
+    }
+}
+
+.titleToolTip {
+    span {
+        padding: 4px 8px 6px 8px;
+        font-size: 14px;
+        background: #18213A;
+        border-radius: 6px;
+        color: #fff;
+        white-space: normal;
+        position: fixed;
+        max-width: 200px;
+        visibility: hidden;
+
+        &[class~=bottom] {
+            &::before {
+                border-bottom: 6px solid #18213A;
+                border-top: 0px;
+                top: -6px;
+            }
+        }
+
+        &::before {
+            content: "";
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            position: absolute;
+            border-top: 6px solid #18213A;
+            bottom: -6px;
+            left: 50%;
+            transform: translate(-50%, 0px);
+        }
+    }
+}

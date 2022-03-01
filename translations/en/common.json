@@ -1,0 +1,16 @@
+{
+  "welcome": {
+    "title": "Welcome to {{framework}}",
+    "intro": "This is title"
+  },
+  "portfolio": {
+    "text": "Portfolio",
+    "text_upper": "Portfolios",
+    "create_portfolio": "Create Portfolio",
+    "edit_portfolio": "Edit Portfolio",
+    "remove_portfolio": "Remove Collection",
+    "card_in_portfolio": "Cards in Portfolio",
+    "portfolios": "portfolios",
+    "text_normal": "portfolio"
+  }
+}
