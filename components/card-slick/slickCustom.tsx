@@ -17,9 +17,11 @@ type PropTypes = {
   isLoading?: boolean,
   id?: number,
 }
+
 type ParamTypes = {
   id: string
 }
+
 function SampleNextArrow(props: any) {
   const { className, style, onClick } = props;
   return (
@@ -27,9 +29,7 @@ function SampleNextArrow(props: any) {
       className={className}
       style={{ ...style, display: "block", fontSize: 20, color: "black" }}
       onClick={onClick}
-    >
-      <i className="fa"> <img src={IconRight} alt="" /> </i>
-    </div>
+    > <i className="fa"> <img src={IconRight} alt="" /></i> </div>
   );
 }
 
@@ -40,9 +40,7 @@ function SamplePrevArrow(props: any) {
       className={className}
       style={{ ...style, display: "block", fontSize: 20, color: "black" }}
       onClick={onClick}
-    >
-      <i> <img src={IconLeft} alt="" /> </i>
-    </div>
+    > <i> <img src={IconLeft} alt="" /></i> </div>
   );
 }
 
@@ -66,53 +64,38 @@ const CardSlick: FC<PropTypes> = ({
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
     responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true,
-        dots: true
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2
+        }
       }
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-        initialSlide: 2
-      }
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2
-      }
-    }
     ],
     appendDots: (dots:boolean) => {
       return <MagicSliderDots dots={dots} numDotsToShow={7} dotWidth={30} />;
     }
-
   };
 
   React.useEffect(() => {
     if (data.length) {
-      // let newData: any[] = [];
-      // let itemCheck: any[] = []
-      // data.forEach((element, index) => {
-      //   if (itemCheck.length === 2) {
-      //     newData.push(itemCheck)
-      //     itemCheck = [element];
-      //   }
-      //   else {
-      //     itemCheck.push(element)
-      //   }
-      //   if (index === data.length - 1) {
-      //     newData.push(itemCheck)
-      //   }
-      // });
       setDataState(data)
     }
   }, [data]);
@@ -177,7 +160,6 @@ const CardSlick: FC<PropTypes> = ({
             )}
           </Slider> : <div className="row"> <SkeletonCard numberLine={4} /> </div>}
         </>}
-
         {data.length > 6 && data.length <= 12 && <>
           {Boolean(dataState?.length) ? <Slider
             {...settings}
