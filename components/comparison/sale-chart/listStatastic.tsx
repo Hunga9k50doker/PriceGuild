@@ -126,6 +126,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                   <Select
                     value={dataSelect[item.cardGradeSelected]}
                     className="react-select"
+                    menuIsOpen={true}
                     styles={{
                       control: (styles) => ({ ...styles, minWidth: 160 })
                     }}
