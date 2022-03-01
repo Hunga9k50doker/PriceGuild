@@ -7,6 +7,8 @@
     "build:dev": "env-cmd -f .env.development rm -rf build && next build",
     "build:staging": "env-cmd -f .env.staging rm -rf build && next build",
     "build:production": "env-cmd -f .env.production rm -rf build && next build",
+    "start:staging": "env-cmd -f .env.staging rm -rf build && next start",
+    "start:production": "env-cmd -f .env.production rm -rf build && next start",
     "test": "next test",
     "eject": "next eject"
   },
