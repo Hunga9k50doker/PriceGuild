@@ -1,5 +1,4 @@
 import React from "react";
-const ISSERVER = typeof window === "undefined";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "stores";
@@ -13,10 +12,13 @@ import "scss/config.scss";
 import "scss/custom.scss";
 import "scss/newpage.scss";
 import firebase from "firebase"
-// import { I18nextProvider } from 'react-i18next';
-// import i18next from 'i18next';
+import '../i18n';
+import { I18nextProvider } from 'react-i18next';
+import i18next from 'i18next';
 import { AppProps } from 'next/app';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import UsesCookiesPage from "components/usesCookiesPage"
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEhlnNzWpoOow4sgMYvdrFNxu2dYjB70A",
@@ -45,11 +47,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <React.StrictMode>
       <Provider store={store}>
-         {/* <I18nextProvider i18n={i18next}> */}
+         <I18nextProvider i18n={i18next}>
           <Layout>
-              <Component {...pageProps} />
+            <Component {...pageProps} /> 
+            <ToastContainer />
+            <UsesCookiesPage/>
           </Layout>
-        {/* </I18nextProvider> */}
+        </I18nextProvider>
       </Provider>
     </React.StrictMode>
 

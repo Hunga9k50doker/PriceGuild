@@ -12,7 +12,6 @@ import imgCopy from "assets/images/icon-copy-black.svg";
 import imgVertical from "assets/images/dots-vertical.svg";
 import imgEdit from "assets/images/icon-edit.svg";
 import imgDelete from "assets/images/icon-delete.svg";
-// import { useParams, useHistory } from 'react-router-dom';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { BlogData } from "interfaces";

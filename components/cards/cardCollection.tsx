@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/router";
 import { Collection } from "model/portfolio/collection";
 import ImgCard from "assets/images/Collection_Card.png"
 import ImageBlurHash from "components/imageBlurHash"
@@ -9,9 +9,9 @@ type PropTypes = {
 }
 
 const CardCollection = (props: PropTypes) => {
-  const history = useHistory();
+  const router = useRouter();
   const onPressCollection = (id: number) => {
-    history.push(`/${props.item.url}`)
+    router.push(`/${props.item.url}`)
   }
 
   return (<div className="col-6 col-5 col-xl-3 col-lg-4 col-sm-4 product-list-item">
@@ -23,7 +23,7 @@ const CardCollection = (props: PropTypes) => {
           imageDefault={ImgCard}
           blurHash={props.item?.blurhash ?? "LEHV6nWB2yk8pyo0adR*.7kCMdnj"}
           className="w-100 h-100"
-          src={props.item?.url_image ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${props.item?.url_image}` : ImgCard}
+          src={props.item?.url_image ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${props.item?.url_image}` : ImgCard.src}
         />
       </div>
       <div className="d-flex align-items-center mt-3 mb-1 product__item__title" style={{ fontSize: 14, color: "#6D7588" }}>{props.item.sportName}

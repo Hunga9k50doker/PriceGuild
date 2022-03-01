@@ -18,7 +18,6 @@ import backgroundImageUpload from "assets/images/ImageUpload.png";
 import { cloneDeep, isEmpty, sumBy, isEqual } from "lodash";
 import { useForm, Controller } from "react-hook-form";
 import queryString from "query-string";
-// import { useLocation } from "react-router-dom";
 import { formatCurrencyCustom, isFirefox } from "utils/helper";
 import moment from "moment";
 import { useRouter } from 'next/router'

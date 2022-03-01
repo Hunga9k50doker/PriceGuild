@@ -4,8 +4,8 @@ import Slider from "react-slick";
 import SkeletonCard from "components/Skeleton/cardItem";
 import useWindowDimensions from "utils/useWindowDimensions";
 import upper_deck from "assets/images/upper_deck.png";
-import { useHistory } from "react-router-dom";
-import { useParams, Link } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import IconLeft from "assets/images/arrow_left.svg";
 import IconRight from "assets/images/arrow_right.svg";
 // @ts-ignore
@@ -53,7 +53,7 @@ const CardSlick: FC<PropTypes> = ({
 
   const { width } = useWindowDimensions();
   const [dataState, setDataState] = useState<any[]>([])
-  const history = useHistory();
+  const router = useRouter();
   // const { id } = useParams<ParamTypes>();
   const settings = {
     className: "left",
@@ -118,18 +118,20 @@ const CardSlick: FC<PropTypes> = ({
   }, [data]);
 
   const gotoSport = (item: any) => {
-    history.push(
+    router.push(
       `/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`
     )
   }
   
   return (
     <div className="slick-custom">
-      {width >= 768 && <>
+      {
+        //@ts-ignore
+        width >= 768 && <>
         {data.length > 12 && <>
           {Boolean(dataState?.length) ? <Slider {...settings}>
             {data?.map((item: any, key) => 
-              <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+              <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                 <div className="card-publisher cursor-pointer">
                   <img src={item.image} alt={`${item.publisherName}_${key}`} />
                 </div>
@@ -140,7 +142,7 @@ const CardSlick: FC<PropTypes> = ({
         {data.length > 6 && data.length <= 12 && <>
           {Boolean(dataState?.length) ? <Slider {...settings}>
             {data?.map((item: any, key) =>
-              <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+              <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                 <div className="card-publisher cursor-pointer">
                   <img src={item.image} alt={`${item.publisherName}_${key}`} />
                 </div>
@@ -151,7 +153,7 @@ const CardSlick: FC<PropTypes> = ({
         {data.length <= 6 && <>
           <div className="row"> {data?.map((item: any, key) =>
             <div className="col-6 col-md-2 col-lg-2" key={key}>
-              <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+              <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                 <div className="card-publisher cursor-pointer">
                   <img src={item.image} alt={`${item.publisherName}_${key}`} />
                 </div>
@@ -161,11 +163,13 @@ const CardSlick: FC<PropTypes> = ({
         </>
         }        
       </>}
-      {width < 768 && <>
+      {
+        //@ts-ignore
+        width < 768 && <>
         {data.length > 12 && <>
           {Boolean(dataState?.length) ? <Slider {...settings}>
             {data?.map((item: any, key) => 
-              <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+              <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                 <div className="card-publisher">
                   <img src={item.image} alt={`${item.publisherName}_${key}`} />
                 </div>
@@ -179,7 +183,7 @@ const CardSlick: FC<PropTypes> = ({
             {...settings}
           >
             {data?.map((item: any, key) =>
-              <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+              <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                 <div className="card-publisher">
                   <img src={item.image} alt={`${item.publisherName}_${key}`} />
                 </div>
@@ -191,7 +195,7 @@ const CardSlick: FC<PropTypes> = ({
           <div className="row">
             {data?.map((item: any, key) =>
               <div className="col-6 col-md-2 col-lg-2" key={key}>
-                <Link to={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
+                <Link href={`/search?publisher=${item.id}&publisherName=${item.publisherName}&sport_criteria=${props.id}`} key={key}>
                   <div className="card-publisher">
                     <img src={item.image} alt={`${item.publisherName}_${key}`}/>
                   </div>

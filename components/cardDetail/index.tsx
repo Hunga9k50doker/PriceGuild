@@ -36,7 +36,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import { CardModel } from "model/data_sport/card_sport";
-// import { Link, useLocation, useHistory, useParams } from "react-router-dom";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import ChosseCollection from "components/modal/chosseCollection";

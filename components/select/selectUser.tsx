@@ -3,7 +3,7 @@ import AsyncSelect from "react-select/async";
 import { SmartSearchType, SportType } from "interfaces"
 import { api } from 'configs/axios';
 import { components } from 'react-select';
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useDebouncedCallback } from "utils/useDebouncedEffect"
 
 const groupStyles = {
@@ -23,7 +23,7 @@ function InputSearch({
   ...props
 }: PropTypes) {
   const [selectedValue, setSelectedValue] = useState<SmartSearchType | null>(null);
-  let history = useHistory();
+  let router = useRouter();
   const [keySearch, setKeySearch] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isMenu, setIsMenu] = useState(false);
@@ -58,7 +58,7 @@ function InputSearch({
         if (!resp.success) {
           // @ts-ignore
           if (resp.data?.verify_redirect) {
-            return history.push('/verify-email')
+            return router.push('/verify-email')
           }
         }
         setIsLoading(false);
@@ -93,7 +93,7 @@ function InputSearch({
 
   const redirects = (urlObject: { [key: string]: string | number }) => {
     let str = Object.entries(urlObject).map(([key, val]) => `${key}=${val}`).join('&');
-    return history.push(`/search?${str}`)
+    return router.push(`/search?${str}`)
   }
 
   const handleInputChanged = (input: string, reason: any) => {
