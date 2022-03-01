@@ -116,7 +116,7 @@ const MyCardSlickElement = <T,>(props: PropTypes<T>) => {
         <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off" />
         <label className="btn btn-outline-primary" htmlFor="btnradio3">Last 3 Months</label>
       </div>}
-      <div className="mt-2 mb-3 data-slicker-collection">
+      <div className="mt-2 mb-3 data-slicker-collection cs-mar--15">
         <div>
           {props.cards.length ? <Slider {...settings}>
             {props.cards.map((item, index) => props.cardElement(item, index))}

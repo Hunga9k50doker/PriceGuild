@@ -40,7 +40,7 @@ const CardSlickElement = ({ defaultChecked = 7, namePrice = "ma28", isFullPage =
         <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off" defaultChecked={defaultChecked === 365} />
         <label onClick={() => props.onFilter && props.onFilter(365)} className="btn btn-light" htmlFor="btnradio5">1 Year</label>
       </div>}
-      <div className="mt-2 mb-3 data-card-slicker">
+      <div className="mt-2 mb-3 data-card-slicker cs-mar--15 mt-5">
         <CardSlick namePrice={namePrice} isLoading={props.isLoading} cardElement={props.cardElement} cards={props.cards} />
       </div>
       {props.routerLink &&
