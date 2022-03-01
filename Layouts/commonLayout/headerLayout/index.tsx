@@ -310,10 +310,10 @@ const Header = (props: any) => {
                   <span className="ms-1"> Browse </span>
                 </a>
                 <div className="dropdown-menu py-0 mt-0 w-100" aria-labelledby="navbarDropdownBrowse">
-                  <div className="d-flex h-100 justify-content-start">
-                    <div className="col-8 ">
-                      <div className="row px-2 p-3">
-                        <h3 className="pl-4 pb-3 mt-4 browse__title"> Browse by Sport </h3>
+                  <div className="w-100 fake-padding">
+                    <div className="row">
+                      <div className="col-xxl-8 col-md-7">
+                        <h3 className="pl-4 p-3 pb-3 mt-4 browse__title"> Browse by Sport </h3>
                         <div className="d-flex flex-wrap">
                           {sports.map((item, k) => <div key={k} className="mb-3 cursor-pointer" onClick={() => onSearchCardBySport(item.id)}>
                             <div className="d-flex text-center justify-content-between align-items-center browse-item flex-column">
@@ -326,53 +326,51 @@ const Header = (props: any) => {
                           )}
                         </div>
                       </div>
-                    </div>
-                    <div className="col-4 popular-publisher-header">
-                      <h3> Popular Publishers </h3>
-                      <div className="header-nav mt-2 d-flex">
-                        <div className="col nav popular-publisher-item flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                          {popularPublishers?.map((item, key) =>
-                            <button
-                              key={key}
-                              onMouseOver={() => setKeyTab(key)}
-                              onClick={(e) => { e.stopPropagation() }}
-                              className={`w-100 nav-link ${key === keyTab ? "active" : ""} `}
-                              id={`v-pills-${item.publisher.name.replace(/\s/g, '')}-tab`}
-                              data-bs-toggle="pill"
-                              data-bs-target={`#v-pills-${item.publisher.name.replace(/\s/g, '')}`}
-                              type="button" role="tab"
-                              aria-controls={`v-pills-${item.publisher.name.replace(/\s/g, '')}`}
-                              aria-selected="true">
-                              <div className=" popular-publisher-item__title d-flex justify-content-between align-items-center pr-3">
-                                {item.publisher.name}
-                                <img alt="" src={IconArrow.src} />
-                              </div>
-                            </button>
-                          )}
-                        </div>
-                        <div className="col tab-content pt-2" id="v-pills-tabContent">
-                          {popularPublishers?.map((item, key) =>
-                            <div
-                              key={key}
-                              className={`tab-pane fade ${key === keyTab ? "active show" : ""}`}
-                              id={`v-pills-${item.publisher.name.replace(/\s/g, '')}`}
-                              role="tabpanel"
-                              aria-labelledby={`v-pills-${item.publisher.name.replace(/\s/g, '')}-tab`}
-                            >
-                              {item.sports.map((sport, index) =>
-                                <div onClick={() => onSearchCard(sport, item.publisher)} className="mb-2 cursor-pointer border-under" key={index}>
-                                  {sport.sportName}
-                                </div>)}
-                              <div className="nav-pills-image mb-2 d-flex justify-content-center align-items-center">
-                                <div className="nav-pills-image-item">
-                                  <img alt="" id={`error-image-header${key}`} className="img-publisher" src={item.publisher.image} onError={(e) => handleError(e, key)}  />
-                                  <span className="text-publisher">
-                                    {handleTextError(item.publisher.name) }
-                                  </span>
+                      <div className="col-xxl-4 col-md-5 popular-publisher-header">
+                        <h3> Popular Publishers </h3>
+                        <div className="header-nav mt-2 d-flex">
+                          <div className="col nav popular-publisher-item flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            {popularPublishers?.map((item, key) =>
+                              <button
+                                key={key}
+                                onMouseOver={() => setKeyTab(key)}
+                                onClick={(e) => { e.stopPropagation() }}
+                                className={`w-100 nav-link ${key === keyTab ? "active" : ""} `}
+                                id={`v-pills-${item.publisher.name.replace(/\s/g, '')}-tab`}
+                                data-bs-toggle="pill"
+                                data-bs-target={`#v-pills-${item.publisher.name.replace(/\s/g, '')}`}
+                                type="button" role="tab"
+                                aria-controls={`v-pills-${item.publisher.name.replace(/\s/g, '')}`}
+                                aria-selected="true">
+                                <div className=" popular-publisher-item__title d-flex justify-content-between align-items-center pr-3">
+                                  {item.publisher.name}
+                                  <img alt="" src={IconArrow.src} />
+                                </div>
+                              </button>
+                            )}
+                          </div>
+                          <div className="col tab-content pt-2" id="v-pills-tabContent">
+                            {popularPublishers?.map((item, key) =>
+                              <div
+                                key={key}
+                                className={`tab-pane fade ${key === keyTab ? "active show" : ""}`}
+                                id={`v-pills-${item.publisher.name.replace(/\s/g, '')}`}
+                                role="tabpanel"
+                                aria-labelledby={`v-pills-${item.publisher.name.replace(/\s/g, '')}-tab`}
+                              >
+                                {item.sports.map((sport, index) =>
+                                  <div onClick={() => onSearchCard(sport, item.publisher)} className="cursor-pointer border-under" key={index}> {sport.sportName} </div>)}
+                                <div className="nav-pills-image mb-4 d-flex justify-content-center align-items-center">
+                                  <div className="nav-pills-image-item">
+                                    <img alt="" id={`error-image-header${key}`} className="img-publisher" src={item.publisher.image} onError={(e) => handleError(e, key)}  />
+                                    <span className="text-publisher">
+                                      {handleTextError(item.publisher.name) }
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -388,12 +386,8 @@ const Header = (props: any) => {
                       <div className="col-12">
                         <div className="d-flex flex-wrap p-3">
                           {sports.map((item, k) => <Link href={goToCollectionsLink(item?.sportName?.replace(/\s/g, '').toLowerCase())} key={k} >
-                            <a>
-                              <div className="cursor-pointer collection-content-item  w-50"> {item.sportName} </div>
-                            </a>
-                          </Link>
-                          
-                          )}
+                            <a className="cursor-pointer collection-content-item  w-50"> {item.sportName} </a>
+                          </Link> )}
                         </div>
                       </div>
                     </div>

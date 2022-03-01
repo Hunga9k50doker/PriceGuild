@@ -358,7 +358,6 @@ const Header = (props: any) => {
                           {sports.map((item, k) => <Link to={goToCollectionsLink(item?.sportName?.replace(/\s/g, '').toLowerCase())} key={k} className="cursor-pointer collection-content-item  w-50" >
                             <div> {item.sportName} </div>
                           </Link>
-                          
                           )}
                         </div>
                       </div>
