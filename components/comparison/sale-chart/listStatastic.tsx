@@ -66,7 +66,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
   }
 
   return (
-    <div className="table-responsive ">
+    <div className="table-responsive mt-3">
       <table className="table min-w-1140">
         <thead>
           <tr>
@@ -126,7 +126,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                   <Select
                     value={dataSelect[item.cardGradeSelected]}
                     className="react-select"
-                    menuIsOpen={true}
+                    // menuIsOpen={true}
                     styles={{
                       control: (styles) => ({ ...styles, minWidth: 160 })
                     }}
