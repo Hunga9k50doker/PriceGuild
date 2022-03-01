@@ -2938,7 +2938,7 @@
 }
 // empty collections
 .empty-collection {
-  height: 90vh;
+  min-height: 90vh;
   padding-top: 64px;
   @media screen and (max-width: 767.98px) {
     height: 300px;

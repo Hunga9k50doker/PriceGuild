@@ -624,6 +624,7 @@
         .css-yk16xz-control {
           height: 56px !important;
           border: 2px solid #cccfd6;
+          font-size: 14px;
         }
         .css-g1d714-ValueContainer {
           height: 100%;
@@ -1997,12 +1998,17 @@
         max-width: 130px;
       }
       &__img {
-        // background-color: #CECECE;
-        height: 148px;
-        width: 106px;
+        padding-bottom: 139%;
+        width: 100%;
+        position: relative;
         img {
-          width: 100%;
+          object-fit: contain;
+          margin: 0 auto;
           height: 100%;
+          width: 100%;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
         }
       }
       &-group {
@@ -2096,6 +2102,22 @@
     overflow-x: scroll;
     padding: 0 48px;
     background: linear-gradient(0deg, rgba(109, 117, 136, 0.05), rgba(109, 117, 136, 0.05)), #FFFFFF;
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: none;
+      border-radius: 6px;
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 4px;
+      border-radius: 6px;
+      background-color: rgba(109, 117, 136, 0.15);
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 6px;
+      -webkit-box-shadow: none;
+      background: #6d7588;
+    }
     .nav {
       height: 56px;
       flex-wrap: nowrap;
