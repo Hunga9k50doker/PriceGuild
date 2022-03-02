@@ -120,39 +120,42 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
 
   useEffect(() => {
-    let cardCode = props.code ?? router?.query?.cardCodeDetail;
-    let controller: CardDetailSaga = refProvider?.current
-      .controller as CardDetailSaga;
+    if (!isEmpty(router?.query)) {
+        let cardCode = router?.query?.cardCodeDetail;
+        let controller: CardDetailSaga = refProvider?.current
+          .controller as CardDetailSaga;
 
-    controller.loadCardDetail({
-      // @ts-ignore
-      card_code: cardCode,
-      currency: userInfo.userDefaultCurrency,
-    }).catch(error => {
-          props.errorCard && props.errorCard(props?.code ?? '')
-    });
+        controller.loadCardDetail({
+          // @ts-ignore
+          card_code: cardCode,
+          currency: userInfo.userDefaultCurrency,
+        }).catch(error => {
+              props.errorCard && props.errorCard(props?.code ?? '')
+        });
 
-    controller.loadSaleData({
-      // @ts-ignore
-      card_code: cardCode,
-      currency: userInfo.userDefaultCurrency,
-    })
+        controller.loadSaleData({
+          // @ts-ignore
+          card_code: cardCode,
+          currency: userInfo.userDefaultCurrency,
+        })
 
-    controller.loadPricingGrid({
-      // @ts-ignore
-      cardcode: cardCode,
-      currency: userInfo.userDefaultCurrency,
-      userid: userInfo.userid,
-    }).catch((err: any) => {
-        props.errorCard && props.errorCard(props?.code ?? '');
-    })
+        controller.loadPricingGrid({
+          // @ts-ignore
+          cardcode: cardCode,
+          currency: userInfo.userDefaultCurrency,
+          userid: userInfo.userid,
+        }).catch((err: any) => {
+            props.errorCard && props.errorCard(props?.code ?? '');
+        })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+    
   }, [props.code, loggingIn, router.query]);
 
 
   const loadCardDetail = () => {
-    let cardCode = props.code ?? router?.query?.cardCodeDetail;
+    let cardCode = router?.query?.cardCodeDetail;
     let controller: CardDetailSaga = refProvider?.current
       .controller as CardDetailSaga;
 
