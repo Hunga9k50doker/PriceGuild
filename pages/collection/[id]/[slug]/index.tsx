@@ -77,7 +77,7 @@ const CollectionDetail = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   React.useEffect(() => {
     getDetail();
-  }, []);
+  }, [router.query]);
 
   React.useEffect(() => {
     if (!isEmpty(collection)) {
@@ -199,7 +199,9 @@ const CollectionDetail = (props: PropTypes) => {
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
             <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`}>
+              <a>
                 {collection?.sport?.name} Card Collections
+              </a>
             </Link>
           </li>
         <li className="breadcrumb-item active" aria-current="page">
