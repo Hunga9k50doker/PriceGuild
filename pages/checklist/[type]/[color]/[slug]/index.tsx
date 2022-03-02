@@ -106,7 +106,7 @@ const CollectionBase = (props: PropTypes) => {
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   React.useEffect(() => {
     getDetail();
-  }, []);
+  }, [router.query]);
   const [t, i18n] = useTranslation("common")
   const getDetail = async (page: number[] = [1]): Promise<void> => {
     try {
@@ -238,7 +238,9 @@ const CollectionBase = (props: PropTypes) => {
                 ?.replace(/\s/g, "")
                 ?.toLowerCase()}`}
             >
-              {collection?.sport?.name} Card Collections
+              <a>
+                {collection?.sport?.name} Card Collections
+              </a>
             </Link>
           </li>
           <li className="breadcrumb-item">

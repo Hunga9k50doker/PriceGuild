@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import CardListCollection from "components/profile/collection/cardListCollection"
 
 
