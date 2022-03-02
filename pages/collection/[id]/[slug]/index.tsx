@@ -199,18 +199,14 @@ const CollectionDetail = (props: PropTypes) => {
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
             <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`}>
-              <a>
-                {collection?.sport?.name} Card Collections
-              </a>
+              <a title={`${collection?.sport?.name} Card Collections`}> {collection?.sport?.name} Card Collections </a>
             </Link>
           </li>
-        <li className="breadcrumb-item active" aria-current="page">
-            <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
-                <a title={collection?.title}>
-                    {collection?.title}
-                </a>
-            </Link>
-        </li>
+          <li className="breadcrumb-item active" aria-current="page">
+              <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
+                <a title={collection?.title}> {collection?.title} </a>
+              </Link>
+          </li>
         </ol>
       </nav>
     );
@@ -231,9 +227,7 @@ const CollectionDetail = (props: PropTypes) => {
                   type="button"
                   role="tab"
                   aria-selected="true"
-                >
-                  1 week
-                </button>
+                > 1 week </button>
               </li>
               <li className="nav-item" role="presentation">
                 <button
@@ -243,9 +237,7 @@ const CollectionDetail = (props: PropTypes) => {
                   type="button"
                   role="tab"
                   aria-selected="false"
-                >
-                  2 weeks
-                </button>
+                > 2 weeks </button>
               </li>
               <li className="nav-item" role="presentation">
                 <button
@@ -255,9 +247,7 @@ const CollectionDetail = (props: PropTypes) => {
                   type="button"
                   role="tab"
                   aria-selected="false"
-                >
-                  1 Month
-                </button>
+                > 1 Month </button>
               </li>
               <li className="nav-item" role="presentation">
                 <button
@@ -267,9 +257,7 @@ const CollectionDetail = (props: PropTypes) => {
                   type="button"
                   role="tab"
                   aria-selected="false"
-                >
-                  3 Month
-                </button>
+                > 3 Month </button>
               </li>
               <li className="nav-item" role="presentation">
                 <button
@@ -279,9 +267,7 @@ const CollectionDetail = (props: PropTypes) => {
                   type="button"
                   role="tab"
                   aria-selected="false"
-                >
-                  1 Year
-                </button>
+                > 1 Year </button>
               </li>
             </ul>
             <div className="tab-content" id="myTabContent">
@@ -315,8 +301,7 @@ const CollectionDetail = (props: PropTypes) => {
                         <div
                           onClick={() => onSortTable("cardName")}
                           className="d-flex align-items-center cursor-pointer"
-                        >
-                          Card
+                        > Card
                           <div className="sort-table">
                             <i
                               className={`${renderSortTable(
@@ -339,8 +324,7 @@ const CollectionDetail = (props: PropTypes) => {
                         <div
                           onClick={() => onSortTable("maxSales")}
                           className="d-flex align-items-center cursor-pointer"
-                        >
-                          Max Sales Value
+                        > Max Sales Value
                           <div className="sort-table">
                             <i
                               className={`${renderSortTable(
@@ -363,8 +347,7 @@ const CollectionDetail = (props: PropTypes) => {
                         <div
                           onClick={() => onSortTable("tradeVol")}
                           className="d-flex align-items-center cursor-pointer"
-                        >
-                          Trade Volume
+                        > Trade Volume
                           <div className="sort-table">
                             <i
                               className={`${renderSortTable(
@@ -409,11 +392,11 @@ const CollectionDetail = (props: PropTypes) => {
                             </div>
                             <div className="ps-3">
                               <div className="d-flex align-items-center card-info">
-                                <div>{item.sportName}</div>
+                                <div> {item.sportName} </div>
                                 <div className="circle-gray"></div>
-                                <div>{item.year}</div>
+                                <div> {item.year} </div>
                                 <div className="circle-gray"></div>
-                                <div>{item.publisherName}</div>
+                                <div> {item.publisherName} </div>
                               </div>
                               <div onClick={()=> onGoToCard(item)} className="card-title cursor-pointer">
                                 {`${item.cardName} # ${item.onCardCode}`}
@@ -529,9 +512,7 @@ const CollectionDetail = (props: PropTypes) => {
                 <li>
                     <label>Sport:</label>
                     <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
-                        <a title={collection?.sport?.name}>
-                            {collection?.sport?.name}
-                        </a>
+                      <a title={collection?.sport?.name}> {collection?.sport?.name} </a>
                     </Link>
                 </li>
                 <li>
