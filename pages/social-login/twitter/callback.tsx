@@ -15,12 +15,12 @@ type PropTypes = {
 }
 
 const CallbackTwiiter = (props: PropTypes) => {
-
-  const [query] = useState(queryString.parse(props.location.search))
-  const dispatch = useDispatch();
+  
   const router = useRouter();
+  const dispatch = useDispatch();
+  
   useEffect(() => {
-    if (!isEmpty(query)) {
+    if (!isEmpty(router.query)) {
       // @ts-ignore 
       const data = decodeBase64(query.data)
       registerSocial(JSON.parse(data))
@@ -28,7 +28,7 @@ const CallbackTwiiter = (props: PropTypes) => {
     else {
       router.push("/")
     }
-  }, [query])
+  }, [router.query])
 
   const registerSocial = async (data: any) => {
     try {
