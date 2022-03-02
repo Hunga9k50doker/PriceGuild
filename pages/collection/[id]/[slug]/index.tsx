@@ -75,8 +75,10 @@ const CollectionDetail = (props: PropTypes) => {
     }
   };
   const [t, i18n] = useTranslation("common")
-  React.useEffect(() => {
-    getDetail();
+  React.useEffect(() => { 
+    if (!isEmpty(router.query)) {
+      getDetail();
+    }
   }, [router.query]);
 
   React.useEffect(() => {

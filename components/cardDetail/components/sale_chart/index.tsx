@@ -49,7 +49,6 @@ const SaleChart: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    console.log('cardId: ', cardId);
     if ((saleChartState.listCardGrade.length !== 0 && calcMaxLineCalled === false && cardId > 0) || (calcMaxLineCalled && cardIdHold !== cardId)) {
       setCardIdHold(cardId)
       ///Just call once

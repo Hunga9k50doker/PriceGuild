@@ -7,7 +7,7 @@ import {
   CardCollectionType,
 } from "interfaces";
 import { api } from "configs/axios";
-import { pull } from "lodash";
+import { isEmpty, pull } from "lodash";
 import ParameterTitle from "components/Skeleton/collection/parameterTitle";
 import { formatCurrency, gen_card_url, isFirefox } from "utils/helper";
 import CardElement from "components/cards/cardNode";
@@ -105,7 +105,9 @@ const CollectionBase = (props: PropTypes) => {
   const [isInline, setIsInline] = useState<boolean>(false);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   React.useEffect(() => {
-    getDetail();
+    if (!isEmpty(router.query)) {
+      getDetail();
+    }
   }, [router.query]);
   const [t, i18n] = useTranslation("common")
   const getDetail = async (page: number[] = [1]): Promise<void> => {
