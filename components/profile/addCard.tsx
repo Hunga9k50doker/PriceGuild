@@ -123,7 +123,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const watchNote = watch("note");
   const watchGradeValue = watch("grade_value");
   const watchAgreeShare = watch("agree_share");
-  const dataQueries = router.query;
+  const dataQueries = router.query; 
   const [cards, setCards] = useState<CardsAddType>({
     groups: [],
     cards: [],
@@ -174,7 +174,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const getDataCards = async () => {
     try {
       const params = {
-        cardcode: cardIds,
+        cardcode: typeof router.query?.code === "string" ? router.query?.code.split(",") : "",
         table: "portfolio",
         all_data: isEdit,
         group_ref: Number(dataQueries?.collection ?? 0),
@@ -226,29 +226,31 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   React.useEffect(() => {
-    const getDataGrade = async () => {
-      try {
-        const params = {
-          has_values: true,
-        };
-        const result = await api.v1.gradeCompany.getList(params);
-        if (result.success) {
-          setGradeCompanys(result.data);
-          if (!isEdit) {
-            setValue("grade_company", result.data[0]);
-            setValue("grade_value", result.data[0].values[0].value);
+    if (!isEmpty(router.query)) {
+        const getDataGrade = async () => {
+        try {
+          const params = {
+            has_values: true,
+          };
+          const result = await api.v1.gradeCompany.getList(params);
+          if (result.success) {
+            setGradeCompanys(result.data);
+            if (!isEdit) {
+              setValue("grade_company", result.data[0]);
+              setValue("grade_value", result.data[0].values[0].value);
+            }
           }
+        } catch (err) {
+          console.log(err);
+          setGradeCompanys([]);
         }
-      } catch (err) {
-        console.log(err);
-        setGradeCompanys([]);
-      }
-    };
-    getDataCards();
-    getDataGrade();
-    setWindowWidth(window.innerWidth);
-  }, []);
-
+        };
+      getDataCards();
+      getDataGrade();
+      setWindowWidth(window.innerWidth);
+    }
+    
+  }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
     var file = e.target.files[0];
     if (file) {

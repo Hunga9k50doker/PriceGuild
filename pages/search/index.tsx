@@ -291,12 +291,18 @@ const CardList = (props: PropTypes) => {
         });
 
       }
-      setIsCaptCha(Boolean(result?.show_captcha) )
+     
       setData(prevState => {
         return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
       });
     }
     catch (err) {
+      //@ts-ignore
+      if (err?.response?.status === 409) {
+        //@ts-ignore
+          setIsCaptCha(Boolean(err?.response?.data?.show_captcha))
+      }
+      
       setData(prevState => {
         return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
       });

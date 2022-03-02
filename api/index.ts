@@ -32,6 +32,7 @@ import {
   GlossaryResponseType,
 } from "interfaces";
 import { CardModel } from "model/data_sport/card_sport";
+import { BaseResponse } from "model/base";
 
 export type QueryParamsType = Record<string | number, any>;
 
