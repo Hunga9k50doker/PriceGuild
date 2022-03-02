@@ -1410,6 +1410,12 @@ input {
           }
         }
       }
+      .box-left {
+        max-width: calc(100% - 30px);
+        @media (min-width: 1050px) {
+          max-width: calc(100% - 140px);
+        }
+      }
     }
   }
   .image-upload {
@@ -1501,15 +1507,28 @@ input {
         color: #fff;
         font-weight: 600;
         font-size: 14px;
+        float: left;
+        + .text-ellipsis {
+          display: block;
+          float: left;
+          padding-top: 4px;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
       &__txt {
         font-weight: 500;
         font-size: 16px;
         color: #18213a;
+        display: block;
+        float: left;
+        max-width: 100%;
       }
       &__name {
         font-size: 16px;
         color: #18213a;
+        clear: both;
       }
       .entry {
         .rounded {
@@ -1637,6 +1656,7 @@ input[type="number"] {
         padding: 12px 0;
         width: 242px;
         box-sizing: border-box;
+        border: none;
         .checkbox-select__search-wrapp {
           padding: 0 12px;
         }
