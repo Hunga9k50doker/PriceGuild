@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import queryString from "query-string";
 import { api } from "configs/axios";
 import { FilterType, SelectDefultType } from "interfaces";
 import Cards from "components/cards";
@@ -64,7 +63,6 @@ const CollectionList = (props: PropTypes) => {
   const { sport } = router.query;
   const { width } = useWindowDimensions();
   const [filterValue, setFilterValue] = useState<string>("years");
-  const query: any = queryString.parse(props.location.search);
   const publisherRef = React.useRef<FilterHandle>(null);
   const sportRef = React.useRef<FilterHandleSport>(null);
   const yearRef = React.useRef<FilterHandle>(null);
@@ -106,7 +104,8 @@ const CollectionList = (props: PropTypes) => {
     resetPage();
     if (sportRef) {
       // @ts-ignore
-      sportRef?.current.setSport(sport)
+      //cần check lại
+      // sportRef?.current.setSport(sport)
     }
 
   }, [router.query]);
