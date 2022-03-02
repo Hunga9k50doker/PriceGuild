@@ -21,6 +21,7 @@ import CaptCha from "components/modal/captcha";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 
+
 type PropTypes = {
   location: any;
 };
