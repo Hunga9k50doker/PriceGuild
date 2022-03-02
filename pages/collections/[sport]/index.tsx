@@ -100,14 +100,14 @@ const CollectionList = (props: PropTypes) => {
   };
 
   useEffect(() => {
-    setPrioritize([]);
-    resetPage();
-    if (sportRef) {
-      // @ts-ignore
-      //cần check lại
-      // sportRef?.current.setSport(sport)
+    if (!isEmpty(router.query)) {
+      setPrioritize([]);
+      resetPage();
+      if (sportRef) {
+        // @ts-ignore
+        sportRef?.current?.setSport(sport)
+      }
     }
-
   }, [router.query]);
 
   const resetPage = () => {
