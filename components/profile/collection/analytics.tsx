@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import Chart from 'react-chartjs-2';
-import { ChartData } from 'chart.js'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { formatCurrency } from "utils/helper"
-import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import UpsertChart from "components/modal/chart/upsertChart"
 import { api } from 'configs/axios';
@@ -23,8 +20,7 @@ import IconDot3 from "assets/images/dot-3.svg";
 import Skeleton from "react-loading-skeleton";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
+import { useForm } from "react-hook-form";
 
 type PropTypes = {
   collection?: string
@@ -85,10 +81,33 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     setIsOpen(true)
   }
 
-  const renderNameChart = (seting: any) => {
-    const isDrillDown = false;
+  const getTitleDrilldown = (seting: WidgetSettings) => {
+    let title_set = MetaData.analyzeDataType.find(item => item.value === seting.data)?.label ?? ""
+    const drillDownGroupedBy = MetaData.groupedBy.find(item => item.value.toString() === seting.lv2)?.label ?? ""
+    switch (seting.data) {
+      case "total":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "totalUni":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "average":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "total_value":
+        title_set = title_set + ' of ' + seting.filter + ' cards'
+        break;
+    }
+    title_set = title_set + ' by ' + drillDownGroupedBy
+    return title_set
+  }
+
+  const renderNameChart = (seting: WidgetSettings) => {
+    const isDrillDown = !!seting.filter;
     if (isDrillDown) {
       switch (seting.type) {
+        case "pie":
+          return getTitleDrilldown(seting)
         case "line":
           return `Card Collection Total Value by ${MetaData.groupedBy.find(item => item.value.toString() === seting.lv2)?.label ?? ""}`;
         default:
@@ -277,7 +296,12 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               </div>
             </div>
             <div style={{ margin: "0 auto" }} className="d-flex justify-content-center align-items-center">
-              <PieChart isNumber={isNumber(item.widget_settings.data)} chartData={item.data} />
+              <PieChart 
+                widgetSettings={item.widget_settings}
+                collection={collection}
+                chartData={item.data} 
+                setAnalytics={setAnalytics}
+              />
             </div>
           </div>
         </div>
@@ -380,8 +404,6 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
           </div>
     }
   }
-
-  // console.log(collectionDetail)
 
   return (
     <div className="profile-collections-analytics">

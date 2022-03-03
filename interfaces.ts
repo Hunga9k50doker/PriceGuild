@@ -589,6 +589,7 @@ export type WidgetSettings = {
   moving_av: string;
   id: number;
   position: number;
+  filter?: string
 };
 
 export type CardCompareType = {

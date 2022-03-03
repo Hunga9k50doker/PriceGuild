@@ -46,7 +46,8 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
           lv2: data.lv2.value.toString(),
           data: data.data.value.toString(),
           user_pp: "n",
-          moving_av: "28"
+          moving_av: "28",
+          filter: chartDetail?.filter,
         }
       }
       const isCreated = isEmpty(chartDetail);
@@ -83,7 +84,6 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
 
 
   const setForm = () => {
-    console.log(chartDetail, "chartDetail")
     setValue("type", chartDetail?.type ?? "pie")
     setValue("data", MetaData.analyzeDataType.find(item => item.value === chartDetail?.data) ?? { value: "total", label: "Number of Cards" })
     setValue("lv1", MetaData.groupedBy.find(item => item.value.toString() === chartDetail?.lv1) ?? { value: 1, label: "Year" })
@@ -214,6 +214,7 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
                       value={value}
                       //menuIsOpen={true}
                       onChange={onChange}
+                      menuPosition="fixed"
                       classNamePrefix="select-price"
                       className="select-price customScroll"
                       options={MetaData.groupedBy} />
