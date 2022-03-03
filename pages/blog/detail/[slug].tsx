@@ -18,6 +18,7 @@ import { BlogData } from "interfaces";
 import { api } from 'configs/axios';
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton'
+import Head from 'next/head';
 
 type PropTypes = {
 	location: any,
@@ -92,6 +93,10 @@ const BlogPage: React.FC<PropTypes> = (props) => {
 
 	return (
 		<section id="page-resd">
+			<Head>
+				<title>Blog | PriceGuide.Cards</title>
+				<meta name="description" content="Check out the PriceGuide.Cards blog for the latest updates on the website." />
+			</Head>
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-30 line-bottom">

@@ -14,6 +14,7 @@ import axios from 'axios';
 import { api } from 'configs/axios';
 import Link from 'next/link'
 import timezone from 'utils/timezones';
+import Head from 'next/head';
 
 type Inputs = {
   firstName: string,
@@ -120,7 +121,6 @@ const RegisterPage: React.FC = () => {
     setValue('agreeNewsLetter', true);
   }, [setValue]);
 
-
   const onChangeTypePassword = (watchData: any, typeData: any, setData: any) => {
     if (watchData) {
       if (typeData === "password") {
@@ -129,7 +129,6 @@ const RegisterPage: React.FC = () => {
       setData("password")
     }
   }
-
 
   const renderIcon = (watchData: any, typeData: any) => {
     if (!watchData) {
@@ -157,6 +156,10 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="container authenticate-page">
+      <Head>
+        <title>Register | PriceGuice.Cards</title>
+        <meta name="description" content="Create a new Account at Price Guide.Cards" />
+      </Head>
       <div className="">
         <div className="d-flex justify-content-center">
           <div className="login-form register-account-form mt-4 py-4">
