@@ -184,18 +184,24 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
         code: query?.code,
         redirect_uri: `${window.location.origin}${window.location.pathname}`,
       }
-      const result = await api.v1.authorization.twitchLogin(params);
-      if (result.success) {
-        const params = {
-          first_name: result.data?.user_data?.firstname,
-          last_name: result.data?.user_data?.lastname,
-          id: result.data?.user_data?.userid?.toString(),
-          email: result.data?.user_data?.email,
-          provider: "twitch"
+      const response = await api.v1.authorization.twitchLogin(params);
+      if (response.success) {
+        MyStorage.user = new User(response.data.user_data);
+        MyStorage.token = response.data.token;
+
+        dispatch(AuthActions.updateInfo(MyStorage.user));
+
+        let token: any = { userid: response.data.user_data.userid, email: response.data.user_data.email };
+        token = btoa(JSON.stringify(token));
+
+        if (isEmpty(response?.data?.user_data?.username)) {
+          sessionStorage.setItem('redirect', `/set-username/${token}`);
+          return;
         }
-        return registerSocial(params)
+
+        return ToastSystem.success(props.message);
       }
-      ToastSystem.error(result.message ?? result.error);
+      ToastSystem.error(response.message ?? response.error);
     }
     catch (err) { }
   }
