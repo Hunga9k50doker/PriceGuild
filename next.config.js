@@ -19,6 +19,7 @@ module.exports = withFonts({
     REACT_APP_IMAGE_URL: process.env.REACT_APP_IMAGE_URL,
     REACT_APP_IMAGE_COLLECTION_URL: process.env.REACT_APP_IMAGE_COLLECTION_URL,
     REACT_APP_SITE_KEY: process.env.REACT_APP_SITE_KEY,
+    DOMAIN: process.env.DOMAIN,
   },
   webpack: (config) => {
     config.resolve.modules.push(path.resolve("./"));
