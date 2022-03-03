@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Head from 'next/head';
 
 type PropTypes = {
 	location: any,
@@ -9,6 +10,10 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 	let router = useRouter();
 	return (
 		<section id="page-resd">
+			<Head>
+				<title>Privacy Policy | PriceGuide.Cards</title>
+				<meta name="description" content="Privacy Policy of PriceGuide.Cards and related mobile applications." />
+			</Head>
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">

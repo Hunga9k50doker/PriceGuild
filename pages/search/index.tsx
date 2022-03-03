@@ -35,6 +35,7 @@ import Pagination from "components/panigation";
 import IconCloseMobile from "assets/images/close_mobile.svg";
 import CaptCha from "components/modal/captcha";
 import { useTranslation } from "react-i18next";
+import Head from 'next/head';
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -976,7 +977,11 @@ const CardList = (props: PropTypes) => {
 
   return (
     <div className="container-fluid container-search-page">
-       <CaptCha
+      <Head>
+        <title>{renderTitle()} | PriceGuide.Cards</title>
+        <meta name="description" content="Search results on PriceGuide.Cards" />
+      </Head>
+      <CaptCha
         isOpen={isCaptCha}
         onSuccess={onSuccessCaptcha}
         onClose={() => setIsCaptCha(false)} />

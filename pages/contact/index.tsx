@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from 'configs/axios';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import Head from 'next/head';
 
 type Inputs = {
 	name: string,
@@ -63,6 +64,10 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 
 	return (
 		<section id="page-resd">
+			<Head>
+				<title>Contact | PriceGuide.Cards</title>
+				<meta name="description" content="Get in touch with us at PriceGuide.Cards" />
+			</Head>
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">

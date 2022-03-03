@@ -20,6 +20,7 @@ import LoadingCollection from "components/Skeleton/collection/loadingCollectionD
 import CaptCha from "components/modal/captcha";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
+import Head from 'next/head';
 
 type PropTypes = {
   location: any;
@@ -457,11 +458,14 @@ const CollectionDetail = (props: PropTypes) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
     getDetail(headers)
-
   }
 
   return (
     <div className="container-fluid card-detail collection-detail">
+      <Head>
+        <title>{collection?.title ?? ''} | PriceGuide.Cards</title>
+        <meta name="description" content={`${collection?.title} Collection Overview. Browse set and check out the top sales from the collection.`} />
+      </Head>
       <CaptCha
         isOpen={isCaptCha}
         onSuccess={onSuccessCaptcha}

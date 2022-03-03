@@ -8,6 +8,7 @@ import IconSearch from "assets/images/search.svg";
 import { isEmpty } from 'lodash';
 import Link from "next/link";
 import IconSearchGlossary from 'assets/images/icon-search-glossary.svg';
+import Head from 'next/head';
 
 type DataType = {
   glossaries: GlossaryType[];
@@ -79,6 +80,10 @@ const Glossary = () => {
 
   return (
     <div className="container-fluid glossary">
+      <Head>
+        <title>Trading Card Glossary | PriceGuide.Cards</title>
+        <meta name="description" content="The Trading Card Glossary has a list of all terminology used within the industry, a perfect recourse for new and experianced collectors alike." />
+      </Head>
       <div className="content-home">
         <div className="row">
           <nav aria-label="breadcrumb pr-0">

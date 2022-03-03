@@ -14,6 +14,7 @@ import Skeleton from 'react-loading-skeleton'
 import Pagination from "components/panigation";
 import moment from "moment";
 import { isFirefox } from "utils/helper"
+import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery"
 import queryString from 'query-string';
@@ -173,6 +174,10 @@ const BlogPage: React.FC<PropTypes> = (props) => {
 
 	return (
 		<section id="page-resd">
+			<Head>
+				<title>Blog | PriceGuide.Cards</title>
+				<meta name="description" content="Check out the PriceGuide.Cards blog for the latest updates on the website." />
+			</Head>
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-30 line-bottom">

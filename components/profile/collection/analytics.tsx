@@ -48,6 +48,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   const [analytics, setAnalytics] = useState<AnalyticsType[]>();
   const [chartDetail, setChartDetail] = useState<WidgetSettings | undefined>();
   const [collectionDetail, setCollectionDetail] = useState<any>();
+  const [isAll, setIsAll] = useState<boolean>(false);
   const router = useRouter();
   const [t, i18n] = useTranslation("common")
   const { register, control, handleSubmit, reset, setValue, formState: { errors } } = useForm<ChartForm>();
@@ -70,6 +71,9 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
 
   React.useEffect(() => {
     getData();
+    if(router.asPath === "/profile/portfolio/analytics") {
+      setIsAll(true);
+    }
   }, [])
 
   const onHandleChart = async (e: WidgetSettings | undefined = undefined) => {
@@ -275,6 +279,17 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                       <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
                       <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
+                      {/* <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
+                        <label htmlFor="" className="form-label">Drill-down group by</label>
+                        <div className="custom-select-56">
+                              <Select
+                                value={MetaData.groupedBy.find(item1 => item1.value.toString() === item.widget_settings?.lv2) ?? { value: 1, label: "Year" }}
+                                onChange={(e) => onChange(e, item )}
+                                classNamePrefix="select-price"
+                                className="select-price customScroll"
+                                options={MetaData.groupedBy} />
+                        </div>
+                      </li> */}
                     </ul>
                   </div>
                 </div>
@@ -363,6 +378,21 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               }
             </div>
             <div className=" border-chart p-3 mt-4">
+              <div className="d-flex justify-content-end align-items-center p-0">
+                <div className="d-flex justify-content-between date-filter align-items-center ">
+                  <div className="option-collection ms-2">
+                    <div className="dropdown">
+                      <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src={IconDot3} alt="" title="" />
+                      </button>
+                      <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
+                        <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <ChartLine
                 onConfirmRemove={onConfirmRemove}
                 onHandleChart={onHandleChart}
@@ -377,7 +407,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
 
   return (
     <div className="profile-collections-analytics">
-      {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
+      { Boolean(isAll) ? <nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb">
         <li className="breadcrumb-item">
             <Link href={`/profile/portfolio`}>
@@ -386,25 +416,40 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               </a>
             </Link>
           </li>
-          <li className="breadcrumb-item">
-            <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
-              <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
-                {collectionDetail?.[0]?.name ?? collectionDetail?.name}
-              </a>
-            </Link>
-          </li>
           <li className="breadcrumb-item active" aria-current="page">Analytics </li>
         </ol>
-      </nav>}
-
-      {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
+        
+      </nav> :
+        isEmpty(collectionDetail)  ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
+          <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+              <Link href={`/profile/portfolio`}>
+                <a title={t('portfolio.text')}>
+                  {t('portfolio.text')}
+                </a>
+              </Link>
+            </li>
+            <li className="breadcrumb-item">
+              <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+                <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
+                  {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+                </a>
+              </Link>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">Analytics </li>
+          </ol>
+        </nav>
+      }
+      {
+        Boolean(isAll)  ? <></> :isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
         <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
           <a className="profile-collections-analytics-head" title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
             <img  src={ArrowProfile} alt="" />
             {collectionDetail?.[0]?.name ?? collectionDetail?.name}
           </a>
         </Link>
-      </div>} 
+      </div>
+      }
       
       {isEmpty(analytics) && <div className="d-flex mt-3 justify-content-center">
         <div className="spinner-border" role="status">

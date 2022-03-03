@@ -4,6 +4,7 @@ import { isEmpty } from "lodash";
 import Skeleton from 'react-loading-skeleton'
 import { ToastSystem } from "helper/toast_system";
 import Link from "next/link";
+import Head from 'next/head';
 
 const FAQPage = () => {
   const [data, setData] = useState<any>(null);
@@ -25,6 +26,10 @@ const FAQPage = () => {
 
   return (
     <section id="page-resd">
+      <Head>
+        <title>FAQ | PriceGuide.Cards</title>
+        <meta name="description" content="Frequently asked questions of PriceGuide.Cards" />
+      </Head>
       <div className="container">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">
