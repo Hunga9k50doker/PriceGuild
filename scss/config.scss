@@ -5196,6 +5196,12 @@ th .form-check-input.form-check-input-head {
       tr {
         th {
           background: #E9F1FF;
+          &:first-child {
+            border-radius: 6px 0px 0px 6px;
+          }
+          &:last-child {
+            border-radius: 0px 6px 6px 0px;
+          }
           td {
             font-weight: normal;
             font-size: 14px;
@@ -5225,7 +5231,7 @@ th .form-check-input.form-check-input-head {
 
         &:nth-of-type(odd) {
           >* {
-            background-color: rgba(233, 241, 255, 0.3);
+            background-color: #fff;
             --bs-table-striped-bg: unset;
             --bs-table-accent-bg: unset;
           }
@@ -5233,7 +5239,7 @@ th .form-check-input.form-check-input-head {
 
         &:nth-of-type(even) {
           >* {
-            background-color: rgba(233, 241, 255, 0.6);
+            background-color: #fff;
             --bs-table-striped-bg: unset;
             --bs-table-accent-bg: unset;
           }
