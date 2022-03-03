@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Selectors from "redux/selectors";
@@ -30,7 +28,7 @@ const RequestAPI = () => {
   const [isOpenRaise, setIsOpenRaise] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
 
-  ///Key này sử dụng để biết item nào đang dùng modal
+  //Key này sử dụng để biết item nào đang dùng modal
   const [indexSelect, setIndexSelect] = useState<number>(0);
 
   useEffect(() => {
@@ -88,10 +86,8 @@ const RequestAPI = () => {
         return ToastSystem.success(result.message);
       }
       ToastSystem.error(result.message);
-
     }
     catch (err) {
-
       console.log(err)
     }
   }
@@ -101,7 +97,7 @@ const RequestAPI = () => {
       <div className="text-center mt-5 mb-5 coming-soon">Coming Soon</div>
       {/* <div className="col-3 helper mb-3">
         <div className="mt-4">
-          <h3>API Management</h3>
+          <h3> API Management </h3>
           <div className="mt-4 d-flex justify-content-start  align-items-center">
             <div className="fw-bold">Documentation</div>
             <div className="ms-2">
@@ -136,9 +132,7 @@ const RequestAPI = () => {
                 onClick={() => setIsOpen(true)}
                 type="button"
                 className="w-100 btn btn-outline-primary"
-              >
-                Request API Key
-              </button>
+              > Request API Key </button>
             </div>
           )}
         </div>
@@ -152,9 +146,7 @@ const RequestAPI = () => {
                 onClick={() => deleteApi(apiKey, indexApi)}
                 type="button"
                 className="close btn btn-link"
-              >
-                <img src={closeImge} alt="" />
-              </button>
+              > <img src={closeImge} alt="" /> </button>
             </div>
           </div>
           <div className="card-body">
