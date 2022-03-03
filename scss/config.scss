@@ -5670,3 +5670,33 @@ th .form-check-input.form-check-input-head {
     }
   }
 }
+.sort-table {
+  &.sort-table--custom {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-left: 10px;
+    .sort-desc {
+      position: relative;
+      top: 3px;
+    }
+    .sort-asc {
+      position: relative;
+      top: -3px;
+    }
+  }
+}
+.dropdown-item.p-12 {
+  padding: 12px;
+}
+.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: rgba(109, 117, 136, 0.05)!important;
+  // : var(--bs-table-hover-bg);
+}
+.scroll-select {
+  .react-select-smart__menu-list {
+    margin: 6px 3px 6px 0px;
+    &::-webkit-scrollbar-track { -webkit-box-shadow: none; border-radius: 6px; background-color: transparent; }
+    &::-webkit-scrollbar { width: 6px; height: 4px; border-radius: 6px; background-color: rgba(109, 117, 136, 0.15); }
+    &::-webkit-scrollbar-thumb { border-radius: 6px; -webkit-box-shadow: none; background: #6D7588; }
+  }
+}
