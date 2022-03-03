@@ -2433,6 +2433,35 @@ nav {
             }
         }
     }
+    &.content-table-custom--body {
+        overflow: unset;
+        margin-top: 30px;
+        table {
+            width: 100%;
+          }
+          thead, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+          }
+          tbody {
+            display: block;
+            overflow-y: auto;
+            table-layout: fixed;
+            max-height: 355px;
+            margin-top: 6px;
+            &::-webkit-scrollbar-track { -webkit-box-shadow: none; border-radius: 6px; background-color: transparent; }
+            &::-webkit-scrollbar { width: 6px; height: 4px; border-radius: 6px; background-color: rgba(109, 117, 136, 0.15); }
+            &::-webkit-scrollbar-thumb { border-radius: 6px; -webkit-box-shadow: none; background: #6D7588; }
+            tr {
+                border-bottom: 1px solid #e9eaed;
+                &:last-child {
+                    border: none;
+                }
+            }
+        }
+    }
+    
 }
 
 .modal-fullscreen {
