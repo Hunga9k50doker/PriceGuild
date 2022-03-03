@@ -3760,10 +3760,18 @@ input[type="number"] {
     }
     .see-more {
       background-color: #e9f1ff;
+      border: none;
       box-shadow: none;
       color: #124de3;
       font-weight: 600;
-      font-size: 18px;
+      font-size: 16px;
+      padding: 11px;
+      width: 100%;
+      @media (min-width: 768px) {
+        width: unset;
+        font-size: 18px;
+        padding: 14.5px 33px;
+      }
     }
   }
   .join-community {
@@ -3880,6 +3888,8 @@ input[type="number"] {
     margin-top: 48px;
     color: #0b0e61;
     font-weight: 600;
+    background-color: #fff;
+    border-color: #fff;
   }
 }
 .footer-content {
