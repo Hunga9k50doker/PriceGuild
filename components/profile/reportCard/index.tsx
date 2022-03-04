@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Selectors from "redux/selectors";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { SearchApis } from 'api/search';
+import { useRouter } from 'next/router';
 
 type Inputs = {
   portf_req_sport: any,
@@ -21,8 +22,9 @@ const ReportCard = () => {
   const [stateSubmit, setStateSubmit] = useState<boolean>(false);
   const { sports } = useSelector(Selectors.config);
   const [sportSelected, setSportSelected] = useState<any>();
-  
+  const { userInfo } = useSelector(Selectors.auth);
   const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm<Inputs>();
+  const router = useRouter();
 
   const watchSport = watch("portf_req_sport")
 
@@ -43,7 +45,15 @@ const ReportCard = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [stateSubmit])
-  
+  React.useEffect(() => {
+    if(userInfo ) {
+      if(!userInfo?.activated) {
+     router.push('/verify-email');
+      }
+ 
+      return;
+    }
+  }, [])
   const onBack = () => {
     setStateSubmit(false);
     reset({

@@ -14,13 +14,16 @@ function* login(action: any) {
     );
 
     if (response.success) {
-      if (!response?.user_data?.activated) {
-        action.router.push(`/verify-email`);
-      }
+
+    
       MyStorage.user = new User(response.user_data);
       MyStorage.token = response.token;
       action.onSuccess();
+    
       yield put(AuthActions.updateInfo(MyStorage.user));
+      if (!response?.user_data?.activated) {
+        sessionStorage.setItem('redirect',`/verify-email`);
+      }
       return;
     }
     action?.onFail();

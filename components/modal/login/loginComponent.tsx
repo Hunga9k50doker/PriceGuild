@@ -75,7 +75,7 @@ const LoginPage = (props: PropTypes) => {
   const onSubmit: SubmitHandler<Inputs> = async data => {
     setIsLoading(true)
     const headers = { "captcha-token": token };
-    dispatch(AuthActions.login({ username: data.userName, password: data.password }, onSuccess, headers, history, onFail));
+    dispatch(AuthActions.login({ username: data.userName, password: data.password }, onSuccess, headers, router, onFail));
   };
 
   const onFail = () => {
