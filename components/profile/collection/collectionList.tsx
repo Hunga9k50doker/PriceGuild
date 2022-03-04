@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import ModalDeletePortfolio from "components/modal/delete/portfolio";
 import { isEmpty } from "lodash";
 import HeaderUser from "components/user/headerUser"
+import { TabType } from "../friends/friendDetail";
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
@@ -298,6 +299,26 @@ const CollectionList = ({
   const onTabDetail = (tab: string) => {
     if (tab === 'friend') return;
     return router.push(`/${tab === 'collection' ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab+'s'}`}`)
+  }
+
+  const getUserDetail = async () => {
+    try {
+      const params = {
+        profileid: Boolean(Number(router.query.page))
+      }
+      const res = await api.v1.authorization.getUserInfo(params); 
+      if (res.success) {
+        
+      }
+      if (!res.success) {
+        // @ts-ignore
+        // if (res.data?.verify_redirect) {
+        //   router.push('/verify-email')
+        // }
+      }
+    } catch (error) {
+      console.log("error........", error);
+    }
   }
   console.log(userInfo, 'userInfo');
   return (
