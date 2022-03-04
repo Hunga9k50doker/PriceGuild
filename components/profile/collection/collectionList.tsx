@@ -79,12 +79,13 @@ const CollectionList = ({
   const { userInfo } = useSelector(Selectors.auth);
   const { action } = router.query;
   const [dataSelect, setDataSelect] = useState<string>('');
-  // cần check lại
-  // const matchPatchRoute = matchPath(history.location.pathname, {
-  //   path:  "/friends/:friendId",
-  //   exact: true,
-  //   strict: false
-  // });
+  const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    if(router.pathname === "/friends/[friendId]") {
+      setMatchPatchRoute(true);
+    }
+  }, [])
   React.useEffect(() => {
     if (collections.data.length) {
       setData(paginate(collections.data, rowsPerPage, [1]));
@@ -466,7 +467,7 @@ const CollectionList = ({
       </div>
         {/* } */}
       {collections.data.length === 0 && !collections.isLoading && searchKey === '' &&
-        // Boolean(!matchPatchRoute)  &&  //cần check lại
+        Boolean(!matchPatchRoute)  &&
          <div className="empty-collection">
         <div className="box-content">
           <p>You don't have any {title ==="wishlist" ? "wishlist": t('portfolio.text_normal')}s yet.</p>
@@ -474,14 +475,16 @@ const CollectionList = ({
           <button className="btn btn-primary" onClick={() => onHandleModal(true)} >Create {title ==="wishlist" ? "Wishlist": t('portfolio.text')}</button>
         </div>
       </div>}
+
       {
-        // matchPatchRoute && //cần check lại
-        !collections.isLoading &&
+        matchPatchRoute && 
+        !collections.isLoading && collections.data.length === 0 ? 
         <div className="message-profile-null">
             { 
             profileFriend && profileFriend?.user_info?.full_name ? profileFriend?.user_info?.full_name : profileFriend?.user_info?.username ? `@${profileFriend?.user_info?.username}` : ''
             } doesn't have any {title ==="wishlist" ? "wishlist": t('portfolio.text_normal')}s yet. 
         </div>
+        : <></>
       }
 
       {
