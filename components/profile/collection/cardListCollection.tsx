@@ -48,6 +48,8 @@ import { useTranslation } from "react-i18next";
 import ModalDeletePortfolio from "components/modal/delete/portfolio";
 // @ts-ignore
 import $ from "jquery"
+import HeaderUser from "components/user/headerUser"
+import { UserInfoType } from "interfaces"
 
 type PropTypes = {
   collection?: string,
@@ -137,6 +139,7 @@ const CardListCollection = ({
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
+  
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -144,7 +147,7 @@ const CardListCollection = ({
     }
     resetPage();
   }, [collection, defaultSearch])
-  
+  const [friend, setFriend] = useState<UserInfoType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
@@ -1067,18 +1070,68 @@ const CardListCollection = ({
       console.log(err);
     }
   };
-  
+  const onTabDetail = (tab: string) => {
+    if (tab === 'friend') return;
+    return router.push(`/${tab === 'collection' ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab+'s'}`}`)
+  }
+
+  const getUserDetail = async () => {
+    try {
+      const params = {
+        profileid: Number(router.query.page)
+      }
+      const res = await api.v1.authorization.getUserInfo(params); 
+      if (res.success) {
+        //@ts-ignore
+        setFriend(res.data?.user_info)
+      }
+      if (!res.success) {
+        // @ts-ignore
+        // if (res.data?.verify_redirect) {
+        //   router.push('/verify-email')
+        // }
+      }
+    } catch (error) {
+      console.log("error........", error);
+    }
+  }
+  useEffect(() => {
+    if (!isEmpty(router.query)) {
+      if (userInfo.userid === +router.query.page) {
+        //@ts-ignore
+        setFriend(userInfo);
+      } else {
+        getUserDetail();
+      }
+    }
+  }, [router.query])
+
+  const goToProfile = () => {
+   router.push('/profile/')
+  }
+  const goToCollection = () => {
+   
+  }
+  const renderTab = () => {
+    return <>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.full_name}</a></li>
+          <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
+          <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
+        </ol>
+      </nav>
+    </>
+  }
+
   return (
     <>
-      {/* <div className="card-list-header " >
-        <span className="active">
-          Collections
-        </span>
-          <img src={IconArrow} />
-        <span>
-        Retro Cards
-        </span>        
-      </div> */}
+      {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) &&
+        <>
+        <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />
+        {renderTab()}
+        </>
+      }
       <div className="container-fluid p-0 container-collection-profile">
         <div className="only-mobile">
           <Link href="/profile/portfolio">

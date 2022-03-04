@@ -35,7 +35,7 @@ import IconSettingProfileActive from "assets/images/icon-settings-filled.svg"
 import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg"
 import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
 import useWindowDimensions from "utils/useWindowDimensions"
-
+import Head from 'next/head';
 import { useTranslation } from "react-i18next";
 interface ParamTypes {
   page: string,
@@ -268,6 +268,10 @@ const Profile: React.FC = () => {
     
   }, [page])
   return (
+    <>
+      <Head>
+        <title>Profile</title>
+      </Head>
     <div className="container-fluid page-profile">
       <div className="row ">
         <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
@@ -336,7 +340,8 @@ const Profile: React.FC = () => {
         </div>
         {renderContent()}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -26,6 +26,7 @@ import ModalDeletePortfolio from "components/modal/delete/portfolio";
 import { isEmpty } from "lodash";
 import HeaderUser from "components/user/headerUser"
 import { TabType } from "../friends/friendDetail";
+import { UserInfoType } from "interfaces"
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
@@ -82,12 +83,25 @@ const CollectionList = ({
   const { action } = router.query;
   const [dataSelect, setDataSelect] = useState<string>('');
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
-
+  const [friend, setFriend] = useState<UserInfoType>()
+  
   React.useEffect(() => {
     if(router.pathname === "/friends/[friendId]") {
       setMatchPatchRoute(true);
     }
   }, [])
+
+  React.useEffect(() => {
+    if (!isEmpty(router.query)) {
+      if (userInfo.userid === +router.query.page) {
+        //@ts-ignore
+        setFriend(userInfo);
+      } else {
+        getUserDetail();
+      }
+    }
+  }, [router.query])
+  
   const [tabDetail, setTabDetail] = useState<TabType>({
     status: false,
     name: 'collection',
@@ -311,11 +325,12 @@ const CollectionList = ({
   const getUserDetail = async () => {
     try {
       const params = {
-        profileid: Boolean(Number(router.query.page))
+        profileid: Number(router.query.page)
       }
       const res = await api.v1.authorization.getUserInfo(params); 
       if (res.success) {
-        
+        //@ts-ignore
+        setFriend(res.data?.user_info)
       }
       if (!res.success) {
         // @ts-ignore
@@ -329,7 +344,7 @@ const CollectionList = ({
   }
   console.log(userInfo, 'userInfo');
   return (
-    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={userInfo} />}
+    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />}
     <div className="profile-personal-collections">
       <div className="mt-4 profile-personal-collections-head">
         <div className="d-flex justify-content-between align-items-center section-title position-relative">
