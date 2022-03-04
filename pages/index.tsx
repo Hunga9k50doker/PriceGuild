@@ -29,6 +29,7 @@ import { CardDetailApis } from "api/CardDetailApis";
 import ImageBlurHash from "components/imageBlurHash"
 import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
 import ImageCardSearch from "assets/images/card_search.png";
+import Head from 'next/head';
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -179,6 +180,10 @@ function HomePage() {
     <div
       style={{ backgroundColor: "#fafafb" }}
     >
+      <Head>
+        <title>Free Card Price Guide - Baseball, Basketball, Hockey, Soccer, Football, MMA & more | PriceGuide.Cards</title>
+        <meta name="description" content="Sports Card Price Guide. Find actual prices from a quarter of a billion card sales. Search sport card values for Baseball, Football, Basketball, Hockey & more." />
+      </Head>
       <div style={{
         backgroundImage: `url(${BackgroundHomePage.src})`
       }} className="header d-flex align-items-center">

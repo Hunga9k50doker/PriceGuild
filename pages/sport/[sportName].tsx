@@ -29,6 +29,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { CardModel, SaleData } from "model/data_sport/card_sport";
 import { CardDetailApis } from "api/CardDetailApis";
 import { HomeActions } from "redux/actions/home_action";
+import Head from 'next/head';
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -198,6 +199,10 @@ function SportLandingPage() {
   }
   return (
     <div className="sport-landing-page">
+      <Head>
+        <title>{sportSelected?.sportName ?? ''}</title>
+        <meta name="description" content={` ${sportSelected?.sportName ?? ''} `} />
+      </Head>
       <div style={{ backgroundImage: `url(${BackgroundHomePage.src})` }} className="header d-flex align-items-center">
         <div className="content-header">
           <div className="title-header">{sportSelected?.sportName && `${sportSelected?.sportName} Card Price Guide` } </div>

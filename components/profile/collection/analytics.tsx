@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import Chart from 'react-chartjs-2';
-import { ChartData } from 'chart.js'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { formatCurrency } from "utils/helper"
-import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import UpsertChart from "components/modal/chart/upsertChart"
 import { api } from 'configs/axios';
@@ -23,8 +20,7 @@ import IconDot3 from "assets/images/dot-3.svg";
 import Skeleton from "react-loading-skeleton";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
+import { useForm } from "react-hook-form";
 
 type PropTypes = {
   collection?: string
@@ -52,6 +48,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   const [analytics, setAnalytics] = useState<AnalyticsType[]>();
   const [chartDetail, setChartDetail] = useState<WidgetSettings | undefined>();
   const [collectionDetail, setCollectionDetail] = useState<any>();
+  const [isAll, setIsAll] = useState<boolean>(false);
   const router = useRouter();
   const [t, i18n] = useTranslation("common")
   const { register, control, handleSubmit, reset, setValue, formState: { errors } } = useForm<ChartForm>();
@@ -74,6 +71,9 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
 
   React.useEffect(() => {
     getData();
+    if(router.asPath === "/profile/portfolio/analytics") {
+      setIsAll(true);
+    }
   }, [])
 
   const onHandleChart = async (e: WidgetSettings | undefined = undefined) => {
@@ -81,10 +81,33 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     setIsOpen(true)
   }
 
-  const renderNameChart = (seting: any) => {
-    const isDrillDown = false;
+  const getTitleDrilldown = (seting: WidgetSettings) => {
+    let title_set = MetaData.analyzeDataType.find(item => item.value === seting.data)?.label ?? ""
+    const drillDownGroupedBy = MetaData.groupedBy.find(item => item.value.toString() === seting.lv2)?.label ?? ""
+    switch (seting.data) {
+      case "total":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "totalUni":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "average":
+        title_set = title_set + ' from ' + seting.filter
+        break;
+      case "total_value":
+        title_set = title_set + ' of ' + seting.filter + ' cards'
+        break;
+    }
+    title_set = title_set + ' by ' + drillDownGroupedBy
+    return title_set
+  }
+
+  const renderNameChart = (seting: WidgetSettings) => {
+    const isDrillDown = !!seting.filter;
     if (isDrillDown) {
       switch (seting.type) {
+        case "pie":
+          return getTitleDrilldown(seting)
         case "line":
           return `Card Collection Total Value by ${MetaData.groupedBy.find(item => item.value.toString() === seting.lv2)?.label ?? ""}`;
         default:
@@ -256,7 +279,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                       <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
                       <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
-                      <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
+                      {/* <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
                         <label htmlFor="" className="form-label">Drill-down group by</label>
                         <div className="custom-select-56">
                               <Select
@@ -266,14 +289,19 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                                 className="select-price customScroll"
                                 options={MetaData.groupedBy} />
                         </div>
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
             <div style={{ margin: "0 auto" }} className="d-flex justify-content-center align-items-center">
-              <PieChart isNumber={isNumber(item.widget_settings.data)} chartData={item.data} />
+              <PieChart 
+                widgetSettings={item.widget_settings}
+                collection={collection}
+                chartData={item.data} 
+                setAnalytics={setAnalytics}
+              />
             </div>
           </div>
         </div>
@@ -298,18 +326,6 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                       <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
                       <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
-                      <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
-                        <label htmlFor="" className="form-label">Drill-down group by</label>
-                        <div className="custom-select-56">
-                              <Select
-                                value={MetaData.groupedBy.find(item1 => item1.value.toString() === item.widget_settings?.lv2) ?? { value: 1, label: "Year" }}
-                                onChange={(e) => onChange(e, item )}
-                                classNamePrefix="select-price"
-                                className="select-price customScroll"
-                                options={MetaData.groupedBy} />
-                        </div>
-                      </li>
-
                     </ul>
                   </div>
                 </div>
@@ -341,17 +357,6 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                       <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
                       <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
-                      <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
-                        <label htmlFor="" className="form-label">Drill-down group by</label>
-                        <div className="custom-select-56">
-                              <Select
-                                value={MetaData.groupedBy.find(item1 => item1.value.toString() === item.widget_settings?.lv2) ?? { value: 1, label: "Year" }}
-                                onChange={(e) => onChange(e, item )}
-                                classNamePrefix="select-price"
-                                className="select-price customScroll"
-                                options={MetaData.groupedBy} />
-                        </div>
-                      </li>
                     </ul>
                   </div>
                 </div>
@@ -373,6 +378,21 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               }
             </div>
             <div className=" border-chart p-3 mt-4">
+              <div className="d-flex justify-content-end align-items-center p-0">
+                <div className="d-flex justify-content-between date-filter align-items-center ">
+                  <div className="option-collection ms-2">
+                    <div className="dropdown">
+                      <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src={IconDot3} alt="" title="" />
+                      </button>
+                      <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
+                        <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <ChartLine
                 onConfirmRemove={onConfirmRemove}
                 onHandleChart={onHandleChart}
@@ -385,11 +405,9 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     }
   }
 
-  // console.log(collectionDetail)
-
   return (
     <div className="profile-collections-analytics">
-      {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
+      { Boolean(isAll) ? <nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb">
         <li className="breadcrumb-item">
             <Link href={`/profile/portfolio`}>
@@ -398,25 +416,40 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               </a>
             </Link>
           </li>
-          <li className="breadcrumb-item">
-            <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
-              <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
-                {collectionDetail?.[0]?.name ?? collectionDetail?.name}
-              </a>
-            </Link>
-          </li>
           <li className="breadcrumb-item active" aria-current="page">Analytics </li>
         </ol>
-      </nav>}
-
-      {isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
+        
+      </nav> :
+        isEmpty(collectionDetail)  ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
+          <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+              <Link href={`/profile/portfolio`}>
+                <a title={t('portfolio.text')}>
+                  {t('portfolio.text')}
+                </a>
+              </Link>
+            </li>
+            <li className="breadcrumb-item">
+              <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+                <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
+                  {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+                </a>
+              </Link>
+            </li>
+            <li className="breadcrumb-item active" aria-current="page">Analytics </li>
+          </ol>
+        </nav>
+      }
+      {
+        Boolean(isAll)  ? <></> :isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
         <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
           <a className="profile-collections-analytics-head" title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
             <img  src={ArrowProfile} alt="" />
             {collectionDetail?.[0]?.name ?? collectionDetail?.name}
           </a>
         </Link>
-      </div>} 
+      </div>
+      }
       
       {isEmpty(analytics) && <div className="d-flex mt-3 justify-content-center">
         <div className="spinner-border" role="status">

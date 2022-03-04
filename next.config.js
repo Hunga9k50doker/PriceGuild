@@ -9,7 +9,7 @@ module.exports = withFonts({
     FB_SCOPE: process.env.FB_SCOPE,
     REACT_APP_TWITTER_CLIENT_ID: process.env.REACT_APP_TWITTER_CLIENT_ID,
     REACT_APP_TWITTER_CLIENT_SECRET:
-      process.env.REACT_APP_TWITTER_CLIENT_SECRET,
+    process.env.REACT_APP_TWITTER_CLIENT_SECRET,
     REACT_APP_TWITCH_CLIENT_ID: process.env.REACT_APP_TWITCH_CLIENT_ID,
     REACT_APP_TWITCH_CLIENT_SECRET: process.env.REACT_APP_TWITCH_CLIENT_SECRET,
     APPLE_KEY_ID: process.env.APPLE_KEY_ID,
@@ -19,6 +19,7 @@ module.exports = withFonts({
     REACT_APP_IMAGE_URL: process.env.REACT_APP_IMAGE_URL,
     REACT_APP_IMAGE_COLLECTION_URL: process.env.REACT_APP_IMAGE_COLLECTION_URL,
     REACT_APP_SITE_KEY: process.env.REACT_APP_SITE_KEY,
+    DOMAIN: process.env.DOMAIN,
   },
   webpack: (config) => {
     config.resolve.modules.push(path.resolve("./"));

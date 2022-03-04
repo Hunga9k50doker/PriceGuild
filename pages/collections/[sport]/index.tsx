@@ -24,6 +24,7 @@ import SortMobile from "components/filter/sortMobile";
 import Pagination from "components/panigation";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery"
 
@@ -581,9 +582,12 @@ const CollectionList = (props: PropTypes) => {
     }
   };
   
-
   return (
     <div className="container-fluid collection-list">
+      <Head>
+        <title>{data?.name ?? ''} Card Collections | PriceGuide.Cards</title>
+        <meta name="description" content={`Browse ${data?.name ?? ''} card collections listed on PriceGuide.Cards`} />
+      </Head>
       <div className="row">
         {
             // @ts-ignore

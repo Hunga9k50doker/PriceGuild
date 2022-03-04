@@ -1191,9 +1191,9 @@ const CardListCollection = ({
                   </div> */}
                   {
                   !isInline && 
-                    <div style={{ width: 168 }} className="hidden-select">
+                    <div style={{ width: 168 }} className="hidden-select scroll-select">
                       <Select className="react-select-smart"
-                        classNamePrefix="react-select-smart" onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_in_profile} />
+                        classNamePrefix="react-select-smart" onChange={onChangeSort}  value={sortCards} options={MetaData.sort_card_in_profile} />
                     </div>
                   }
                   <div className="d-flex btn-group-card">

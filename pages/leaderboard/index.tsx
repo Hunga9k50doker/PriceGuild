@@ -12,6 +12,7 @@ import useWindowDimensions from "utils/useWindowDimensions";
 import Pagination from "components/panigation";
 import { userClass } from "utils/constant";
 import Link from "next/link";
+import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery";
 const rowsPerPage = 50;
@@ -171,6 +172,10 @@ const Leaderboard = () => {
 
   return (
     <>
+      <Head>
+        <title>Collectors' Leaderboard | PriceGuide.Cards</title>
+        <meta name="description" content="Rise the Collectors' Leaderboard by building your online collection. Explore the collections of other Collectors and connect with them." />
+      </Head>
       <div className="container-fluid leaderboard-page">
         <div className="row">
             {

@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
 import PersonalPortfolio from "components/personalPortfolio"
+import Head from 'next/head';
 
 type PropTypes = {
 	location: any,
@@ -32,6 +33,10 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 	}
 	return (
 		<section id="page-resd">
+			<Head>
+				<title>About | PriceGuide.Cards</title>
+				<meta name="description" content="About the services provided by PriceGuide.Cards" />
+			</Head>
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">

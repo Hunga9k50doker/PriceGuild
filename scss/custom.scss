@@ -923,8 +923,13 @@
       font-family: 'Manrope', sans-serif;
       font-style: normal;
       font-weight: 600;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 150%;
+      padding: 10px;
+      @media (min-width: 768px) {
+        font-size: 18px;
+        padding: 13.5px 32px;
+      }
     }
   }
 }
@@ -1023,6 +1028,8 @@
     }
     a {
       padding: 13.5px 10px;
+      background-color: #124DE3;
+      border-color: #124DE3;
       font-family: 'Manrope', sans-serif;
       font-style: normal;
       font-weight: 600;
@@ -1436,7 +1443,6 @@
           display: none !important;
         }
         .slick-dots {
-          bottom: 8px;
           li.slick-active {
             button::before {
               color: #124de3;
@@ -1505,13 +1511,6 @@
               }
             }
           }
-        }
-        .see-more {
-          width: 100%;
-          padding: 11px;
-          border: unset;
-          margin-top: 32px;
-          max-height: 382px;
         }
       }
     }
@@ -1613,18 +1612,6 @@
           }
         }
       }
-      .join-community {
-        .btn-lg {
-          font-size: 16px !important;
-          width: 100%;
-          font-family: 'Manrope', sans-serif;
-          font-style: normal;
-          font-weight: 600;
-          font-size: 16px;
-          line-height: 150%;
-          padding: 14px 16px !important;
-        }
-      }
     }
   }
   .personal-portfolio {
@@ -1644,33 +1631,6 @@
   }
   .statistical {
     margin-top: 160px !important;
-  }
-  .personal-portfolio {
-    .btn-lg {
-      font-size: 16px;
-      width: 100%;
-      font-family: 'Manrope', sans-serif;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 150%;
-    }
-  }
-  .leader-board-join-community {
-    .leader-board-home-page {
-      .join-community {
-        .btn-lg {
-          font-size: 16px;
-          width: 100%;
-          font-family: 'Manrope', sans-serif;
-          font-style: normal;
-          font-weight: 600;
-          font-size: 16px;
-          line-height: 150%;
-          padding: 14px 16px !important;
-        }
-      }
-    }
   }
 }
 
@@ -1911,7 +1871,7 @@
               .react-autosuggest__input {
                 width: 100% !important;
                 padding-left: 35px;
-                padding-right: 0;
+                padding-right: 30px;
                 height: 42px !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;

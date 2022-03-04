@@ -27,6 +27,7 @@ import Pagination from "components/panigation";
 import CheckBoxMobile from "components/filter/checkBoxMobile";
 import useWindowDimensions from "utils/useWindowDimensions";
 import Skeleton from "react-loading-skeleton";
+import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery";
 import { CardModel } from "model/data_sport/card_sport";
@@ -458,6 +459,10 @@ const Top100 = (props: PropTypes) => {
   
   return (
     <div className="container-fluid container-top-100">
+      <Head>
+        <title>Top 100 Sports Card Sales Guide - Highest Value & Most Traded | PriceGuide.Cards</title>
+        <meta name="description" content="View the top 100 selling cards by sales value and sales volume. Filter your search by autograph and relic only filters." />
+      </Head>
       <div className="row">
         {
             //@ts-ignore

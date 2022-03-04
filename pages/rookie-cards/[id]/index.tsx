@@ -11,6 +11,7 @@ import Skeleton from 'react-loading-skeleton';
 import { useDebouncedCallback } from "utils/useDebouncedEffect"
 import ReactPaginate from 'react-paginate';
 import Link from 'next/link'
+import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery"
 
@@ -122,6 +123,10 @@ const RookieCards = () => {
 
   return (
     <div className="container rookie-cards">
+      <Head>
+        <title>Top Rookie Cards Guide with Pricing | PriceGuide.Cards</title>
+        <meta name="description" content="Explore the top selling rookie cards by player. Historical charts enable you to see which cards have been performing the best and which are undervalued." />
+      </Head>
       <div className="row">
         <div className="col-4 tab-menu">
           <ul className="list-group list-group-flush my-3">{renderLoading()}

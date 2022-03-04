@@ -27,7 +27,7 @@ const CardContentHomePage = (props: PropTypes) => {
       <div className="text-content"> {props.textContent}</div>
       {props.children}
       <Link href={renderLink()} >
-        <a className="px-5 mt-3 btn btn-primary btn-lg">
+        <a className="mt-3 btn btn-primary btn-lg">
           {props.textButton}
         </a>
       </Link>

@@ -37,6 +37,7 @@ import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
 import useWindowDimensions from "utils/useWindowDimensions"
 
 import { useTranslation } from "react-i18next";
+import Head from 'next/head';
 interface ParamTypes {
   page: string,
   action?: string

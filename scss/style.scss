@@ -2562,6 +2562,9 @@ input[type="number"] {
             width: 100%;
             background: #ffffff;
             border-radius: 6px;
+            @media screen and (max-width: 1336px) {
+              width: 100%;
+            }
             &-item {
               width: 5rem;
               height: 3.75rem;
@@ -3760,10 +3763,18 @@ input[type="number"] {
     }
     .see-more {
       background-color: #e9f1ff;
+      border: none;
       box-shadow: none;
       color: #124de3;
       font-weight: 600;
-      font-size: 18px;
+      font-size: 16px;
+      padding: 11px;
+      width: 100%;
+      @media (min-width: 768px) {
+        width: unset;
+        font-size: 18px;
+        padding: 14.5px 33px;
+      }
     }
   }
   .join-community {
@@ -3880,6 +3891,8 @@ input[type="number"] {
     margin-top: 48px;
     color: #0b0e61;
     font-weight: 600;
+    background-color: #fff;
+    border-color: #fff;
   }
 }
 .footer-content {
@@ -5608,6 +5621,10 @@ input[type="number"] {
 /* begin chart analyct */
 .profile-collections-analytics {
   padding-top: 1.375rem;
+  margin-bottom: 9.75rem;
+  @media screen and (max-width: 767.98px) {
+    margin-bottom: 6rem;
+  }
   &-item {
     margin-top: 4rem;
   }
