@@ -136,6 +136,7 @@ const CardListCollection = ({
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
+  const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -930,20 +931,17 @@ const CardListCollection = ({
     }
   }, [isOpenModal])
   
-  // Cần xử lí lại
-  // const matchPatchRoute = matchPath(history.location.pathname, {
-  //   path:  "/friends/:friendId",
-  //   exact: true,
-  //   strict: false
-  // });
-  // React.useEffect(() => {
-  //   if(userId) {
-  //     if(matchPatchRoute) {
-  //       if(userId !== MyStorage.user.userid.toString())
-  //         setIsMatchUser(true);
-  //     }
-  //   }
-  // }, [])
+  React.useEffect(() => {
+    if(router.pathname === "/friends/[friendId]") {
+      setMatchPatchRoute(true);
+    }
+    if(userId) {
+      if(matchPatchRoute) {
+        if(userId !== MyStorage.user.userid.toString())
+          setIsMatchUser(true);
+      }
+    }
+  }, [])
 
   const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);

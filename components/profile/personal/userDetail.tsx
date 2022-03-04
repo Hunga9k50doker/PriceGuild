@@ -40,6 +40,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
   const [level, setLevel] = useState<string>('');
   const [isUser, setIsUser] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common");
+  const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
   const getUserDetail = async () => {
     try {
       const params = {
@@ -70,12 +71,10 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       setIsUser(true);
     }
     // cần check lại
-    // const matchPatchRoute = matchPath(history.location.pathname, {
-    //   path:  "/profile/personal",
-    //   exact: true,
-    //   strict: false
-    // });
-    let matchPatchRoute = true;
+    if(router.pathname ==="/profile/personal") {
+      setMatchPatchRoute(true);
+    }
+    
     if(matchPatchRoute) {
       setIsUser(true);
     }
