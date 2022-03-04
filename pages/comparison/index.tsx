@@ -445,66 +445,66 @@ const ISSERVER = typeof window === "undefined";
           </div>
         </div> }
       </div>
-      { !isEmpty(card) && <div>
-        {!isEmpty(card) && (
-          <div  ref={pricingGridRef}>
-            <Tab.Container
-            transition={true}
-            id="tab-settings"
-            activeKey={activeKey}
-            // @ts-ignore
-            onSelect={(k) =>  activeKey && setActiveKey(k)}
-            defaultActiveKey={`${card[0].code}`}
-          >
-            <Row className="row-comparison">
-              <Col className="nav-comparison p-sticky-header">
-                <Nav variant="pills">
-                  {card?.map((item, key) => (
-                    <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
-                      <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>{`${item.firstname ?? ""}`} </Nav.Link>
-                    </Nav.Item>
-                  ))}
-                </Nav>
-              </Col>
-              <Col sm={12}>
-                <Tab.Content>
-                  {card?.map((item, key) => {
-                    return (
-                      <Tab.Pane key={item.id} eventKey={item.code}>
-                        <CardDetail
-                            isHideSaleChart={true}
-                            key={item.id}
-                            code={item.code}
-                            onUpdateCard={(e) => {
-                              if (refCompare.current) {
-                                refCompare.current.addData({cardId: `${e.id}`, cardCode: e.code, data: e.saleChartState, cardName: `${item.firstname ? `${item.firstname} ` : ''}${item.lastname ?? ''}`, cardData: e.cardData})
-                              }
-                              setCard((prevState) => [
-                                ...prevState.map((item, index) =>
-                                  item.code === e.code ? { ...item, ...e } : item
-                                ),
-                              ]);
-                            }}
-                            onChangeGradeCompare={(cardGrade, cardId) => refCompare.current?.onChangeGrade(cardGrade, `${cardId}`)}
-                            errorCard={async (e) => { removeErrorCard(e) } }
-                          />
-                      </Tab.Pane>
-                    );
-                  })}
-                </Tab.Content>
-                <div className="container-fluid card-detail container-comparison-chart" id="sale-chart-comparison">
-                  <div className="content-home">
-                    <h2 className="mb-5 title-profile "> Sales Chart </h2>
-                      {Boolean(!loggingIn) ?
-                        <PlaceholderChart src={ImageSaleChart.src} /> : <SaleChartComparison ref={refCompare} />}
+      <div>
+        { !isEmpty(card) && (
+            <div ref={pricingGridRef}>
+              <Tab.Container
+              transition={true}
+              id="tab-settings"
+              activeKey={activeKey}
+              // @ts-ignore
+              onSelect={(k) =>  activeKey && setActiveKey(k)}
+              defaultActiveKey={`${card[0].code}`}
+            >
+              <Row className="row-comparison">
+                <Col className="nav-comparison p-sticky-header">
+                  <Nav variant="pills">
+                    {card?.map((item, key) => (
+                      <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
+                        <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>{`${item.firstname ?? ""}`} </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                  </Nav>
+                </Col>
+                <Col sm={12}>
+                  <Tab.Content>
+                    {card?.map((item, key) => {
+                      return (
+                        <Tab.Pane key={item.id} eventKey={item.code}>
+                          <CardDetail
+                              isHideSaleChart={true}
+                              key={item.id}
+                              code={item.code}
+                              onUpdateCard={(e) => {
+                                if (refCompare.current) {
+                                  refCompare.current.addData({cardId: `${e.id}`, cardCode: e.code, data: e.saleChartState, cardName: `${item.firstname ? `${item.firstname} ` : ''}${item.lastname ?? ''}`, cardData: e.cardData})
+                                }
+                                setCard((prevState) => [
+                                  ...prevState.map((item, index) =>
+                                    item.code === e.code ? { ...item, ...e } : item
+                                  ),
+                                ]);
+                              }}
+                              onChangeGradeCompare={(cardGrade, cardId) => refCompare.current?.onChangeGrade(cardGrade, `${cardId}`)}
+                              errorCard={async (e) => { removeErrorCard(e) } }
+                            />
+                        </Tab.Pane>
+                      );
+                    })}
+                  </Tab.Content>
+                  <div className="container-fluid card-detail container-comparison-chart" id="sale-chart-comparison">
+                    <div className="content-home">
+                      <h2 className="mb-5 title-profile "> Sales Chart </h2>
+                        {Boolean(!loggingIn) ?
+                          <PlaceholderChart src={ImageSaleChart.src} /> : <SaleChartComparison ref={refCompare} />}
+                    </div>
                   </div>
-                </div>
-              </Col>
-            </Row>
-          </Tab.Container>  
-          </div>
-        )}
-      </div> }
+                </Col>
+              </Row>
+            </Tab.Container>  
+            </div>
+          )}
+      </div>
       <ChosseCollection
         selectCollection={selectWishlist}
         table="wishlist"

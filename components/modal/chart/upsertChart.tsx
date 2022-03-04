@@ -47,7 +47,7 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
           data: data.data.value.toString(),
           user_pp: "n",
           moving_av: "28",
-          filter: chartDetail?.filter,
+          //filter: chartDetail?.filter,
         }
       }
       const isCreated = isEmpty(chartDetail);
