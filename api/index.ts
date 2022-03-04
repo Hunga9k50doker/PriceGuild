@@ -33,6 +33,7 @@ import {
 } from "interfaces";
 import { CardModel } from "model/data_sport/card_sport";
 import { BaseResponse } from "model/base";
+import CapchaListener from "helper/hcapcha_system";
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -156,7 +157,13 @@ export class HttpClient<SecurityDataType = unknown> {
       (response) => {
         return Promise.resolve(response);
       },
-      (error) => {
+      
+      async (error) => {
+        if (error?.response?.status === 409 && await CapchaListener.notify(error)) {
+          const originalRequest = error.config;
+          originalRequest._retry = true;
+          return this.instance(originalRequest)
+        }
         if (error?.response?.status === 401) {
           MyStorage.resetWhenLogout();
           sessionStorage.setItem(

@@ -33,13 +33,13 @@ type ParamTypes = {
 const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
   const router = useRouter();
   const { loggingIn } = useSelector(Selectors.auth);
-  const {friendId} = router.query;
+  const {friendId, page} = router.query;
   const [profile, setProfile] = useState<PgAppProfileType | undefined>();
   const [t, i18n] = useTranslation("common");
   const getUserDetail = async () => {
     try {
       const params = {
-        profileid: Number(friendId)
+        profileid: Number(friendId ?? page)
       }
       const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
@@ -56,10 +56,10 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
     }
   }
   React.useEffect(() => {
-    if (friendId) {
+    if (friendId || page) {
       getUserDetail()
     }
-  }, [friendId])
+  }, [friendId, page])
 
   const sendMessage = () => {
     props.sendMessage && props.sendMessage()
@@ -119,9 +119,9 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
                { profile?.wishlist_data ? <span>{profile?.wishlist_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
               Wishlists
             </li>
-            {console.log(userInfo?.userid.toString() , friendId)}
+            {console.log(userInfo?.userid.toString() , friendId, page)}
             {
-              Boolean( userInfo?.userid.toString() === friendId) &&
+              Boolean( userInfo?.userid.toString() === friendId || userInfo?.userid.toString() === page) &&
               <li onClick={() => { 
                 props.onTabDetail && props.onTabDetail("friend")
               }} className={`${props?.tabDetail?.name === "friend" ? "active" : ""} cursor-pointer`}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "stores";
@@ -24,6 +24,8 @@ import { UtilsColorGrade } from "model/data_sport/pricing_grid";
 import ArrowUp from "assets/images/long-arrow-up.svg";
 // @ts-ignore
 import $ from "jquery";
+import CapchaHandler from "components/capchaHandler";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEhlnNzWpoOow4sgMYvdrFNxu2dYjB70A",
@@ -67,6 +69,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }
   };
 
+  
   return (
     <React.StrictMode>
       <Provider store={store}>
@@ -76,6 +79,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <ToastContainer />
             <UsesCookiesPage />
             <span id="back-to-top" onClick={() => gotoTop()}> <img src={ArrowUp} alt="Back to Top" title="Back to Top" /> </span>
+            <CapchaHandler/>
           </Layout>
         </I18nextProvider>
       </Provider>
