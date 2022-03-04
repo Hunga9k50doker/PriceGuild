@@ -65,6 +65,7 @@ const Profile: React.FC = () => {
         dispatch(AuthActions.logout());
       }
     }
+
     switch (page) {
       case "personal":
         profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'}); 
@@ -81,9 +82,11 @@ const Profile: React.FC = () => {
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>
         }
         if (type === "analytics") {
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
-        if (type !== undefined) {
+        if (type !== undefined) { console.log('working type');
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
@@ -102,12 +105,14 @@ const Profile: React.FC = () => {
         //   return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         // }
         if (type !== undefined) {
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
       case "wishlists":
         wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (type) {
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 container-collection"><CardListCollection isSelectCard={true} title="wishlist" table="wishlist" isEditCard={false} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection">
@@ -133,6 +138,7 @@ const Profile: React.FC = () => {
       case "settings":
         settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         const checkData = [undefined, "account", "security", "confidentiality"];
+        //@ts-ignore
         if (checkData.includes(action)) {
           return <div className="col-12 col-md-10 min-vh-100"><Settings /></div>
         }
@@ -158,6 +164,7 @@ const Profile: React.FC = () => {
   }
 
   const renderRefMenu = () => {
+    //@ts-ignore
     if (width < 768) {
       switch (page) {
         case "personal":

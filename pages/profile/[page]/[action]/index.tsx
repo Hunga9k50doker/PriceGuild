@@ -14,6 +14,7 @@ import ReportCard from "components/profile/reportCard"
 import Friends from "components/profile/friends"
 import FriendDetail from "components/profile/friends/friendDetail"
 import RequestAPI from "components/profile/requestAPI"
+import FriendUnlogged from 'components/friends/index'
 import { MyStorage } from "helper/local_storage";
 import { AuthActions } from "redux/actions/auth_action";
 import IconUserProfile from "assets/images/icon-user.svg"
@@ -60,37 +61,50 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch();
   const [t, i18n] = useTranslation("common");
   const renderContent = () => {
-    if(MyStorage.user) {
-      if(MyStorage.user.userid === 0) {
+    if (MyStorage.user) {
+      if (MyStorage.user.userid === 0) {
         dispatch(AuthActions.logout());
       }
     }
+
+    if (Number(page)) {
+      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      switch (action) {
+        case 'portfolio':
+          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
+        case 'wishlists':
+          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
+        default:
+          return <FriendUnlogged />
+      }
+      // return <FriendUnlogged />
+    }
     switch (page) {
       case "personal":
-        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'}); 
+        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
       case "portfolio":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
         }
         if (action === "edit-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"><AddCard isEdit={true} /></div>
         }
-        if(action ==="analytics") {
+        if (action === "analytics") {
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>
         }
         if (type === "analytics") {
-            // @ts-ignore
+          // @ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
         if (type !== undefined) {
-            // @ts-ignore
+          // @ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
       case "collections":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
         }
@@ -104,14 +118,14 @@ const Profile: React.FC = () => {
         //   return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         // }
         if (type !== undefined) {
-        // @ts-ignore
+          // @ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
       case "wishlists":
-        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (type) {
-        // @ts-ignore
+          // @ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 container-collection"><CardListCollection isSelectCard={true} title="wishlist" table="wishlist" isEditCard={false} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection">
@@ -124,7 +138,7 @@ const Profile: React.FC = () => {
       case "analytics":
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><CollectionAnalytics /></div>
       case "friends":
-        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (action) {
           return <div className="col-12 col-md-10 min-vh-100 container-collection">
             <FriendDetail userId={Number(action)} />
@@ -132,10 +146,10 @@ const Profile: React.FC = () => {
         }
         return <Friends />
       case "messages":
-        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         return <Messages userId={Number(action)} />
       case "settings":
-        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         const checkData = [undefined, "account", "security", "confidentiality"];
         // @ts-ignore
         if (checkData.includes(action)) {
@@ -143,10 +157,10 @@ const Profile: React.FC = () => {
         }
         return router.push("/404")
       case "help":
-        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         return <ReportCard />
       case "api":
-        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         return <RequestAPI />
       default:
         return <div className="col-12 col-md-10 min-vh-100">
@@ -163,27 +177,27 @@ const Profile: React.FC = () => {
   }
 
   const renderRefMenu = () => {
-      // @ts-ignore
+    // @ts-ignore
     if (width < 768) {
       switch (page) {
         case "personal":
-          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});  
+          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "collections":
-          return collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "wishlists":
-          return wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "market":
         case "analytics":
         case "friends":
-          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "messages":
-          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "settings":
-          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "help":
-          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         case "api":
-          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         default:
           
       }
@@ -215,21 +229,21 @@ const Profile: React.FC = () => {
     }
 
 
-    const list_route  = [
+    const list_route = [
       "/profile/collections/:id/analytics",
       "/profile/collections/:id/:name",
       "/profile/collections/edit-card"
     ];
     
-    for(let i=0 ; i < list_route.length; i++) {
+    for (let i = 0; i < list_route.length; i++) {
       // console.log(history.location.pathname, "");
-    //    let match = matchPath(history.location.pathname, {
-    //     path: list_route[i],
-    //     exact: true,
-    //     strict: false
-    //   });
-        let match = true;
-      if(match) {
+      //    let match = matchPath(history.location.pathname, {
+      //     path: list_route[i],
+      //     exact: true,
+      //     strict: false
+      //   });
+      let match = true;
+      if (match) {
         return 'hide-menu';
       }
     }
@@ -258,13 +272,13 @@ const Profile: React.FC = () => {
     if (timerid) clearTimeout(timerid);
     timerid = setTimeout(() => {
       renderRefMenu();
-    },550);
+    }, 550);
     
   }, [page])
   return (
-    <div className="container-fluid page-profile">
+    <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
       <div className="row ">
-        <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)}`}>
+        <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
           <div className="profile-menu">
             <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
               <span className="icon">
