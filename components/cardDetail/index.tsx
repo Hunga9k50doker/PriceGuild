@@ -96,7 +96,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenSeeFullTable, setIsOpenSeeFullTable] = React.useState(false);
   const router = useRouter();
-    const [cardDetail] = useState(router.query);
+  const [cardDetail] = useState(router.query);
   const [point, setPoint] = React.useState<any| undefined>();
   const [frontBack, setFrontBack] = useState<string>("")
   const { cards } = useSelector(Selectors.compare);
@@ -120,8 +120,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
 
   useEffect(() => {
-    if (!isEmpty(router?.query)) {
-        let cardCode = router?.query?.cardCodeDetail;
+    if (!isEmpty(router?.query) || !isEmpty(props.code)) {
+        let cardCode = router?.query?.cardCodeDetail ?? props.code;
         let controller: CardDetailSaga = refProvider?.current
           .controller as CardDetailSaga;
 
