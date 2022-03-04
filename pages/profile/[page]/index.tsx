@@ -45,7 +45,7 @@ interface ParamTypes {
 }
 
 const Profile: React.FC = ({...props}) => {
-  
+
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
@@ -63,15 +63,13 @@ const Profile: React.FC = ({...props}) => {
   const dispatch = useDispatch();
   const [t, i18n] = useTranslation("common");
 
-  const [titlePage, settitlePage] = useState<string>('');
-
   const renderContent = () => {
     if(MyStorage.user) {
       if(MyStorage.user.userid === 0) {
         dispatch(AuthActions.logout());
       }
     }
-    console.log(page, action, type);
+    
     if (Number(page)) {
       friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
       return <FriendUnlogged />
@@ -212,20 +210,15 @@ const Profile: React.FC = ({...props}) => {
     switch (router.pathname) {
       case '/profile/settings':
         return 'hide-menu';
-
       case '/profile/settings/account':
         return 'hide-menu';
-      
       case '/profile/settings/security':
         return 'hide-menu';
-      
       case '/profile/settings/confidentiality':
         return 'hide-menu';
-      
       default:
         break;
     }
-
 
     const list_route  = [
       "/profile/collections/:id/analytics",
@@ -274,21 +267,16 @@ const Profile: React.FC = ({...props}) => {
     
   }, [page])
 
-
-  const showPageTitle = () => {
-    if ( page && page == 'personal' ) {
-      return settitlePage('title personal');
-    }
-
-    return settitlePage('title page');
-  }
-
   return (
     <>
-      {titlePage !== '' && <Head>
-        <title>{titlePage}</title>
-        <meta name="description" content="" />
-      </Head>}
+      <Head>
+        <title>{
+          //@ts-ignore
+          props?.titlePage ?? ''}</title>
+        <meta name="description" content={
+          //@ts-ignore
+          props?.descriptionPage ?? ''} />
+      </Head>
       <div className="container-fluid page-profile">
         <div className="row ">
           <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
@@ -364,10 +352,72 @@ const Profile: React.FC = ({...props}) => {
 
 export const getServerSideProps = async (context:any) => {
   try {
-    const query = context?.query;
+    const pageCurr = context?.query?.page;
+    const actionCurr = context?.query?.action;
+
+    let titlePage = "";
+    let descriptionPage = "";
+    
+    if ( pageCurr === 'api' ) {
+      titlePage = "API";
+      descriptionPage = "API for accessing PriceGuide.Cards' data";
+    }
+
+    if ( pageCurr === 'help' ) {
+      titlePage = "Can't find a Card?";
+      descriptionPage = "Can't find a Card? Get in touch with use via this form and we'll do our best to help.";
+    }
+
+    if ( pageCurr === 'friends' ) {
+      titlePage = "Friends";
+      descriptionPage = "Build your network of collectors on PriceGuide.Cards with new friends.";
+    }
+
+    if ( pageCurr === 'messages' ) {
+      titlePage = "Messages";
+      descriptionPage = "Connect with other collectors on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'settings' ) {
+      titlePage = "Profile Settings";
+      descriptionPage = "Manage your profile settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'account' ) {
+      titlePage = "Account Settings";
+      descriptionPage = "Manage your account settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'security' ) {
+      titlePage = "Security Settings";
+      descriptionPage = "Manage your security settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'confidentiality' ) {
+      titlePage = "Confidentiality Settings";
+      descriptionPage = "Manage your confidentiality settings on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'wishlists' ) {
+      titlePage = "Personal Wishlists";
+      descriptionPage = "A list of your personal wishlists on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'portfolio' ) {
+      titlePage = "Personal Portfolios";
+      descriptionPage = "A list of your personal portfolios on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'personal' ) {
+      titlePage = "Personal Profile";
+      descriptionPage = "Personal Profile on PriceGuide.Cards";
+    }
+
+    titlePage += ' | PriceGuide.Cards';
 
     return {props:{
-      query
+     titlePage,
+     descriptionPage
     }}
 
   } catch (e) {
