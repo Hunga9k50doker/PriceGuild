@@ -68,13 +68,21 @@ const ISSERVER = typeof window === "undefined";
 
     return arrayCards;
   }
-
+  useEffect(() => {
+    if(cards) {
+      if(!isEmpty(cards)) {
+        setCard(getCardData(cards));
+      }
+    }
+  }, [cards])
   const [card, setCard] = React.useState<Array<CardItemType>>(
     !isEmpty(cards) ?
       getCardData(cards)
     : 
     !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
   );  
+
+  
 
   const [cardState] = React.useState<Array<CardItemType>>(
     !isEmpty(cards) ?
