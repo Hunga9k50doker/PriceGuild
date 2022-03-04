@@ -72,7 +72,14 @@ const Profile: React.FC = ({...props}) => {
     
     if (Number(page)) {
       friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
-      return <FriendUnlogged />
+      switch (action) {
+        case 'portfolio':
+          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
+        case 'wishlists':
+          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
+        default:
+          return <FriendUnlogged />
+      }
     }
 
     switch (page) {
@@ -277,7 +284,7 @@ const Profile: React.FC = ({...props}) => {
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
-      <div className="container-fluid page-profile">
+      <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
         <div className="row ">
           <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
             <div className="profile-menu">
