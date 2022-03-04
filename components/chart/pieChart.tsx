@@ -4,8 +4,8 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { formatCurrency, formatNumber } from "utils/helper"
 import drilldown from 'highcharts/modules/drilldown.js';
-import { api } from 'configs/axios';
 import { AnalyticsType, WidgetSettings } from "interfaces";
+import { analyticsUpdateWidget, isNumber } from "./models";
 
 const ISSERVER = typeof window === "undefined";
 if (!ISSERVER) {
@@ -24,29 +24,6 @@ type PropTypes = {
   setAnalytics: (value: React.SetStateAction<AnalyticsType[] | undefined>) => void
 };
 
-const isNumber = (table_data:string) => {
-  return ( table_data === 'totalUni' || table_data === 'total' );
-}
-
-const analyticsUpdateWidget = async (data: PropTypes, filter?: string) => {
-  const params = {
-    group_ref: data.collection ?? "all",
-    widgetid: data.widgetSettings.id,
-    widget_settings: {
-      type: data.widgetSettings.type,
-      lv1: data.widgetSettings.lv1,
-      lv2: data.widgetSettings.lv2,
-      data: data.widgetSettings.data,
-      user_pp: "n",
-      moving_av: "28",
-      filter: filter
-    }
-  }
-  const res = await api.v1.analytics.analyticsUpdateWidget(params);
-  return res
-}
-
-
 const getOptions = (): Highcharts.Options => {
   return {
     chart: {
@@ -55,29 +32,7 @@ const getOptions = (): Highcharts.Options => {
       plotShadow: false,
       type: "pie",
       events: {
-        drilldown: function (e) {
-          const getData = async () => {
-            this.showLoading()
-            const dataCustom: PropTypes = (e.point.series.userOptions as any).dataCustom
-            const result = await analyticsUpdateWidget(dataCustom, (e.point as any).drilldownFilter);
-            if (result.data.length) {
-              const series: Highcharts.SeriesOptionsType = {
-                id: e.point.name,
-                name: e.point.name,
-                type: 'pie',
-                colorByPoint: true,
-                //@ts-ignore
-                dataCustom: dataCustom,
-                data: Object.keys(result.data[0].data).map((item) => ({ name: item, y: result.data[0].data[item] }))
-              }
-              this.addSeriesAsDrilldown(e.point, series)
-              const widgetSettings = result.data[0].widget_settings
-              dataCustom.setAnalytics(prevState => [...prevState?.map(chart => chart.widget_settings.id === widgetSettings.id ? {...chart, widget_settings: widgetSettings} : chart) ?? []])
-            }
-            this.hideLoading()
-          }
-          if ((e.point as any).drilldownFilter) getData()
-        },
+        drilldown: drilldownCallback,
       }
     },
     title: {
@@ -131,6 +86,9 @@ const getOptions = (): Highcharts.Options => {
         data: [],
       },
     ],
+    credits: {
+      enabled: false
+    },
     drilldown: {
       drillUpButton: {
         theme: {
@@ -161,17 +119,44 @@ const getOptions = (): Highcharts.Options => {
   };
 }
 
-const drillup: Highcharts.DrillupCallbackFunction = function() {
+const drilldownCallback: Highcharts.DrilldownCallbackFunction = function(e) {
+  const getData = async () => {
+    this.showLoading()
+    const dataCustom: PropTypes = (e.point.series.userOptions as any).dataCustom
+    const result = await analyticsUpdateWidget(dataCustom.widgetSettings, dataCustom.collection, (e.point as any).drilldownFilter);
+    if (result.data.length) {
+      const series: Highcharts.SeriesOptionsType = {
+        id: `${e.point.name}-drilldown`,
+        type: 'pie',
+        colorByPoint: true,
+        //@ts-ignore
+        dataCustom: dataCustom,
+        data: Object.keys(result.data[0].data).map((item) => ({ name: item, y: result.data[0].data[item] }))
+      }
+      this.addSeriesAsDrilldown(e.point, series)
+      const widgetSettings = result.data[0].widget_settings
+      updateAnalytics(dataCustom.setAnalytics, widgetSettings)
+    }
+    this.hideLoading()
+  }
+  if ((e.point as any).drilldownFilter) getData()
+}
+
+const drillupCallback: Highcharts.DrillupCallbackFunction = function() {
   if (!this.series?.length) return
   const dataCustom: PropTypes = (this.series[0].userOptions as any).dataCustom
   const updateData = async () => {
-    const result = await analyticsUpdateWidget(dataCustom)
+    const result = await analyticsUpdateWidget(dataCustom.widgetSettings, dataCustom.collection)
     if (result.data.length) {
       const widgetSettings = result.data[0].widget_settings
-      dataCustom.setAnalytics(prevState => [...prevState?.map(chart => chart.widget_settings.id === widgetSettings.id ? {...chart, widget_settings: widgetSettings} : chart) ?? []])
+      updateAnalytics(dataCustom.setAnalytics, widgetSettings)
     }
   }
   updateData()
+}
+
+const updateAnalytics = (setAnalytics: (value: React.SetStateAction<AnalyticsType[] | undefined>) => void, widgetSettings: WidgetSettings) => {
+  setAnalytics(prevState => [...prevState?.map(chart => chart.widget_settings.id === widgetSettings.id ? {...chart, widget_settings: widgetSettings} : chart) ?? []])
 }
 
 const PieChart = (props: PropTypes) => {
@@ -194,11 +179,13 @@ const PieChart = (props: PropTypes) => {
     chart.drillUp()
     let data: any = chartData
     if (widgetSettings.filter) {
-      const result = await analyticsUpdateWidget(props);
+      const result = await analyticsUpdateWidget(props.widgetSettings, props.collection);
       data = result.data[0].data
+      const widgetSettings = result.data[0].widget_settings
+      updateAnalytics(props.setAnalytics, widgetSettings)
     }
     //@ts-ignore
-    options.chart.events.drillup = drillup
+    options.chart.events.drillup = drillupCallback
     //@ts-ignore
     options.series[0].dataCustom = props
     //@ts-ignore
@@ -215,8 +202,10 @@ const PieChart = (props: PropTypes) => {
   useEffect(() => {
     let chart = chartRef()
     if (!chart) return
-    // @ts-ignore
-    chart.series[0].userOptions.dataCustom = props
+    chart.series.forEach((_, index) => {
+      // @ts-ignore
+      chart.series[index].userOptions.dataCustom = props
+    })
   }, [props])
 
   useEffect(() => {

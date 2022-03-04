@@ -106,6 +106,8 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     const isDrillDown = !!seting.filter;
     if (isDrillDown) {
       switch (seting.type) {
+        case "column":
+          return getTitleDrilldown(seting)
         case "pie":
           return getTitleDrilldown(seting)
         case "line":
@@ -332,7 +334,12 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               </div>
             </div>
             <div style={{ margin: "0 auto" }} className="w-100">
-              <BarChart isNumber={isNumber(item.widget_settings.data)} chartData={item.data} />
+              <BarChart 
+                widgetSettings={item.widget_settings}
+                collection={collection}
+                chartData={item.data} 
+                setAnalytics={setAnalytics}
+              />
             </div>
           </div>
         </div>
