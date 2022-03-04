@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Personal from "components/profile/personal"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -44,7 +44,8 @@ interface ParamTypes {
   type?: string
 }
 
-const Profile: React.FC = () => {
+const Profile: React.FC = ({...props}) => {
+
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
@@ -61,51 +62,45 @@ const Profile: React.FC = () => {
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const [t, i18n] = useTranslation("common");
+
   const renderContent = () => {
-    if (MyStorage.user) {
-      if (MyStorage.user.userid === 0) {
+    if(MyStorage.user) {
+      if(MyStorage.user.userid === 0) {
         dispatch(AuthActions.logout());
       }
     }
-
+    
     if (Number(page)) {
-      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      switch (action) {
-        case 'portfolio':
-          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
-        case 'wishlists':
-          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
-        default:
-          return <FriendUnlogged />
-      }
-      // return <FriendUnlogged />
+      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+      return <FriendUnlogged />
     }
+
     switch (page) {
       case "personal":
-        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
       case "portfolio":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
         }
         if (action === "edit-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"><AddCard isEdit={true} /></div>
         }
-        if (action === "analytics") {
+        if(action ==="analytics") {
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>
         }
         if (type === "analytics") {
-          // @ts-ignore
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
         if (type !== undefined) {
-          // @ts-ignore
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
       case "collections":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
         }
@@ -119,14 +114,14 @@ const Profile: React.FC = () => {
         //   return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         // }
         if (type !== undefined) {
-          // @ts-ignore
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
       case "wishlists":
-        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (type) {
-          // @ts-ignore
+          //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 container-collection"><CardListCollection isSelectCard={true} title="wishlist" table="wishlist" isEditCard={false} collection={action} /></div>
         }
         return <div className="col-12 col-md-10 min-vh-100 container-collection">
@@ -139,7 +134,7 @@ const Profile: React.FC = () => {
       case "analytics":
         return <div className="col-12 col-md-10 min-vh-100 container-collection"><CollectionAnalytics /></div>
       case "friends":
-        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (action) {
           return <div className="col-12 col-md-10 min-vh-100 container-collection">
             <FriendDetail userId={Number(action)} />
@@ -147,21 +142,21 @@ const Profile: React.FC = () => {
         }
         return <Friends />
       case "messages":
-        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         return <Messages userId={Number(action)} />
       case "settings":
-        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         const checkData = [undefined, "account", "security", "confidentiality"];
-        // @ts-ignore
+        //@ts-ignore
         if (checkData.includes(action)) {
           return <div className="col-12 col-md-10 min-vh-100"><Settings /></div>
         }
         return router.push("/404")
       case "help":
-        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         return <ReportCard />
       case "api":
-        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         return <RequestAPI />
       default:
         return <div className="col-12 col-md-10 min-vh-100">
@@ -178,27 +173,27 @@ const Profile: React.FC = () => {
   }
 
   const renderRefMenu = () => {
-    // @ts-ignore
+    //@ts-ignore
     if (width < 768) {
       switch (page) {
         case "personal":
-          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});  
         case "collections":
-          return collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "wishlists":
-          return wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "market":
         case "analytics":
         case "friends":
-          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "messages":
-          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "settings":
-          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "help":
-          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         case "api":
-          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         default:
           
       }
@@ -211,40 +206,35 @@ const Profile: React.FC = () => {
 
   const hideMenu = (pageName: string) => {
     // if (history.location.pathname === '/profile/settings') return 'hide-menu';
-
+    
     switch (router.pathname) {
       case '/profile/settings':
         return 'hide-menu';
-
       case '/profile/settings/account':
         return 'hide-menu';
-      
       case '/profile/settings/security':
         return 'hide-menu';
-      
       case '/profile/settings/confidentiality':
         return 'hide-menu';
-      
       default:
         break;
     }
 
-
-    const list_route = [
+    const list_route  = [
       "/profile/collections/:id/analytics",
       "/profile/collections/:id/:name",
       "/profile/collections/edit-card"
     ];
     
-    for (let i = 0; i < list_route.length; i++) {
+    for(let i=0 ; i < list_route.length; i++) {
       // console.log(history.location.pathname, "");
-      //    let match = matchPath(history.location.pathname, {
-      //     path: list_route[i],
-      //     exact: true,
-      //     strict: false
-      //   });
-      let match = true;
-      if (match) {
+    //    let match = matchPath(history.location.pathname, {
+    //     path: list_route[i],
+    //     exact: true,
+    //     strict: false
+    //   });
+        let match = true;
+      if(match) {
         return 'hide-menu';
       }
     }
@@ -273,80 +263,169 @@ const Profile: React.FC = () => {
     if (timerid) clearTimeout(timerid);
     timerid = setTimeout(() => {
       renderRefMenu();
-    }, 550);
+    },550);
     
   }, [page])
+
   return (
-    <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
-      <div className="row ">
-        <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
-          <div className="profile-menu">
-            <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
-              <span className="icon">
-                <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+    <>
+      <Head>
+        <title>{
+          //@ts-ignore
+          props?.titlePage ?? ''}</title>
+        <meta name="description" content={
+          //@ts-ignore
+          props?.descriptionPage ?? ''} />
+      </Head>
+      <div className="container-fluid page-profile">
+        <div className="row ">
+          <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
+            <div className="profile-menu">
+              <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
+                <span className="icon">
+                  <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+                </span>
+                <span className="profile-menu-text" ref={profileRef}> Profile </span>
+              </div>
+              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
+                <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
               </span>
-              <span className="profile-menu-text" ref={profileRef}> Profile </span>
-            </div>
-            <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
-              <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
-            </span>
-              <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
-            </div>
-            <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
-              <span className="icon">
-                <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
-              </span>
-              <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
-            </div>
-            <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
-              <span className="icon">
-                <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
-              </span>
-              <span className="profile-menu-text" ref={friendtRef}> Friends </span>
-            </div>
-            <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
-              <span className="icon">
-                <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
-              </span>
-              <span className="profile-menu-text" ref={messageRef}> Messages </span>
-            </div>
-            {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
-              <span className="icon">
-                <img src={IconMessageProfile} alt="Market" title="" />
-              </span>
-              <span className="profile-menu-text"> Market </span>
-            </div> */}
-            <hr className="hr-color-profile" />
-            <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
-              <span className="icon">
-                <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
-              </span>
-              <span className="profile-menu-text"
-                ref={settingRef}
-              > Settings </span>
-            </div>
-            <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
-              <span className="icon">
-                <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
-              </span>
-              <span className="profile-menu-text"
-                ref={findCardRef}
-              > Can't find a card? </span>
-            </div>
-            <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
-              <span className="icon">
-                <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
-              </span>
-              <span className="profile-menu-text"
-                ref={apiRef}
-              > API </span>
+                <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
+              </div>
+              <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
+                <span className="icon">
+                  <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
+                </span>
+                <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
+              </div>
+              <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
+                <span className="icon">
+                  <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
+                </span>
+                <span className="profile-menu-text" ref={friendtRef}> Friends </span>
+              </div>
+              <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
+                <span className="icon">
+                  <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
+                </span>
+                <span className="profile-menu-text" ref={messageRef}> Messages </span>
+              </div>
+              {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
+                <span className="icon">
+                  <img src={IconMessageProfile} alt="Market" title="" />
+                </span>
+                <span className="profile-menu-text"> Market </span>
+              </div> */}
+              <hr className="hr-color-profile" />
+              <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
+                <span className="icon">
+                  <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={settingRef}
+                > Settings </span>
+              </div>
+              <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
+                <span className="icon">
+                  <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={findCardRef}
+                > Can't find a card? </span>
+              </div>
+              <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
+                <span className="icon">
+                  <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={apiRef}
+                > API </span>
+              </div>
             </div>
           </div>
+          {renderContent()}
         </div>
-        {renderContent()}
       </div>
-    </div>
+    </>
   );
 }
+
+export const getServerSideProps = async (context:any) => {
+  try {
+    const pageCurr = context?.query?.page;
+    const actionCurr = context?.query?.action;
+
+    let titlePage = "";
+    let descriptionPage = "";
+    
+    if ( pageCurr === 'api' ) {
+      titlePage = "API";
+      descriptionPage = "API for accessing PriceGuide.Cards' data";
+    }
+
+    if ( pageCurr === 'help' ) {
+      titlePage = "Can't find a Card?";
+      descriptionPage = "Can't find a Card? Get in touch with use via this form and we'll do our best to help.";
+    }
+
+    if ( pageCurr === 'friends' ) {
+      titlePage = "Friends";
+      descriptionPage = "Build your network of collectors on PriceGuide.Cards with new friends.";
+    }
+
+    if ( pageCurr === 'messages' ) {
+      titlePage = "Messages";
+      descriptionPage = "Connect with other collectors on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'settings' ) {
+      titlePage = "Profile Settings";
+      descriptionPage = "Manage your profile settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'account' ) {
+      titlePage = "Account Settings";
+      descriptionPage = "Manage your account settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'security' ) {
+      titlePage = "Security Settings";
+      descriptionPage = "Manage your security settings on PriceGuide.Cards";
+    }
+
+    if ( actionCurr === 'confidentiality' ) {
+      titlePage = "Confidentiality Settings";
+      descriptionPage = "Manage your confidentiality settings on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'wishlists' ) {
+      titlePage = "Personal Wishlists";
+      descriptionPage = "A list of your personal wishlists on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'portfolio' ) {
+      titlePage = "Personal Portfolios";
+      descriptionPage = "A list of your personal portfolios on PriceGuide.Cards";
+    }
+
+    if ( pageCurr === 'personal' ) {
+      titlePage = "Personal Profile";
+      descriptionPage = "Personal Profile on PriceGuide.Cards";
+    }
+
+    titlePage += ' | PriceGuide.Cards';
+
+    return {props:{
+     titlePage,
+     descriptionPage
+    }}
+
+  } catch (e) {
+    console.error(e);
+  }
+  return {
+    props: {},
+  };
+};
 
 export default Profile;
