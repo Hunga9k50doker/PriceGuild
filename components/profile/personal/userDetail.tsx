@@ -83,9 +83,13 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       getUserDetail()
     }
   }, [userId])
-
+  
   const goToTab = (name: string) => {
+    if (Boolean(Number(router.query.page))) {
+      return router.push(`/profile/${router.query?.page}/${name === 'collection' ? 'portfolio' : 'wishlists'}`)
+    }
     onTabDetail && onTabDetail(name)
+    
   }
 
   const addFriend = async () => {
@@ -149,7 +153,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
     }
     return profile?.total_value !== 0 ? formatCurrency(profile?.total_value) : formatCurrency(0)
   }
-
+  console.log('userDetail');
   return (
     <div className="content-user-profile d-flex justify-content-center">
       <div className="profile-user w-100 mt-5">

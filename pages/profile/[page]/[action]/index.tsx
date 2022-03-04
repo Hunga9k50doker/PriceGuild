@@ -14,7 +14,7 @@ import ReportCard from "components/profile/reportCard"
 import Friends from "components/profile/friends"
 import FriendDetail from "components/profile/friends/friendDetail"
 import RequestAPI from "components/profile/requestAPI"
-import FriendUnlogged from 'components/friends/index'
+import FriendUnlogged from 'components/friends'
 import { MyStorage } from "helper/local_storage";
 import { AuthActions } from "redux/actions/auth_action";
 import IconUserProfile from "assets/images/icon-user.svg"

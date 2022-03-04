@@ -4,6 +4,7 @@ import CollectionList, { DataCollectionType } from "components/profile/collectio
 import { ManageCollectionType } from "interfaces"
 import {  PgAppProfileType } from "interfaces"
 import { useRouter } from 'next/router'
+import { isEmpty } from 'lodash';
 
 type PropTypes = {
   isButtonRight?: boolean,
@@ -54,7 +55,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
       } else {
         const params = {
           table: table,
-          user_id: userId
+          user_id: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId
         }
         const result = await api.v1.collection.getManageCollections(params);
         if (result.success) {

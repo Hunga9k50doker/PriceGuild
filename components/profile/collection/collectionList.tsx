@@ -23,7 +23,8 @@ import $ from "jquery"
 import useWindowDimensions from "utils/useWindowDimensions";
 import { useTranslation } from "react-i18next";
 import ModalDeletePortfolio from "components/modal/delete/portfolio";
-
+import { isEmpty } from "lodash";
+import HeaderUser from "components/user/headerUser"
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
@@ -79,6 +80,11 @@ const CollectionList = ({
   const { userInfo } = useSelector(Selectors.auth);
   const { action } = router.query;
   const [dataSelect, setDataSelect] = useState<string>('');
+  const [tabDetail, setTabDetail] = useState<TabType>({
+    status: false,
+    name: 'collection',
+    action: 0,
+  });
   // cần check lại
   // const matchPatchRoute = matchPath(history.location.pathname, {
   //   path:  "/friends/:friendId",
@@ -169,7 +175,7 @@ const CollectionList = ({
   const gotoCard = (item: ManageCollectionType) => {
     props.gotoCard
       ? props.gotoCard(item)
-      : router.push(`/profile/${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${item.group_name}`);
+      : router.push(`/profile/${!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? router.query.page + '/' : ''}${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${item.group_name}`);
   };
 
   const gotoAnalytics = (item: ManageCollectionType) => {
@@ -289,7 +295,13 @@ const CollectionList = ({
     setIsOpenModal(true);
     getData();
   }
+  const onTabDetail = (tab: string) => {
+    if (tab === 'friend') return;
+    return router.push(`/${tab === 'collection' ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab+'s'}`}`)
+  }
+  console.log(userInfo, 'userInfo');
   return (
+    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={userInfo} />}
     <div className="profile-personal-collections">
       <div className="mt-4 profile-personal-collections-head">
         <div className="d-flex justify-content-between align-items-center section-title position-relative">
@@ -510,7 +522,7 @@ const CollectionList = ({
         onClose={() => {setIsOpenModal(false);}}
         onSuccess={() => clearColection()}
       />
-    </div>
+    </div></>
   );
 };
 
