@@ -9,7 +9,13 @@ type Props = {
 }
 
 const CommonLayout = ({ children }: Props) => {
-  const canonicalURL = process.env.DOMAIN + useRouter().pathname;
+  
+  const router = useRouter();
+  const _pathSliceLength = Math.min.apply(Math, [
+    router.asPath.indexOf('?') > 0 ? router.asPath.indexOf('?') : router.asPath.length,
+    router.asPath.indexOf('#') > 0 ? router.asPath.indexOf('#') : router.asPath.length
+  ]);
+  const canonicalURL= process.env.DOMAIN + router.asPath.substring(0, _pathSliceLength);
 
   return (
     <>

@@ -208,7 +208,7 @@ const CardListCollection = ({
 
       const params: any = {
         portid_only: false,
-        port_userid: Number(userId ?? userInfo?.userid),
+        port_userid: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
         table: table,
         view_mode: "grouped",
         group_ref: Number(collection),

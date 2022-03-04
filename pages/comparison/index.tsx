@@ -187,7 +187,6 @@ const ISSERVER = typeof window === "undefined";
       },1000)
     }
   }, [isCopy])
-  console.log(cardState, 'cardState');
   return (
     <div>
       <div className="container-fluid comparison">
