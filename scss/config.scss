@@ -5725,3 +5725,8 @@ th .form-check-input.form-check-input-head {
   }
   
 }
+.grade-index {
+  .react-select__menu {
+    z-index: 999!important;
+  }
+}
