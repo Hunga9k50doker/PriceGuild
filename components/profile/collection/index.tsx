@@ -73,12 +73,14 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
       }
      
     }
-    catch (err) {
-      console.log(err)
+    catch (err: any) {
       setCollections({
         data: [],
         isLoading: false
-      })
+      });
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
     }
   }
 

@@ -51,7 +51,10 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
           router.push('/verify-email')
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if(error?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log("error........", error);
     }
   }
@@ -86,7 +89,10 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
         }
       }
     }
-    catch (err) {
+    catch (err:any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err)
     }
   }

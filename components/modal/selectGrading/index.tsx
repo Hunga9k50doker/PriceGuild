@@ -220,9 +220,12 @@ const SelectGrading = ({
       }
       setIsLoading(false);
       return ToastSystem.error(result.message);
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
       console.log(err);
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
     }
   };
 

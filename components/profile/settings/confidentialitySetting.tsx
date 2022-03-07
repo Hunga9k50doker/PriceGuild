@@ -70,6 +70,9 @@ const ConfidentialitySetting = (props: Props) => {
       }
 
     } catch (err: any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err.response)
       return ToastSystem.error(err?.response?.data?.message);
     }

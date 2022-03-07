@@ -98,7 +98,10 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
         }
       }
     }
-    catch (err) {
+    catch (err: any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err)
     }
   }

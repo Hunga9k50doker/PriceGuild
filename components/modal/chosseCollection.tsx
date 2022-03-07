@@ -50,10 +50,13 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
         }
       }
     }
-    catch (err) {
+    catch (err: any) {
       console.log(err)
       setCollections([])
       setDataSearch([])
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
     }
   }
   const onSeachCollection = (e: any) => {
