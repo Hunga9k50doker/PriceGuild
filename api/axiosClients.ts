@@ -94,11 +94,12 @@ export class NewHttpClient<T> {
     });
   }
 
-  post(body?: object): Promise<BaseResponse & T> {
+  post(body?: object, header : any = {}): Promise<BaseResponse & T> {
     return axiosClient.post(this.url, body, {
       headers: {
         ...this.header,
         ...encodeHeader,
+        ...header
       },
     });
   }

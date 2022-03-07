@@ -42,6 +42,7 @@ import $ from "jquery";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
+import CaptCha from "components/modal/captcha";
 
 const rowsPerPage = 20;
 
@@ -68,7 +69,7 @@ type DataTableTye = {
 
 const limit = 20;
 
-const CollectionBase = ({ ...props}) => { console.log(props, 'props');
+const CollectionBase = ({ ...props}) => {
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
   const { loggingIn } = useSelector(Selectors.auth);
   const { cards } = useSelector(Selectors.compare);
@@ -80,7 +81,7 @@ const CollectionBase = ({ ...props}) => { console.log(props, 'props');
     isLoading: true,
     rows: 0,
   });
-
+  const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   // :type/:color/:slug
   const router = useRouter();
   const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
@@ -108,7 +109,7 @@ const CollectionBase = ({ ...props}) => { console.log(props, 'props');
     }
   }, [router.query]);
   const [t, i18n] = useTranslation("common")
-  const getDetail = async (page: number[] = [1]): Promise<void> => {
+  const getDetail = async (page: number[] = [1],  headers: any = {}): Promise<void> => {
     try {
       setCollection((prevState) => {
         return {
@@ -128,7 +129,7 @@ const CollectionBase = ({ ...props}) => { console.log(props, 'props');
         },
       };
 
-      const result = await api.v1.collection.checkList({ ...params });
+      const result = await api.v1.collection.checkList({ ...params }, headers);
       result.data.rows = result.rows;
       if (result.success) {
         if (page.length === 1) {
@@ -151,8 +152,20 @@ const CollectionBase = ({ ...props}) => { console.log(props, 'props');
       });
     } catch (error) {
       console.log("error........", error);
+      //@ts-ignore
+      if (error?.response?.status === 409) {
+        //@ts-ignore
+          setIsCaptCha(Boolean(error?.response?.data?.show_captcha))
+      }
+
     }
   };
+
+  const onSuccessCaptcha = (token: any) => {
+    setIsCaptCha(false)
+    const headers = { "captcha-token": token };
+    getDetail([1],headers);
+  }
 
   React.useEffect(() => {
     if (Boolean(collection.rows)) {
@@ -1129,6 +1142,10 @@ const CollectionBase = ({ ...props}) => { console.log(props, 'props');
             } }
             setIsOpen={setIsOpenGrade} />
         )}
+        <CaptCha
+        isOpen={isCaptCha}
+        onSuccess={onSuccessCaptcha}
+        onClose={() => setIsCaptCha(false)} />
       </div></>
   );
 };

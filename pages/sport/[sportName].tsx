@@ -511,7 +511,8 @@ export const getServerSideProps = async (context: any) => {
 
     return {props:{
      titlePage,
-     descriptionPage
+      descriptionPage,
+     result
     }}
 
   } catch (error) {

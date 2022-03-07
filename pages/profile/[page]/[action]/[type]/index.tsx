@@ -10,7 +10,7 @@ const Profile: React.FC = (props) => {
       <Head>
          <title>{
           //@ts-ignore
-          `${router.query?.type ?? ''} Personal ${router.query?.page === 'wishlists' ? 'Wishlists' : 'Profolio'} | PriceGuide.Cards`}</title>
+          `${router.query?.type ?? ''} - Personal ${router.query?.page === 'wishlists' ? 'Wishlists' : 'Profolio'} | PriceGuide.Cards`}</title>
          <meta name="description" content={
           //@ts-ignore
           props?.descriptionPage ?? ''} />

@@ -409,11 +409,12 @@ export class Api<
         return result.data;
       },
       
-      checkList: async (body: any) => {
+      checkList: async (body: any, headers: any = {}) => {
         const result = await this.request<any>({
           path: "collections/checklist",
           method: "POST",
           body,
+          headers
         });
         return result.data;
       },

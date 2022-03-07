@@ -62,6 +62,7 @@ import classes from './styles.module.scss'
 import * as _ from 'lodash'
 import { useTranslation } from "react-i18next";
 import { checkImageExist } from "./components/sale_chart/data";
+import CaptCha from "components/modal/captcha";
 
 type PropTypes = {
   code?: string;
@@ -108,7 +109,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [lengthTablePrice, setLengthTablePrice] = useState<number>(0);
   const [gradeCompanys, setGradeCompany] = useState<Array<any>>([])
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
-  
+  const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   // const [windowWidth, setWindowWidth] = useState(0)
 
   // useEffect(() => {
@@ -137,7 +138,13 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           // @ts-ignore
           card_code: cardCode,
           currency: userInfo.userDefaultCurrency,
-        })
+        }).catch(err => {
+          //@ts-ignore
+            if (err?.status === 409) {
+              //@ts-ignore
+                setIsCaptCha(Boolean(err?.show_captcha))
+            }
+        }) 
 
         controller.loadPricingGrid({
           // @ts-ignore
@@ -153,6 +160,25 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     
   }, [props.code, loggingIn, router.query]);
 
+  const onSuccessCaptcha = (token: any) => {
+    setIsCaptCha(false)
+
+    const headers = { "captcha-token": token };
+    
+    loadSaleDataCapCha(headers);
+
+  }
+  const loadSaleDataCapCha = (headers: any = {}) => {
+    let cardCode = router?.query?.cardCodeDetail;
+    let controller: CardDetailSaga = refProvider?.current
+      .controller as CardDetailSaga;
+
+    controller.loadSaleData({
+      // @ts-ignore
+      card_code: cardCode,
+      currency: userInfo.userDefaultCurrency,
+    }, headers);
+  }
 
   const loadCardDetail = () => {
     let cardCode = router?.query?.cardCodeDetail;
@@ -599,7 +625,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         lengthTablePrice > 10 &&
         <button className="btn-price-full-table only-mobile" onClick={handleSeeFullTable}> See Full Table </button>
       }
-    </div>
+      </div>
+      <CaptCha
+        isOpen={isCaptCha}
+        onSuccess={onSuccessCaptcha}
+        onClose={() => setIsCaptCha(false)} />
   </div>
   }
 

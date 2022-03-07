@@ -3,10 +3,10 @@ import { HelperSales } from "model/data_sport/pricing_grid";
 import { NewHttpClient } from "./axiosClients";
 
 export class CardDetailApis {
-  static loadSaleData(body: CardDetailApis.SaleDataParam) {
+  static loadSaleData(body: CardDetailApis.SaleDataParam, headers: any = {}) {
     return new NewHttpClient<CardDetailApis.SaleDataResponse>({
       route: "/card_details/pg_app_sales_data",
-    }).post(body);
+    }).post(body, headers);
   }
 
   static loadCardDetail(body: CardDetailApis.SaleDataParam) {

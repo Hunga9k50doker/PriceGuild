@@ -19,8 +19,8 @@ export class CardDetailSaga {
     });
   }
 
-  loadSaleData(payload: CardDetailSaga.DetailParam) {
-    return CardDetailApis.loadSaleData(payload).then((response) => {
+  loadSaleData(payload: CardDetailSaga.DetailParam, headers: any = {}) {
+    return CardDetailApis.loadSaleData(payload, headers).then((response) => {
       this.dispatchReducer({
         type: "loadSaleDataSuccess",
         payload: response.data,
