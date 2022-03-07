@@ -1112,11 +1112,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
             </CardDetailConsumer>
             {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
               <h2 className="title-profile mb-5"> Sales Chart </h2>
+              <div>
+                {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
+              </div>
               {
-                Boolean(!loggingIn) ? 
-                <PlaceholderChart src={ImageLineChart.src} />
-                :
-                <div className="pricing-grid-content pricing-grid-content--sales">
+                !Boolean(!loggingIn) && <div className="pricing-grid-content pricing-grid-content--sales">
                   <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
                     <div className="h-left d-flex align-items-center justify-content-center">
                       <div className="title me-3">Card Grade</div>

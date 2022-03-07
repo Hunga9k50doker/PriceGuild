@@ -149,6 +149,11 @@ export class MetaData {
     { value: 4, label: "Sport" },
     { value: 5, label: "Player Name" },
   ];
+
+  static yesNo = [
+    { value: 'n', label: 'No' },
+    { value: 'y', label: 'Yes' }
+  ]
 }
 
 export const userClass = [

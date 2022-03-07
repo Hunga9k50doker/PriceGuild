@@ -37,6 +37,10 @@ const Messages = ({ ...props }: PropTypes) => {
   const router = useRouter();
 
   React.useEffect(() => {
+    if(userInfo && !userInfo?.activated) {
+      router.push('/verify-email');
+      return;
+    }
     dispatch(MessagesAction.getListUserMessages());
   }, []);
 
