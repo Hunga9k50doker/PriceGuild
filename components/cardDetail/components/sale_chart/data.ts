@@ -3,7 +3,7 @@ import markerClusters from "highcharts/modules/marker-clusters";
 import Highcharts from "highcharts/highstock";
 import { formatNumber } from "utils/helper";
 import moment from 'moment';
-import ImageDefault from "assets/images/card_default.svg"
+import ImageDefault from "assets/images/card_default.png"
 const ISSERVER = typeof window === "undefined";
 if (!ISSERVER) {
     markerClusters(Highcharts);
@@ -317,7 +317,7 @@ export const options: Highcharts.Options = {
                 if (image) {
                     image.onerror = function() {
                         this.onerror = null
-                        this.src = ImageDefault
+                        this.src = ImageDefault.src
                     }
                 }
             }
@@ -325,7 +325,7 @@ export const options: Highcharts.Options = {
             return (
           
                 `<div>
-                <img src="${img || ImageDefault}" class="${classCustom}" alt="${cardName}" data-noaft="1" style="width: 85px; height: 120px;">
+                <img src="${img || ImageDefault.src}" class="${classCustom}" alt="${cardName}" data-noaft="1" style="width: 85px; height: 120px;">
                 </div>
                 <div style="margin-left: 10px"> 
                 <div style="font-size: 16px;font-weight: bold;color: #18213A;font-family: Manrope; margin-bottom:6px" >$${formatNumber(y)}</div>
