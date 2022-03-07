@@ -39,7 +39,10 @@ const Settings = () => {
             return router.push('/verify-email')
           }
         }
-      } catch (error) {
+      } catch (error: any) {
+        if(error?.response?.status === 403) {
+          return router.push('/verify-email')
+        }
         console.log("error........", error);
       }
     }

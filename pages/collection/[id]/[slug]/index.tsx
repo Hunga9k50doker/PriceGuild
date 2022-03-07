@@ -277,7 +277,7 @@ const CollectionDetail = (props: PropTypes) => {
               <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
                 <div className="h-left d-flex align-items-center justify-content-center">
                   <div className="title">Card Type</div>
-                  <div className="grade">
+                  <div className="grade grade-index">
                     <Select
                       getOptionValue={(item: any) => item.index}
                       getOptionLabel={(item: any) => item.name}

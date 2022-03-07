@@ -396,8 +396,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       }
       setIsLoading(false);
       return ToastSystem.error(result.message ?? result.error);
-    } catch (err) {
+    } catch (err: any) {
       setIsLoading(false);
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err);
     }
   };

@@ -1087,11 +1087,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
                 return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
                   {isGradedCardTitle && <h2 className={`mb-5 title-profile ${size(dataGraded) ? '' : 'd-none'}`}> Graded Card Sales Overview </h2>}
+                  <div>
+                    {Boolean(!loggingIn) && <PlaceholderChart src={ImageSaleChart.src} />}
+                  </div>
                   {
-                    Boolean(!loggingIn)? 
-                       <PlaceholderChart src={ImageSaleChart.src} />
-                    :
-                    <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
+                    Boolean(loggingIn) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
                         <div className="content-chart">
                           <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>

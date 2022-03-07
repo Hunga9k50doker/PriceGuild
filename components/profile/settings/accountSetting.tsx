@@ -73,7 +73,10 @@ const AccountSetting = ({ profileData }: PropsType) => {
       }
       return ToastSystem.show(res.message, { status: res.success ? 'success' : 'error' });
     }
-    catch (err) {
+    catch (err: any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err)
     }
   }

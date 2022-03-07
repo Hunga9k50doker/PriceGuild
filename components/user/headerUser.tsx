@@ -51,7 +51,10 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
           router.push('/verify-email')
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if(error?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log("error........", error);
     }
   }
@@ -86,7 +89,10 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
         }
       }
     }
-    catch (err) {
+    catch (err:any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err)
     }
   }
@@ -120,8 +126,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
                { profile?.wishlist_data ? <span>{profile?.wishlist_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
               Wishlists
             </li>
-            {console.log(userInfo?.userid.toString() , friendId, page)}
-            {
+            {/* {
               Boolean( userInfo?.userid.toString() === friendId || userInfo?.userid.toString() === page) &&
               <li onClick={() => { 
                 props.onTabDetail && props.onTabDetail("friend")
@@ -129,7 +134,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
                 <span>3</span> Friends
               </li>
             }
-           
+            */}
           </ul>
         </div>
         {/*

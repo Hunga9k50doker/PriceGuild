@@ -539,7 +539,7 @@ const ISSERVER = typeof window === "undefined";
         <div className="box-content">
           <p>You don't have any cards <br/>in your comparison list</p>
             <Link href="/search">
-                <a title="Start Adding Cards" className="btn btn-primary">
+                <a title="Start Adding Cards" className="btn btn-primary btn-add-cmp">
                     Start Adding Cards
                 </a>
             </Link>

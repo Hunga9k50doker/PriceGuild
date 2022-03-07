@@ -102,7 +102,7 @@ function SamplePrevArrow(props: any) {
 const MyCardSlickElement = <T,>(props: PropTypes<T>) => {
   return (
     <div className="content-home mt-3 mb-5 card-slick-element latest-collection">
-      <div className="justify-content-between align-items-center d-flex">
+      <div className="justify-content-between align-items-center d-flex llllllllll">
         <h2 className="pt-3 pb-3 title-content">{props.title}</h2>
         {props.routerLink && <Link href={props.routerLink}>
           <a className="link-see-all text-decoration-none">{props.routerName}
@@ -117,7 +117,7 @@ const MyCardSlickElement = <T,>(props: PropTypes<T>) => {
         <label className="btn btn-outline-primary" htmlFor="btnradio3">Last 3 Months</label>
       </div>}
       <div className="mt-2 mb-3 data-slicker-collection cs-mar--15">
-        <div>
+        <div className="data-slicker-collection-mobile">
           {props.cards.length ? <Slider {...settings}>
             {props.cards.map((item, index) => props.cardElement(item, index))}
           </Slider> : <div className="row">

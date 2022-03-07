@@ -58,7 +58,10 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
           router.push('/verify-email')
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      if(error?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log("error........", error);
     }
   }
@@ -113,7 +116,10 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       }
       return ToastSystem.error(result.error);
     }
-    catch (err) {
+    catch (err: any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err)
     }
   }

@@ -2932,6 +2932,9 @@
       }
       @media screen and (max-width: 767.98px) {
         width: 100%;
+        &.btn-add-cmp {
+          width: auto;
+        }
       }
     }
   }

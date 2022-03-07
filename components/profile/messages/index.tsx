@@ -247,7 +247,10 @@ const Messages = ({ ...props }: PropTypes) => {
           return router.push('/verify-email')
         }
       }
-    } catch (err) {
+    } catch (err: any) {
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
       console.log(err);
     }
   };

@@ -64,7 +64,10 @@ function InputSearch({
         setIsLoading(false);
         callback([]);
       })
-      .catch((error) => {
+      .catch((error: any) => {
+        if(error?.response?.status === 403) {
+          return router.push('/verify-email')
+        }
         setIsLoading(false);
         console.log(error);
       });
