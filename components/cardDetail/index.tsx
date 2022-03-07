@@ -1057,11 +1057,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
                 return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
                   {isGradedCardTitle && <h2 className={`mb-5 title-profile ${size(dataGraded) ? '' : 'd-none'}`}> Graded Card Sales Overview </h2>}
+                  <div>
+                    {Boolean(!loggingIn) && <PlaceholderChart src={ImageSaleChart.src} />}
+                  </div>
                   {
-                    Boolean(!loggingIn)? 
-                       <PlaceholderChart src={ImageSaleChart.src} />
-                    :
-                    <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
+                    Boolean(loggingIn) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
                         <div className="content-chart">
                           <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>
@@ -1112,11 +1112,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
             </CardDetailConsumer>
             {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
               <h2 className="title-profile mb-5"> Sales Chart </h2>
+              <div>
+                {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
+              </div>
               {
-                Boolean(!loggingIn) ? 
-                <PlaceholderChart src={ImageLineChart.src} />
-                :
-                <div className="pricing-grid-content pricing-grid-content--sales">
+                !Boolean(!loggingIn) && <div className="pricing-grid-content pricing-grid-content--sales">
                   <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
                     <div className="h-left d-flex align-items-center justify-content-center">
                       <div className="title me-3">Card Grade</div>
@@ -1222,7 +1222,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                       const notInside = gradeTreeSelected?.filter(it => !item.children.find(temp => temp.key === it)) || []
                                       const disabled = item.children.length + notInside.length > 5
                                       return (
-                                        <TreeNode value={item.value} title={<div className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></div>} key={item.key} disabled={disabled}>
+                                        <TreeNode value={item.value} title={<span className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></span>} key={item.key} disabled={disabled}>
                                           {item.children.map((child) => (
                                             <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)}/>
                                           ))}

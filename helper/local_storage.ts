@@ -1,4 +1,5 @@
 import { User } from "model/user";
+import { getCookie, setCookie } from "utils/helper";
 const ISSERVER = typeof window === "undefined";
 
 export class MyStorage {
@@ -38,6 +39,7 @@ export class MyStorage {
 
   static set token(token: string) {
     if (!ISSERVER) {
+      setCookie(MyStorage.TOKEN_KEY, token, 36000)
       localStorage.setItem(MyStorage.TOKEN_KEY, token);
     }
   }
@@ -69,5 +71,6 @@ export class MyStorage {
     this.remove(MyStorage.USER_KEY);
     this.remove(MyStorage.TOKEN_KEY);
     this.remove(MyStorage.LANG_CODE_KEY);
+    setCookie(MyStorage.TOKEN_KEY, '', 36000)
   }
 }

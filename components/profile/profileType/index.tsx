@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Personal from "components/profile/personal"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -14,7 +14,6 @@ import ReportCard from "components/profile/reportCard"
 import Friends from "components/profile/friends"
 import FriendDetail from "components/profile/friends/friendDetail"
 import RequestAPI from "components/profile/requestAPI"
-import FriendUnlogged from 'components/friends'
 import { MyStorage } from "helper/local_storage";
 import { AuthActions } from "redux/actions/auth_action";
 import IconUserProfile from "assets/images/icon-user.svg"
@@ -35,18 +34,15 @@ import IconSettingProfileActive from "assets/images/icon-settings-filled.svg"
 import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg"
 import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
 import useWindowDimensions from "utils/useWindowDimensions"
-
 import { useTranslation } from "react-i18next";
-import Head from 'next/head';
-import { getCookie } from 'utils/helper';
-import cookies from 'next-cookies'
+
 interface ParamTypes {
   page: string,
   action?: string
   type?: string
 }
 
-const Profile: React.FC = ({...props}) => {
+const Profile: React.FC = () => {
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
@@ -63,29 +59,16 @@ const Profile: React.FC = ({...props}) => {
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   const [t, i18n] = useTranslation("common");
-
   const renderContent = () => {
     if(MyStorage.user) {
       if(MyStorage.user.userid === 0) {
         dispatch(AuthActions.logout());
       }
     }
-    
-    if (Number(page)) {
-      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
-      switch (action) {
-        case 'portfolio':
-          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
-        case 'wishlists':
-          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
-        default:
-          return <FriendUnlogged />
-      }
-    }
 
     switch (page) {
       case "personal":
-        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
+        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'}); 
         return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
       case "portfolio":
         collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
@@ -102,7 +85,7 @@ const Profile: React.FC = ({...props}) => {
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
-        if (type !== undefined) {
+        if (type !== undefined) { console.log('working type');
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
@@ -214,19 +197,24 @@ const Profile: React.FC = ({...props}) => {
 
   const hideMenu = (pageName: string) => {
     // if (history.location.pathname === '/profile/settings') return 'hide-menu';
-    
+
     switch (router.pathname) {
       case '/profile/settings':
         return 'hide-menu';
+
       case '/profile/settings/account':
         return 'hide-menu';
+      
       case '/profile/settings/security':
         return 'hide-menu';
+      
       case '/profile/settings/confidentiality':
         return 'hide-menu';
+      
       default:
         break;
     }
+
 
     const list_route  = [
       "/profile/collections/:id/analytics",
@@ -274,202 +262,77 @@ const Profile: React.FC = ({...props}) => {
     },550);
     
   }, [page])
-
   return (
-    <>
-      <Head>
-        <title>{
-          //@ts-ignore
-          props?.titlePage ?? ''}</title>
-        <meta name="description" content={
-          //@ts-ignore
-          props?.descriptionPage ?? ''} />
-      </Head>
-      <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
-        <div className="row ">
-          <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
-            <div className="profile-menu">
-              <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
-                <span className="icon">
-                  <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
-                </span>
-                <span className="profile-menu-text" ref={profileRef}> Profile </span>
-              </div>
-              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
-                <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
+    <div className="container-fluid page-profile">
+      <div className="row ">
+        <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)}`}>
+          <div className="profile-menu">
+            <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
+              <span className="icon">
+                <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
               </span>
-                <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
-              </div>
-              <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
-                <span className="icon">
-                  <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
-                </span>
-                <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
-              </div>
-              <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
-                <span className="icon">
-                  <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
-                </span>
-                <span className="profile-menu-text" ref={friendtRef}> Friends </span>
-              </div>
-              <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
-                <span className="icon">
-                  <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
-                </span>
-                <span className="profile-menu-text" ref={messageRef}> Messages </span>
-              </div>
-              {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
-                <span className="icon">
-                  <img src={IconMessageProfile} alt="Market" title="" />
-                </span>
-                <span className="profile-menu-text"> Market </span>
-              </div> */}
-              <hr className="hr-color-profile" />
-              <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
-                <span className="icon">
-                  <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={settingRef}
-                > Settings </span>
-              </div>
-              <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
-                <span className="icon">
-                  <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={findCardRef}
-                > Can't find a card? </span>
-              </div>
-              <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
-                <span className="icon">
-                  <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={apiRef}
-                > API </span>
-              </div>
+              <span className="profile-menu-text" ref={profileRef}> Profile </span>
+            </div>
+            <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
+              <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
+            </span>
+              <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
+            </div>
+            <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
+              <span className="icon">
+                <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
+              </span>
+              <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
+            </div>
+            <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
+              <span className="icon">
+                <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
+              </span>
+              <span className="profile-menu-text" ref={friendtRef}> Friends </span>
+            </div>
+            <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
+              <span className="icon">
+                <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
+              </span>
+              <span className="profile-menu-text" ref={messageRef}> Messages </span>
+            </div>
+            {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
+              <span className="icon">
+                <img src={IconMessageProfile} alt="Market" title="" />
+              </span>
+              <span className="profile-menu-text"> Market </span>
+            </div> */}
+            <hr className="hr-color-profile" />
+            <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
+              <span className="icon">
+                <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
+              </span>
+              <span className="profile-menu-text"
+                ref={settingRef}
+              > Settings </span>
+            </div>
+            <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
+              <span className="icon">
+                <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
+              </span>
+              <span className="profile-menu-text"
+                ref={findCardRef}
+              > Can't find a card? </span>
+            </div>
+            <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
+              <span className="icon">
+                <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
+              </span>
+              <span className="profile-menu-text"
+                ref={apiRef}
+              > API </span>
             </div>
           </div>
-          {renderContent()}
         </div>
+        {renderContent()}
       </div>
-    </>
+    </div>
   );
 }
-
-export const getServerSideProps = async (context:any) => {
-  try {
-    const pageCurr = context?.query?.page;
-    const actionCurr = context?.query?.action;
-    let data: any = {};
-    let titlePage = "";
-    let descriptionPage = "";
-    
-    if ( pageCurr === 'api' ) {
-      titlePage = "API";
-      descriptionPage = "API for accessing PriceGuide.Cards' data";
-    }
-
-    if ( pageCurr === 'help' ) {
-      titlePage = "Can't find a Card?";
-      descriptionPage = "Can't find a Card? Get in touch with use via this form and we'll do our best to help.";
-    }
-
-    if ( pageCurr === 'friends' ) {
-      titlePage = "Friends";
-      descriptionPage = "Build your network of collectors on PriceGuide.Cards with new friends.";
-    }
-
-    if ( pageCurr === 'messages' ) {
-      titlePage = "Messages";
-      descriptionPage = "Connect with other collectors on PriceGuide.Cards";
-    }
-
-    if ( pageCurr === 'settings' ) {
-      titlePage = "Profile Settings";
-      descriptionPage = "Manage your profile settings on PriceGuide.Cards";
-    }
-
-    if ( actionCurr === 'account' ) {
-      titlePage = "Account Settings";
-      descriptionPage = "Manage your account settings on PriceGuide.Cards";
-    }
-
-    if ( actionCurr === 'security' ) {
-      titlePage = "Security Settings";
-      descriptionPage = "Manage your security settings on PriceGuide.Cards";
-    }
-
-    if ( actionCurr === 'confidentiality' ) {
-      titlePage = "Confidentiality Settings";
-      descriptionPage = "Manage your confidentiality settings on PriceGuide.Cards";
-    }
-
-    if ( pageCurr === 'wishlists' ) {
-      titlePage = "Personal Wishlists";
-      descriptionPage = "A list of your personal wishlists on PriceGuide.Cards";
-    }
-
-    if ( pageCurr === 'portfolio' ) {
-      titlePage = "Personal Portfolios";
-      descriptionPage = "A list of your personal portfolios on PriceGuide.Cards";
-    }
-
-    if ( pageCurr === 'personal' ) {
-      titlePage = "Personal Profile";
-      descriptionPage = "Personal Profile on PriceGuide.Cards";
-    }
-     
-    if (actionCurr === 'edit-card') {
-
-      let token = cookies(context).TOKEN_KEY;
-    
-      const params = {
-          cardcode: typeof context.query?.code === "string" ? context.query?.code.split(",") : "",
-          table: "portfolio",
-          all_data: true,
-          group_ref: Number(context?.query?.collection ?? 0),
-      };
-
-      const config = {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+ token,
-        },
-        //@ts-ignore
-        body: JSON.stringify(params)
-      }
-      
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/pg_app_get_existing_saved_cards`, config);
-      data = await res.json();
-
-      if (data.success) {
-        const dataEntry = data?.data?.cards[0].data[0];
-      
-        const selecedData = data?.data?.groups?.find(
-            (item: any) => item.id === dataEntry.group_ref
-        );
-
-        titlePage = `Edit Card - ${selecedData.group_name} - Personal Collections`
-      }
-    }
-
-    titlePage += ' | PriceGuide.Cards';
-    return {props:{
-      titlePage,
-      descriptionPage,
-      data,
-    }}
-
-  } catch (e) {
-    console.error(e);
-  }
-  return {
-    props: {},
-  };
-};
 
 export default Profile;

@@ -1,0 +1,58 @@
+.drilldownBox {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.drilldownBtn {
+    height: 33px;
+    padding: 8px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Manrope;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: #0B0E61;
+    letter-spacing: 0.005em;
+    background: #FFFFFF;
+    border: 2px solid #E9F1FF;
+    border-radius: 6px;
+    span {
+        margin-left: 5px;
+    }
+    &:hover {
+        background: rgba(233, 241, 255, 0.45);
+    }
+}
+
+.drilldown {
+    cursor: pointer;
+}
+.loadingBox {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0.5;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.btnToggle {
+    display: flex;
+    align-items: center;
+    padding-right: 0;
+    box-shadow: none !important;
+    background-color: #ffffff;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: #000000;
+    border-width: 0;
+  }

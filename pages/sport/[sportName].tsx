@@ -45,7 +45,7 @@ export type Inputs = {
   sport: number;
 }
 
-function SportLandingPage() {
+function SportLandingPage({...props}) { console.log(props);
   const router = useRouter();
   const { sportName } = router.query;
   const [sportSelected, setSportSelected] = useState<SportType>();
@@ -73,7 +73,8 @@ function SportLandingPage() {
     try {
       const params: any = {
         limit: 10,
-        sport: sportSelected?.id,
+        // sport: sportSelected?.id,
+        sport_name: sportSelected?.sportName,
         is_newest: true,
         page: 1,
       };
@@ -96,6 +97,7 @@ function SportLandingPage() {
     try {
       const params = {
         sport: sportSelected?.id
+        // sport_name: 'baseball'
       }
       const result = await api.v1.getPopularPublisher(params);
       if (result.success) {
@@ -120,8 +122,8 @@ function SportLandingPage() {
 
   const getOptionValue = (option: any) => option.order;
 
-  useEffect(() => { console.log(cardBreakDown, 'alo')
-    if (!isEmpty(cardBreakDown)) { console.log(cardBreakDown[0], 'cardBreakDown[0]')
+  useEffect(() => {
+    if (!isEmpty(cardBreakDown)) {
       setCardSelected(cardBreakDown[0]);
     }
   },[cardBreakDown])
@@ -198,262 +200,256 @@ function SportLandingPage() {
     return `/card-details/${cardData?.code}/${url}`;
   }
   return (
-    <div className="sport-landing-page">
+    <>
       <Head>
-        <title>{sportSelected?.sportName ?? ''}</title>
-        <meta name="description" content={` ${sportSelected?.sportName ?? ''} `} />
+        <title>{
+          //@ts-ignore
+          props?.titlePage ?? ''}</title>
+        <meta name="description" content={
+          //@ts-ignore
+          props?.descriptionPage ?? ''} />
       </Head>
-      <div style={{ backgroundImage: `url(${BackgroundHomePage.src})` }} className="header d-flex align-items-center">
-        <div className="content-header">
-          <div className="title-header">{sportSelected?.sportName && `${sportSelected?.sportName} Card Price Guide` } </div>
-          <div className="sub-title-header"> Find actual prices from a quarter of a billion card sales </div>
+      <div className="sport-landing-page">
+        <div style={{ backgroundImage: `url(${BackgroundHomePage.src})` }} className="header d-flex align-items-center">
+          <div className="content-header">
+            <div className="title-header">{sportSelected?.sportName && `${sportSelected?.sportName} Card Price Guide`} </div>
+            <div className="sub-title-header"> Find actual prices from a quarter of a billion card sales </div>
             <SmartSearch
-            // @ts-ignore
-            sportName={sportName} onSelectSport={e => setSportSelected(e)} isHomePage={1} isArrow={0} />
+              // @ts-ignore
+              sportName={sportName} onSelectSport={e => setSportSelected(e)} isHomePage={1} isArrow={0} />
             <div>
               <button className="btn btn-primary btn-find-card"> Find Cards </button>
             </div>
             <div>
-              <Link href={renderLink()} >
+              <Link href={renderLink()}>
                 <a className="btn btn-primary btn-create-portfolio" title="Create Personal Portfolio"> Create Personal Portfolio </a>
               </Link>
             </div>
+          </div>
         </div>
-      </div>
-      <div className="content-home  mt-5 mb-3 sport-publisher">
-        <div className="pt-3 title-publisher">{isEmpty(sportSelected) ? <Skeleton /> : `${sportSelected?.sportName} Publishers`} {Boolean(publishers.length) && !isEmpty(sportSelected) && <span className="fs14 count-publishers"> {publishers.length} Publishers</span>}  </div>
-        <div className="row pb-5">
-          <SlickCustom id={sportSelected?.id} data={publishers} />
+        <div className="content-home  mt-5 mb-3 sport-publisher">
+          <div className="pt-3 title-publisher">{isEmpty(sportSelected) ? <Skeleton /> : `${sportSelected?.sportName} Publishers`} {Boolean(publishers.length) && !isEmpty(sportSelected) && <span className="fs14 count-publishers"> {publishers.length} Publishers</span>}  </div>
+          <div className="row pb-5">
+            <SlickCustom id={sportSelected?.id} data={publishers} />
+          </div>
         </div>
-      </div>
-      <TopTradingCards sportId={sportSelected?.id} title={sportSelected?.sportName ? `Top Trading ${sportSelected?.sportName} Cards` : ""} cardElement={TopElementSlick} />
-      <div className="popular-publishers py-5">
-        <div className="row">
-          <div className="card-breakdown col-12 col-md-6 col-lg-6 col-xl-6">
-            <h2 className="mb-2 text-title">Card Breakdown</h2>
-            <div className="mb-2 sub-title"> Select card and get actual information about the after-market activity of sales value </div>
-            <div className="d-flex justify-content-center align-items-center picture-box">
-              <img
-                onError={({ currentTarget }) => {
-                  currentTarget.onerror = null;
-                  if (ImageCardSearch) {
-                    currentTarget.src=ImageCardSearch.src;
-                  }
-                }}
-                className="img-product-element"
-                height="277"
-                src={`https://img.priceguide.cards/${cardData?.sport.name==="Non-Sport"?"ns":"sp"}/${cardData?.cardFrontImage?.img}.jpg`}
-                alt="" title="" />
-            </div>
-            <div className="mb-3">
-              <label className="form-label select-card"> Select Card </label>
-              <Select
-                className="custom-select"
-                onChange={(value) => {
-                  setValue('sport', value?.order?.toString() ?? '');
-                  setCardSelected(value)
-                }}
-                value={cardSelected}
-                options={cardBreakDown}
-                getOptionValue={getOptionValue}
-                getOptionLabel={(option) => option.webName}
-                classNamePrefix="react-select"
-                styles={{
-                  // @ts-ignore
-                  dropdownIndicator: (provided, state) => ({
-                    ...provided,
-                    transition: 'all .2s ease',
-                    transform: state.selectProps.menuIsOpen && "rotate(180deg)"
-                  })
-                }}
-              />
-            </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Name:</label>
-              <div className="col-8 col-sm-9">
-                {cardData?.fullNameWithCode ? <input
-                type="text"
-                readOnly
-                className="form-control-plaintext"
-                id="staticEmail"
-                value={cardData?.fullNameWithCode} />  : <Skeleton style={{ width: 100 }} />}
+        <TopTradingCards sportId={sportSelected?.id} title={sportSelected?.sportName ? `Top Trading ${sportSelected?.sportName} Cards` : ""} cardElement={TopElementSlick} />
+        <div className="popular-publishers py-5">
+          <div className="row">
+            <div className="card-breakdown col-12 col-md-6 col-lg-6 col-xl-6">
+              <h2 className="mb-2 text-title">Card Breakdown</h2>
+              <div className="mb-2 sub-title"> Select card and get actual information about the after-market activity of sales value </div>
+              <div className="d-flex justify-content-center align-items-center picture-box">
+                <img
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    if (ImageCardSearch) {
+                      currentTarget.src = ImageCardSearch.src;
+                    }
+                  } }
+                  className="img-product-element"
+                  height="277"
+                  src={`https://img.priceguide.cards/${cardData?.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData?.cardFrontImage?.img}.jpg`}
+                  alt="" title="" />
+              </div>
+              <div className="mb-3">
+                <label className="form-label select-card"> Select Card </label>
+                <Select
+                  className="custom-select"
+                  onChange={(value) => {
+                    setValue('sport', value?.order?.toString() ?? '');
+                    setCardSelected(value);
+                  } }
+                  value={cardSelected}
+                  options={cardBreakDown}
+                  getOptionValue={getOptionValue}
+                  getOptionLabel={(option) => option.webName}
+                  classNamePrefix="react-select"
+                  styles={{
+                    // @ts-ignore
+                    dropdownIndicator: (provided, state) => ({
+                      ...provided,
+                      transition: 'all .2s ease',
+                      transform: state.selectProps.menuIsOpen && "rotate(180deg)"
+                    })
+                  }} />
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Name:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.fullNameWithCode ? <input
+                    type="text"
+                    readOnly
+                    className="form-control-plaintext"
+                    id="staticEmail"
+                    value={cardData?.fullNameWithCode} /> : <Skeleton style={{ width: 100 }} />}
+                </div>
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Sport:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.sport?.name ?
+                    <Link href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
+                      <a className="text-reset" title={cardData?.sport?.name}> {cardData?.sport?.name} </a>
+                    </Link> : ''}
+                </div>
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Publisher:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.publisher?.name ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      id="staticEmail"
+                      value={cardData?.publisher?.name} /> : <Skeleton style={{ width: 100 }} />}
+                </div>
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Collection:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.set.name ?
+                    <Link href={`/${cardData?.set.url}`}>
+                      <a title={cardData.set.name} className="text-reset"> {cardData.set.name} </a>
+                    </Link> : <Skeleton style={{ width: 100 }} />}
+                </div>
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Base/Insert:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.type.name ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      id="staticEmail"
+                      value={cardData?.type?.name} /> : <Skeleton style={{ width: 100 }} />}
+                </div>
+              </div>
+              <div className="row picture-box-data">
+                <label className="col-4 col-sm-3 col-form-label">Parallel:</label>
+                <div className="col-8 col-sm-9">
+                  {cardData?.color.name ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      id="staticEmail"
+                      value={cardData?.color.name} /> : <Skeleton style={{ width: 100 }} />}
+                </div>
               </div>
             </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Sport:</label>
-              <div className="col-8 col-sm-9">
-                {cardData?.sport?.name ? 
-                  <Link href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
-                    <a className="text-reset" title={cardData?.sport?.name}> {cardData?.sport?.name} </a>
-                  </Link> : ''}
+            <div className="col-12 col-md-6 col-lg-6 col-xl-6 content-break-down">
+              <CardBreakdown price_data={priceChart} />
+              <div className="data-chart-info">
+                <div className="row bold-chart-text">
+                  <label className="col-8  col-sm-6 col-form-label">Change (% from first data):</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.change ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={`+${formatNumber(cardPrice?.change)}%`} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-8  col-sm-6 col-form-label">Latest Value:</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.latest ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={formatCurrency(cardPrice?.latest)} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-8  col-sm-6 col-form-label">Lowest Value:</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.min ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={formatCurrency(cardPrice?.min)} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-8  col-sm-6 col-form-label">Highest Value:</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.max ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={formatCurrency(cardPrice?.max)} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-8  col-sm-6 col-form-label">Average Value:</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.average ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={formatCurrency(cardPrice?.average)} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
+                <div className="row">
+                  <label className="col-8  col-sm-6 col-form-label">Total Trades:</label>
+                  <div className="col-4 col-sm-6 value-input">
+                    {cardPrice?.total_trades ?
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        id="staticEmail"
+                        value={cardPrice?.total_trades} /> : <Skeleton style={{ width: 100 }} />}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Publisher:</label>
-              <div className="col-8 col-sm-9">
-                {cardData?.publisher?.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  id="staticEmail"
-                  value={cardData?.publisher?.name}
-                /> : <Skeleton style={{ width: 100 }} />}
+              <div className="mb-3 mt-4">
+                <label className="form-label select-card">Select Card</label>
+                <Select
+                  className="custom-select"
+                  onChange={(value) => {
+                    setValue('sport', value?.order?.toString() ?? '');
+                    setCardSelected(value);
+                  } }
+                  value={cardSelected}
+                  options={cardBreakDown}
+                  getOptionValue={getOptionValue}
+                  getOptionLabel={(option) => option.webName}
+                  classNamePrefix="react-select"
+                  styles={{
+                    // @ts-ignore
+                    dropdownIndicator: (provided, state) => ({
+                      ...provided,
+                      transition: 'all .2s ease',
+                      transform: state.selectProps.menuIsOpen && "rotate(180deg)"
+                    })
+                  }} />
               </div>
-            </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Collection:</label>
-              <div className="col-8 col-sm-9">
-                {cardData?.set.name ?
-                  <Link href={`/${cardData?.set.url}`} >
-                    <a title={cardData.set.name} className="text-reset"> {cardData.set.name} </a>              
-                  </Link> : <Skeleton style={{ width: 100 }} />}
-              </div>
-            </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Base/Insert:</label>
-              <div className="col-8 col-sm-9">
-               {cardData?.type.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  id="staticEmail"
-                  value={cardData?.type?.name}
-                /> : <Skeleton style={{ width: 100 }} />}
-              </div>
-            </div>
-            <div className="row picture-box-data">
-              <label className="col-4 col-sm-3 col-form-label">Parallel:</label>
-              <div className="col-8 col-sm-9">
-                {cardData?.color.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  id="staticEmail"
-                  value={cardData?.color.name}
-                />  : <Skeleton style={{ width: 100 }} />}
+              <div className="d-flex justify-content-around section-detail-btn">
+                <Link href={gotoCardDetail()}>
+                  <a className="btn btn-primary btn-see-detail"> See Detailed Overview </a>
+                </Link>
+                <button onClick={() => router.push(`/search/?sport_criteria=${sportSelected?.id}`)} className="btn btn-primary btn-see-all">  See All {sportSelected?.sportName} Cards </button>
               </div>
             </div>
           </div>
-          <div className="col-12 col-md-6 col-lg-6 col-xl-6 content-break-down">
-            <CardBreakdown price_data={priceChart} />
-            <div className="data-chart-info">
-              <div className="row bold-chart-text">
-                <label className="col-8  col-sm-6 col-form-label">Change (% from first data):</label>
-                <div className="col-4 col-sm-6 value-input">
-                 {cardPrice?.change ?
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={`+${formatNumber(cardPrice?.change)}%`}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-              <div className="row">
-                <label className="col-8  col-sm-6 col-form-label">Latest Value:</label>
-                <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.latest ?
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={formatCurrency(cardPrice?.latest)}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-              <div className="row">
-                <label className="col-8  col-sm-6 col-form-label">Lowest Value:</label>
-                <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.min ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={formatCurrency(cardPrice?.min)}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-              <div className="row">
-                <label className="col-8  col-sm-6 col-form-label">Highest Value:</label>
-                <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.max ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={formatCurrency(cardPrice?.max)}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-              <div className="row">
-                <label className="col-8  col-sm-6 col-form-label">Average Value:</label>
-                <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.average ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={formatCurrency(cardPrice?.average)}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-              <div className="row">
-                <label className="col-8  col-sm-6 col-form-label">Total Trades:</label>
-                <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.total_trades ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    id="staticEmail"
-                    value={cardPrice?.total_trades}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </div>
-              </div>
-            </div>
-            <div className="mb-3 mt-4">
-              <label className="form-label select-card">Select Card</label>
-              <Select
-                className="custom-select"
-                onChange={(value) => {
-                  setValue('sport', value?.order?.toString() ?? '');
-                  setCardSelected(value)
-                }}
-                value={cardSelected}
-                options={cardBreakDown}
-                getOptionValue={getOptionValue}
-                getOptionLabel={(option) => option.webName}
-                classNamePrefix="react-select"
-                styles={{
-                  // @ts-ignore
-                  dropdownIndicator: (provided, state) => ({
-                    ...provided,
-                    transition: 'all .2s ease',
-                    transform: state.selectProps.menuIsOpen && "rotate(180deg)"
-                  })
-                }}
-              />
-            </div>
-            <div className="d-flex justify-content-around section-detail-btn">
-              <Link href={gotoCardDetail()}>
-                <a className="btn btn-primary btn-see-detail"> See Detailed Overview </a>
-              </Link>
-              <button onClick={() => router.push(`/search/?sport_criteria=${sportSelected?.id}`)} className="btn btn-primary btn-see-all">  See All { sportSelected?.sportName } Cards </button>
-            </div>
-          </div>
         </div>
-      </div>
-      <LatestCollections
-        routerLink={`/collections/${sportName}`}
-        title={isEmpty(sportSelected) ? "" : `Latest ${sportSelected?.sportName} Collections`} data={collections} />
+        <LatestCollections
+          routerLink={`/collections/${sportName}`}
+          title={isEmpty(sportSelected) ? "" : `Latest ${sportSelected?.sportName} Collections`} data={collections} />
         <div className="container-fluid">
           <div className="row leader-board-join-community">
             <LeaderboardHomePage sportId={sportSelected?.id} />
@@ -474,11 +470,55 @@ function SportLandingPage() {
           </div>
           <div className="line-bottom"></div>
         </div>
-      <FaqHomePage/>
-      <PersonalPortfolio />
-      {/* <Footer></Footer> */}
-    </div>
+        <FaqHomePage />
+        <PersonalPortfolio />
+        {/* <Footer></Footer> */}
+      </div></>
   );
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const getServerSideProps = async (context: any) => { 
+  try {
+      const params = {
+        sport_name: context?.query?.sportName
+      }
+    const result = await api.v1.getPopularPublisher(params);
+    const sportName = capitalizeFirstLetter(context?.query?.sportName);
+    
+    let titlePage = `Free Online ${sportName} Card Price Guide - ${sportName} Card Values from `;
+    let descriptionPage = `${sportName} Price Guide. Find actual prices for your favorite cards. Add cards to your personal online collection and track values over time.`;
+    
+    let check_more = false;
+    if (result.success) {
+      result.data.map((item, key) => {
+        if (key < 3) {
+          titlePage += item.publisher.name + ", "
+        } 
+        if (key > 3) {
+          check_more = true;
+          return;
+        }
+        
+      })
+    }
+    let textEditor = titlePage.slice(0, -2);
+
+    titlePage = `${textEditor} ${check_more ? '& more' : ''}| PriceGuide.Cards`;
+
+    return {props:{
+     titlePage,
+     descriptionPage
+    }}
+
+  } catch (error) {
+    
+  }
+  return {
+    props: {},
+  };
+}
 export default React.memo(SportLandingPage);

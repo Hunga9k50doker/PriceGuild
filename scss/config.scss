@@ -6,6 +6,11 @@
     display: none;
   }
 }
+.hide-highcharts-scrollbar {
+  .highcharts-scrollbar {
+    display: none;
+  }
+}
 .container-top-100{
   color:  #18213A ;
   .table {

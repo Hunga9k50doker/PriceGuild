@@ -6,7 +6,7 @@ import { CalcMaLine, SaleChartState } from "components/cardDetail/BusinessLogic"
 import { HelperSales, UtilsColorGrade } from "model/data_sport/pricing_grid";
 import Highcharts from "highcharts/highstock";
 import _ from "lodash";
-import ImageDefault from "assets/images/card_default.svg"
+import ImageDefault from "assets/images/card_default.png"
 // import { checkImageExist } from "pages/card/components/sale_chart/data";
 const ISSERVER = typeof window === "undefined";
 
@@ -309,14 +309,14 @@ export const options: Highcharts.Options = {
                 if (image) {
                     image.onerror = function() {
                         this.onerror = null
-                        this.src = ImageDefault
+                        this.src = ImageDefault.src
                     }
                 }
             }
             if (img) setTimeout(() => checkImage());
             return (
                 `<div>
-                <img src="${img || ImageDefault}" class="${classCustom}" alt="Lấy liên kết URL của hình ảnh – wikiHow"  data-noaft="1" style="width: 85px; height: 120px;">
+                <img src="${img || ImageDefault.src}" class="${classCustom}" alt="Lấy liên kết URL của hình ảnh – wikiHow"  data-noaft="1" style="width: 85px; height: 120px;">
                 </div>
                 <div style="margin-left: 10px"> 
                 <div style="font-size: 16px;font-weight: bold;color: #18213A;font-family: Manrope; margin-bottom:6px" >$${formatNumber(y)}</div>

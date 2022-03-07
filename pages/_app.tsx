@@ -38,7 +38,7 @@ const firebaseConfig = {
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  
+
   React.useEffect(() => {
     
     typeof document !== undefined ? require("bootstrap/dist/js/bootstrap.bundle.min") : null;
@@ -73,7 +73,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <React.StrictMode>
       <Provider store={store}>
-         <I18nextProvider i18n={i18next}>
+        <I18nextProvider i18n={i18next}>
           <Layout>
             <Component {...pageProps} /> 
             <ToastContainer />

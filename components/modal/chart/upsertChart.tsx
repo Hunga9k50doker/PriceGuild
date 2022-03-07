@@ -27,7 +27,8 @@ type ChartForm = {
   type: string,
   lv1: any;
   lv2: any;
-  data: any
+  data: any;
+  user_pp: any;
 };
 
 
@@ -45,7 +46,7 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
           lv1: data.lv1.value.toString(),
           lv2: data.lv2.value.toString(),
           data: data.data.value.toString(),
-          user_pp: "n",
+          user_pp: data.user_pp.value,
           moving_av: "28",
           //filter: chartDetail?.filter,
         }
@@ -88,6 +89,7 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
     setValue("data", MetaData.analyzeDataType.find(item => item.value === chartDetail?.data) ?? { value: "total", label: "Number of Cards" })
     setValue("lv1", MetaData.groupedBy.find(item => item.value.toString() === chartDetail?.lv1) ?? { value: 1, label: "Year" })
     setValue("lv2", MetaData.groupedBy.find(item => item.value.toString() === chartDetail?.lv2) ?? { value: 1, label: "Year" })
+    setValue("user_pp", MetaData.yesNo.find(item => item.value === chartDetail?.user_pp) ?? MetaData.yesNo[0])
   }
 
   const onDelete = () => {
@@ -220,6 +222,28 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
                       options={MetaData.groupedBy} />
                   )}
                   defaultValue={{ value: 1, label: "Year" }}
+                />
+              </div>
+            </div>
+            <div className="mb-3 custom-select-56">
+              <label htmlFor="" className="form-label">Use purchase price for missing data</label>
+              <div className="">
+                <Controller
+                  control={control}
+                  name="user_pp"
+                  render={({
+                    field: { onChange, value },
+                  }) => (
+                    <Select
+                      value={value}
+                      //menuIsOpen={true}
+                      onChange={onChange}
+                      menuPosition="fixed"
+                      classNamePrefix="select-price"
+                      className="select-price customScroll"
+                      options={MetaData.yesNo} />
+                  )}
+                  defaultValue={MetaData.yesNo[0]}
                 />
               </div>
             </div>

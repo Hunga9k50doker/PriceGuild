@@ -21,6 +21,7 @@ import Skeleton from "react-loading-skeleton";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import classes from './styles.module.scss';
 
 type PropTypes = {
   collection?: string
@@ -106,6 +107,8 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     const isDrillDown = !!seting.filter;
     if (isDrillDown) {
       switch (seting.type) {
+        case "table":
+          return getTitleDrilldown(seting)
         case "column":
           return getTitleDrilldown(seting)
         case "pie":
@@ -245,7 +248,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
         lv1: data.widget_settings.lv1,
         lv2: e.value.toString(),
         data: data.widget_settings.data,
-        user_pp: "n",
+        user_pp: data.widget_settings.user_pp ?? "n",
         moving_av: "28",
       }
     }
@@ -275,7 +278,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               <div className="d-flex justify-content-between date-filter align-items-center">
                 <div className="option-collection ms-2">
                   <div className="dropdown">
-                    <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src={IconDot3} alt="" title="" />
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -322,7 +325,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               <div className="d-flex justify-content-between date-filter align-items-center ">
                 <div className="option-collection ms-2">
                   <div className="dropdown">
-                    <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src={IconDot3} alt="" title="" />
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -354,24 +357,16 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
             }
           </div>
           <div className="row m-0 mt-4 border-chart p-3">
-            <div className="d-flex justify-content-end align-items-center p-0">
-              <div className="d-flex justify-content-between date-filter align-items-center">
-                <div className="option-collection ms-2">
-                  <div className="dropdown">
-                    <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                      <img src={IconDot3} alt="" title="" />
-                    </button>
-                    <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                      <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
-                      <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="">
-              <TableChart table_data={item.widget_settings.data} name_column={renderNameTable(item.widget_settings)} type={item.widget_settings.lv1} chartData={item.data} />
-            </div>
+            <TableChart 
+              table_data={item.widget_settings.data}
+              name_column={renderNameTable(item.widget_settings)} 
+              chartData={item.data}
+              widgetSettings={item.widget_settings}
+              collection={collection}
+              setAnalytics={setAnalytics}
+              onHandleChart={onHandleChart}
+              onConfirmRemove={onConfirmRemove}
+            />
           </div>
         </div>
         default:
@@ -389,7 +384,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                 <div className="d-flex justify-content-between date-filter align-items-center ">
                   <div className="option-collection ms-2">
                     <div className="dropdown">
-                      <button className="btn dropdown-toggle p-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src={IconDot3} alt="" title="" />
                       </button>
                       <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">

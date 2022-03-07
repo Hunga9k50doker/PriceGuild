@@ -14,7 +14,7 @@ export const analyticsUpdateWidget = async (widgetSettings: WidgetSettings, coll
       lv1: widgetSettings.lv1,
       lv2: widgetSettings.lv2,
       data: widgetSettings.data,
-      user_pp: "n",
+      user_pp: widgetSettings.user_pp ??"n",
       moving_av: "28",
       filter: filter
     }

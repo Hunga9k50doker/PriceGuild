@@ -256,7 +256,7 @@ const ChartSliderDemo = ({ chartData, stats, ...props }: PropTypes) => {
   }
 
   return (
-    <div className="mt-2 custom-chart-analytics">
+    <div className="mt-2 custom-chart-analytics hide-highcharts-scrollbar">
       {chartData && <HighchartsReact
         // @ts-ignore
         ref={refChart}

@@ -176,7 +176,7 @@ const SaleChart: React.FC<Props> = ({
   return (
     <div className="content-pricing-grid content-pricing-grid-custom">
       <StatisticAverage saleChartState={saleChartState} />
-      <div className="content-sale-chart">
+      <div className="content-sale-chart hide-highcharts-scrollbar">
         <div className="mt-2">
           {/* @ts-ignore */}
           <HighchartsReact constructorType={'stockChart'} ref={refChart} highcharts={Highcharts} options={options} />
