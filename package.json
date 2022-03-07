@@ -43,6 +43,7 @@
     "lodash.isequal": "^4.5.0",
     "moment": "^2.29.1",
     "next": "12.1.0",
+    "next-cookies": "^2.0.3",
     "next-fonts": "^1.5.1",
     "nouislider-react": "^3.4.1",
     "popper.js": "^1.16.1",
