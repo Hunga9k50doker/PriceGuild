@@ -178,12 +178,12 @@ const TableChart = (props: PropTypes) => {
   
   return (
     <>
-      <div className="d-flex justify-content-end align-items-center p-0" style={{minHeight: 34}}>
+      <div className="d-flex justify-content-end align-items-center p-0">
         {widgetSettings?.filter && <button disabled={isLoading} className={`${classes.drilldownBtn} me-2`} onClick={onDrillup}>Back to Main Data {isLoading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}</button>}
         <div className="d-flex justify-content-between date-filter align-items-center">
           <div className="option-collection ms-2">
             <div className="dropdown">
-              <button className="btn dropdown-toggle p-0 d-flex align-items-center" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src={IconDot3} alt="" title="" />
               </button>
               <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">

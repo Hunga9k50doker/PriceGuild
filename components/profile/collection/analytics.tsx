@@ -21,6 +21,7 @@ import Skeleton from "react-loading-skeleton";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import classes from './styles.module.scss';
 
 type PropTypes = {
   collection?: string
@@ -273,11 +274,11 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
             }
           </div>
           <div className="row  m-0 mt-4 border-chart p-3">
-            <div className="d-flex justify-content-end align-items-center p-0" style={{minHeight: 34}}>
+            <div className="d-flex justify-content-end align-items-center p-0">
               <div className="d-flex justify-content-between date-filter align-items-center">
                 <div className="option-collection ms-2">
                   <div className="dropdown">
-                    <button className="btn dropdown-toggle p-0 d-flex align-items-center" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src={IconDot3} alt="" title="" />
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -320,11 +321,11 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
             }
           </div>
           <div className="row  m-0 mt-4 border-chart p-3">
-            <div className="d-flex justify-content-end align-items-center p-0" style={{minHeight: 34}}>
+            <div className="d-flex justify-content-end align-items-center p-0">
               <div className="d-flex justify-content-between date-filter align-items-center ">
                 <div className="option-collection ms-2">
                   <div className="dropdown">
-                    <button className="btn dropdown-toggle p-0 d-flex align-items-center" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                       <img src={IconDot3} alt="" title="" />
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -379,11 +380,11 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               }
             </div>
             <div className=" border-chart p-3 mt-4">
-              <div className="d-flex justify-content-end align-items-center p-0" style={{minHeight: 34}}>
+              <div className="d-flex justify-content-end align-items-center p-0">
                 <div className="d-flex justify-content-between date-filter align-items-center ">
                   <div className="option-collection ms-2">
                     <div className="dropdown">
-                      <button className="btn dropdown-toggle p-0 d-flex align-items-center" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                      <button className={`${classes.btnToggle} btn btn-secondary`} type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src={IconDot3} alt="" title="" />
                       </button>
                       <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">

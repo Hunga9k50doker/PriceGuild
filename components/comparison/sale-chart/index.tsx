@@ -265,7 +265,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
   }
 
   return (
-    <div className="content-sale-chart">
+    <div className="content-sale-chart hide-highcharts-scrollbar">
       <div className="mt-2">
         <div className="only-mobile">
           <div className="d-flex justify-content-end mb-3 mr-2 sale-chart-option">

@@ -1222,7 +1222,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                       const notInside = gradeTreeSelected?.filter(it => !item.children.find(temp => temp.key === it)) || []
                                       const disabled = item.children.length + notInside.length > 5
                                       return (
-                                        <TreeNode value={item.value} title={<div className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></div>} key={item.key} disabled={disabled}>
+                                        <TreeNode value={item.value} title={<span className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></span>} key={item.key} disabled={disabled}>
                                           {item.children.map((child) => (
                                             <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)}/>
                                           ))}
