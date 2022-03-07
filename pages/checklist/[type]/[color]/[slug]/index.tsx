@@ -41,11 +41,9 @@ import ListLine from "components/icon/listLine";
 import $ from "jquery";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
+import Head from "next/head";
 
 const rowsPerPage = 20;
-type PropTypes = {
-  location: any;
-};
 
 type ParamTypes = {
   id: string;
@@ -70,7 +68,7 @@ type DataTableTye = {
 
 const limit = 20;
 
-const CollectionBase = (props: PropTypes) => {
+const CollectionBase = ({ ...props}) => { console.log(props, 'props');
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
   const { loggingIn } = useSelector(Selectors.auth);
   const { cards } = useSelector(Selectors.compare);
@@ -84,7 +82,7 @@ const CollectionBase = (props: PropTypes) => {
   });
 
   // :type/:color/:slug
-    const router = useRouter();
+  const router = useRouter();
   const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
   const { type, color } = router.query;
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
@@ -411,767 +409,746 @@ const CollectionBase = (props: PropTypes) => {
   };
 
   return (
-    <div className="container-fluid card-detail collection-detail collection-detail--mobile">
-      <div>
-        {" "}
-        {!Boolean(collection?.id) ? (
-          <Skeleton width={300} />
-        ) : (
-          renderBreadcrumbs()
-        )}{" "}
-      </div>
-      <div className="content-home template-collection-detail  template-collection-detail--mobile mt-5 mb-3">
-        <div className="row">
-          <div className="col-sm-6 col-12">
-            <div className="h-100 row d-flex justify-content-end">
-              <div className="col-sm-7 col-12 pr-box-picture box-picture">
-                <div className="bg-color-picture">
-                  {Boolean(collection?.id) && (
-                    <ImageBlurHash
-                      imageDefault={ImgCard}
-                      blurHash={
-                        collection?.blurhash ?? "LEHV6nWB2yk8pyo0adR*.7kCMdnj"
-                      }
-                      height={"100%"}
-                      width={"100%"}
-                      className="w-100"
-                      src={
-                        collection?.image
-                          ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${collection?.image}`
-                          : ImgCard.src
-                      }
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          {!Boolean(collection.id) ? (
-            <ParameterTitle type="base" />
+    <>
+      <Head>
+      <title>{
+        //@ts-ignore
+        props?.titlePage ?? ''}</title>
+      <meta name="description" content={
+        //@ts-ignore
+        props?.descriptionPage ?? ''} />
+    </Head><div className="container-fluid card-detail collection-detail collection-detail--mobile">
+        <div>
+          {" "}
+          {!Boolean(collection?.id) ? (
+            <Skeleton width={300} />
           ) : (
-            <div className="col-md-6 col-12 ps-4 col-detail-base">
-              <div className="collection-title-topic d-flex align-items-center">
-                <div>{collection?.sport?.name}</div>{" "}
-                <div className="circle-gray"></div>{" "}
-                <div>{collection?.year}</div>{" "}
-                <div className="circle-gray"></div>{" "}
-                <div>{collection?.publisher?.name}</div>
-              </div>
-              <h1 className=" collection-title mb-3">
-                {" "}
-                {`${collection?.title} - ${collection?.type} - ${collection?.color}`}{" "}
-              </h1>
-              <ul className="collection-gallery-info">
-                <li>
-                  <label>Release Date:</label>{" "}
-                  {typeof collection?.release_date === "number"
-                    ? collection?.release_date
-                    : moment(collection?.release_date, "MM/DD/YYYY").format(
-                        "MMM Do YYYY"
-                      )}
-                </li>
-                <li>
-                  <label>Sport:</label>{" "}
-                  <Link
-                    href={`/collections/${collection?.sport?.name
-                      ?.replace(/\s/g, "")
-                      ?.toLowerCase()}}`}
-                  >
-                    <a title={collection?.sport?.name}>
-                                              {" "}
-                    {collection?.sport?.name}{" "}
-                    </a>
-                  </Link>
-                </li>
-                <li>
-                  <label>Publisher:</label> {collection?.publisher?.name}
-                </li>
-                <li>
-                  <label>Year:</label> {collection?.year}
-                </li>
-                <li>
-                  <label>Includes:</label>{" "}
-                  {
-                    // @ts-ignore
-                    collection?.auto_memo?.name
-                  }
-                </li>
-                <li>
-                  <label>Cards in Checklist: </label> {collection?.rows}
-                </li>
-              </ul>
-            </div>
-          )}
-          <div className="card-detail mt-3">
-            <div
-              id="checkList_collection"
-              ref={checkListRef}
-              className="d-flex justify-content-between align-items-center checklist-collection-title"
-            >
-              <span>Checklist</span>
-              <div className="action-list d-flex justify-content-start align-items-center">
-                <div className="d-flex btn-group-card">
-                  <button
-                    type="button"
-                    onClick={() => setIsInline((prevState) => !prevState)}
-                    className={` ${
-                      !isInline ? "active" : ""
-                    } ms-2 btn btn-outline-secondary`}
-                  >
-                    {" "}
-                    <i className="fa fa-th" aria-hidden="true"></i>{" "}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsInline((prevState) => !prevState);
-                      setIsSelect(false);
-                    }}
-                    className={` ${
-                      isInline ? "active" : ""
-                    } btn btn-outline-secondary pl-0`}
-                  >
-                    {/* <i className="fa fa-list" aria-hidden="true"></i> */}
-                    {/* <img src={IconList} /> */}
-                    <ListLine />
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={onHandleMode}
-                  disabled={isInline && !cardSelected.length}
-                  className={`ms-2  ${
-                    isInline && !cardSelected.length
-                      ? "opacity-50"
-                      : "opacity-100"
-                  }  btn btn-outline-secondary btn-search-plus ${
-                    isSelect ? "active" : ""
-                  } d-flex justify-content-center align-items-center`}
-                >
-                  {isSelect ? <IconMinis /> : <IconPlus />}
-                </button>
-              </div>
-            </div>
-            {isSelect && (
-              <div
-                className={`d-flex justify-content-between align-items-start p-head-search p-10 ${
-                  isSelect ? "p-sticky-header" : ""
-                }`}
-              >
-                <div className="d-flex align-items-center ml-1 btn-group-head-search">
-                  <div className="me-2  btn-group-head-search-title">
-                    <span className="fw-bold">{cardSelected.length} </span>{" "}
-                    cards selected
-                  </div>
-                  <button
-                    disabled={!cardSelected.length}
-                    type="button"
-                    onClick={() => {
-                      setCardData(undefined);
-                      if (loggingIn) {
-                        setIsOpen(true);
-                      } else {
-                        setIsOpenLogin(true);
-                      }
-                    }}
-                    className="me-2 btn btn-portfolio"
-                  >
-                    {" "}
-                    Add To Portfolio{" "}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onSelectAll}
-                    className="me-2 btn btn-secondary btn-select-all"
-                  >
-                    Select All
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onClear}
-                    className="me-2 btn btn-outline-secondary btn-clear-section"
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="only-mobile group-head-search-content">
-                  <div className="d-flex align-items-center ml-1 btn-group-head-search btn-group-head-search--mobile">
-                    <div className="group-head-search-info">
-                      <div className="group-head-search-info-text d-flex">
-                        <div> Select All </div>
-                        <div>
-                          {" "}
-                          <span className="fw-bold">
-                            {cardSelected.length}
-                          </span>{" "}
-                          cards selected{" "}
-                        </div>
-                      </div>
-                      <img
-                        alt=""
-                        onClick={onHandleMode}
-                        src={IconCloseMobile}
-                      />
-                    </div>
-                    {cardSelected.length > 0 && (
-                      <div className="group-head-search-btn">
-                        <button
-                          disabled={!cardSelected.length}
-                          type="button"
-                          onClick={() => {
-                            setCardData(undefined);
-                            if (loggingIn) {
-                              setIsOpen(true);
-                            } else {
-                              setIsOpenLogin(true);
-                            }
-                          }}
-                          className="me-2 btn  btn-portfolio"
-                        >
-                          {" "}
-                          Add to { t('portfolio.text')}{" "}
-                        </button>
-                      </div>
+            renderBreadcrumbs()
+          )}{" "}
+        </div>
+        <div className="content-home template-collection-detail  template-collection-detail--mobile mt-5 mb-3">
+          <div className="row">
+            <div className="col-sm-6 col-12">
+              <div className="h-100 row d-flex justify-content-end">
+                <div className="col-sm-7 col-12 pr-box-picture box-picture">
+                  <div className="bg-color-picture">
+                    {Boolean(collection?.id) && (
+                      <ImageBlurHash
+                        imageDefault={ImgCard}
+                        blurHash={collection?.blurhash ?? "LEHV6nWB2yk8pyo0adR*.7kCMdnj"}
+                        height={"100%"}
+                        width={"100%"}
+                        className="w-100"
+                        src={collection?.image
+                          ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${collection?.image}`
+                          : ImgCard.src} />
                     )}
                   </div>
                 </div>
               </div>
+            </div>
+            {!Boolean(collection.id) ? (
+              <ParameterTitle type="base" />
+            ) : (
+              <div className="col-md-6 col-12 ps-4 col-detail-base">
+                <div className="collection-title-topic d-flex align-items-center">
+                  <div>{collection?.sport?.name}</div>{" "}
+                  <div className="circle-gray"></div>{" "}
+                  <div>{collection?.year}</div>{" "}
+                  <div className="circle-gray"></div>{" "}
+                  <div>{collection?.publisher?.name}</div>
+                </div>
+                <h1 className=" collection-title mb-3">
+                  {" "}
+                  {`${collection?.title} - ${collection?.type} - ${collection?.color}`}{" "}
+                </h1>
+                <ul className="collection-gallery-info">
+                  <li>
+                    <label>Release Date:</label>{" "}
+                    {typeof collection?.release_date === "number"
+                      ? collection?.release_date
+                      : moment(collection?.release_date, "MM/DD/YYYY").format(
+                        "MMM Do YYYY"
+                      )}
+                  </li>
+                  <li>
+                    <label>Sport:</label>{" "}
+                    <Link
+                      href={`/collections/${collection?.sport?.name
+                        ?.replace(/\s/g, "")
+                        ?.toLowerCase()}}`}
+                    >
+                      <a title={collection?.sport?.name}>
+                        {" "}
+                        {collection?.sport?.name}{" "}
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <label>Publisher:</label> {collection?.publisher?.name}
+                  </li>
+                  <li>
+                    <label>Year:</label> {collection?.year}
+                  </li>
+                  <li>
+                    <label>Includes:</label>{" "}
+                    {
+                      // @ts-ignore
+                      collection?.auto_memo?.name}
+                  </li>
+                  <li>
+                    <label>Cards in Checklist: </label> {collection?.rows}
+                  </li>
+                </ul>
+              </div>
             )}
-            {!isInline ? (
-              <div className="row mt-4 row-collection-base">
-                {collection.cards?.map((item, key) => (
-                  <CardElement
-                    valueName="code"
-                    isInline={isInline}
-                    key={item.id}
-                    cardSelected={cardSelected}
-                    onSelectItem={onSelectItem}
-                    imageUrl={
-                      item?.image
-                        ? `https://img.priceguide.cards/${
-                            item.sport === "Non-Sport" ? "ns" : "sp"
-                          }/${item?.image}.jpg`
-                        : undefined
-                    }
-                    isSelect={isSelect}
-                    gotoCard={() => onGoToCard(item)}
-                    // @ts-ignore
-                    onAddWishList={() =>
-                      onAddWishList({
+            <div className="card-detail mt-3">
+              <div
+                id="checkList_collection"
+                ref={checkListRef}
+                className="d-flex justify-content-between align-items-center checklist-collection-title"
+              >
+                <span>Checklist</span>
+                <div className="action-list d-flex justify-content-start align-items-center">
+                  <div className="d-flex btn-group-card">
+                    <button
+                      type="button"
+                      onClick={() => setIsInline((prevState) => !prevState)}
+                      className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}
+                    >
+                      {" "}
+                      <i className="fa fa-th" aria-hidden="true"></i>{" "}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsInline((prevState) => !prevState);
+                        setIsSelect(false);
+                      } }
+                      className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}
+                    >
+                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
+                      {/* <img src={IconList} /> */}
+                      <ListLine />
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onHandleMode}
+                    disabled={isInline && !cardSelected.length}
+                    className={`ms-2  ${isInline && !cardSelected.length
+                        ? "opacity-50"
+                        : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}
+                  >
+                    {isSelect ? <IconMinis /> : <IconPlus />}
+                  </button>
+                </div>
+              </div>
+              {isSelect && (
+                <div
+                  className={`d-flex justify-content-between align-items-start p-head-search p-10 ${isSelect ? "p-sticky-header" : ""}`}
+                >
+                  <div className="d-flex align-items-center ml-1 btn-group-head-search">
+                    <div className="me-2  btn-group-head-search-title">
+                      <span className="fw-bold">{cardSelected.length} </span>{" "}
+                      cards selected
+                    </div>
+                    <button
+                      disabled={!cardSelected.length}
+                      type="button"
+                      onClick={() => {
+                        setCardData(undefined);
+                        if (loggingIn) {
+                          setIsOpen(true);
+                        } else {
+                          setIsOpenLogin(true);
+                        }
+                      } }
+                      className="me-2 btn btn-portfolio"
+                    >
+                      {" "}
+                      Add To Portfolio{" "}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onSelectAll}
+                      className="me-2 btn btn-secondary btn-select-all"
+                    >
+                      Select All
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onClear}
+                      className="me-2 btn btn-outline-secondary btn-clear-section"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="only-mobile group-head-search-content">
+                    <div className="d-flex align-items-center ml-1 btn-group-head-search btn-group-head-search--mobile">
+                      <div className="group-head-search-info">
+                        <div className="group-head-search-info-text d-flex">
+                          <div> Select All </div>
+                          <div>
+                            {" "}
+                            <span className="fw-bold">
+                              {cardSelected.length}
+                            </span>{" "}
+                            cards selected{" "}
+                          </div>
+                        </div>
+                        <img
+                          alt=""
+                          onClick={onHandleMode}
+                          src={IconCloseMobile} />
+                      </div>
+                      {cardSelected.length > 0 && (
+                        <div className="group-head-search-btn">
+                          <button
+                            disabled={!cardSelected.length}
+                            type="button"
+                            onClick={() => {
+                              setCardData(undefined);
+                              if (loggingIn) {
+                                setIsOpen(true);
+                              } else {
+                                setIsOpenLogin(true);
+                              }
+                            } }
+                            className="me-2 btn  btn-portfolio"
+                          >
+                            {" "}
+                            Add to {t('portfolio.text')}{" "}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {!isInline ? (
+                <div className="row mt-4 row-collection-base">
+                  {collection.cards?.map((item, key) => (
+                    <CardElement
+                      valueName="code"
+                      isInline={isInline}
+                      key={item.id}
+                      cardSelected={cardSelected}
+                      onSelectItem={onSelectItem}
+                      imageUrl={item?.image
+                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
+                        : undefined}
+                      isSelect={isSelect}
+                      gotoCard={() => onGoToCard(item)}
+                      // @ts-ignore
+                      onAddWishList={() => onAddWishList({
                         ...item,
                         code: item.cardCode,
-                      })
-                    }
-                    onAddCollection={() => {
-                      setCardData(undefined);
-                      //@ts-ignore
-                      setCardSelected([item.cardCode]);
-                      if (loggingIn) {
-                        setIsOpen(true);
-                      } else {
-                        setIsOpenLogin(true);
-                      }
-                    }}
-                    item={{
-                      ...item,
-                      //@ts-ignore
-                      sport: collection?.sport?.name ?? "",
-                      year: collection?.year ?? "",
-                      webName: item.Name ?? "",
-                      code: item.cardCode,
-                      // @ts-ignore
-                      publisher: collection?.publisher?.name ?? "",
-                    }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <>
-                <div className="pricing-grid mt-3">
-                  <div className="content-pricing-grid p-0 customScroll custom-scroll-sticky">
-                    <table
-                      className="table table-hover"
-                      style={{ minWidth: "1140px" }}
-                    >
-                      <thead
-                        style={{
-                          top: isSelect ? 52 : 0,
-                        }}
-                        className="p-sticky-header"
+                      })}
+                      onAddCollection={() => {
+                        setCardData(undefined);
+                        //@ts-ignore
+                        setCardSelected([item.cardCode]);
+                        if (loggingIn) {
+                          setIsOpen(true);
+                        } else {
+                          setIsOpenLogin(true);
+                        }
+                      } }
+                      item={{
+                        ...item,
+                        //@ts-ignore
+                        sport: collection?.sport?.name ?? "",
+                        year: collection?.year ?? "",
+                        webName: item.Name ?? "",
+                        code: item.cardCode,
+                        // @ts-ignore
+                        publisher: collection?.publisher?.name ?? "",
+                      }} />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div className="pricing-grid mt-3">
+                    <div className="content-pricing-grid p-0 customScroll custom-scroll-sticky">
+                      <table
+                        className="table table-hover"
+                        style={{ minWidth: "1140px" }}
                       >
-                        <tr>
-                          <th
-                            style={{ width: "4%" }}
-                            scope="col"
-                            className="text-center"
-                          >
-                            <input
-                              onChange={() => {
-                                isCheckAll ? onClear() : onSelectAll();
-                              }}
-                              checked={isCheckAll}
-                              className="form-check-input cursor-pointer mt-0"
-                              type="checkbox"
-                            />
-                          </th>
-                          <th style={{ width: "12%" }} scope="col">
-                            {" "}
-                          </th>
-                          <th style={{ width: "13%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("onCardCode")}
-                              className="d-flex cursor-pointer align-items-center"
+                        <thead
+                          style={{
+                            top: isSelect ? 52 : 0,
+                          }}
+                          className="p-sticky-header"
+                        >
+                          <tr>
+                            <th
+                              style={{ width: "4%" }}
+                              scope="col"
+                              className="text-center"
                             >
-                              {" "}
-                              Card No.
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "onCardCode",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "onCardCode",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "24%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("Name")}
-                              className="d-flex cursor-pointer align-items-center"
-                            >
-                              {" "}
-                              Player Name
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "Name",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "Name",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "8%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("minPrice")}
-                              className="d-flex cursor-pointer align-items-center"
-                            >
-                              {" "}
-                              Min
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "minPrice",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "minPrice",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "8%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("maxPrice")}
-                              className="d-flex cursor-pointer align-items-center"
-                            >
-                              {" "}
-                              Max
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "maxPrice",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "maxPrice",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "15%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("count")}
-                              className="d-flex cursor-pointer align-items-center"
-                            >
-                              {" "}
-                              No. of Trades
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "count",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "count",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "10%" }} scope="col">
-                            <div
-                              onClick={() => onSortTable("printRun")}
-                              className="d-flex cursor-pointer align-items-center"
-                            >
-                              {" "}
-                              Print Run
-                              <div className="ms-1 sort-table">
-                                <i
-                                  className={`sort-asc ${renderSortTable(
-                                    "printRun",
-                                    true
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                                <i
-                                  className={`sort-desc ${renderSortTable(
-                                    "printRun",
-                                    false
-                                  )}`}
-                                  aria-hidden="true"
-                                ></i>
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ width: "6%" }} scope="col"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {collection.cards?.map((item, index) => (
-                          <tr key={index}>
-                            <td className="text-center">
-                              {" "}
                               <input
-                                onChange={() => onSelectItem(item.cardCode)}
-                                checked={cardSelected?.includes(item.cardCode)}
-                                className="form-check-input cursor-pointer"
-                                type="checkbox"
-                              />
-                            </td>
-                            <td>
-                              <div className="d-flex">
-                                <div
-                                  onClick={() => onGoToCard(item)}
-                                  className="cursor-pointer image-box-table mr-2"
-                                >
-                                  <img
-                                    alt=""
-                                    className="w-100"
-                                    onError={({ currentTarget }) => {
-                                      currentTarget.onerror = null; // prevents looping
-                                      currentTarget.src = CardPhotoBase;
-                                    }}
-                                    src={
-                                      item?.image
-                                        ? `https://img.priceguide.cards/${
-                                            item.sport === "Non-Sport"
-                                              ? "ns"
-                                              : "sp"
-                                          }/${item?.image}.jpg`
-                                        : CardPhotoBase
-                                    }
-                                  />
-                                </div>
-                                <div
-                                  onClick={() => onGoToCard(item)}
-                                  className="cursor-pointer image-box-table mr-2"
-                                >
-                                  <img className="w-100" src={CardPhotoBase} alt="" />
+                                onChange={() => {
+                                  isCheckAll ? onClear() : onSelectAll();
+                                } }
+                                checked={isCheckAll}
+                                className="form-check-input cursor-pointer mt-0"
+                                type="checkbox" />
+                            </th>
+                            <th style={{ width: "12%" }} scope="col">
+                              {" "}
+                            </th>
+                            <th style={{ width: "13%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("onCardCode")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Card No.
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "onCardCode",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "onCardCode",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
                                 </div>
                               </div>
-                            </td>
-                            <td
-                              onClick={() => onGoToCard(item)}
-                              className="cursor-pointer"
-                            >
-                              {" "}
-                              {item.onCardCode}
-                            </td>
-                            <td
-                              onClick={() => onGoToCard(item)}
-                              className="cursor-pointer"
-                            >
-                              <div> {item.Name} </div>
-                              {(Boolean(item.auto) || Boolean(item.memo)) && (
-                                <div className="content-tag d-flex mt-2">
-                                  {Boolean(item.auto) && (
-                                    <div className="au-tag"> AU </div>
-                                  )}
-                                  {Boolean(item.memo) && (
-                                    <div className="mem-tag"> MEM </div>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                            <td>
-                              {" "}
-                              {item.minPrice
-                                ? formatCurrency(item.minPrice)
-                                : "N/A"}{" "}
-                            </td>
-                            <td>
-                              {" "}
-                              {item.maxPrice
-                                ? formatCurrency(item.maxPrice)
-                                : "N/A"}{" "}
-                            </td>
-                            <td> {item.count} </td>
-                            <td> {item.printRun} </td>
-                            <td>
-                              <div className="dropdown dropdown--top">
-                                <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
-                                <div
-                                  className="dropdown-menu"
-                                  aria-labelledby="navbarDropdownDot"
-                                  data-bs-popper="none"
-                                >
-                                  <div
-                                    onClick={() => {
-                                      setCardData(undefined);
-                                      setCardSelected([item.cardCode]);
-                                      if (loggingIn) {
-                                        setIsOpen(true);
-                                      } else {
-                                        setIsOpenLogin(true);
-                                      }
-                                    }}
-                                    className="dropdown-menu-item d-flex cursor-pointer"
-                                  >
-                                    <div className="dropdown-menu-item__icon">
-                                      <img
-                                        alt=""
-                                        src={
-                                          !Boolean(item.portfolio)
-                                            ? IconFolder
-                                            : IconFolderFull
-                                        }
-                                      />
-                                    </div>
-                                    <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text') } {" "} </div>
-                                  </div>
-                                  <div
-                                    onClick={() =>
-                                      onAddWishList({
-                                        ...item,
-                                        code: item.cardCode,
-                                      })
-                                    }
-                                    className="dropdown-menu-item  d-flex cursor-pointer"
-                                  >
-                                    <div className="dropdown-menu-item__icon">
-                                      <img
-                                        alt=""
-                                        src={
-                                          !Boolean(item.wishlist)
-                                            ? IconHeart
-                                            : IconHeartFull
-                                        }
-                                      />
-                                    </div>
-                                    <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
-                                  </div>
-                                  <div
-                                    onClick={() => onComparison(item)}
-                                    className="dropdown-menu-item  d-flex cursor-pointer"
-                                  >
-                                    <div className="dropdown-menu-item__icon">
-                                      <img alt="" src={renderCompareIcon(item)} />
-                                    </div>
-                                    <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
-                                  </div>
+                            </th>
+                            <th style={{ width: "24%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("Name")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Player Name
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "Name",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "Name",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
                                 </div>
                               </div>
-                            </td>
+                            </th>
+                            <th style={{ width: "8%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("minPrice")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Min
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "minPrice",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "minPrice",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "8%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("maxPrice")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Max
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "maxPrice",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "maxPrice",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "15%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("count")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                No. of Trades
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "count",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "count",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "10%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("printRun")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Print Run
+                                <div className="ms-1 sort-table">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "printRun",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "printRun",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "6%" }} scope="col"></th>
                           </tr>
-                        ))}
-                        {collection.isLoading &&
-                          Array.from(Array(16).keys())?.map((e, index) => (
+                        </thead>
+                        <tbody>
+                          {collection.cards?.map((item, index) => (
                             <tr key={index}>
                               <td className="text-center">
                                 {" "}
-                                <Skeleton />{" "}
+                                <input
+                                  onChange={() => onSelectItem(item.cardCode)}
+                                  checked={cardSelected?.includes(item.cardCode)}
+                                  className="form-check-input cursor-pointer"
+                                  type="checkbox" />
+                              </td>
+                              <td>
+                                <div className="d-flex">
+                                  <div
+                                    onClick={() => onGoToCard(item)}
+                                    className="cursor-pointer image-box-table mr-2"
+                                  >
+                                    <img
+                                      alt=""
+                                      className="w-100"
+                                      onError={({ currentTarget }) => {
+                                        currentTarget.onerror = null; // prevents looping
+                                        currentTarget.src = CardPhotoBase;
+                                      } }
+                                      src={item?.image
+                                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
+                                          ? "ns"
+                                          : "sp"}/${item?.image}.jpg`
+                                        : CardPhotoBase} />
+                                  </div>
+                                  <div
+                                    onClick={() => onGoToCard(item)}
+                                    className="cursor-pointer image-box-table mr-2"
+                                  >
+                                    <img className="w-100" src={CardPhotoBase} alt="" />
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                onClick={() => onGoToCard(item)}
+                                className="cursor-pointer"
+                              >
+                                {" "}
+                                {item.onCardCode}
+                              </td>
+                              <td
+                                onClick={() => onGoToCard(item)}
+                                className="cursor-pointer"
+                              >
+                                <div> {item.Name} </div>
+                                {(Boolean(item.auto) || Boolean(item.memo)) && (
+                                  <div className="content-tag d-flex mt-2">
+                                    {Boolean(item.auto) && (
+                                      <div className="au-tag"> AU </div>
+                                    )}
+                                    {Boolean(item.memo) && (
+                                      <div className="mem-tag"> MEM </div>
+                                    )}
+                                  </div>
+                                )}
                               </td>
                               <td>
                                 {" "}
-                                <Skeleton />{" "}
-                              </td>
-                              <td className="cursor-pointer">
-                                {" "}
-                                <Skeleton />{" "}
-                              </td>
-                              <td className="cursor-pointer">
-                                {" "}
-                                <Skeleton />{" "}
+                                {item.minPrice
+                                  ? formatCurrency(item.minPrice)
+                                  : "N/A"}{" "}
                               </td>
                               <td>
                                 {" "}
-                                <Skeleton />{" "}
+                                {item.maxPrice
+                                  ? formatCurrency(item.maxPrice)
+                                  : "N/A"}{" "}
                               </td>
+                              <td> {item.count} </td>
+                              <td> {item.printRun} </td>
                               <td>
-                                {" "}
-                                <Skeleton />{" "}
-                              </td>
-                              <td>
-                                {" "}
-                                <Skeleton />{" "}
-                              </td>
-                              <td>
-                                {" "}
-                                <Skeleton />{" "}
-                              </td>
-                              <td>
-                                {" "}
-                                <Skeleton />{" "}
+                                <div className="dropdown dropdown--top">
+                                  <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                                  <div
+                                    className="dropdown-menu"
+                                    aria-labelledby="navbarDropdownDot"
+                                    data-bs-popper="none"
+                                  >
+                                    <div
+                                      onClick={() => {
+                                        setCardData(undefined);
+                                        setCardSelected([item.cardCode]);
+                                        if (loggingIn) {
+                                          setIsOpen(true);
+                                        } else {
+                                          setIsOpenLogin(true);
+                                        }
+                                      } }
+                                      className="dropdown-menu-item d-flex cursor-pointer"
+                                    >
+                                      <div className="dropdown-menu-item__icon">
+                                        <img
+                                          alt=""
+                                          src={!Boolean(item.portfolio)
+                                            ? IconFolder
+                                            : IconFolderFull} />
+                                      </div>
+                                      <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
+                                    </div>
+                                    <div
+                                      onClick={() => onAddWishList({
+                                        ...item,
+                                        code: item.cardCode,
+                                      })}
+                                      className="dropdown-menu-item  d-flex cursor-pointer"
+                                    >
+                                      <div className="dropdown-menu-item__icon">
+                                        <img
+                                          alt=""
+                                          src={!Boolean(item.wishlist)
+                                            ? IconHeart
+                                            : IconHeartFull} />
+                                      </div>
+                                      <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                                    </div>
+                                    <div
+                                      onClick={() => onComparison(item)}
+                                      className="dropdown-menu-item  d-flex cursor-pointer"
+                                    >
+                                      <div className="dropdown-menu-item__icon">
+                                        <img alt="" src={renderCompareIcon(item)} />
+                                      </div>
+                                      <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                           ))}
-                      </tbody>
-                    </table>
+                          {collection.isLoading &&
+                            Array.from(Array(16).keys())?.map((e, index) => (
+                              <tr key={index}>
+                                <td className="text-center">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td className="cursor-pointer">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td className="cursor-pointer">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
-            <div className="row row-list">
-              {collection.isLoading && (
-                <>{!isInline && <SkeletonCard numberLine={28} />}</>
+                </>
               )}
-            </div>
-          </div>
-          <div
-            className={`${
-              !collection.isLoading && Boolean(collection.rows) ? "" : "d-none"
-            }`}
-          >
-            {Boolean(
-              pagesSelected[pagesSelected.length - 1] <
-                Math.ceil((collection?.rows ?? 0) / rowsPerPage)
-            ) && (
-              <div className="d-flex justify-content-center">
-                <button
-                  onClick={onLoadMore}
-                  type="button"
-                  className="btn btn-light load-more"
-                  title="Load More"
-                > {" "} Load More {" "} </button>
+              <div className="row row-list">
+                {collection.isLoading && (
+                  <>{!isInline && <SkeletonCard numberLine={28} />}</>
+                )}
               </div>
-            )}
-            <div className="d-flex justify-content-center mt-3">
-              <Pagination
-                pagesSelected={pagesSelected}
-                onSelectPage={handlePageClick}
-                totalPage={Math.ceil((collection.rows ?? 0) / rowsPerPage)}
-              />
             </div>
-          </div>
-          {/* <nav aria-label="Page navigation example">
-            <ul className="pagination">
-              <li className="page-item"><a className="page-link" href="#">Previous</a></li>
-              <li className="page-item"><a className="page-link" href="#">1</a></li>
-              <li className="page-item"><a className="page-link" href="#">2</a></li>
-              <li className="page-item"><a className="page-link" href="#">3</a></li>
-              <li className="page-item"><a className="page-link" href="#">Next</a></li>
-            </ul>
-          </nav> */}
-          {/* <div style={{ fontSize: 18 }} className="pricing-grid mt-0">
-            <div className="fs-3 fw-bold mb-5">Sales Overview</div>
-            <div className="btn-group btn-group-sm filter-date" role="group" aria-label="Basic radio toggle button group">
-              <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" defaultChecked />
-              <label onClick={() => onChangeFilter(7)} className="btn btn-light" htmlFor="btnradio1">1 week</label>
-              <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" />
-              <label onClick={() => onChangeFilter(14)} className="btn btn-light" htmlFor="btnradio2">2 weeks</label>
-              <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off" />
-              <label onClick={() => onChangeFilter(30)} className="btn btn-light" htmlFor="btnradio3">1 Month</label>
-              <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off" />
-              <label onClick={() => onChangeFilter(90)} className="btn btn-light" htmlFor="btnradio4">3 Month</label>
-              <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off" />
-              <label onClick={() => onChangeFilter(365)} className="btn btn-light" htmlFor="btnradio5">1 Year</label>
+            <div
+              className={`${!collection.isLoading && Boolean(collection.rows) ? "" : "d-none"}`}
+            >
+              {Boolean(
+                pagesSelected[pagesSelected.length - 1] <
+                Math.ceil((collection?.rows ?? 0) / rowsPerPage)
+              ) && (
+                  <div className="d-flex justify-content-center">
+                    <button
+                      onClick={onLoadMore}
+                      type="button"
+                      className="btn btn-light load-more"
+                      title="Load More"
+                    > {" "} Load More {" "} </button>
+                  </div>
+                )}
+              <div className="d-flex justify-content-center mt-3">
+                <Pagination
+                  pagesSelected={pagesSelected}
+                  onSelectPage={handlePageClick}
+                  totalPage={Math.ceil((collection.rows ?? 0) / rowsPerPage)} />
+              </div>
             </div>
-            <div className="content-pricing-grid mh-100 customScroll">
-              <ChartLineDemo />
-            </div>
-          </div> */}
-        </div>
+            {/* <nav aria-label="Page navigation example">
+      <ul className="pagination">
+        <li className="page-item"><a className="page-link" href="#">Previous</a></li>
+        <li className="page-item"><a className="page-link" href="#">1</a></li>
+        <li className="page-item"><a className="page-link" href="#">2</a></li>
+        <li className="page-item"><a className="page-link" href="#">3</a></li>
+        <li className="page-item"><a className="page-link" href="#">Next</a></li>
+      </ul>
+    </nav> */}
+            {/* <div style={{ fontSize: 18 }} className="pricing-grid mt-0">
+      <div className="fs-3 fw-bold mb-5">Sales Overview</div>
+      <div className="btn-group btn-group-sm filter-date" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" defaultChecked />
+        <label onClick={() => onChangeFilter(7)} className="btn btn-light" htmlFor="btnradio1">1 week</label>
+        <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" />
+        <label onClick={() => onChangeFilter(14)} className="btn btn-light" htmlFor="btnradio2">2 weeks</label>
+        <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off" />
+        <label onClick={() => onChangeFilter(30)} className="btn btn-light" htmlFor="btnradio3">1 Month</label>
+        <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off" />
+        <label onClick={() => onChangeFilter(90)} className="btn btn-light" htmlFor="btnradio4">3 Month</label>
+        <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off" />
+        <label onClick={() => onChangeFilter(365)} className="btn btn-light" htmlFor="btnradio5">1 Year</label>
       </div>
-      <ChosseCollection
-        selectCollection={selectWishlist}
-        table="wishlist"
-        title="wishlist"
-        isOpen={isOpenWishList}
-        setIsOpen={setIsOpenWishList}
-      />
-      <ChosseCollection
-        selectCollection={selectCollection}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
-      <LoginModal
-        onSuccess={() => {
-          setIsOpenLogin(false);
-          if (cardData) {
-            setIsOpenWishList(true);
-          } else {
-            setIsOpen(true);
-          }
-        }}
-        isOpen={isOpenLogin}
-        onClose={() => setIsOpenLogin(false)}
-      />
-      {cardData && loggingIn && (
-        <SelectGrading
-          wishList={wishList}
-          cardData={cardData}
-          isOpen={isOpenGrade}
-          onSuccess={(code) => {
-            let dataNew = [...(collection?.cards ?? [])];
-            dataNew = dataNew.map((card) =>
-              card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }
-            );
-            return setCollection((prevState) => {
-              return {
-                ...prevState,
-                cards: dataNew,
-              };
-            });
-          }}
-          setIsOpen={setIsOpenGrade}
-        />
-      )}
-    </div>
+      <div className="content-pricing-grid mh-100 customScroll">
+        <ChartLineDemo />
+      </div>
+    </div> */}
+          </div>
+        </div>
+        <ChosseCollection
+          selectCollection={selectWishlist}
+          table="wishlist"
+          title="wishlist"
+          isOpen={isOpenWishList}
+          setIsOpen={setIsOpenWishList} />
+        <ChosseCollection
+          selectCollection={selectCollection}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen} />
+        <LoginModal
+          onSuccess={() => {
+            setIsOpenLogin(false);
+            if (cardData) {
+              setIsOpenWishList(true);
+            } else {
+              setIsOpen(true);
+            }
+          } }
+          isOpen={isOpenLogin}
+          onClose={() => setIsOpenLogin(false)} />
+        {cardData && loggingIn && (
+          <SelectGrading
+            wishList={wishList}
+            cardData={cardData}
+            isOpen={isOpenGrade}
+            onSuccess={(code) => {
+              let dataNew = [...(collection?.cards ?? [])];
+              dataNew = dataNew.map((card) => card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }
+              );
+              return setCollection((prevState) => {
+                return {
+                  ...prevState,
+                  cards: dataNew,
+                };
+              });
+            } }
+            setIsOpen={setIsOpenGrade} />
+        )}
+      </div></>
   );
 };
+export const getServerSideProps = async (context: any) => { 
+  try {
+    const ctx = context.query;
+    
+    let titlePage = `${ctx.slug}| PriceGuide.Cards`;
+    let descriptionPage = `${ctx.slug} Checklist`;
 
+    return {props:{
+     titlePage,
+     descriptionPage,
+    }}
+
+  } catch (error) {
+    
+  }
+  return {
+    props: {},
+  };
+}
 export default CollectionBase;
