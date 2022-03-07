@@ -38,6 +38,8 @@ import useWindowDimensions from "utils/useWindowDimensions"
 
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
+import { getCookie } from 'utils/helper';
+import cookies from 'next-cookies'
 interface ParamTypes {
   page: string,
   action?: string
@@ -45,7 +47,6 @@ interface ParamTypes {
 }
 
 const Profile: React.FC = ({...props}) => {
-
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
@@ -361,7 +362,7 @@ export const getServerSideProps = async (context:any) => {
   try {
     const pageCurr = context?.query?.page;
     const actionCurr = context?.query?.action;
-
+    let data: any = {};
     let titlePage = "";
     let descriptionPage = "";
     
@@ -419,12 +420,48 @@ export const getServerSideProps = async (context:any) => {
       titlePage = "Personal Profile";
       descriptionPage = "Personal Profile on PriceGuide.Cards";
     }
+     
+    if (actionCurr === 'edit-card') {
+
+      let token = cookies(context).TOKEN_KEY;
+    
+      const params = {
+          cardcode: typeof context.query?.code === "string" ? context.query?.code.split(",") : "",
+          table: "portfolio",
+          all_data: true,
+          group_ref: Number(context?.query?.collection ?? 0),
+      };
+
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+ token,
+        },
+        //@ts-ignore
+        body: JSON.stringify(params)
+      }
+      
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/pg_app_get_existing_saved_cards`, config);
+      data = await res.json();
+
+      if (data.success) {
+        const dataEntry = data?.data?.cards[0].data[0];
+      
+        const selecedData = data?.data?.groups?.find(
+            (item: any) => item.id === dataEntry.group_ref
+        );
+
+        titlePage = `Edit Card - ${selecedData.group_name} - Personal Collections`
+      }
+    }
 
     titlePage += ' | PriceGuide.Cards';
-
     return {props:{
-     titlePage,
-     descriptionPage
+      titlePage,
+      descriptionPage,
+      data,
     }}
 
   } catch (e) {
