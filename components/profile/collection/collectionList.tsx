@@ -343,7 +343,7 @@ const CollectionList = ({
       console.log("error........", error);
     }
   }
-  console.log(userInfo, 'userInfo');
+  
   return (
     <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />}
     <div className="profile-personal-collections">
@@ -533,7 +533,7 @@ const CollectionList = ({
 
       {
         matchPatchRoute && 
-        !collections.isLoading && collections.data.length === 0 ? 
+        !collections.isLoading && collections.data.length === 0 && searchKey === '' ?  
         <div className="message-profile-null">
             { 
             profileFriend && profileFriend?.user_info?.full_name ? profileFriend?.user_info?.full_name : profileFriend?.user_info?.username ? `@${profileFriend?.user_info?.username}` : ''
@@ -543,7 +543,7 @@ const CollectionList = ({
       }
 
       {
-        collections && collections.data.length === 0   && searchKey !== '' &&
+        collections && collections.data.length === 0 && !collections.isLoading  && searchKey !== '' &&
         <div className="message-profile-null">
           No results were found matching keyword 
         </div>
