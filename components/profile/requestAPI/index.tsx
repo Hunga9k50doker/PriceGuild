@@ -8,6 +8,7 @@ import { AllowedWebsite, APIKey } from "interfaces";
 import RaiseAPIModal from "components/modal/raiseAPI";
 import { ToastSystem } from 'helper/toast_system';
 import { api } from 'configs/axios';
+import { useRouter } from 'next/router'
 
 type Inputs = {
   portf_req_sport: any;
@@ -27,12 +28,17 @@ const RequestAPI = () => {
   const { keyList } = useSelector(Selectors.apiDocument);
   const [isOpenRaise, setIsOpenRaise] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
-
+  const { userInfo } = useSelector(Selectors.auth);
   //Key này sử dụng để biết item nào đang dùng modal
   const [indexSelect, setIndexSelect] = useState<number>(0);
-
+  const router = useRouter();
   useEffect(() => {
     dispatch(ApiDocumentActionType.getApiKeys());
+    
+    if (userInfo && !userInfo?.activated) {
+      router.push('/verify-email');
+      return;
+    }
   }, []);
 
   const deleteApi = (item: APIKey, index: number) => {
