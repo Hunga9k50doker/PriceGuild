@@ -45,7 +45,7 @@ export type Inputs = {
   sport: number;
 }
 
-function SportLandingPage({...props}) { console.log(props);
+function SportLandingPage({...props}) {
   const router = useRouter();
   const { sportName } = router.query;
   const [sportSelected, setSportSelected] = useState<SportType>();
@@ -496,7 +496,8 @@ export const getServerSideProps = async (context: any) => {
     if (result.success) {
       result.data.map((item, key) => {
         if (key < 3) {
-          titlePage += item.publisher.name + ", "
+          //@ts-ignore
+          titlePage += item.publisherName + ", "
         } 
         if (key > 3) {
           check_more = true;
