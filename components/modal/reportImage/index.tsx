@@ -213,7 +213,7 @@ const Index = ({
                 } `}
                 onClick={() => {
                   setIsCorrectCard(true);
-                  setValue("report_type", 0);
+                  setValue("report_type", 1);
                 }}
               >
                 Incorrect Card
@@ -224,7 +224,7 @@ const Index = ({
                 }`}
                 onClick={() => {
                   setIsCorrectCard(false);
-                  setValue("report_type", 1);
+                  setValue("report_type", 2);
                 }}
               >
                 Incorrect Grade

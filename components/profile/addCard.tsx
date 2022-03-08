@@ -1144,7 +1144,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         <div className="d-flex images justify-content-center align-items-center">
                           <div>
                             <img
-                              className="rounded"
+                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.front
                                   ? entry?.image_upload?.front
@@ -1155,7 +1155,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           </div>
                           <div className="ms-2">
                             <img
-                              className="rounded"
+                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.back
                                   ? entry?.image_upload?.back

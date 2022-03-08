@@ -2670,12 +2670,12 @@
     .d-block-add-collection.add-collection-right {
       display: none;
       padding: 16px !important;
-      position: fixed;
-      top: 70px !important;
-      height: calc(100vh - 70px);
+      // position: fixed;
+      // top: 70px !important;
+      // height: calc(100vh - 70px);
       width: 100%;
-      left: 0;
-      z-index: 999;
+      // left: 0;
+      // z-index: 999;
       background-color: #FFFFFF;
       overflow-x: scroll;
       .rounded {

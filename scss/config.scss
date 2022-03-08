@@ -3878,6 +3878,9 @@ th .form-check-input.form-check-input-head {
           .rounded {
             background: #fff!important;
             padding: 8px 12px!important;
+            &.rounded-collection {
+              padding: 0!important;
+            }
           }
         }
         .card-add-group-button {
