@@ -463,8 +463,14 @@ const CollectionDetail = (props: PropTypes) => {
   return (
     <div className="container-fluid card-detail collection-detail">
       <Head>
-        <title>{collection?.title ?? ''} | PriceGuide.Cards</title>
+        <title>
+          {
+          //@ts-ignore
+          props?.data?.title ?? ''} | PriceGuide.Cards</title>
         <meta name="description" content={`${collection?.title} Collection Overview. Browse set and check out the top sales from the collection.`} />
+        <link rel="canonical" href={
+          //@ts-ignore
+          `${process.env.DOMAIN}${props?.url}`} />
       </Head>
       <CaptCha
         isOpen={isCaptCha}
@@ -638,6 +644,24 @@ const CollectionDetail = (props: PropTypes) => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps = async (context:any) => {
+  try {
+
+    const res = await api.v1.collection.getDetail({ setID: Number(context.query.id) }, {});
+    
+    return {
+      props: {
+        data: res?.data
+      },
+    };
+  } catch (e) {
+    console.error(e);
+  }
+  return {
+    props: {},
+  };
 };
 
 export default CollectionDetail;
