@@ -6,6 +6,8 @@ import {
   HelperSales, PricingGridModel,
 } from "model/data_sport/pricing_grid";
 import { formatCurrency, formatNumber } from "utils/helper"
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 interface Props {
   onHideChart: (status: boolean, cardId: Array<string>) => void;
   onChangeGrade: (cardGrade: PricingGridModel, cardId: string) => void;
@@ -14,7 +16,6 @@ interface Props {
 export interface RefType {
   updateChartData: (chartData: ChartData) => void;
 }
-
 
 const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
   const [statastics, setStatastics] = useState<Array<HoldChartData>>([])
@@ -120,7 +121,13 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                     checked={item.isShow}
                   />
                 </td>
-                <td> {item.cardName} </td>
+                <td>
+                  <OverlayTrigger overlay={<Tooltip>{item?.cardData?.webName ?? ""} - {item?.cardCode ?? ""}</Tooltip>}>
+                    {({ ref, ...triggerHandler }) => (
+                      <div ref={ref} {...triggerHandler}>{item?.cardName ?? ""}</div>
+                    )}
+                  </OverlayTrigger>
+                </td>
                 {/* custom-select-table */}
                 <td className="hidden-select">
                   <Select

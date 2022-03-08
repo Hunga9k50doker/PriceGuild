@@ -27,6 +27,9 @@ import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import PlaceholderChart from "components/cardDetail/components/placeholder_chart"
 import ImageLineChart from "assets/images/line_chart_placeholder.png";
 import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+
 const ISSERVER = typeof window === "undefined";
 
   const Comparison: React.FC = () => {
@@ -461,7 +464,13 @@ const ISSERVER = typeof window === "undefined";
                   <Nav variant="pills">
                     {card?.map((item, key) => (
                       <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
-                        <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>{`${item.firstname ?? ""}`} </Nav.Link>
+                        <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>
+                            <OverlayTrigger overlay={<Tooltip>{item?.webName ?? ""} - {item?.code ?? ""}</Tooltip>}>
+                              {({ ref, ...triggerHandler }) => (
+                                <div ref={ref} {...triggerHandler}>{item?.firstname ?? ""}</div>
+                              )}
+                            </OverlayTrigger>
+                        </Nav.Link>
                       </Nav.Item>
                     ))}
                   </Nav>
