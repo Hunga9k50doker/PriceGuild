@@ -94,13 +94,13 @@ const Index = ({
           className="item-grade"
         >
           <div
-            className="grade-value"
+            className={`grade-value ${props.data?.name === "ungraded" ? "ungraded" :""}`}
             style={{
               color: props.data?.color_1,
               backgroundColor: props.data?.color_2,
             }}
           >
-            {props.data?.name}
+           { props.data?.name}
           </div>
         </div>
       </components.Option>

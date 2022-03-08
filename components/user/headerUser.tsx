@@ -97,7 +97,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
     }
   }
   const { userInfo } = useSelector(Selectors.auth);
-  console.log(friend, 'friend');
+  // console.log(friend, 'friend');/
   return (
     <div className="info-user mt-2">
       <div className="d-lg-flex justify-content-between align-items-center">
