@@ -793,7 +793,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   return (
                     <>
                       {cardData.fullWebName && <Helmet>
-                        <title>{cardData.fullWebName}</title>
+                        {/* <title>{cardData.fullWebName}</title>  not use for now */}
                         <meta property="og:type" content={cardData.fullWebName} />
                         <meta property="og:title" content={cardData.fullWebName} />
                         <meta property="og:description" content={cardData.fullWebName} />

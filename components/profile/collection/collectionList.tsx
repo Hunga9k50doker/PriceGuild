@@ -343,7 +343,7 @@ const CollectionList = ({
       console.log("error........", error);
     }
   }
-  console.log(userInfo, 'userInfo');
+  
   return (
     <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />}
     <div className="profile-personal-collections">

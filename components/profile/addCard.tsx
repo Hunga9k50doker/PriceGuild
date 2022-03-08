@@ -385,7 +385,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
-        router.push("/profile/collections");
+        router.push("/profile/portfolio");
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
