@@ -938,6 +938,9 @@ const CardListCollection = ({
     if(router.pathname === "/friends/[friendId]") {
       setMatchPatchRoute(true);
     }
+    if (Boolean(Number(router.query.page))) {
+      setMatchPatchRoute(true);
+    }
     if(userId) {
       if(matchPatchRoute) {
         if(userId !== MyStorage.user.userid.toString())
