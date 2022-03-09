@@ -465,7 +465,7 @@ const ISSERVER = typeof window === "undefined";
                     {card?.map((item, key) => (
                       <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
                         <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>
-                            <OverlayTrigger overlay={<Tooltip>{item?.webName ?? ""} - {item?.code ?? ""}</Tooltip>}>
+                            <OverlayTrigger placement="auto" overlay={<Tooltip>{item?.webName ?? ""} - {item?.code ?? ""}</Tooltip>}>
                               {({ ref, ...triggerHandler }) => (
                                 <div ref={ref} {...triggerHandler}>{item?.firstname ?? ""}</div>
                               )}
