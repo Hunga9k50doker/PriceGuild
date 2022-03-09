@@ -24,7 +24,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const [t, i18n] = useTranslation("common");
   React.useEffect(() => {
-    if (loggingIn) {
+    if (loggingIn && isOpen) {
       getData()
     }
 

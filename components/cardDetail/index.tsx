@@ -110,22 +110,15 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [gradeCompanys, setGradeCompany] = useState<Array<any>>([])
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
-  // const [windowWidth, setWindowWidth] = useState(0)
-
-  // useEffect(() => {
-  //   window.addEventListener('resize', e => {
-  //     setWindowWidth(window.innerWidth);
-  //   });
-  // }, [window.innerWidth]);
   const [t, i18n] = useTranslation("common")
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
 
   useEffect(() => {
-    if (!isEmpty(router?.query) || !isEmpty(props.code)) {
+    if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
         let cardCode = router?.query?.cardCodeDetail ?? props.code;
         let controller: CardDetailSaga = refProvider?.current
           .controller as CardDetailSaga;
-
+      if (!isEmpty(cardCode)) {
         controller.loadCardDetail({
           // @ts-ignore
           card_code: cardCode,
@@ -154,7 +147,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         }).catch((err: any) => {
             props.errorCard && props.errorCard(props?.code ?? '');
         })
-
+      }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }
     
