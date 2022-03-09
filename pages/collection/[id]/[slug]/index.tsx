@@ -467,10 +467,12 @@ const CollectionDetail = (props: PropTypes) => {
           {
           //@ts-ignore
           props?.data?.title ?? ''} | PriceGuide.Cards</title>
-        <meta name="description" content={`${collection?.title} Collection Overview. Browse set and check out the top sales from the collection.`} />
+        <meta name="description" content={`${
+          //@ts-ignore
+          props?.data?.title ?? ''} Collection Overview. Browse set and check out the top sales from the collection.`} />
         <link rel="canonical" href={
           //@ts-ignore
-          `${process.env.DOMAIN}${props?.url}`} />
+          `${process.env.DOMAIN}/${props?.data?.url}`} />
       </Head>
       <CaptCha
         isOpen={isCaptCha}
