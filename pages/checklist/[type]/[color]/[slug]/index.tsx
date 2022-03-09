@@ -1151,14 +1151,29 @@ const CollectionBase = ({ ...props}) => {
 };
 export const getServerSideProps = async (context: any) => { 
   try {
-    const ctx = context.query;
+      const ctx = context.query;
+      let prms = {
+       type: Number(context.query.type),
+       color: context.query.color
+      }
+
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(prms)
+      }
     
-    let titlePage = `${ctx.slug}| PriceGuide.Cards`;
-    let descriptionPage = `${ctx.slug} Checklist`;
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/checklist/page-title`, config);
+    const data = await res.json();
+    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''}| PriceGuide.Cards`;
+    let descriptionPage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} Checklist`;
 
     return {props:{
      titlePage,
-     descriptionPage,
+      descriptionPage,
     }}
 
   } catch (error) {
