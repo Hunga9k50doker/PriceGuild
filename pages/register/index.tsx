@@ -109,6 +109,7 @@ const RegisterPage: React.FC = () => {
       email: data.email,
       time_zone,
     }, headers, history, onFail ));
+    router.push('/verify-email');
   };
 
   const onFail = () => {
