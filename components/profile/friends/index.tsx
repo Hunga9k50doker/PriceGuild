@@ -25,10 +25,10 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
   const router = useRouter();
 
   React.useEffect(() => {
-    // if(userInfo && !userInfo?.activated) {
-    //   router.push('/verify-email');
-    //   return;
-    // }
+    if(userInfo && !userInfo?.activated) {
+      router.push('/verify-email');
+      return;
+    }
     dispatch(FriendAction.getListFriend({
       user_id: props?.userId ?? userInfo?.userid
     }))

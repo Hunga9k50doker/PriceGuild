@@ -191,11 +191,11 @@ const RegisterPage: React.FC = () => {
               </div>
               <div className={`col-12 form-data ${errors.password ? "error-validation" : ""}`}>
                 <label className="text-form">Password</label>
-                <div className="position-password position-relative">
+                <div className="position-password  position-relative">
                   <input {...register("password")} type={typePassword} name="password" className="form-control" placeholder="Your Password" onFocus={() => handleOnFocus()} onBlur={() => handleOnBlur()}/>
-                  <button onClick={() => onChangeTypePassword(watchPassword, typePassword, setTypePassword)} type="button" className="btn position-absolute">
+                  <div onClick={() => onChangeTypePassword(watchPassword, typePassword, setTypePassword)}  className="btn position-absolute position-password--custom">
                     {renderIcon(watchPassword, typePassword)}
-                  </button>
+                  </div>
                 </div>
                 {errors.password?.message && <div className="invalid-feedback d-inline">{errors.password?.message}</div>}
               </div>
