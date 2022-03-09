@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CardDetail from "components/cardDetail"
 import Head from 'next/head';
 
-const CardDetailPage: React.FC = ({ ...props}) => { console.log(props, 'props');
+const CardDetailPage: React.FC = ({ ...props}) => {
   return (
     <>
       <Head>
