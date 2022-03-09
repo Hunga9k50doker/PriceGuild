@@ -98,7 +98,7 @@ function Footer() {
             <ul className="list-unstyled">
               {
                 sports?.map((item, key) => <li key={key} >
-                    <Link href={`/sport/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
+                    <Link href={`/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
                         <a className="text-reset text-decoration-none">
                             {item?.sportName}
                         </a>

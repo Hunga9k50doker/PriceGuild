@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CardDetail from "components/cardDetail"
 import Head from 'next/head';
 
-const CardDetailPage: React.FC = ({ ...props}) => {
+const CardDetailPage: React.FC = ({ ...props}) => { console.log(props, 'props');
   return (
     <>
       <Head>
@@ -21,14 +21,32 @@ export const getServerSideProps = async (context: any) => {
   try {
     
     const ctx = context?.query;
+
+    let prms = {
+      card_code: context.query.cardCodeDetail,
+      currency: "USD"
+    }
+
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(prms)
+    }
     
-    let titlePage = `${ctx.cardName} | PriceGuide.Cards`;
-    let descriptionPage = `${ctx.cardName} Card Details`;
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/card_details/pg_app_card_detail`, config);
+
+    const data = await res.json();
+    let titlePage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} | PriceGuide.Cards`;
+    let descriptionPage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} Card Details`;
     
 
     return {props:{
      titlePage,
-     descriptionPage
+      descriptionPage,
+     data
     }}
 
   } catch (error) {
