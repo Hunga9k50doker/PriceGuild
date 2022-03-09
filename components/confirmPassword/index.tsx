@@ -153,7 +153,7 @@ const ForgotPassword = ({ ...props }: PropTypes) => {
                     className="form-control"
                     placeholder="Enter your new password"
                   />
-                  <button
+                  <div
                     onClick={() =>
                       onChangeTypePassword(
                         watchPassword,
@@ -161,11 +161,10 @@ const ForgotPassword = ({ ...props }: PropTypes) => {
                         setTypePassword
                       )
                     }
-                    type="button"
-                    className="btn btn-icon position-absolute"
+                    className="btn btn-icon position-absolute btn-icon--custom"
                   >
                     {renderIcon(watchPassword, typePassword)}
-                  </button>
+                  </div>
                 </div>
 
                 {errors.password?.message && (
