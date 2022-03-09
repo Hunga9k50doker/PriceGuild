@@ -73,24 +73,30 @@ export class MetaData {
   static sort_card_in_profile = [
     {
       value: 1,
+      label: "Most Popular",
+      sort_value: "count",
+      sort_by: "desc",
+    },
+    {
+      value: 2,
       label: "Latest Price smallest to largest",
       sort_value: "latest_price",
       sort_by: "asc",
     },
     {
-      value: 2,
+      value: 3,
       label: "Latest Price largest to smallest",
       sort_value: "latest_price",
       sort_by: "desc",
     },
     {
-      value: 3,
+      value: 4,
       label: "Average Price smallest to largest",
       sort_value: "average_price",
       sort_by: "asc",
     },
     {
-      value: 4,
+      value: 5,
       label: "Average Price largest to smallest",
       sort_value: "average_price",
       sort_by: "desc",

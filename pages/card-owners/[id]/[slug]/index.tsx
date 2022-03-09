@@ -72,10 +72,10 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
     
     let user: User = MyStorage.user;
 
-    if (user?.userid === +router?.query?.id) {
+    if (user?.userid === id) {
       return '/profile/personal';
     }
-    return `/friends/${router?.query?.id}`
+    return `/profile/${id}`
   }
   return (
     <>
