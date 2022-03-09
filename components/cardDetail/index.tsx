@@ -131,20 +131,23 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           card_code: cardCode,
           currency: userInfo.userDefaultCurrency,
         }).catch(error => {
-              props.errorCard && props.errorCard(props?.code ?? '')
+          props.errorCard && props.errorCard(props?.code ?? '')
         });
 
-        controller.loadSaleData({
-          // @ts-ignore
-          card_code: cardCode,
-          currency: userInfo.userDefaultCurrency,
-        }).catch(err => {
-          //@ts-ignore
-            if (err?.status === 409) {
-              //@ts-ignore
-                setIsCaptCha(Boolean(err?.show_captcha))
-            }
-        }) 
+        if ( loggingIn ) {
+          controller.loadSaleData({
+            // @ts-ignore
+            card_code: cardCode,
+            currency: userInfo.userDefaultCurrency,
+          }).catch(err => {
+            //@ts-ignore
+              if (err?.status === 409) {
+                //@ts-ignore
+                  setIsCaptCha(Boolean(err?.show_captcha))
+              }
+          }) 
+        }
+        
 
         controller.loadPricingGrid({
           // @ts-ignore
@@ -592,13 +595,17 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                         const cardGrades = saleChartState.getGradeTreeSelect(index)
                                         if (cardGrades?.length) {
                                           dispatchReducer({ type: 'SELECT_GRADE_CHART_TOOL', index: +index });
-                                          sagaController.requestCalcMaxLineV1({
-                                            cardId: +cardData.id,
-                                            currency: userInfo.userDefaultCurrency,
-                                            cardGrades: cardGrades,
-                                            period: saleChartState.periodSelected.id,
-                                            oldData: saleChartState.calcMaLine
-                                          });
+                                          
+                                          if ( loggingIn ) {
+                                            sagaController.requestCalcMaxLineV1({
+                                              cardId: +cardData.id,
+                                              currency: userInfo.userDefaultCurrency,
+                                              cardGrades: cardGrades,
+                                              period: saleChartState.periodSelected.id,
+                                              oldData: saleChartState.calcMaLine
+                                            });
+                                          }
+
                                           goToSalesChart();
                                         }
                                       }
@@ -1207,13 +1214,17 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                       type: 'SELECT_GRADE_TREE_CHART_TOOL',
                                       dataSelect: dataSelect,
                                     });
-                                    sagaController.requestCalcMaxLineV1({
-                                      cardId: +cardData.id,
-                                      currency: userInfo.userDefaultCurrency,
-                                      cardGrades: dataSelect,
-                                      period: saleChartState.periodSelected.id,
-                                      oldData: saleChartState.calcMaLine
-                                    });
+
+                                    if ( loggingIn ) {
+                                      sagaController.requestCalcMaxLineV1({
+                                        cardId: +cardData.id,
+                                        currency: userInfo.userDefaultCurrency,
+                                        cardGrades: dataSelect,
+                                        period: saleChartState.periodSelected.id,
+                                        oldData: saleChartState.calcMaLine
+                                      });
+                                    }
+
                                     const dropdown = document.querySelector('.grade-tree-selected-custom')
                                     if (dropdown) {
                                       if (dataSelect.length >= 5) {
@@ -1344,24 +1355,28 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                             );
 
                             return (
-                                <Select
-                                  value={
-                                    dataSelect[saleChartState.timePeriodSelected]
-                                  }
-                                  onChange={(item) => {
-                                    let index: number = item?.index ?? 0;
-                                    sagaController.selectPeriodTime(index);
+                              <Select
+                                value={
+                                  dataSelect[saleChartState.timePeriodSelected]
+                                }
+                                onChange={(item) => {
+                                  let index: number = item?.index ?? 0;
+                                  sagaController.selectPeriodTime(index);
+
+                                  if ( loggingIn ) {
                                     sagaController.requestCalcMaxLineV1({
                                       cardId: +cardData.id,
                                       currency: userInfo.userDefaultCurrency,
                                       cardGrades: saleChartState.gradeTreeSelected,
                                       period: saleChartState.listTimePeriod[index].id,
                                     });
-                                  }}
-                                  className="react-select"
-                                  classNamePrefix="react-select"
-                                  options={dataSelect}
-                                />
+                                  }
+                                  
+                                }}
+                                className="react-select"
+                                classNamePrefix="react-select"
+                                options={dataSelect}
+                              />
                             );
                           }}
                         </CardDetailConsumer>
