@@ -16,12 +16,12 @@ const CommonLayout = ({ children }: Props) => {
     router.asPath.indexOf('#') > 0 ? router.asPath.indexOf('#') : router.asPath.length
   ]);
   const canonicalURL= process.env.DOMAIN + router.asPath.substring(0, _pathSliceLength);
-
+  
   return (
     <>
       <Head>
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-        <link rel="canonical" href={canonicalURL} />
+        {router.pathname !== '/collection/[id]/[slug]' && <link rel="canonical" href={canonicalURL} />}
       </Head>
       <Header />
       {children}
