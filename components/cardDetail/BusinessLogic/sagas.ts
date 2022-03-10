@@ -32,10 +32,13 @@ export class CardDetailSaga {
     return CardDetailApis.pricingGridData(payload).then((response) => {
       this.dispatchReducer({
         type: "LOAD_PRICING_GRID_SUCCESS",
-        payload: response.data,
+        payload: {
+          //@ts-ignore
+          data: response.data, 
+          null_price_tooltip: response.null_price_tooltip
+        },
       });
     });
-    
   }
 
   requestCalcMaxLine(params: CardDetailApis.CalcMaLineParam) {

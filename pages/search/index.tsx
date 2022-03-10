@@ -53,7 +53,8 @@ type DataLoadType = {
   isLoading: boolean,
   // isLoadMore: boolean,
   // page: number,
-  rows?: number
+  rows?: number,
+  null_price_tooltip?: string,
 }
 
 type PrioritizeType = {
@@ -279,7 +280,8 @@ const CardList = (props: PropTypes) => {
           return setData({
             cards: result.data,
             isLoading: false,
-            rows: result.rows
+            rows: result.rows,
+            null_price_tooltip: result.null_price_tooltip,
           })
         }
         return setData(prevState => {
@@ -287,10 +289,10 @@ const CardList = (props: PropTypes) => {
             ...prevState,
             cards: [...prevState.cards, ...result.data],
             isLoading: false,
-            rows: result.rows
+            rows: result.rows,
+            null_price_tooltip: result.null_price_tooltip,
           };
         });
-
       }
      
       setData(prevState => {
@@ -1486,7 +1488,8 @@ const CardList = (props: PropTypes) => {
                         setIsOpenLogin(true);
                       }
                     }}
-                    item={item} />
+                    item={item}
+                    priceTooltip={data?.null_price_tooltip} />
                 );
               }
             }

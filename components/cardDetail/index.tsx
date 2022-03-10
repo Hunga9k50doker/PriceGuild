@@ -74,8 +74,8 @@ type PropTypes = {
   isGradedCardTitle?: boolean;
   onChangeGradeCompare?: (cardGrade: PricingGridModel, cardId: number) => void;
   errorCard?: (code: string) => void;
+  errorNoSaleData?: (code: string) => void;
 };
-
 
 type ParamTypes = {
   cardCodeDetail : string,
@@ -115,6 +115,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
 
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
+      
         let cardCode = router?.query?.cardCodeDetail ?? props.code;
         let controller: CardDetailSaga = refProvider?.current
           .controller as CardDetailSaga;
@@ -137,18 +138,19 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               if (err?.status === 409) {
                 //@ts-ignore
                   setIsCaptCha(Boolean(err?.show_captcha))
+              } else {
+                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
               }
           }) 
         }
         
-
         controller.loadPricingGrid({
           // @ts-ignore
           cardcode: cardCode,
           currency: userInfo.userDefaultCurrency,
           userid: userInfo.userid,
         }).catch((err: any) => {
-            props.errorCard && props.errorCard(props?.code ?? '');
+            props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
         })
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,12 +245,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
     if ( dataOld.length === 9 ) {
-        return ToastSystem.error(
-            <span> Max number of 9 cards reached on
-                <Link href="/comparison">
-                    comparison list
-                </Link>
-            </span>);
+      return ToastSystem.error(
+        <span> Max number of 9 cards reached on <Link href="/comparison"> comparison list </Link> </span>);
     }
 
     const cardNew = {
@@ -261,21 +259,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
       dataOld = dataOld.filter((item: any) => item.code !== cardData.code)
       dispatch(CompareAction.removeCard(cardData.code));
       // ToastSystem.success("Card removed from comparison list");
-        ToastSystem.success(
-            <span>
-                Card removed from
-                <Link href="/comparison">comparison list</Link>
-            </span>
-        );
+      ToastSystem.success(
+        <span> Card removed from <Link href="/comparison">comparison list</Link> </span>
+      );
     }
     else {
       dataOld.push(cardNew)
       // ToastSystem.success("Card added to comparison list");
-        ToastSystem.success(
-            <span>
-                Card added to <Link href="/comparison">comparison list</Link>
-            </span>
-        );
+      ToastSystem.success(
+        <span> Card added to <Link href="/comparison">comparison list</Link> </span>
+      );
       dispatch(CompareAction.addCard(cardNew));
     }
     
@@ -396,7 +389,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     window.scrollTo({ behavior: 'smooth', top: salesChartdRef.current.offsetTop - 93 })
   }
   const renderTable = () => {
-    return   <div ref={pricingGridRef} className="pricing-grid" >
+    return <div ref={pricingGridRef} className="pricing-grid" >
     <h2 className="mb-5 title-profile title-profile--color">Pricing Grid</h2>
     <CardDetailConsumer
       shouldBuild={(pre, next) =>
@@ -507,7 +500,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 pre.cardData !== next.cardData
               }
             >
-              {({ state: { pricingGridData, saleChartState, cardData },
+              {({ state: { pricingGridData, saleChartState, cardData, priceTooltipPricingGrid },
                 dispatchReducer,
                 sagaController }) => {
                 return (
@@ -552,20 +545,20 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 </div>
                               </div>
                             </td>
-                            <td> {userInfo.username ? formatCurrency(item.min) : <OverlayTrigger
-                     overlay={<Tooltip>Login to see pricing</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <span ref={ref} {...triggerHandler}>$###</span>
-                        )}
-                  </OverlayTrigger>}</td>
-                            <td> {userInfo.username ? formatCurrency(item.max) : <OverlayTrigger
-                     overlay={<Tooltip>Login to see pricing</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <span ref={ref} {...triggerHandler}>$###</span>
-                        )}
-                  </OverlayTrigger>} </td>
+                            <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>}</td>
+                            <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>} </td>
                             <td> {formatCurrency(item.avg)} </td>
                             <td> {item.count} </td>
                             <td>
@@ -630,7 +623,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         isOpen={isCaptCha}
         onSuccess={onSuccessCaptcha}
         onClose={() => setIsCaptCha(false)} />
-  </div>
+   </div>
   }
 
   const handleSeeFullTable = () => {
@@ -1084,14 +1077,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
               }
             >
-              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
-                return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
-                  {isGradedCardTitle && <h2 className={`mb-5 title-profile ${size(dataGraded) ? '' : 'd-none'}`}> Graded Card Sales Overview </h2>}
+              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => { console.log(size(dataGraded), 'dataGraded');
+                return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
+                  {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
+                  {/* ${size(dataGraded) ? '' : 'd-none'} */}
                   <div>
-                    {Boolean(!loggingIn) && <PlaceholderChart src={ImageSaleChart.src} />}
+                    {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
+                    {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
                   </div>
                   {
-                    Boolean(loggingIn) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
+                    (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
                         <div className="content-chart">
                           <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>

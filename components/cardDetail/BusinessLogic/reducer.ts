@@ -19,6 +19,7 @@ export const initCardDetailState: () => Types.CardDetailState = () => ({
   keyData: "PSA",
   dataGraded: new Map(),
   saleChartState: new SaleChartState(),
+  priceTooltipPricingGrid: ''
 });
 
 export const CardDetailReducer = (
@@ -86,7 +87,10 @@ export const CardDetailReducer = (
       
     case "LOAD_PRICING_GRID_SUCCESS":
       let newState = { ...state };
-      newState.pricingGridDataHold = PricingGridData.fromJson(action.payload);
+      //@ts-ignore
+      newState.pricingGridDataHold = PricingGridData.fromJson(action.payload.data);
+      //@ts-ignore
+      newState.priceTooltipPricingGrid = action.payload.null_price_tooltip;
       newState.pricingGridData = newState.pricingGridDataHold.clone();
       newState.listYearPricingCard =
         newState.pricingGridData.getListYearUnique();

@@ -199,6 +199,7 @@ export declare module Types {
     keyData: string;
     dataGraded: Map<string, Array<PricingGridModel>>;
     saleChartState: SaleChartState;
+    priceTooltipPricingGrid: string;
   }
 }
 

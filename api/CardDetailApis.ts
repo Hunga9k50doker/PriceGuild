@@ -16,7 +16,7 @@ export class CardDetailApis {
   }
 
   static pricingGridData(body: CardDetailApis.PricingGridParam) {
-    return new NewHttpClient<BaseResponseData<Array<{ [key: string]: any }>>>({
+    return new NewHttpClient<{ [key: string]: any }>({
       route: "/card_details/pg_app_pricing_grid",
     }).post(body);
   }

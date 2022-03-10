@@ -32,7 +32,7 @@ import Tooltip from 'react-bootstrap/Tooltip';
 
 const ISSERVER = typeof window === "undefined";
 
-  const Comparison: React.FC = () => {
+const Comparison: React.FC = ({ ...props}) => {
   const refCompare = useRef<RefTypeSaleChart>(null)
 
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
@@ -71,29 +71,27 @@ const ISSERVER = typeof window === "undefined";
 
     return arrayCards;
   }
-  useEffect(() => {
-    if(cards) {
-      if(!isEmpty(cards)) {
-        setCard(getCardData(cards));
-      }
-    }
-  }, [cards])
-  const [card, setCard] = React.useState<Array<CardItemType>>(
-    !isEmpty(cards) ?
-      getCardData(cards)
-    : 
-    !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
-  );  
-
+ 
+  const [card, setCard] = React.useState<Array<CardItemType>>([]);
   
-
-  const [cardState] = React.useState<Array<CardItemType>>(
+  const [cardState, setCardState] = React.useState<Array<CardItemType>>(
     !isEmpty(cards) ?
       getCardData(cards)
     : 
     !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
   ); 
-    
+  
+  useEffect(() => {
+    if (isEmpty(card)) {
+      //@ts-ignore
+      if (props?.isHaveCard) {
+        setCard(getCardData(cards))
+      } else {
+        setCard(cardState)
+      }
+    } 
+  }, [card])
+
   const { userInfo } = useSelector(Selectors.auth);
   const [activeKey, setActiveKey] = useState<string|undefined>(undefined)
   const pricingGridRef = useRef<any>(null);
@@ -187,8 +185,12 @@ const ISSERVER = typeof window === "undefined";
     SetIsCopy(true);
   }
 
-  const removeErrorCard = (code: string) => {
+  const removeErrorCardDetail = (code: string) => {
     setCard(prevState => [...prevState.filter(item => item.code !== code)]);
+  }
+
+  const errorCardNoSaleData = (code: string) => {
+    // console.log(code, 'errorCardNoSaleData');
   }
     
   useEffect(() => {
@@ -465,7 +467,7 @@ const ISSERVER = typeof window === "undefined";
                     {card?.map((item, key) => (
                       <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
                         <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>
-                            <OverlayTrigger placement="auto" overlay={<Tooltip>{item?.webName ?? ""} - {item?.code ?? ""}</Tooltip>}>
+                            <OverlayTrigger placement="auto" overlay={<Tooltip>{item?.webName ?? ""} - {item?.cardData?.onCardCode ?? ""}</Tooltip>}>
                               {({ ref, ...triggerHandler }) => (
                                 <div ref={ref} {...triggerHandler}>{item?.firstname ?? ""}</div>
                               )}
@@ -495,7 +497,8 @@ const ISSERVER = typeof window === "undefined";
                                 ]);
                               }}
                               onChangeGradeCompare={(cardGrade, cardId) => refCompare.current?.onChangeGrade(cardGrade, `${cardId}`)}
-                              errorCard={async (e) => { removeErrorCard(e) } }
+                              errorCard={async (e) => { removeErrorCardDetail(e) }}
+                              errorNoSaleData={async (e) => {errorCardNoSaleData(e)}}
                             />
                         </Tab.Pane>
                       );
@@ -504,6 +507,7 @@ const ISSERVER = typeof window === "undefined";
                   <div className="container-fluid card-detail container-comparison-chart" id="sale-chart-comparison">
                     <div className="content-home">
                       <h2 className="mb-5 title-profile "> Sales Chart </h2>
+                      {/* {console.log(refCompare, 'refComparerefCompare')} */}
                         {Boolean(!loggingIn) ?
                           <PlaceholderChart src={ImageSaleChart.src} /> : <SaleChartComparison ref={refCompare} />}
                     </div>
@@ -556,6 +560,21 @@ const ISSERVER = typeof window === "undefined";
       </div> }
     </div>
   );
+};
+export const getServerSideProps = async (context:any) => {
+  try {
+    let isHaveCard = context?.query.cards ? true : false;
+    return {
+      props: {
+        isHaveCard
+      },
+    };
+  } catch (e) {
+    console.error(e);
+  }
+  return {
+    props: {},
+  };
 };
 
 export default React.memo(Comparison);
