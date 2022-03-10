@@ -158,7 +158,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
     }
     return profile?.total_value !== 0 ? formatCurrency(profile?.total_value) : formatCurrency(0)
   }
-  console.log('userDetail');
+  
   return (
     <div className="content-user-profile d-flex justify-content-center">
       <div className="profile-user w-100 mt-5">

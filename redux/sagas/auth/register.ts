@@ -12,7 +12,6 @@ function* register(action: any) {
       action.payload,
       action.headers
     );
-      console.log('aaaaaa');
     if (response.success) {
       if (!response?.user_data?.activated) {
         action.router.push(`/verify-email`);

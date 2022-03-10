@@ -54,9 +54,9 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       console.log(err)
       setCollections([])
       setDataSearch([])
-      // if(err?.response?.status === 403) {
-      //   return router.push('/verify-email')
-      // }
+      if(err?.response?.status === 403) {
+        return router.push('/verify-email')
+      }
     }
   }
   const onSeachCollection = (e: any) => {
