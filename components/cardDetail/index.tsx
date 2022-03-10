@@ -76,7 +76,6 @@ type PropTypes = {
   errorCard?: (code: string) => void;
 };
 
-
 type ParamTypes = {
   cardCodeDetail : string,
   nameCard: string,
@@ -115,6 +114,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
 
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
+      
         let cardCode = router?.query?.cardCodeDetail ?? props.code;
         let controller: CardDetailSaga = refProvider?.current
           .controller as CardDetailSaga;
@@ -141,7 +141,6 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           }) 
         }
         
-
         controller.loadPricingGrid({
           // @ts-ignore
           cardcode: cardCode,
@@ -243,12 +242,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
     if ( dataOld.length === 9 ) {
-        return ToastSystem.error(
-            <span> Max number of 9 cards reached on
-                <Link href="/comparison">
-                    comparison list
-                </Link>
-            </span>);
+      return ToastSystem.error(
+        <span> Max number of 9 cards reached on <Link href="/comparison"> comparison list </Link> </span>);
     }
 
     const cardNew = {
@@ -261,21 +256,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
       dataOld = dataOld.filter((item: any) => item.code !== cardData.code)
       dispatch(CompareAction.removeCard(cardData.code));
       // ToastSystem.success("Card removed from comparison list");
-        ToastSystem.success(
-            <span>
-                Card removed from
-                <Link href="/comparison">comparison list</Link>
-            </span>
-        );
+      ToastSystem.success(
+        <span> Card removed from <Link href="/comparison">comparison list</Link> </span>
+      );
     }
     else {
       dataOld.push(cardNew)
       // ToastSystem.success("Card added to comparison list");
-        ToastSystem.success(
-            <span>
-                Card added to <Link href="/comparison">comparison list</Link>
-            </span>
-        );
+      ToastSystem.success(
+        <span> Card added to <Link href="/comparison">comparison list</Link> </span>
+      );
       dispatch(CompareAction.addCard(cardNew));
     }
     
@@ -396,7 +386,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     window.scrollTo({ behavior: 'smooth', top: salesChartdRef.current.offsetTop - 93 })
   }
   const renderTable = () => {
-    return   <div ref={pricingGridRef} className="pricing-grid" >
+    return <div ref={pricingGridRef} className="pricing-grid" >
     <h2 className="mb-5 title-profile title-profile--color">Pricing Grid</h2>
     <CardDetailConsumer
       shouldBuild={(pre, next) =>
@@ -507,7 +497,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 pre.cardData !== next.cardData
               }
             >
-              {({ state: { pricingGridData, saleChartState, cardData },
+              {({ state: { pricingGridData, saleChartState, cardData, priceTooltipPricingGrid },
                 dispatchReducer,
                 sagaController }) => {
                 return (
@@ -552,20 +542,20 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 </div>
                               </div>
                             </td>
-                            <td> {userInfo.username ? formatCurrency(item.min) : <OverlayTrigger
-                     overlay={<Tooltip>Login to see pricing</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <span ref={ref} {...triggerHandler}>$###</span>
-                        )}
-                  </OverlayTrigger>}</td>
-                            <td> {userInfo.username ? formatCurrency(item.max) : <OverlayTrigger
-                     overlay={<Tooltip>Login to see pricing</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <span ref={ref} {...triggerHandler}>$###</span>
-                        )}
-                  </OverlayTrigger>} </td>
+                            <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>}</td>
+                            <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>} </td>
                             <td> {formatCurrency(item.avg)} </td>
                             <td> {item.count} </td>
                             <td>
@@ -630,7 +620,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         isOpen={isCaptCha}
         onSuccess={onSuccessCaptcha}
         onClose={() => setIsCaptCha(false)} />
-  </div>
+   </div>
   }
 
   const handleSeeFullTable = () => {
