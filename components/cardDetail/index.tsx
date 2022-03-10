@@ -1077,7 +1077,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
               }
             >
-              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => { console.log(size(dataGraded), 'dataGraded');
+              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
                 return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
                   {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
                   {/* ${size(dataGraded) ? '' : 'd-none'} */}
