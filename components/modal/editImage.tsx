@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import Modal from 'react-bootstrap/Modal';
 // @ts-ignore
-// import ImageEditor from '@toast-ui/react-image-editor';
+import ImageEditor from '@toast-ui/react-image-editor';
 import 'tui-image-editor/dist/tui-image-editor.css';
 import closeImge from "assets/images/clear_modal.png"
 import { api } from 'configs/axios';
@@ -10,10 +10,13 @@ import dynamic from 'next/dynamic';
 // @ts-ignore
 import { EditorProps } from '@toast-ui/react-editor';
 
-// @ts-ignore
-const Editor = dynamic<EditorProps>(() => import('@toast-ui//react-image-editor')
-  .then(m => m.Editor), { ssr: false });
-
+// // @ts-ignore
+// const Editor = dynamic<EditorProps>(() => import('@toast-ui//react-image-editor')
+//   .then(m => m.Editor), { ssr: false });
+  const DynamicComponentWithNoSSR = dynamic<EditorProps>(
+    () => import("./EditImageNoSSR/index"),
+    { ssr: false }
+  );
 const icona = require("tui-image-editor/dist/svg/icon-a.svg");
 const iconb = require("tui-image-editor/dist/svg/icon-b.svg");
 const iconc = require("tui-image-editor/dist/svg/icon-c.svg");
@@ -131,7 +134,8 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
         </button>
       </Modal.Header>
       <Modal.Body>
-        {imageSrc.length && typeof window !== "undefined" ? <Editor
+      <DynamicComponentWithNoSSR  src={imageSrc}  ref={imageEditorRef} />
+        {/* {imageSrc.length && typeof window !== "undefined" ? <Editor
           includeUI={{
             loadImage: {
               path: imageSrc,
@@ -153,7 +157,7 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
           }}
           usageStatistics={true}
           ref={imageEditorRef}
-        /> : null}
+        /> : null} */}
       </Modal.Body>
       <Modal.Footer className="modal-footer-crop">
         <button className="btn btn-secondary btn-bg--secondary btn-color--primary" onClick={onClose}>Cancel</button>
