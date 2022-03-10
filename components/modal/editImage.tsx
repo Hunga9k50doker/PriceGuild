@@ -57,7 +57,8 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   const [imageSrc, setImageSrc] = React.useState("");
   const [nameImage, setNameImage] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [currentPath, setCurrentPath] = React.useState<string | undefined>();
+  const [allIns, setAllIns] = React.useState<any>(null);
+  const [currentPath, setCurrentPath] = React.useState<string | undefined>(null);
 
   React.useImperativeHandle(ref, () => ({
     action(src: string, name: string, current_path?: string) {
@@ -69,9 +70,9 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   }));
 
   const saveImageToDisk = () => {
-    if (imageEditorRef) {
+    if (allIns) {
       setIsLoading(true);
-      const imageEditorInst = imageEditorRef?.current?.imageEditorInst;
+      const imageEditorInst = allIns;
       const data = imageEditorInst?.toDataURL({ format: "jpeg", quality: 0.7 });
       updateImage(data);
     }
@@ -134,7 +135,7 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
         </button>
       </Modal.Header>
       <Modal.Body>
-      <DynamicComponentWithNoSSR  src={imageSrc}  ref={imageEditorRef} />
+      <DynamicComponentWithNoSSR  onGetImage={setAllIns} src={imageSrc}  refParam={imageEditorRef} />
         {/* {imageSrc.length && typeof window !== "undefined" ? <Editor
           includeUI={{
             loadImage: {
