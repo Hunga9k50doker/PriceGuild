@@ -467,7 +467,7 @@ const Comparison: React.FC = ({ ...props}) => {
                     {card?.map((item, key) => (
                       <Nav.Item onClick={() =>  window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop}) } className="col text-center" key={key}>
                         <Nav.Link className="cursor-pointer w-100" eventKey={item.code}>
-                            <OverlayTrigger placement="auto" overlay={<Tooltip>{item?.webName ?? ""} - {item?.code ?? ""}</Tooltip>}>
+                            <OverlayTrigger placement="auto" overlay={<Tooltip>{item?.webName ?? ""} - {item?.cardData?.onCardCode ?? ""}</Tooltip>}>
                               {({ ref, ...triggerHandler }) => (
                                 <div ref={ref} {...triggerHandler}>{item?.firstname ?? ""}</div>
                               )}

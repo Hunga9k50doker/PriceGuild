@@ -44,6 +44,7 @@ type PropTypes = {
   onAddNewEntry?: (code: any) => void,
   gotoCard?: (item: any) => void,
   imageUrl?: string,
+  priceTooltip?: string,
 }
 
 const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWishlist = false, ...props }: PropTypes) => {  
@@ -149,7 +150,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if (props.item.minPrice === null && props.item.maxPrice === null) { 
       return <>
       <OverlayTrigger
-        overlay={<Tooltip>Login to see pricing</Tooltip>}
+        overlay={<Tooltip>{props?.priceTooltip ?? 'Login to see pricing'}</Tooltip>}
       >
         {({ ref, ...triggerHandler }) => (
           <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
@@ -157,7 +158,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
       </OverlayTrigger>
        {' - '}
       <OverlayTrigger
-        overlay={<Tooltip>Login to see pricing</Tooltip>}
+        overlay={<Tooltip>{props?.priceTooltip ?? 'Login to see pricing'}</Tooltip>}
       >
         {({ ref, ...triggerHandler }) => (
           <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
