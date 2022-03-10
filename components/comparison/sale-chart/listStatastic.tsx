@@ -122,7 +122,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                   />
                 </td>
                 <td>
-                  <OverlayTrigger overlay={<Tooltip>{item?.cardData?.webName ?? ""} - {item?.cardCode ?? ""}</Tooltip>}>
+                  <OverlayTrigger overlay={<Tooltip>{item?.cardData?.webName ?? ""} - {item?.cardData?.onCardCode ?? ""}</Tooltip>}>
                     {({ ref, ...triggerHandler }) => (
                       <div ref={ref} {...triggerHandler}>{item?.cardName ?? ""}</div>
                     )}
