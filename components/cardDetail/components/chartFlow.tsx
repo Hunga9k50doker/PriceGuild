@@ -10,7 +10,8 @@ const ChartFlow = (props: PropTypes) => {
  
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    if (cardData.code && saleChartState.listCardGrade.length) {
+    // && saleChartState.listCardGrade.length
+    if (cardData.code) {
       props.onUpdateCard && props.onUpdateCard({ ...cardData, saleChartState, cardData })
     }
    
