@@ -446,7 +446,7 @@ export class HoldChartData {
 
     private getSaleData() {
         let saleData: SaleData[] = []
-        switch (this.itemCardGradeSelected.gradeCompany) {
+        switch (this.itemCardGradeSelected?.gradeCompany) {
             case 'ALL':
                 saleData = this.saleState.mainListSaleRecord
                 break;
@@ -463,9 +463,9 @@ export class HoldChartData {
             default:
                  saleData = this.saleState.mainListSaleRecord.filter(
                 (it) =>
-                    it.grade_company === this.itemCardGradeSelected.gradeCompany &&
-                    (this.itemCardGradeSelected.gradeValue === "ALL" ||
-                    it.grade_value === this.itemCardGradeSelected.gradeValue)
+                    it.grade_company === this.itemCardGradeSelected?.gradeCompany &&
+                    (this.itemCardGradeSelected?.gradeValue === "ALL" ||
+                    it.grade_value === this.itemCardGradeSelected?.gradeValue)
                 );
                 break;
         }

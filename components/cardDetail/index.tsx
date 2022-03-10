@@ -74,6 +74,7 @@ type PropTypes = {
   isGradedCardTitle?: boolean;
   onChangeGradeCompare?: (cardGrade: PricingGridModel, cardId: number) => void;
   errorCard?: (code: string) => void;
+  errorNoSaleData?: (code: string) => void;
 };
 
 type ParamTypes = {
@@ -137,6 +138,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               if (err?.status === 409) {
                 //@ts-ignore
                   setIsCaptCha(Boolean(err?.show_captcha))
+              } else {
+                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
               }
           }) 
         }
@@ -147,7 +150,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           currency: userInfo.userDefaultCurrency,
           userid: userInfo.userid,
         }).catch((err: any) => {
-            props.errorCard && props.errorCard(props?.code ?? '');
+            props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
         })
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1074,14 +1077,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
               }
             >
-              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
-                return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
-                  {isGradedCardTitle && <h2 className={`mb-5 title-profile ${size(dataGraded) ? '' : 'd-none'}`}> Graded Card Sales Overview </h2>}
+              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => { console.log(size(dataGraded), 'dataGraded');
+                return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
+                  {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
+                  {/* ${size(dataGraded) ? '' : 'd-none'} */}
                   <div>
-                    {Boolean(!loggingIn) && <PlaceholderChart src={ImageSaleChart.src} />}
+                    {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
+                    {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
                   </div>
                   {
-                    Boolean(loggingIn) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
+                    (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
                         <div className="content-chart">
                           <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>
