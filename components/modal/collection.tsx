@@ -18,6 +18,8 @@ import { CSVLink } from "react-csv";
 import { useTranslation } from "react-i18next";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { MyStorage } from 'helper/local_storage';
+
 
 type PropTypes = {
   isOpen: boolean,
@@ -175,7 +177,35 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       head: [],
       body: [],
     })
-  },[isOpen])
+  }, [isOpen])
+  
+  const renderLinkShareFB = () => {
+    let fb_share = `https://www.facebook.com/sharer/sharer.php?u=`;
+    let host: string | undefined = '';
+    
+    if (location.hostname === 'localhost') {
+      host = 'http://localhost:3000' ;
+    } else {
+      host = process.env.DOMAIN;
+    }
+    let data_url = `${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name}`;
+
+    return data_url;
+  }
+
+  const renderLinkShareTwitter = () => {
+    let fb_share = `https://twitter.com/intent/tweet?url=`;
+    let host: string | undefined = '';
+    
+    if (location.hostname === 'localhost') {
+      host = 'http://localhost:3000' ;
+    } else {
+      host = process.env.DOMAIN;
+    }
+    let data_url = `${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name}`;
+
+    return data_url;
+}
 
   return (
     <Modal
@@ -239,14 +269,18 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               <div className="d-flex justify-content-between btn-social">
                 <div className="d-flex btn-social-content">
                   <div className="text-center col cursor-pointer">
-                    <div className="py-2 btn btn-social-twitter" >
-                      <i className="fa fa-twitter fa-2" aria-hidden="true" />
-                    </div>
+                    <Link href={renderLinkShareTwitter()}>
+                      <a className="py-2 btn btn-social-twitter" target='_blank'>
+                         <i className="fa fa-twitter fa-2" aria-hidden="true" />
+                      </a>
+                    </Link>
                   </div>
                   <div className="text-center col cursor-pointer">
-                    <div className="py-2 btn btn-social-facebook" >
-                      <i className="fa fa-facebook fa-2" aria-hidden="true" />
-                    </div>
+                    <Link href={renderLinkShareFB()} >
+                      <a className="py-2 btn btn-social-facebook" target='_blank'>
+                        <i className="fa fa-facebook fa-2" aria-hidden="true" />
+                      </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="text-right col cursor-pointer">

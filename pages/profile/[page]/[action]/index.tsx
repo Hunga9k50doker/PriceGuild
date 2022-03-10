@@ -75,7 +75,7 @@ const Profile: React.FC = ({...props}) => {
       friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
       switch (action) {
         case 'portfolio':
-          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} isButtonRight={ false }/></div>
+          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} isButtonRight={false} isEdit={ false }/></div>
         case 'wishlists':
           return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
         default:

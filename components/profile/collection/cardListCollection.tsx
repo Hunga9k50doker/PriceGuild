@@ -935,14 +935,10 @@ const CardListCollection = ({
   }, [isOpenModal])
   
   React.useEffect(() => {
-    if(router.pathname === "/friends/[friendId]") {
-      setMatchPatchRoute(true);
-    }
-    if (Boolean(Number(router.query.page))) {
-      setMatchPatchRoute(true);
-    }
+    let pathnname = router.asPath.split('/');
+
     if(userId) {
-      if(matchPatchRoute) {
+      if(pathnname[1] === "friends" || Boolean(Number(router.query.page))) {
         if(userId !== MyStorage.user.userid.toString())
           setIsMatchUser(true);
       }
@@ -1156,7 +1152,7 @@ const CardListCollection = ({
                     <button type="submit"> <img src={IconSearch.src} alt="" title="" /> </button>
                     <input type="text" className="form-control" ref={inputSearchRef}  onChange={handleChange} defaultValue={defaultSearch} placeholder="Search" />
                   </div>
-                </div>
+                  </div>
                 {Boolean(isEditCard || title === "wishlist") && !isMatchUser && <div className="option-collection ms-2">
                   <div className="dropdown">
                     <button className="btn btn-secondary dropdown-toggle px-0" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"> <img src={IconDot3} alt="" /> </button>

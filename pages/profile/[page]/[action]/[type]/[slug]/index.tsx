@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
         dispatch(AuthActions.logout());
       }
     }
-    console.log(page, action, type, slug, 'page, action, type, slugggggg');
+  
     if (Number(page)) {
       friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       switch (action) {

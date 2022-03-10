@@ -108,8 +108,8 @@ const RegisterPage: React.FC = () => {
       news_letter: data.agreeNewsLetter ? 1 : 0,
       email: data.email,
       time_zone,
-    }, headers, history, onFail ));
-    router.push('/verify-email');
+    }, headers, router, onFail ));
+    // router.push('/verify-email');
   };
 
   const onFail = () => {
