@@ -281,7 +281,7 @@ const CardList = (props: PropTypes) => {
             cards: result.data,
             isLoading: false,
             rows: result.rows,
-            null_price_tooltip: '',
+            null_price_tooltip: result.null_price_tooltip,
           })
         }
         return setData(prevState => {
