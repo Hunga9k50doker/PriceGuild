@@ -182,7 +182,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const renderLinkShareFB = () => {
     let fb_share = `https://www.facebook.com/sharer/sharer.php?u=`;
     let host: string | undefined = '';
-    console.log(location.hostname === 'localhost');
+    
     if (location.hostname === 'localhost') {
       host = 'http://localhost:3000' ;
     } else {
@@ -196,7 +196,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const renderLinkShareTwitter = () => {
     let fb_share = `https://twitter.com/intent/tweet?url=`;
     let host: string | undefined = '';
-    console.log(location.hostname === 'localhost');
+    
     if (location.hostname === 'localhost') {
       host = 'http://localhost:3000' ;
     } else {
@@ -207,7 +207,6 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     return data_url;
 }
 
-  console.log(collectionDetail);
   return (
     <Modal
       onHide={() => {
