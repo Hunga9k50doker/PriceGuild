@@ -71,9 +71,8 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
   const [isShowSalePoints, setIsShowSalePoints] = useState(true);
 
   const _addDataToChart = async ({ data, cardName, cardId, cardCode, cardData }: ArgumentType) => {
-    if (!(cardId in chartData)) {
-      const calcMaLine: CalcMaLine = !(data.itemCardGradeSelected) ? calcMaLineDefault :
-        await CardDetailApis.getCalcMaLine({
+    if (!(cardId in chartData) && data.itemCardGradeSelected) {
+      const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
           card_id: +cardId,
           currency: userInfo.userDefaultCurrency,
           grade_company: data.itemCardGradeSelected.gradeCompany,

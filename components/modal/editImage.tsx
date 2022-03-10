@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import Modal from 'react-bootstrap/Modal';
 // @ts-ignore
-// import ImageEditor from '@toast-ui/react-image-editor';
+import ImageEditor from '@toast-ui/react-image-editor';
 import 'tui-image-editor/dist/tui-image-editor.css';
 import closeImge from "assets/images/clear_modal.png"
 import { api } from 'configs/axios';
@@ -10,10 +10,13 @@ import dynamic from 'next/dynamic';
 // @ts-ignore
 import { EditorProps } from '@toast-ui/react-editor';
 
-// @ts-ignore
-const Editor = dynamic<EditorProps>(() => import('@toast-ui//react-image-editor')
-  .then(m => m.Editor), { ssr: false });
-
+// // @ts-ignore
+// const Editor = dynamic<EditorProps>(() => import('@toast-ui//react-image-editor')
+//   .then(m => m.Editor), { ssr: false });
+  const DynamicComponentWithNoSSR = dynamic<EditorProps>(
+    () => import("./EditImageNoSSR/index"),
+    { ssr: false }
+  );
 const icona = require("tui-image-editor/dist/svg/icon-a.svg");
 const iconb = require("tui-image-editor/dist/svg/icon-b.svg");
 const iconc = require("tui-image-editor/dist/svg/icon-c.svg");
@@ -54,7 +57,8 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   const [imageSrc, setImageSrc] = React.useState("");
   const [nameImage, setNameImage] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [currentPath, setCurrentPath] = React.useState<string | undefined>();
+  const [allIns, setAllIns] = React.useState<any>(null);
+  const [currentPath, setCurrentPath] = React.useState<string | undefined>(null);
 
   React.useImperativeHandle(ref, () => ({
     action(src: string, name: string, current_path?: string) {
@@ -66,9 +70,9 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   }));
 
   const saveImageToDisk = () => {
-    if (imageEditorRef) {
+    if (allIns) {
       setIsLoading(true);
-      const imageEditorInst = imageEditorRef?.current?.imageEditorInst;
+      const imageEditorInst = allIns;
       const data = imageEditorInst?.toDataURL({ format: "jpeg", quality: 0.7 });
       updateImage(data);
     }
@@ -131,7 +135,8 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
         </button>
       </Modal.Header>
       <Modal.Body>
-        {imageSrc.length && typeof window !== "undefined" ? <Editor
+      <DynamicComponentWithNoSSR  onGetImage={setAllIns} src={imageSrc}  refParam={imageEditorRef} />
+        {/* {imageSrc.length && typeof window !== "undefined" ? <Editor
           includeUI={{
             loadImage: {
               path: imageSrc,
@@ -153,7 +158,7 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
           }}
           usageStatistics={true}
           ref={imageEditorRef}
-        /> : null}
+        /> : null} */}
       </Modal.Body>
       <Modal.Footer className="modal-footer-crop">
         <button className="btn btn-secondary btn-bg--secondary btn-color--primary" onClick={onClose}>Cancel</button>
