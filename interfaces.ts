@@ -26,6 +26,7 @@ export type QueryResponse<T> = {
   rows?: number;
   error?: string;
   show_captcha?: boolean;
+  null_price_tooltip?: string;
 };
 
 export type SportType = {
