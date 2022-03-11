@@ -159,11 +159,6 @@ export class HttpClient<SecurityDataType = unknown> {
       },
       
       async (error) => {
-        if (error?.response?.status === 409 && await CapchaListener.notify(error)) {
-          const originalRequest = error.config;
-          originalRequest._retry = true;
-          return this.instance(originalRequest)
-        }
         if (error?.response?.status === 401) {
           MyStorage.resetWhenLogout();
           sessionStorage.setItem(

@@ -45,7 +45,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     
     UtilsColorGrade.loadDataColors();
     
-    firebase.initializeApp(firebaseConfig);
+    // firebase.initializeApp(firebaseConfig);
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -79,7 +79,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <ToastContainer />
             <UsesCookiesPage />
             <span id="back-to-top" onClick={() => gotoTop()}> <img src={ArrowUp} alt="Back to Top" title="Back to Top" /> </span>
-            <CapchaHandler/>
           </Layout>
         </I18nextProvider>
       </Provider>
