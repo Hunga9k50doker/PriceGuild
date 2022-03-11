@@ -1167,7 +1167,7 @@ export const getServerSideProps = async (context: any) => {
     
     const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/checklist/page-title`, config);
     const data = await res.json();
-    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} | PriceGuide.Cards`;
+    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ' ' } | PriceGuide.Cards`;
     let descriptionPage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} Checklist`;
 
     return {props:{

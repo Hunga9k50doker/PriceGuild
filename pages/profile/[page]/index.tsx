@@ -37,7 +37,7 @@ import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
 import useWindowDimensions from "utils/useWindowDimensions"
 import Head from 'next/head';
 import { useTranslation } from "react-i18next";
-
+import cookies from 'next-cookies'
 interface ParamTypes {
   page: string,
   action?: string
@@ -354,7 +354,7 @@ export const getServerSideProps = async (context:any) => {
   try {
     const pageCurr = context?.query?.page;
     const actionCurr = context?.query?.action;
-
+    let data: any = {};
     let titlePage = "";
     let descriptionPage = "";
     
@@ -412,12 +412,38 @@ export const getServerSideProps = async (context:any) => {
       titlePage = "Personal Profile";
       descriptionPage = "Personal Profile on PriceGuide.Cards";
     }
+    if (Boolean(Number(pageCurr))) {
+      
+      let token = cookies(context).TOKEN_KEY;
+    
+      const params = {
+          profileid: Number(pageCurr)
+      };
+
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+ token,
+        },
+        //@ts-ignore
+        body: JSON.stringify(params)
+      }
+      
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/profile/pg_app_profile`, config);
+      data = await res.json();
+
+      if (data.success) {
+        titlePage = data?.data?.user_info?.username + " Personal Profile"
+      }
+    }
 
     titlePage += ' | PriceGuide.Cards';
 
     return {props:{
      titlePage,
-     descriptionPage
+     descriptionPage,
     }}
 
   } catch (e) {

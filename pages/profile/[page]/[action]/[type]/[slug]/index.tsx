@@ -35,7 +35,8 @@ import IconSettingProfileActive from "assets/images/icon-settings-filled.svg"
 import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg"
 import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
 import useWindowDimensions from "utils/useWindowDimensions"
-
+import cookies from 'next-cookies'
+import Head from 'next/head';
 import { useTranslation } from "react-i18next";
 interface ParamTypes {
   page: string,
@@ -43,7 +44,7 @@ interface ParamTypes {
   type?: string
 }
 
-const Profile: React.FC = () => {
+const Profile: React.FC = ({ ...props }) => {
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type, slug } = router.query;
@@ -73,7 +74,7 @@ const Profile: React.FC = () => {
         case 'portfolio':
             if (slug !== undefined) {
                 // @ts-ignore
-                return <div className="col-12 col-md-12 min-vh-100"><CardListCollection isSelectCard={false} isEditCard={true} userId={Number(page)} collection={type} /></div>
+                return <div className="col-12 col-md-12 min-vh-100"><CardListCollection isSelectCard={false} isEditCard={false} userId={Number(page)} collection={type} /></div>
             }
               return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
           case 'wishlists':
@@ -283,6 +284,15 @@ const Profile: React.FC = () => {
     
   }, [page])
   return (
+    <>
+    <Head>
+       <title>{
+        //@ts-ignore
+        `${router.query?.slug ?? ''} - Personal ${router.query?.action === 'wishlists' ? 'Wishlists' : 'Profolio'} | PriceGuide.Cards`}</title>
+        <meta name="description" content={
+        //@ts-ignore
+        props?.descriptionPage ?? ''} />
+    </Head>
     <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
       <div className="row ">
         <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
@@ -351,7 +361,8 @@ const Profile: React.FC = () => {
         </div>
         {renderContent()}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
