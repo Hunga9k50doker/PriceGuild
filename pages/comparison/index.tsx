@@ -29,6 +29,7 @@ import ImageLineChart from "assets/images/line_chart_placeholder.png";
 import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Head from 'next/head';
 
 const ISSERVER = typeof window === "undefined";
 
@@ -202,6 +203,10 @@ const Comparison: React.FC = ({ ...props}) => {
   }, [isCopy])
   return (
     <div>
+      <Head>
+				<title>Cards Comparison | PriceGuide.Cards</title>
+				<meta name="description" content="" />
+			</Head>
       <div className="container-fluid comparison">
         <div className="d-flex align-items-center justify-content-between comparison-head">
           <h1 className="comparison-head__title"> Cards Comparison </h1>
