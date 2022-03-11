@@ -559,7 +559,13 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                   <span ref={ref} {...triggerHandler}>$###</span>
                                 )}
                               </OverlayTrigger>} </td>
-                            <td> {formatCurrency(item.avg)} </td>
+                            <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>} </td>
                             <td> {item.count} </td>
                             <td>
                               {
