@@ -14,7 +14,7 @@ import {
 } from "model/data_sport/pricing_grid";
 import IconDot3 from "assets/images/dot-3.svg";
 import ListStatastic, { RefType as RefTypeStatic } from "./listStatastic"
-import { CalcMaLine } from "components/cardDetail/BusinessLogic/setup";
+import { CalcMaLine, SaleChartState } from "components/cardDetail/BusinessLogic/setup";
 import ImageDefault from "assets/images/card_default.png"
 import { CardModel } from "model/data_sport/card_sport";
 import { api } from "configs/axios";
@@ -70,24 +70,38 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
 
   const [isShowSalePoints, setIsShowSalePoints] = useState(true);
 
-  const _addDataToChart = async ({ data, cardName, cardId, cardCode, cardData }: ArgumentType) => {
-    if (!(cardId in chartData) && data.itemCardGradeSelected) {
-      const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
-          card_id: +cardId,
-          currency: userInfo.userDefaultCurrency,
-          grade_company: data.itemCardGradeSelected.gradeCompany,
-          grade_value: data.itemCardGradeSelected.gradeValue,
-          time_period: +timePeriodSelected.value,
-        })
-          .then((response) => response.data)
-          .catch((error) => {
-            console.log(error);
-            return Promise.resolve(calcMaLineDefault);
-          });
+  const getCalcMaLine = async (cardId: string | number, data: SaleChartState) => {
+    const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
+      card_id: +cardId,
+      currency: userInfo.userDefaultCurrency,
+      grade_company: data.itemCardGradeSelected.gradeCompany,
+      grade_value: data.itemCardGradeSelected.gradeValue,
+      time_period: +timePeriodSelected.value,
+    })
+      .then((response) => response.data)
+      .catch((error) => {
+        console.log(error);
+        return Promise.resolve(calcMaLineDefault);
+      });
+    return calcMaLine
+  }
 
+  const _addDataToChart = async ({ data, cardName, cardId, cardCode, cardData }: ArgumentType) => {
+    if (!(cardId in chartData)) {
+      const calcMaLine = data.itemCardGradeSelected ? await getCalcMaLine(cardId, data) : calcMaLineDefault
       chartData[cardId] = new HoldChartData(cardId, cardCode, cardName, data, calcMaLine, cardData);
       chartData[cardId].updateDataGradeToChart(options, chartRef()!, onClickTooltip);
       refStatistics.current?.updateChartData(chartData);
+    } else {
+      if (data.itemCardGradeSelected) {
+        const calcMaLine = await getCalcMaLine(cardId, data)
+        chartData[cardId].updateConstructor(cardId, cardCode, cardName, data, calcMaLine, cardData)
+        chartData[cardId].updateDataChart(options, chartRef()!, calcMaLine)
+        refStatistics.current?.updateChartData(chartData);
+      } else {
+        chartData[cardId].updateConstructor(cardId, cardCode, cardName, data, calcMaLineDefault, cardData)
+        refStatistics.current?.updateChartData(chartData);
+      }
     }
   };
 

@@ -378,8 +378,18 @@ export class HoldChartData {
     
     constructor(public cardId: string, public cardCode: string, public cardName: string, public saleState: SaleChartState, public calcMaLine: CalcMaLine, public cardData: CardModel) {
         this.isShow = true
-        this.cardGradeSelected = this.saleState.cardGradeSelected
+        
         this.initDataGrade()
+    }
+
+    updateConstructor(cardId: string, cardCode: string, cardName: string, saleState: SaleChartState, calcMaLine: CalcMaLine, cardData: CardModel) {
+        this.cardId = cardId
+        this.cardCode = cardCode
+        this.cardName = cardName
+        this.saleState = saleState
+        this.calcMaLine = calcMaLine
+        this.cardData = cardData
+        this.cardGradeSelected = this.saleState.cardGradeSelected
     }
 
     get itemCardGradeSelected() {
@@ -387,9 +397,9 @@ export class HoldChartData {
     }
 
     initDataGrade() {
+        this.cardGradeSelected = this.saleState.cardGradeSelected
         this.saleDataChart = this.getSaleData()
         this.calcMaLineDataChart = []
-
         for (const key in this.calcMaLine.price) {
             // @ts-ignore
             this.calcMaLineDataChart.push([+key, +this.calcMaLine.price[key]])
@@ -424,6 +434,7 @@ export class HoldChartData {
 
     updateCalcMaLineSeries(optionChart: Highcharts.Options, chart: Highcharts.Chart, calcMaLine: CalcMaLine) {
         if (!chart || !optionChart?.series?.length) return
+        this.calcMaLine = calcMaLine
         this.calcMaLineDataChart = []
         for (const key in calcMaLine.price) {
             // @ts-ignore
