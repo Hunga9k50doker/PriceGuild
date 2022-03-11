@@ -138,12 +138,18 @@ function Footer() {
                     </Link>
                 </li>
               <div className='has-auth'>
-                <li>API Documentation</li>
+                {/* <li>API Documentation</li> */}
                 {/* <li>Feedback</li> */}
               </div>
               <div className='has-auth'>
                 {/* <li>Links</li> */}
-                <li>Sitemap</li>
+                <li>
+                    <Link href={`/terms-of-use`}>
+                        <a className="text-reset text-decoration-none">
+                        Sitemap
+                        </a>
+                    </Link>
+                </li>
                 <li>
                     <Link href={`/terms-of-use`}>
                         <a className="text-reset text-decoration-none">
