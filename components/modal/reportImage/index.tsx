@@ -114,7 +114,7 @@ const Index = ({
       // @ts-ignore
      report_auto_only_grade: data.report_auto_only_grade | 0,
      report_authentic: data.report_authentic | 0,
-      report_grade_company: isCorrectCard ? undefined : `${data.report_grade_company.id}`,
+      report_grade_company: isCorrectCard ? undefined : `${data.report_grade_company.name}`,
       report_grade_value:  isCorrectCard ? undefined : +data.report_grade_value,
      report_cardcode: props?.cardData?.code,
      report_saleid: point.id ?? props?.cardData?.cardFrontImage?.id
@@ -127,7 +127,8 @@ const Index = ({
         props?.onClose && props.onClose();
         return ToastSystem.success(result.message);
       }
-      return ToastSystem.error(result.message);
+      return ToastSystem.error(result.message || result?.error);
+   
      }
     catch (err) {
       setIsLoading(false)
