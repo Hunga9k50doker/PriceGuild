@@ -86,7 +86,10 @@ const CollectionList = ({
   const [friend, setFriend] = useState<UserInfoType>()
   
   React.useEffect(() => {
-    if(router.pathname === "/friends/[friendId]") {
+
+    let pathnname = router.asPath.split('/');
+    
+    if(pathnname[1] === "friends" || Boolean(Number(router.query.page))) {
       setMatchPatchRoute(true);
     }
   }, [])

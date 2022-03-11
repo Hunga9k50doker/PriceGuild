@@ -77,7 +77,7 @@ const Profile: React.FC = ({...props}) => {
         case 'portfolio':
           return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} isButtonRight={false} isEdit={ false }/></div>
         case 'wishlists':
-          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
+          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" isProfileFriend={true}/>
         default:
           return <FriendUnlogged />
       }

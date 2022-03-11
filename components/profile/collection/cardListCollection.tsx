@@ -1106,7 +1106,7 @@ const CardListCollection = ({
   }, [router.query])
 
   const goToProfile = () => {
-   router.push('/profile/')
+   router.push(`/profile/${Number(router.query.page)}`)
   }
   const goToCollection = () => {
    
@@ -1132,7 +1132,7 @@ const CardListCollection = ({
         </>
       }
       <div className="container-fluid p-0 container-collection-profile">
-        <div className="only-mobile">
+        <div className={`${!Boolean(Number(router.query.page)) ? '' : 'd-none' } only-mobile`}>
           <Link href="/profile/portfolio">
             <a onClick={goToFriend} className="container-collection-profile-head text-capitalize">
                <img onClick={() => backToCollection} src={ArrowProfile} alt="" />

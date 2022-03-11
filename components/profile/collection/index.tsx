@@ -24,6 +24,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
     data: [],
     isLoading: true
   });
+  const [profileDataFreind, setProfileDataFreind] = useState<PgAppProfileType | undefined>();
   const router = useRouter();
 
   const getData = async () => {
@@ -34,6 +35,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
         }
         const res = await api.v1.authorization.getUserInfo(params);
         if (res.success) {
+          setProfileDataFreind(res.data);
           if(title === "collection") {
             setCollections({
               data: res.data.portfolio_data,
@@ -100,7 +102,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
         gotoCard={gotoCard}
         table={table}
         isAnalytics={isAnalytics}
-        profileFriend={profileFriend}
+        profileFriend={profileDataFreind ?? profileFriend}
       />
     
     </div>
