@@ -34,7 +34,6 @@ type PropTypes = {
 }
 const CustomImageEditor = ({ src = "img/sampleImage.jpg", ...props }: PropTypes) => {
     const imageEditorRef = React.useRef<FilterHandle>(null);
-    console.log(imageEditorRef, "imageEditorRefimageEditorRefimageEditorRef")
     React.useEffect(() => {
         if (imageEditorRef) {
             props.onGetImage && props.onGetImage(imageEditorRef?.current?.imageEditorInst);

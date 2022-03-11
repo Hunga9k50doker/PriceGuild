@@ -155,9 +155,8 @@ const CollectionBase = ({ ...props}) => {
       //@ts-ignore
       if (error?.response?.status === 409) {
         //@ts-ignore
-          setIsCaptCha(Boolean(error?.response?.data?.show_captcha))
+        setIsCaptCha(Boolean(error?.response?.data?.show_captcha))
       }
-
     }
   };
 
@@ -489,7 +488,7 @@ const CollectionBase = ({ ...props}) => {
                     <Link
                       href={`/collections/${collection?.sport?.name
                         ?.replace(/\s/g, "")
-                        ?.toLowerCase()}}`}
+                        ?.toLowerCase()}`}
                     >
                       <a title={collection?.sport?.name}>
                         {" "}
@@ -1168,11 +1167,11 @@ export const getServerSideProps = async (context: any) => {
     
     const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/checklist/page-title`, config);
     const data = await res.json();
-    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''}| PriceGuide.Cards`;
+    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ' ' } | PriceGuide.Cards`;
     let descriptionPage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} Checklist`;
 
     return {props:{
-     titlePage,
+      titlePage,
       descriptionPage,
     }}
 

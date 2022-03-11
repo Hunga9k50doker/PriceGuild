@@ -457,6 +457,17 @@ export const getServerSideProps = async (context:any) => {
       }
     }
 
+    if (Boolean(Number(pageCurr)) && actionCurr === 'portfolio') {
+      titlePage = "Personal Portfolios";
+      descriptionPage = "A list of your personal portfolios on PriceGuide.Cards";
+    }
+
+
+    if (Boolean(Number(pageCurr)) && actionCurr === 'wishlists') {
+      titlePage = "Personal Wishlists";
+      descriptionPage = "A list of your personal wishlists on PriceGuide.Cards";
+    }
+
     titlePage += ' | PriceGuide.Cards';
     return {props:{
       titlePage,

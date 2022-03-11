@@ -445,7 +445,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 );
               }}
             >
-              {({ state: { pricingGridData }, dispatchReducer }) => {
+              {({ state: { pricingGridData, dropDownOptions }, dispatchReducer }) => {
                 let dataSelect = [
                   new PricingGridModel(),
                   ...pricingGridData.dataGradeSorted,
@@ -453,10 +453,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   let name = item.labelGrade;
                   return { label: name, value: name, index };
                 });
+               
                 return (
                   <Select
                     value={
-                      dataSelect[pricingGridData.cardGradeSelected]
+                      dropDownOptions[pricingGridData.cardGradeSelected]
                     }
                     onChange={(item) => {
                       if (item)
@@ -467,7 +468,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                     }}
                     className="react-select"
                     classNamePrefix="react-select"
-                    options={dataSelect}
+                    options={dropDownOptions}
                     components={{ DropdownIndicator }}
                   />
                 );
@@ -559,7 +560,13 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                   <span ref={ref} {...triggerHandler}>$###</span>
                                 )}
                               </OverlayTrigger>} </td>
-                            <td> {formatCurrency(item.avg)} </td>
+                            <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
+                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                              >
+                                {({ ref, ...triggerHandler }) => (
+                                  <span ref={ref} {...triggerHandler}>$###</span>
+                                )}
+                              </OverlayTrigger>} </td>
                             <td> {item.count} </td>
                             <td>
                               {

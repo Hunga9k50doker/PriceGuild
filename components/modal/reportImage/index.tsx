@@ -47,10 +47,10 @@ const Index = ({
   } = useForm<CardForm>();
 
   const [gradeValue, setGradeValue] = useState<Array<any>>([]);
+  // const []
   const watchGrade = watch("report_grade_company");
   const watchGradeValue = watch("report_grade_value");
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   React.useEffect(() => {
     if (!isOpen) {
       setIsLoading(false)
@@ -114,7 +114,7 @@ const Index = ({
       // @ts-ignore
      report_auto_only_grade: data.report_auto_only_grade | 0,
      report_authentic: data.report_authentic | 0,
-      report_grade_company: isCorrectCard ? undefined : `${data.report_grade_company.id}`,
+      report_grade_company: isCorrectCard ? undefined : `${data.report_grade_company.name}`,
       report_grade_value:  isCorrectCard ? undefined : +data.report_grade_value,
      report_cardcode: props?.cardData?.code,
      report_saleid: point.id ?? props?.cardData?.cardFrontImage?.id
@@ -127,7 +127,8 @@ const Index = ({
         props?.onClose && props.onClose();
         return ToastSystem.success(result.message);
       }
-      return ToastSystem.error(result.message);
+      return ToastSystem.error(result.message || result?.error);
+   
      }
     catch (err) {
       setIsLoading(false)
@@ -260,47 +261,51 @@ const Index = ({
                 />
               </div>
             )}
-            <div>
-              <label htmlFor="" className="form-label">
-                Select Grade Value
-              </label>
-              <div
-                className="w-100 btn-group btn-group-sm grade-value-checkbox pl-3"
-                role="group"
-                aria-label="Basic radio toggle button group"
-              >
-                {gradeValue?.map((item, key) => (
-                  <div key={key} className="item-value">
-                    <input
-                      type="radio"
-                      {...register("report_grade_value", { required: true })}
-                      className="btn-check"
-                      name="report_grade_value"
-                      value={`${item.value}`}
-                      id={`grade-${item.value}`}
-                      autoComplete="off"
-                      defaultChecked={key === 0}
-                    />
-                    <label
-                      style={{
-                        backgroundColor:
-                          +watchGradeValue === +item.value
-                            ? watchGrade?.color_4
-                            : "#FFF",
-                        color:
-                          +watchGradeValue === +item.value
-                            ? watchGrade?.color_3
-                            : "#18213A",
-                      }}
-                      className="btn btn-light text-capitalize"
-                      htmlFor={`grade-${item.value}`}
-                    >
-                      {item.display_value_short}
-                    </label>
-                  </div>
-                ))}
+            {
+              watchGrade?.name !== "ungraded" && 
+              <div>
+                <label htmlFor="" className="form-label">
+                  Select Grade Value
+                </label>
+                <div
+                  className="w-100 btn-group btn-group-sm grade-value-checkbox pl-3"
+                  role="group"
+                  aria-label="Basic radio toggle button group"
+                >
+                  {gradeValue?.map((item, key) => (
+                    <div key={key} className="item-value">
+                      <input
+                        type="radio"
+                        {...register("report_grade_value", { required: true })}
+                        className="btn-check"
+                        name="report_grade_value"
+                        value={`${item.value}`}
+                        id={`grade-${item.value}`}
+                        autoComplete="off"
+                        defaultChecked={key === 0}
+                      />
+                      <label
+                        style={{
+                          backgroundColor:
+                            +watchGradeValue === +item.value
+                              ? watchGrade?.color_4
+                              : "#FFF",
+                          color:
+                            +watchGradeValue === +item.value
+                              ? watchGrade?.color_3
+                              : "#18213A",
+                        }}
+                        className="btn btn-light text-capitalize"
+                        htmlFor={`grade-${item.value}`}
+                      >
+                        {item.display_value_short}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            }
+         
             <div className="form-check">
               <input
                 {...register("report_authentic")}

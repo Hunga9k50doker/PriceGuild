@@ -1,7 +1,8 @@
 import { HttpClient } from "api";
 import { NewHttpClient } from "api/axiosClients";
+import Item from "components/react-autosuggest/dist/Item";
 import { ColorSchemeGrade, GradePair, IndexAverage } from "interfaces";
-import { isInteger } from "lodash";
+import { constant, isInteger } from "lodash";
 import { BaseModel, NewBaseResponse } from "model/base";
 
 enum GridSaleColumn {
@@ -86,6 +87,7 @@ class PricingGridData {
   dataGradeSorted: Array<PricingGridModel>;
   isSortDesc = true;
   typSort = GridSaleColumn.grade;
+  dropDownOptions:any;
 
   cardGradeSelected: number;
 
@@ -93,6 +95,7 @@ class PricingGridData {
     this.data = [];
     this.dataGradeSorted = [];
     this.cardGradeSelected = 0;
+    this.dropDownOptions = {};
   }
 
   selectGrade(index: number) {
@@ -136,22 +139,49 @@ class PricingGridData {
     return listYearSort;
   }
 
-  get listDataGradeSelected(): PricingGridModel[] {
-    if (this.cardGradeSelected === 0) {
-      return this.dataGradeSorted;
-    }
-
-    let item = this.dataGradeSorted[this.cardGradeSelected - 1];
-    if (item.gradeValue === 'ALL' && HelperSales.checkDataGradeValid(item.gradeCompany, item.gradeValue)) {
-      let listData: PricingGridModel[] = [];
-
-      for (let index = this.cardGradeSelected - 1; item.gradeCompany === this.dataGradeSorted[index].gradeCompany; index++) {
-        listData.push(this.dataGradeSorted[index]);
+  static dataOption(data:{[key:string]:string}[]): {value:string, label:string, index: number}[] {
+    return Object.keys(data).sort((a,b)=>{ 
+      if ( a === 'All') {
+        return -1;
+      } else if ( b === 'All') {
+        return -1;
       }
-      return listData;
-    }
 
-    return [item];
+      return a.localeCompare(b);
+     }).map((key, i) => ({ label: key, value: key, index: i }));
+  }
+
+  get listDataGradeSelected(): PricingGridModel[] {
+
+    
+
+    const item = this.dropDownOptions[this.cardGradeSelected];
+
+    if ( item?.value === 'All' || !item ) {
+      return this.dataGradeSorted;
+    } else {
+      return this.dataGradeSorted.filter((it)=>{
+        return it.gradeCompany === item.value;
+      })
+    }
+    
+    return this.dataGradeSorted;
+
+    // if (this.cardGradeSelected === 0) {
+    //   return this.dataGradeSorted;
+    // }
+
+    // let item = this.dataGradeSorted[this.cardGradeSelected - 1];
+    // if (item.gradeValue === 'ALL' && HelperSales.checkDataGradeValid(item.gradeCompany, item.gradeValue)) {
+    //   let listData: PricingGridModel[] = [];
+
+    //   for (let index = this.cardGradeSelected - 1; item.gradeCompany === this.dataGradeSorted[index].gradeCompany; index++) {
+    //     listData.push(this.dataGradeSorted[index]);
+    //   }
+    //   return listData;
+    // }
+
+    // return [item];
   }
 
   copyWith(newData?: {
@@ -160,6 +190,7 @@ class PricingGridData {
     isSortDesc?: boolean;
     typSort?: GridSaleColumn;
     cardGradeSelected?: number;
+    dropDownOptions?: any;
   }): PricingGridData {
     let pricing: PricingGridData = new PricingGridData();
     pricing.data = newData?.data ?? this.data;
@@ -168,6 +199,7 @@ class PricingGridData {
     pricing.typSort = newData?.typSort ?? this.typSort;
     pricing.cardGradeSelected =
       newData?.cardGradeSelected ?? this.cardGradeSelected;
+    pricing.dropDownOptions = newData?.dropDownOptions ?? this.dropDownOptions;
     return pricing;
   }
 
