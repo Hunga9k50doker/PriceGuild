@@ -19,7 +19,8 @@ export const initCardDetailState: () => Types.CardDetailState = () => ({
   keyData: "PSA",
   dataGraded: new Map(),
   saleChartState: new SaleChartState(),
-  priceTooltipPricingGrid: ''
+  priceTooltipPricingGrid: '',
+  dropDownOptions: [],
 });
 
 export const CardDetailReducer = (
@@ -92,8 +93,11 @@ export const CardDetailReducer = (
       //@ts-ignore
       newState.priceTooltipPricingGrid = action.payload.null_price_tooltip;
       newState.pricingGridData = newState.pricingGridDataHold.clone();
+      //@ts-ignore
+      newState.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
+      
       newState.listYearPricingCard =
-        newState.pricingGridData.getListYearUnique();
+      newState.pricingGridData.getListYearUnique();
       newState.listYearPricingCard.unshift(
         new YearPricingCard({ id: -1, year: "All years" })
       );
@@ -101,6 +105,8 @@ export const CardDetailReducer = (
         newState.listYearPricingCard[0],
         newState.pricingGridDataHold
       );
+      //@ts-ignore
+      newState.pricingGridData.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
       newState.indexPricingSelected = 0;
 
       newState.saleChartState.updateDataCardGrade(newState);
