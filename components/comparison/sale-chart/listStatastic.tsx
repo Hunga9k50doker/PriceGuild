@@ -8,6 +8,7 @@ import {
 import { formatCurrency, formatNumber } from "utils/helper"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import _ from 'lodash';
 interface Props {
   onHideChart: (status: boolean, cardId: Array<string>) => void;
   onChangeGrade: (cardGrade: PricingGridModel, cardId: string) => void;
@@ -110,6 +111,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
               }
             );
             const stats = item.calcMaLine.stats
+            const isNoData = _.isEmpty(item?.calcMaLine?.price)
             return (
               <tr key={item.cardId}>
                 <td>
@@ -117,8 +119,10 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                     className="form-check-input cursor-pointer"
                     type="checkbox"
                     value=""
+                    readOnly={isNoData}
+                    disabled={isNoData}
                     onChange={(e)=> onChangeChart(e, item)}
-                    checked={item.isShow}
+                    checked={item.isShow && !isNoData}
                   />
                 </td>
                 <td>
@@ -143,15 +147,16 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                       it && props.onChangeGrade(item.saleState.listCardGrade[it.index], item.cardId)
                     }}
                     menuPosition="fixed"
+                    placeholder={isNoData ? 'N/A' : 'Select...'}
                     components={{ DropdownIndicator }}
                   />
                 </td>
-                <td>{formatCurrency(stats.latest)}</td>
-                <td>{formatCurrency(stats.min)}</td>
-                <td>{formatCurrency(stats.max)}</td>
-                <td>{formatCurrency(stats.average)}</td>
-                <td>{formatNumber(stats.total_trades)}</td>
-                <td>{formatNumber(stats.change)}%</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.latest)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.min)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.max)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.average)}</td>
+                <td>{isNoData ? 'N/A' : formatNumber(stats.total_trades)}</td>
+                <td>{isNoData ? 'N/A' : (<>{formatNumber(stats.change)}%</>)}</td>
               </tr>
             );
           })}

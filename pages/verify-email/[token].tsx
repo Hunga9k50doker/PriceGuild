@@ -6,6 +6,7 @@ import { ConfigAction } from "redux/actions/config_action";
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router'
 import { ToastSystem } from 'helper/toast_system';
+import Head from 'next/head';
 
 type PropTypes = {
 	location?: any,
@@ -36,23 +37,29 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 	}, [])
 	
 	return (
-		<section id="page-resd">
-			<div className="container">
-				<div className="row">
-					<div className="col-md-12">
-						<div className="contact-notify-success mwidth-420 txt-left mt-65">
-							<h2 className="title"> Verify Your Email </h2>
-							<p className="mb-1">In order to start using PriceGuide.Cards account, you need to confirm your email address.</p>
-							<p className="mb-1">We have sent a confirmation email to:</p>
-							<p className="mb-2"><a href="#" onClick={verifyEmail}  title={dataUser?.email}><strong>{ dataUser?.email}</strong></a></p>
-							<p className="mb-50">Check your email and click on the confirmation link to continue.</p>
-							<p className="mb-3 fz-16">If you haven't received an email with instructions - click on the button below.</p>
-							<p> <a href="#" onClick={verifyEmail}  title="Resend Email" className="btn btn-resend">Resend Email</a> </p>
+		<>
+			<Head>
+				<title>Verify Email | PriceGuide.Cards</title>
+				<meta name="description" content="" />
+			</Head>
+			<section id="page-resd">
+				<div className="container">
+					<div className="row">
+						<div className="col-md-12">
+							<div className="contact-notify-success mwidth-420 txt-left mt-65">
+								<h2 className="title"> Verify Your Email </h2>
+								<p className="mb-1">In order to start using PriceGuide.Cards account, you need to confirm your email address.</p>
+								<p className="mb-1">We have sent a confirmation email to:</p>
+								<p className="mb-2"><a href="#" onClick={verifyEmail}  title={dataUser?.email}><strong>{ dataUser?.email}</strong></a></p>
+								<p className="mb-50">Check your email and click on the confirmation link to continue.</p>
+								<p className="mb-3 fz-16">If you haven't received an email with instructions - click on the button below.</p>
+								<p> <a href="#" onClick={verifyEmail}  title="Resend Email" className="btn btn-resend">Resend Email</a> </p>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</>
 	);
 }
 

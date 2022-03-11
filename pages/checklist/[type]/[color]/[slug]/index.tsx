@@ -488,7 +488,7 @@ const CollectionBase = ({ ...props}) => {
                     <Link
                       href={`/collections/${collection?.sport?.name
                         ?.replace(/\s/g, "")
-                        ?.toLowerCase()}}`}
+                        ?.toLowerCase()}`}
                     >
                       <a title={collection?.sport?.name}>
                         {" "}
