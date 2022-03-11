@@ -67,10 +67,6 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
     return statastics.filter(it => it.isShow).map(it => it.cardId)
   }
 
-  useEffect(() => {
-    console.log(statastics, "==statastics==");
-  }, [statastics])
-
   return (
     <div className="table-responsive mt-3">
       <table className="table min-w-1140">
@@ -123,8 +119,10 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                     className="form-check-input cursor-pointer"
                     type="checkbox"
                     value=""
+                    readOnly={isNoData}
+                    disabled={isNoData}
                     onChange={(e)=> onChangeChart(e, item)}
-                    checked={item.isShow}
+                    checked={item.isShow && !isNoData}
                   />
                 </td>
                 <td>
@@ -149,6 +147,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                       it && props.onChangeGrade(item.saleState.listCardGrade[it.index], item.cardId)
                     }}
                     menuPosition="fixed"
+                    placeholder={isNoData ? 'N/A' : 'Select...'}
                     components={{ DropdownIndicator }}
                   />
                 </td>
