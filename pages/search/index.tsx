@@ -115,7 +115,8 @@ const CardList = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
 
   useEffect(() => {
-    if ( !isEmpty(router.query) ) {
+
+    if ( router.isReady ) {
       setPrioritize([])
       resetPage(true);
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
