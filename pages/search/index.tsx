@@ -113,10 +113,13 @@ const CardList = (props: PropTypes) => {
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
+
   useEffect(() => {
-    setPrioritize([])
-    resetPage(true);
-    localStorage.setItem("url-search", `${location.pathname}${location.search}`)
+    if ( !isEmpty(router.query) ) {
+      setPrioritize([])
+      resetPage(true);
+      localStorage.setItem("url-search", `${location.pathname}${location.search}`)
+    }
   }, [router.query])
 
   const resetPage = (isChange: boolean = false) => {
