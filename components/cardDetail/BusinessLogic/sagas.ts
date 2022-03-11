@@ -35,7 +35,8 @@ export class CardDetailSaga {
         payload: {
           //@ts-ignore
           data: response.data, 
-          null_price_tooltip: response.null_price_tooltip
+          null_price_tooltip: response.null_price_tooltip,
+          drop_down_options: response.drop_down_options,
         },
       });
     });

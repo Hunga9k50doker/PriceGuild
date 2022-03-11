@@ -200,6 +200,7 @@ export declare module Types {
     dataGraded: Map<string, Array<PricingGridModel>>;
     saleChartState: SaleChartState;
     priceTooltipPricingGrid: string;
+    dropDownOptions: {value:string, label:string, index: number}[];
   }
 }
 
