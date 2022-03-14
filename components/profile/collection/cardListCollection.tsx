@@ -1122,17 +1122,19 @@ const CardListCollection = ({
       </nav>
     </>
   }
-
+  // console.log(data, 'data');
   return (
     <>
       {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) &&
         <>
         <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />
-        {renderTab()}
+        {
+          //@ts-ignore
+          width >= 768 ? renderTab() : null}
         </>
       }
       <div className="container-fluid p-0 container-collection-profile">
-        <div className={`${!Boolean(Number(router.query.page)) ? '' : 'd-none' } only-mobile`}>
+        <div className={`only-mobile`}>
           <Link href="/profile/portfolio">
             <a onClick={goToFriend} className="container-collection-profile-head text-capitalize">
                <img onClick={() => backToCollection} src={ArrowProfile} alt="" />
