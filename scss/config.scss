@@ -1247,14 +1247,14 @@
     }
     .slick-slider {
       .slick-prev {
-        left: -8%;
-        @media (min-width: 768px) {
+        left: -65px;
+        @media (min-width: 1140px) {
           display: block!important;
         }
       }
       .slick-next {
-        right: -8%;
-        @media (min-width: 768px) {
+        right: -65px;
+        @media (min-width: 1140px) {
           display: block!important;
         }
       }
