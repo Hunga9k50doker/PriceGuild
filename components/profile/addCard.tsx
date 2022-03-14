@@ -306,6 +306,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   React.useEffect(() => {
     let newData = { ...cards };
+  
     if (newData?.cards?.length) {
       newData.cards[activeEntry.cardIndex].data[
         activeEntry.entryIndex
@@ -321,6 +322,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       ].back_image = imageBack.path;
       setCards(newData);
     }
+
     // @ts-ignore
     const dataOld = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
     // @ts-ignore
@@ -328,11 +330,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // @ts-ignore
     if (!isEmpty(datanew)) {
       // @ts-ignore
-      delete datanew.back_image;
+      // delete datanew.back_image;
       // @ts-ignore
-        delete datanew.front_image;
+        // delete datanew.front_image;
     }
-   
+
     if (!isEqual(dataOld, datanew)) {
       return setUndoChangeStatus(true);
     } else {
@@ -519,6 +521,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   const setFromValue = (dataEntry: Datum) => {
+
     setValue("grade_value", dataEntry.grade_value);
     setValue("grade_company", dataEntry.grade_company);
     setValue("user_currency", {
@@ -566,8 +569,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     newDataForm?.forEach((v, i) => {
       delete v.web_name;
       v.data?.forEach((card) => {
-        card.image_upload.back = card?.image_upload?.back ?? "";
-        card.image_upload.front = card?.image_upload?.front  ?? "";
+        card.image_upload.back = card?.back_image ??  "";
+        card.image_upload.front = card?.front_image  ?? "";
+
         card.date_acq = moment(card.date_acq).format("YYYY-MM-DD");
         card.group_ref = card.group_ref?.id ?? card.group_ref;
         card.grade_company = card.grade_company.name;
