@@ -90,6 +90,10 @@ function SportLandingPage({...props}) {
     }
     catch (err) {
       console.log(err)
+      //@ts-ignore
+      if (err.status === 200) {
+        router.push('/404')
+      }
     }
   }
   
@@ -201,14 +205,6 @@ function SportLandingPage({...props}) {
   }
   return (
     <>
-      {/* <Head>
-        <title>{
-          //@ts-ignore
-          props?.titlePage ?? ''}</title>
-        <meta name="description" content={
-          //@ts-ignore
-          props?.descriptionPage ?? ''} />
-      </Head> */}
       <div className="sport-landing-page">
         <div style={{ backgroundImage: `url(${BackgroundHomePage.src})` }} className="header d-flex align-items-center">
           <div className="content-header">
