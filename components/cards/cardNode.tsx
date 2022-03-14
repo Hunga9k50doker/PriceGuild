@@ -203,7 +203,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                   currentTarget.src=ImageCardSearch.src;
                 }
               }}
-              className="box-image-picture__img w-100" src={props?.item?.url_image ?? `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+              className="box-image-picture__img w-100" src={props?.item?.url_image  || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name || `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
             </div>
             <div className="ps-3 collection-card-table-detail">
               <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{props.item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.publisher} </h1>
@@ -434,7 +434,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                         currentTarget.src=ImageCardSearch.src;
                       }
                     }}
-                    className="img-product-element" src={props?.item?.url_image ?? `${props?.imageUrl}` } alt="" title="" />
+                    className="img-product-element" src={props?.item?.url_image || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name  || `${props?.imageUrl}` } alt="" title="" />
                   {props.item.grade_display_value && props.item.grade_display_value != "Not Specified" && <div className={`grade-card  ${props.item.grade_company === "ungraded" ? '' : 'custom-grade-bold'}`}
                     style={{
                       backgroundColor: props.item.grade_company?.color_2,

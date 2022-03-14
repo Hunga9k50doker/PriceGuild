@@ -43,7 +43,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     
     typeof document !== undefined ? require("bootstrap/dist/js/bootstrap.bundle.min") : null;
     
-    UtilsColorGrade.loadDataColors();
+    // UtilsColorGrade.loadDataColors();
     
     // firebase.initializeApp(firebaseConfig);
 

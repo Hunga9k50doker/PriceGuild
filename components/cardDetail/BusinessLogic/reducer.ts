@@ -21,6 +21,7 @@ export const initCardDetailState: () => Types.CardDetailState = () => ({
   saleChartState: new SaleChartState(),
   priceTooltipPricingGrid: '',
   dropDownOptions: [],
+  dropDownOptionsByYear: [],
 });
 
 export const CardDetailReducer = (
@@ -105,6 +106,8 @@ export const CardDetailReducer = (
       newState.pricingGridData = newState.pricingGridDataHold.clone();
       //@ts-ignore
       newState.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
+      //@ts-ignore
+      newState.dropDownOptionsByYear = PricingGridData.dataOptionByYear(action.payload.drop_down_options_by_year);
       
       newState.listYearPricingCard =
       newState.pricingGridData.getListYearUnique();
@@ -185,12 +188,18 @@ export const CardDetailReducer = (
     case "SELECT_YEAR_PRICING": {
       let newState = { ...state };
       newState.pricingGridData = PricingGridData.getPricingGridDataByYear(
-        newState.listYearPricingCard[action.index],
+        newState.listYearPricingCard[action.payload?.index],
         newState.pricingGridDataHold
       );
+
+      newState.dropDownOptions = PricingGridData.filterOptionByYear(
+        newState.dropDownOptionsByYear,
+        action.payload.item
+      )
+      
       return {
         ...newState,
-        indexPricingSelected: action.index,
+        indexPricingSelected: action.payload?.index,
       };
     }
     case "UPDATE_KEY_GRADE": {
@@ -280,10 +289,12 @@ export const CardDetailReducer = (
       if (action.index === state.pricingGridData.cardGradeSelected) {
         return state;
       }
+    
       return {
         ...state,
         pricingGridData: state.pricingGridData.copyWith({
           cardGradeSelected: action.index,
+          dropDownOptions: state.dropDownOptions
         }),
       };
     }
