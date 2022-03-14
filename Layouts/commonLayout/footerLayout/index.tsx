@@ -144,7 +144,7 @@ function Footer() {
               <div className='has-auth'>
                 {/* <li>Links</li> */}
                 <li>
-                    <Link href={`/terms-of-use`}>
+                    <Link href={`/sitemap.xml`}>
                         <a className="text-reset text-decoration-none">
                         Sitemap
                         </a>
