@@ -25,7 +25,7 @@ export class CardDetailSaga {
         type: "loadSaleDataSuccess",
         payload: response.data,
       });
-    });
+    })
   }
 
   loadPricingGrid(payload: CardDetailSaga.PricingGridParam) {

@@ -6,9 +6,10 @@ import Tooltip from 'react-bootstrap/Tooltip'
 type PropTypes = {
     src: string,
     isNoData?: boolean,
+    message?: string,
 }
 
-const PlaceholderChart = ({ src = "", isNoData = false, ...props }: PropTypes) => {
+const PlaceholderChart = ({ src = "", isNoData = false, message, ...props }: PropTypes) => {
     return (
         <div className="chart-placeholder">
             {isNoData ?
@@ -19,7 +20,7 @@ const PlaceholderChart = ({ src = "", isNoData = false, ...props }: PropTypes) =
                 <>
                     <img src={src} alt="" className="chart-placeholder-img" />
                     <OverlayTrigger
-                        overlay={<Tooltip>Login to see pricing</Tooltip>}
+                        overlay={<Tooltip>{ message ?? 'Login to see pricing'}</Tooltip>}
                     >
                     {({ ref, ...triggerHandler }) => (
                         <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />

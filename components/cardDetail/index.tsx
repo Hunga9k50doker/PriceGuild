@@ -112,6 +112,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
+  const [isNotActive, setIsNotAcitve] = React.useState<Boolean>(false);
+  const [notActiveMessage, setNotActiveMessage] = React.useState<string>('');
 
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -128,19 +130,23 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           props.errorCard && props.errorCard(props?.code ?? '')
         });
 
-        if ( loggingIn ) {
+        if (loggingIn) {
           controller.loadSaleData({
             // @ts-ignore
             card_code: cardCode,
             currency: userInfo.userDefaultCurrency,
           }).catch(err => {
             //@ts-ignore
-              if (err?.status === 409) {
-                //@ts-ignore
-                  setIsCaptCha(Boolean(err?.show_captcha))
-              } else {
-                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
-              }
+            if (err?.status === 403) {
+              setIsNotAcitve(true);
+              setNotActiveMessage(err.message)
+            }
+            if (err?.status === 409) {
+              //@ts-ignore
+                setIsCaptCha(Boolean(err?.show_captcha))
+            } else {
+              props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+            }
           }) 
         }
         
@@ -1084,16 +1090,17 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
               }
             >
-              {({ state: { dataGraded, keyData, saleChartState, cardData }, dispatchReducer, sagaController }) => {
+                {({ state: { dataGraded, keyData, saleChartState, cardData, priceTooltipPricingGrid }, dispatchReducer, sagaController }) => {
                 return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
                   {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
                   {/* ${size(dataGraded) ? '' : 'd-none'} */}
                   <div>
                     {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
                     {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
+                    {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
                   </div>
                   {
-                    (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? '' : 'd-none'}`}>
+                    (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? (isEmpty(priceTooltipPricingGrid) ? '' : 'd-none') : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
                         <div className="content-chart">
                           <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>
@@ -1145,10 +1152,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
             {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
               <h2 className="title-profile mb-5"> Sales Chart </h2>
               <div>
-                {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
+                  {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
+                  {!Boolean(!loggingIn) && isNotActive && <PlaceholderChart src={ImageLineChart.src} message={notActiveMessage} />}
               </div>
               {
-                !Boolean(!loggingIn) && <div className="pricing-grid-content pricing-grid-content--sales">
+                !Boolean(!loggingIn) && !isNotActive && <div className="pricing-grid-content pricing-grid-content--sales">
                   <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
                     <div className="h-left d-flex align-items-center justify-content-center">
                       <div className="title me-3">Card Grade</div>

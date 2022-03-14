@@ -176,7 +176,8 @@ export declare module Types {
     | { type: "UPDATE_IS_SHOW_POINT"; isShow: boolean }
     | { type: "SELECT_GRADE_CHART_TOOL"; index: number }
     | { type: "SELECT_GRADE_TREE_CHART_TOOL"; dataSelect: Array<string>}
-    | { type: "SELECT_GRADE_PRICING"; index: number };
+    | { type: "SELECT_GRADE_PRICING"; index: number }
+    | { type: "loadSaleDataFailure"; payload: { [key: string]: any } };
 
   interface CardDetailState {
     cardData: CardModel;
@@ -200,7 +201,7 @@ export declare module Types {
     dataGraded: Map<string, Array<PricingGridModel>>;
     saleChartState: SaleChartState;
     priceTooltipPricingGrid: string;
-    dropDownOptions: {value:string, label:string, index: number}[];
+    dropDownOptions: { value: string, label: string, index: number }[];
   }
 }
 
