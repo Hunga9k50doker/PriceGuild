@@ -493,9 +493,16 @@ const Comparison: React.FC = ({ ...props}) => {
                               isHideSaleChart={true}
                               key={item.id}
                               code={item.code}
-                              onUpdateCard={(e) => {
+                              onUpdateCard={(e, controller) => {
                                 if (refCompare.current) {
-                                  refCompare.current.addData({cardId: `${e.id}`, cardCode: e.code, data: e.saleChartState, cardName: `${item.firstname ? `${item.firstname} ` : ''}${item.lastname ?? ''}`, cardData: e.cardData})
+                                  refCompare.current.addData({
+                                    cardId: `${e.id}`, 
+                                    cardCode: e.code, 
+                                    saleChartState: e.saleChartState, 
+                                    cardName: `${item.firstname ? `${item.firstname} ` : ''}${item.lastname ?? ''}`, 
+                                    cardData: e.cardData,
+                                    controller: controller
+                                  })
                                 }
                                 setCard((prevState) => [
                                   ...prevState.map((item, index) =>
@@ -516,7 +523,11 @@ const Comparison: React.FC = ({ ...props}) => {
                       <h2 className="mb-5 title-profile "> Sales Chart </h2>
                       {/* {console.log(refCompare, 'refComparerefCompare')} */}
                         {Boolean(!loggingIn) ?
-                          <PlaceholderChart src={ImageSaleChart.src} /> : <SaleChartComparison ref={refCompare} />}
+                          <PlaceholderChart src={ImageSaleChart.src} /> : 
+                          <SaleChartComparison 
+                            ref={refCompare} 
+                            errorNoSaleData={async (e) => {errorCardNoSaleData(e)}}
+                          />}
                     </div>
                   </div>
                 </Col>

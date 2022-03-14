@@ -2,7 +2,7 @@ import { SaleData, CardModel } from "model/data_sport/card_sport";
 import markerClusters from "highcharts/modules/marker-clusters";
 import { formatNumber } from "utils/helper";
 import moment from 'moment';
-import { CalcMaLine, SaleChartState } from "components/cardDetail/BusinessLogic";
+import { CalcMaLine, SaleChartState, CardDetailSaga } from "components/cardDetail/BusinessLogic";
 import { HelperSales, UtilsColorGrade } from "model/data_sport/pricing_grid";
 import Highcharts from "highcharts/highstock";
 import _ from "lodash";
@@ -16,11 +16,12 @@ if (!ISSERVER) {
 
 /**Tham số nhận data để handle */
 export interface ArgumentType {
-    data: SaleChartState;
     cardId: string;
     cardCode: string;
     cardName: string;
     cardData: CardModel;
+    saleChartState: SaleChartState;
+    controller: CardDetailSaga
 }
 
 export interface TypeChart {
@@ -376,19 +377,27 @@ export class HoldChartData {
     private saleDataChart: any[] = []
     private calcMaLineDataChart: any = []
     
-    constructor(public cardId: string, public cardCode: string, public cardName: string, public saleState: SaleChartState, public calcMaLine: CalcMaLine, public cardData: CardModel) {
+    constructor(
+        public cardId: string, 
+        public cardCode: string, 
+        public cardName: string, 
+        public saleState: SaleChartState, 
+        public calcMaLine: CalcMaLine, 
+        public cardData: CardModel,
+        public controller: CardDetailSaga
+    ) {
         this.isShow = true
-        
         this.initDataGrade()
     }
 
-    updateConstructor(cardId: string, cardCode: string, cardName: string, saleState: SaleChartState, calcMaLine: CalcMaLine, cardData: CardModel) {
+    updateConstructor(cardId: string, cardCode: string, cardName: string, saleState: SaleChartState, calcMaLine: CalcMaLine, cardData: CardModel, controller: CardDetailSaga) {
         this.cardId = cardId
         this.cardCode = cardCode
         this.cardName = cardName
         this.saleState = saleState
         this.calcMaLine = calcMaLine
         this.cardData = cardData
+        this.controller = controller
         this.cardGradeSelected = this.saleState.cardGradeSelected
     }
 
@@ -407,6 +416,7 @@ export class HoldChartData {
     }
 
     updateDataGradeToChart(optionChart: Highcharts.Options, chart: Highcharts.Chart, onClickTooltip: (e: any, cardData: CardModel) => void) {
+        if (!chart) return
         if (!optionChart.series) optionChart.series = []
         if (!('calcMaLine' in this.optionsIndex)) {
             const calcMaLineState = { ...seriesConfig['calcMaLine'] };
@@ -426,27 +436,10 @@ export class HoldChartData {
     removeSeries(optionChart: Highcharts.Options, chart: Highcharts.Chart) {
         if (!chart) return
         optionChart.series = optionChart.series?.filter((it, index) => ![this.optionsIndex['calcMaLine'], this.optionsIndex['sale']].includes(index)) || []
-        chart.update({...optionChart} as Highcharts.Options, true, true)
+        chart?.update({...optionChart} as Highcharts.Options, true, true)
         this.optionsIndex = {}
         this.saleDataChart = []
         this.calcMaLineDataChart = []
-    }
-
-    updateCalcMaLineSeries(optionChart: Highcharts.Options, chart: Highcharts.Chart, calcMaLine: CalcMaLine) {
-        if (!chart || !optionChart?.series?.length) return
-        this.calcMaLine = calcMaLine
-        this.calcMaLineDataChart = []
-        for (const key in calcMaLine.price) {
-            // @ts-ignore
-            this.calcMaLineDataChart.push([+key, +calcMaLine.price[key]])
-        }
-        if (this.optionsIndex['calcMaLine'] !== undefined && optionChart.series[this.optionsIndex['calcMaLine']]) {
-            optionChart.series[this.optionsIndex['calcMaLine']] = {
-                ...optionChart.series[this.optionsIndex['calcMaLine']],
-                data: this.calcMaLineDataChart
-            }
-            chart.update({...optionChart} as Highcharts.Options, true, true)
-        }
     }
 
     getIndexSaleSeries() {
@@ -547,5 +540,42 @@ export class HoldChartData {
             optionChart.series[this.optionsIndex['sale']] = { ...optionChart.series[this.optionsIndex['sale']], data: this.saleDataChart, cluster: getCluster(color) }
         }
         chart.update({...optionChart} as Highcharts.Options, true, true)
+    }
+
+    updateCalcMaLineSeries(optionChart: Highcharts.Options, chart: Highcharts.Chart, calcMaLine: CalcMaLine) {
+        if (!chart || !optionChart?.series?.length) return
+        if (this.optionsIndex['calcMaLine'] !== undefined && (this.optionsIndex['calcMaLine'] ?? -1) !== -1 && optionChart.series[this.optionsIndex['calcMaLine']]) {
+            this.calcMaLine = calcMaLine
+            this.calcMaLineDataChart = []
+            let color = '#124DE3', colorText: string = '#ffffff';
+            if (HelperSales.checkDataGradeValid(this.itemCardGradeSelected.gradeCompany, this.itemCardGradeSelected.gradeValue)) {
+                //@ts-ignore
+                let colorScheme = UtilsColorGrade.colorSchemeGrade(this.itemCardGradeSelected.gradeCompany)
+                color = colorScheme.color_2
+                colorText = colorScheme.color_1
+            }
+            for (const key in calcMaLine.price) {
+                this.calcMaLineDataChart.push([+key, +calcMaLine.price[key]])
+            }
+            // @ts-ignore
+            optionChart.series[this.optionsIndex['calcMaLine']] = {...optionChart.series[this.optionsIndex['calcMaLine']], data: this.calcMaLineDataChart, color: color, dataLabels: {...optionChart.series[this.optionsIndex['calcMaLine']].dataLabels, color: colorText, backgroundColor: color, borderColor: color}}
+            chart.update({...optionChart} as Highcharts.Options, true, true)
+        }
+    }
+
+    updateSaleSeries(optionChart: Highcharts.Options, chart: Highcharts.Chart) {
+        if (!chart || !optionChart?.series?.length) return
+        if (this.optionsIndex['sale'] !== undefined && (this.optionsIndex['sale'] ?? -1) !== -1 && optionChart.series[this.optionsIndex['sale']]) {
+            this.saleDataChart = this.getSaleData()
+            let color = colorCluster
+            if (HelperSales.checkDataGradeValid(this.itemCardGradeSelected.gradeCompany, this.itemCardGradeSelected.gradeValue)) {
+                //@ts-ignore
+                let colorScheme = UtilsColorGrade.colorSchemeGrade(this.itemCardGradeSelected.gradeCompany)
+                color = colorScheme.color_2
+            }
+            // @ts-ignore
+            optionChart.series[this.optionsIndex['sale']] = { ...optionChart.series[this.optionsIndex['sale']], data: this.saleDataChart, cluster: getCluster(color) }
+            chart.update({...optionChart} as Highcharts.Options, true, true)
+        }
     }
 }

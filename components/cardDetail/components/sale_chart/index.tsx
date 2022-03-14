@@ -1,24 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SaleData } from "model/data_sport/card_sport";
+import { CardModel, SaleData } from "model/data_sport/card_sport";
 import { SaleChartState } from "../../BusinessLogic";
 import moment from "moment";
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import "react-datepicker/dist/react-datepicker.css";
 import { HelperSales, UtilsColorGrade } from "model/data_sport/pricing_grid";
-import { options, seriesConfig, getCluster, colorCluster } from './data';
+import { options, seriesConfig, getCluster, colorCluster, checkImageExist } from './data';
 import StatisticAverage from "./statastic";
 import { useDebouncedCallback } from "utils/useDebouncedEffect";
+import ModalZoomImage from "components/modal/zoomImage/modalZoomImage"
+import ImageDefault from "assets/images/card_default.png"
+import ReportImage, { CardForm } from "components/modal/reportImage"
 
 interface Props {
   listRecord: SaleData[];
   calcMaLine: { [key: string]: any };
   isShowSalePoints: boolean;
   cardId: number;
+  cardData: CardModel;
   saleChartState: SaleChartState;
   calcMaxLineRequest: () => void;
   cardName: string;
-  onClickTooltip?: (e: any) => void;
+  gradeCompanys: any[];
+  reloadPricingGridRequest: () => Promise<void>;
+  updataSaleData: (data: SaleData[]) => void
 }
 
 const SaleChart: React.FC<Props> = ({
@@ -28,18 +34,32 @@ const SaleChart: React.FC<Props> = ({
   cardId,
   saleChartState,
   calcMaxLineRequest,
+  reloadPricingGridRequest,
+  updataSaleData,
   cardName,
-  ...props
+  gradeCompanys,
+  cardData,
 }) => {
   const [calcMaxLineCalled, setCalcMaxLineCalled] = useState(false);
   const [cardIdHold, setCardIdHold] = useState(0);
+  const [isOpenZoomImage, setIsOpenZoomImage] = useState<boolean>(false);
+  const [strImage, setStrImage] = useState<string>("");
+  const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
+  const [point, setPoint] = React.useState<any| undefined>();
 
   const refChart = useRef();
 
-  const onClickTooltip = (point: any) => {
-    point?.id && props.onClickTooltip && props.onClickTooltip(point);
+  const onClickTooltip = async (point: any) => {
+    if ((point.id ?? null) === null) return
+    const imageExits = await checkImageExist(point.img)
+    setPoint({...point})
+    if (imageExits) {
+      setIsOpenZoomImage(true);
+      setStrImage(point.img);
+    } else {
+      setIsOpenReport(true)
+    }
   }
-
 
   const chartRef = (): Highcharts.Chart | null => {
     if (!refChart?.current) {
@@ -173,6 +193,25 @@ const SaleChart: React.FC<Props> = ({
     })
   }, [])
   
+  const onReportSuccess = async (_: CardModel, point: any, cardForm: CardForm, isCorrectCard: boolean) => {
+    const i = saleChartState.mainListSaleRecord.findIndex(it => it.id === point.id)
+    if (i === -1) return
+    if (isCorrectCard) {
+      saleChartState.mainListSaleRecord.splice(i, 1)
+    } else {
+      if (cardForm.report_grade_company.name.toLowerCase() === "ungraded") {
+        saleChartState.mainListSaleRecord[i].grade_company = null
+        saleChartState.mainListSaleRecord[i].grade_value = "0"
+      } else {
+        saleChartState.mainListSaleRecord[i].grade_company = cardForm.report_grade_company.name
+        saleChartState.mainListSaleRecord[i].grade_value = cardForm.report_grade_value
+      }
+    }
+    updataSaleData(saleChartState.mainListSaleRecord)
+    await reloadPricingGridRequest()
+    setTimeout(() => calcMaxLineRequest());
+  }
+
   return (
     <div className="content-pricing-grid content-pricing-grid-custom">
       <StatisticAverage saleChartState={saleChartState} />
@@ -182,6 +221,31 @@ const SaleChart: React.FC<Props> = ({
           <HighchartsReact constructorType={'stockChart'} ref={refChart} highcharts={Highcharts} options={options} />
         </div>
       </div>
+      <ModalZoomImage 
+        isOpen={isOpenZoomImage}
+        onClose={(isOpenReport) => {
+          setIsOpenZoomImage(false)
+          if (isOpenReport) setIsOpenReport(true)
+          else {
+            setStrImage('')
+            setPoint(undefined)
+          }
+        }}
+        src={strImage}
+        imageDefaultZoom={ImageDefault}
+      />
+      <ReportImage 
+        point={point} 
+        gradeCompany={gradeCompanys} 
+        cardData={cardData} 
+        isOpen={isOpenReport} 
+        onSuccess={onReportSuccess}
+        onClose={() => {
+          setIsOpenReport(false);
+          if (strImage) setIsOpenZoomImage(true) 
+          else setPoint(undefined)
+        }}
+      /> 
     </div>
   );
 };

@@ -9,15 +9,14 @@ import { ToastSystem } from 'helper/toast_system';
 
 type PropTypes = {
   isOpen: boolean;
-  card?: any;
   onClose?: () => void;
-  onSuccess?: (item?: any) => void;
+  onSuccess?: (cardData: CardModel, point: any, cardForm: CardForm, isCorrectCard: boolean) => void;
   cardData?: CardModel;
   gradeCompany?: any;
   point?: any;
 };
 
-type CardForm = {
+export type CardForm = {
   report_saleid: any;
   report_cardcode: any;
   report_type: any;
@@ -123,12 +122,13 @@ const Index = ({
       const result = await api.v1.card_detail.reportCard(params);
       setIsLoading(false)
       if (result.success) {
-     
+        if (props.cardData && point) {
+          props?.onSuccess && props.onSuccess(props.cardData, point, data, isCorrectCard);
+        }
         props?.onClose && props.onClose();
         return ToastSystem.success(result.message);
       }
       return ToastSystem.error(result.message || result?.error);
-   
      }
     catch (err) {
       setIsLoading(false)

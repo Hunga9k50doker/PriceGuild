@@ -149,8 +149,13 @@ export declare module Types {
   type ActionReducer =
     | { type: "loadDataSuccess"; payload: { [key: string]: any } }
     | { type: "loadSaleDataSuccess"; payload: { [key: string]: any } }
+    | { type: "UPDATE_SALE_DATA"; payload: { data: SaleData[] } }
     | {
       type: "LOAD_PRICING_GRID_SUCCESS";
+      payload: Array<{ [key: string]: any }>;
+    }
+    | {
+      type: "RELOAD_PRICING_GRID_SUCCESS";
       payload: Array<{ [key: string]: any }>;
     }
     | {
@@ -281,7 +286,18 @@ export class SaleChartState {
     return this.getDataOfChild(this.dataGradedTree).filter(it => this.gradeTreeSelected.includes(it.value))
   }
 
-  handleTreeGrade() {
+  getReloadGradeTreeSelected() {
+    let gradeTreeSelected: string[] = []
+    const list = this.getDataOfChild(this.dataGradedTree)
+    this.gradeTreeSelected.forEach(it => {
+      const item = list.find(temp => temp.value === it)
+      if (item) gradeTreeSelected.push(it)
+    })
+    if (!gradeTreeSelected.length) gradeTreeSelected.push('ALL')
+    return gradeTreeSelected
+  }
+
+  handleTreeGrade(isReload: boolean = false) {
     let dataSelect: Array<TreeSelect> = [
       { key: "ALL", value: "ALL", label: "ALL", children: [], gradeCompany: 'ALL', gradeValue: 'ALL' },
       { key: "RAW", value: "RAW", label: "Ungraded", children: [], gradeCompany: 'RAW', gradeValue: 'RAW' },
@@ -309,10 +325,15 @@ export class SaleChartState {
       }
     });
     this.dataGradedTree = dataSelect;
+    if (isReload) this.gradeTreeSelected = this.getReloadGradeTreeSelected()
+  }
+
+  updateCardGradeSelected(index: number) {
+    if (this.listCardGrade[index]) this.cardGradeSelected = index
   }
 
   //Wait fix sales record
-  updateDataCardGrade(salesRecordState: Types.CardDetailState) {
+  updateDataCardGrade(salesRecordState: Types.CardDetailState, isReload: boolean = false) {
     let dataGradeSorted = salesRecordState.pricingGridDataHold.dataGradeSorted;
     let isDuplicateUngraded = false;
 
@@ -334,10 +355,16 @@ export class SaleChartState {
         listData.push(item);
       }
     }
-    this.listCardGrade = listData;
     let indexAll = listData.findIndex(it => it.gradeCompany === "ALL")
-    this.cardGradeSelected = indexAll !== -1 ? indexAll :  0
-    this.handleTreeGrade();
+    if (
+      !isReload ||
+      this.listCardGrade[this.cardGradeSelected]?.gradeCompany !== listData[this.cardGradeSelected]?.gradeCompany ||
+      this.listCardGrade[this.cardGradeSelected]?.gradeValue !== listData[this.cardGradeSelected]?.gradeValue
+    ) {
+      this.cardGradeSelected = indexAll !== -1 ? indexAll :  0
+    }
+    this.listCardGrade = listData;
+    this.handleTreeGrade(isReload);
   }
 
   //Update data by card Grade name

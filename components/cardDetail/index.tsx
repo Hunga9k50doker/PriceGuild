@@ -35,7 +35,7 @@ import {
 } from "./BusinessLogic";
 import { useDispatch, useSelector } from "react-redux";
 import Selectors from "redux/selectors";
-import { CardModel } from "model/data_sport/card_sport";
+import { CardModel, SaleData } from "model/data_sport/card_sport";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import ChosseCollection from "components/modal/chosseCollection";
@@ -66,7 +66,7 @@ import CaptCha from "components/modal/captcha";
 
 type PropTypes = {
   code?: string;
-  onUpdateCard?: (item: any) => void;
+  onUpdateCard?: (item: any, controller: CardDetailSaga) => void;
   isHideGrid?: boolean;
   isHideDetail?: boolean;
   isHideSaleChart?: boolean;
@@ -674,18 +674,6 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     setGradeCompany(data)
   }
 
-  const onClickTooltip = async (e: any) => {
-    if ((e.id ?? null) === null) return
-    const imageExits = await checkImageExist(e.img)
-    setPoint({...e})
-    if (imageExits) {
-      SetIsOpenZoomImage(true);
-      SetStrImage(e.img);
-    } else {
-      setIsOpenReport(true)
-    }
-  }
-
   const onMouseOverTreeSelect = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const tooltip = (e.target as any).children[0] as HTMLSpanElement
     if (tooltip) {
@@ -709,8 +697,10 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
 
   return (
     <CardDetailProvider ref={refProvider}>
-
-      <ChartFlow onUpdateCard={props.onUpdateCard}/>
+      <ChartFlow onUpdateCard={(item) => {
+        let controller: CardDetailSaga = refProvider?.current.controller as CardDetailSaga;
+        props.onUpdateCard && props.onUpdateCard(item, controller)
+      }}/>
       <div className="container-fluid card-detail">
         {isEmpty(props.code) && (
           <CardDetailConsumer shouldBuild={(pre, next) => pre.cardData !== next.cardData}>
@@ -1395,15 +1385,27 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                     }}
                   >
                     {({
-                      state: { saleChartState, cardData, pricingGridDataHold },
-                      sagaController,
+                      state: { saleChartState, cardData },
+                      sagaController, dispatchReducer
                     }) => {
                       return (
                         <SaleChart
-                          onClickTooltip={onClickTooltip}
+                          gradeCompanys={gradeCompanys}
+                          cardData={cardData}
                           cardId={+cardData.id}
                           cardName={cardData.fullName}
                           saleChartState={saleChartState}
+                          isShowSalePoints={saleChartState.isShowSalePoints}
+                          calcMaLine={saleChartState.calcMaLine}
+                          listRecord={saleChartState.mainListSaleRecord}
+                          updataSaleData={(data: SaleData[]) => {
+                            dispatchReducer({
+                              type: "UPDATE_SALE_DATA",
+                              payload: {
+                                data: data
+                              }
+                            })
+                          }}
                           calcMaxLineRequest={() => {
                             sagaController.requestCalcMaxLineV1({
                               cardId: +cardData.id,
@@ -1412,9 +1414,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                               period: saleChartState.periodSelected.id
                             });
                           }}
-                          isShowSalePoints={saleChartState.isShowSalePoints}
-                          calcMaLine={saleChartState.calcMaLine}
-                          listRecord={saleChartState.mainListSaleRecord}
+                          reloadPricingGridRequest={async () => {
+                            return sagaController.reloadPricingGrid({
+                              // @ts-ignore
+                              cardcode: cardData.code,
+                              currency: userInfo.userDefaultCurrency,
+                              userid: userInfo.userid,
+                            }).catch((err: any) => {
+                              props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+                            })
+                          }}
                         />
                       );
                     }}

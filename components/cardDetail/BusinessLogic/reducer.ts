@@ -85,7 +85,17 @@ export const CardDetailReducer = (
       newState.saleChartState.updateMainListSaleRecord(newState.dataSales)
       return newState;
     }
-      
+
+    case "UPDATE_SALE_DATA": {
+      let newState = { 
+        ...state,
+        dataSales: action.payload.data || []
+      };
+      newState.saleChartState.updateMainListSaleRecord(newState.dataSales)
+      return {
+        ...newState,
+      };
+    }
     case "LOAD_PRICING_GRID_SUCCESS":
       let newState = { ...state };
       //@ts-ignore
@@ -132,7 +142,46 @@ export const CardDetailReducer = (
       return {
         ...newState,
       };
+    case "RELOAD_PRICING_GRID_SUCCESS": {
+      let newState = { ...state };
+      //@ts-ignore
+      newState.pricingGridDataHold = PricingGridData.fromJson(action.payload.data);
+      //@ts-ignore
+      newState.priceTooltipPricingGrid = action.payload.null_price_tooltip;
+      newState.pricingGridData = newState.pricingGridDataHold.clone();
+      
+      //cardGradeSelected
+      //@ts-ignore
+      newState.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
+      
+      newState.listYearPricingCard =
+      newState.pricingGridData.getListYearUnique();
+      newState.listYearPricingCard.unshift(
+        new YearPricingCard({ id: -1, year: "All years" })
+      );
+      newState.pricingGridData = PricingGridData.getPricingGridDataByYear(
+        newState.listYearPricingCard[0],
+        newState.pricingGridDataHold
+      );
+      //@ts-ignore
+      newState.pricingGridData.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
+      newState.indexPricingSelected = 0 || state.indexPricingSelected;
 
+      // Làm mới instance để không bị tham chiếu
+      newState.dataGraded = new Map();
+      resetDataGraded(newState.dataGraded, newState.pricingGridDataHold);
+      let keyData: string = ''
+      if (newState.dataGraded.size) {
+        const item = Array.from(newState.dataGraded.keys()).find(it => it === state.keyData)
+        if (item) keyData = state.keyData
+        else Array.from(newState.dataGraded.keys())[0]
+      }
+      newState.saleChartState.updateDataCardGrade(newState, true);
+      newState.keyData = keyData
+      return {
+        ...newState,
+      };
+    }
     case "SELECT_YEAR_PRICING": {
       let newState = { ...state };
       newState.pricingGridData = PricingGridData.getPricingGridDataByYear(

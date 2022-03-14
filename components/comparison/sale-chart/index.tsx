@@ -19,8 +19,7 @@ import ImageDefault from "assets/images/card_default.png"
 import { CardModel } from "model/data_sport/card_sport";
 import { api } from "configs/axios";
 import ModalZoomImage from "components/modal/zoomImage/modalZoomImage"
-import ReportImage from "components/modal/reportImage"
-import { isEmpty } from "lodash";
+import ReportImage, { CardForm } from "components/modal/reportImage"
 import { checkImageExist } from "components/cardDetail/components/sale_chart/data";
 const ISSERVER = typeof window === "undefined";
 
@@ -33,7 +32,9 @@ export interface RefType {
   onChangeGrade: (cardGrade: PricingGridModel, cardId: string) => Promise<void>
 }
 
-interface Props { }
+interface Props {
+  errorNoSaleData?: (code: string) => void;
+}
 
 const calcMaLineDefault: CalcMaLine = { price: [], stats: { average: 0, change: 0, latest: 0, max: 0, min: 0, total_trades: 0 }}
 
@@ -70,12 +71,12 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
 
   const [isShowSalePoints, setIsShowSalePoints] = useState(true);
 
-  const getCalcMaLine = async (cardId: string | number, data: SaleChartState) => {
+  const getCalcMaLine = async (cardId: string | number, saleChartState: SaleChartState) => {
     const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
       card_id: +cardId,
       currency: userInfo.userDefaultCurrency,
-      grade_company: data.itemCardGradeSelected.gradeCompany,
-      grade_value: data.itemCardGradeSelected.gradeValue,
+      grade_company: saleChartState.itemCardGradeSelected.gradeCompany,
+      grade_value: saleChartState.itemCardGradeSelected.gradeValue,
       time_period: +timePeriodSelected.value,
     })
       .then((response) => response.data)
@@ -86,20 +87,20 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     return calcMaLine
   }
 
-  const _addDataToChart = async ({ data, cardName, cardId, cardCode, cardData }: ArgumentType) => {
+  const _addDataToChart = async ({ saleChartState, cardName, cardId, cardCode, cardData, controller }: ArgumentType) => {
     if (!(cardId in chartData)) {
-      const calcMaLine = data.itemCardGradeSelected ? await getCalcMaLine(cardId, data) : calcMaLineDefault
-      chartData[cardId] = new HoldChartData(cardId, cardCode, cardName, data, calcMaLine, cardData);
+      const calcMaLine = saleChartState.itemCardGradeSelected ? await getCalcMaLine(cardId, saleChartState) : calcMaLineDefault
+      chartData[cardId] = new HoldChartData(cardId, cardCode, cardName, saleChartState, calcMaLine, cardData, controller);
       chartData[cardId].updateDataGradeToChart(options, chartRef()!, onClickTooltip);
       refStatistics.current?.updateChartData(chartData);
     } else {
-      if (data.itemCardGradeSelected) {
-        const calcMaLine = await getCalcMaLine(cardId, data)
-        chartData[cardId].updateConstructor(cardId, cardCode, cardName, data, calcMaLine, cardData)
+      if (saleChartState.itemCardGradeSelected) {
+        const calcMaLine = await getCalcMaLine(cardId, saleChartState)
+        chartData[cardId].updateConstructor(cardId, cardCode, cardName, saleChartState, calcMaLine, cardData, controller)
         chartData[cardId].updateDataChart(options, chartRef()!, calcMaLine)
         refStatistics.current?.updateChartData(chartData);
       } else {
-        chartData[cardId].updateConstructor(cardId, cardCode, cardName, data, calcMaLineDefault, cardData)
+        chartData[cardId].updateConstructor(cardId, cardCode, cardName, saleChartState, calcMaLineDefault, cardData, controller)
         refStatistics.current?.updateChartData(chartData);
       }
     }
@@ -144,6 +145,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     const cardGradeSelected = chartData[cardId].saleState.listCardGrade.findIndex(it => it.gradeCompany === cardGrade.gradeCompany && it.gradeValue === cardGrade.gradeValue)
     if (cardGradeSelected === -1 || cardGradeSelected === chartData[cardId].cardGradeSelected) return
     chartData[cardId].cardGradeSelected = cardGradeSelected
+    chartData[cardId].saleState.updateCardGradeSelected(cardGradeSelected)
     const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
       card_id: +cardId,
       currency: userInfo.userDefaultCurrency,
@@ -277,6 +279,38 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     setCardData(cardData)
   }
 
+  const onReportSuccess = async (cardData: CardModel, point: any, cardForm: CardForm, isCorrectCard: boolean) => {
+    if (!chartData[cardData.id] || !chartData[cardData.id].controller) return
+    const i = chartData[cardData.id].saleState.mainListSaleRecord.findIndex(it => it.id === point.id)
+    if (i === -1) return
+    if (isCorrectCard) {
+      chartData[cardData.id].saleState.mainListSaleRecord.splice(i, 1)
+    } else {
+      if (cardForm.report_grade_company.name.toLowerCase() === "ungraded") {
+        chartData[cardData.id].saleState.mainListSaleRecord[i].grade_company = null
+        chartData[cardData.id].saleState.mainListSaleRecord[i].grade_value = "0"
+      } else {
+        chartData[cardData.id].saleState.mainListSaleRecord[i].grade_company = cardForm.report_grade_company.name
+        chartData[cardData.id].saleState.mainListSaleRecord[i].grade_value = cardForm.report_grade_value
+      }
+    }
+    chartData[cardData.id].controller.dispatchReducer({
+      type: "UPDATE_SALE_DATA",
+      payload: {
+        data: chartData[cardData.id].saleState.mainListSaleRecord
+      }
+    })
+    chartData[cardData.id].updateSaleSeries(options, chartRef()!)
+    chartData[cardData.id].controller.reloadPricingGrid({
+      // @ts-ignore
+      cardcode: cardData.code,
+      currency: userInfo.userDefaultCurrency,
+      userid: userInfo.userid,
+    }).catch((err: any) => {
+        props.errorNoSaleData && props.errorNoSaleData(cardData.code);
+    })
+  }
+
   return (
     <div className="content-sale-chart hide-highcharts-scrollbar">
       <div className="mt-2">
@@ -340,15 +374,21 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
           src={strImage}
           imageDefaultZoom={ImageDefault}
         />
-        <ReportImage point={point} gradeCompany={gradeCompanys} cardData={cardData} isOpen={isOpenReport} onClose={() => {
-            setIsOpenReport(false);
-            if (strImage) setIsOpenZoomImage(true)
-            else {
-              setPoint(undefined)
-              setCardData(undefined)
-            }
-          }}
-        /> 
+        <ReportImage 
+          point={point} 
+          gradeCompany={gradeCompanys} 
+          cardData={cardData} 
+          isOpen={isOpenReport} 
+          onSuccess={onReportSuccess}
+          onClose={() => {
+              setIsOpenReport(false);
+              if (strImage) setIsOpenZoomImage(true)
+              else {
+                setPoint(undefined)
+                setCardData(undefined)
+              }
+            }}
+          /> 
       </div>
     </div>
   );
