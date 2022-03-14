@@ -155,7 +155,8 @@ export declare module Types {
     }
     | {
       type: "SELECT_YEAR_PRICING";
-      index: number;
+      // index: number;
+      payload: { [key: string]: any } 
     }
     | {
       type: "UPDATE_KEY_GRADE";
@@ -202,6 +203,7 @@ export declare module Types {
     saleChartState: SaleChartState;
     priceTooltipPricingGrid: string;
     dropDownOptions: { value: string, label: string, index: number }[];
+    dropDownOptionsByYear: { value: string, label: string, index: number }[];
   }
 }
 

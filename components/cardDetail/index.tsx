@@ -418,7 +418,10 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   onClick={() =>
                     dispatchReducer({
                       type: "SELECT_YEAR_PRICING",
-                      index,
+                      payload: {
+                        item,
+                        index
+                      },
                     })
                   }
                   className={
@@ -462,8 +465,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                
                 return (
                   <Select
-                    value={
-                      dropDownOptions[pricingGridData.cardGradeSelected]
+                    value={ !isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
+                      dropDownOptions[pricingGridData.cardGradeSelected] : null
                     }
                     onChange={(item) => {
                       if (item)

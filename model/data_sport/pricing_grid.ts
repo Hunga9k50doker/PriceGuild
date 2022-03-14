@@ -2,7 +2,7 @@ import { HttpClient } from "api";
 import { NewHttpClient } from "api/axiosClients";
 import Item from "components/react-autosuggest/dist/Item";
 import { ColorSchemeGrade, GradePair, IndexAverage } from "interfaces";
-import { constant, isInteger } from "lodash";
+import { constant, isEmpty, isInteger } from "lodash";
 import { BaseModel, NewBaseResponse } from "model/base";
 
 enum GridSaleColumn {
@@ -151,12 +151,45 @@ class PricingGridData {
      }).map((key, i) => ({ label: key, value: key, index: i }));
   }
 
-  get listDataGradeSelected(): PricingGridModel[] {
-
+  static dataOptionByYear(data: any) {
     
+    let dataOption: any = [];
+    
+    for (const [key, value] of Object.entries(data)) {
 
+      let valueOption = [];
+      
+      if (!isEmpty(value)) {
+        //@ts-ignore
+        valueOption = Object.keys(value).sort((a,b)=>{ 
+          if ( a === 'All') {
+            return -1;
+          } else if ( b === 'All') {
+            return -1;
+          }
+
+          return a.localeCompare(b);
+        }).map((key, i) => ({ label: key, value: key, index: i }));
+
+        dataOption[key] = valueOption;
+      } else {
+        dataOption[key] = [];
+      }
+    }
+    return dataOption;
+  }
+
+  static filterOptionByYear(data: any, item: any) {
+    if (item.id === -1) {
+      return data['ALL'];
+    }
+    
+    return data[+item.year];
+  }
+
+  get listDataGradeSelected(): PricingGridModel[] {
     const item = this.dropDownOptions[this.cardGradeSelected];
-
+    
     if ( item?.value === 'All' || !item ) {
       return this.dataGradeSorted;
     } else {
