@@ -566,8 +566,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     newDataForm?.forEach((v, i) => {
       delete v.web_name;
       v.data?.forEach((card) => {
-        card.image_upload.back = card.back_image ?? "";
-        card.image_upload.front = card.front_image ?? "";
+        card.image_upload.back = card?.image_upload?.back ?? "";
+        card.image_upload.front = card?.image_upload?.front  ?? "";
         card.date_acq = moment(card.date_acq).format("YYYY-MM-DD");
         card.group_ref = card.group_ref?.id ?? card.group_ref;
         card.grade_company = card.grade_company.name;
