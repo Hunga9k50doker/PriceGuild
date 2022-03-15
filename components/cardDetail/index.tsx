@@ -13,6 +13,7 @@ import IconChart from "assets/images/view_chart.svg";
 import Icon3Dot from "assets/images/dot-3.svg";
 import IconFolder from "assets/images/icon_folder.svg";
 import IconFolderTim from "assets/images/icon_folder_tim.svg";
+import IconTable from "assets/images/table.svg";
 import IconHeart from "assets/images/icon_heart.svg";
 import IconHeartTim from "assets/images/icon_heart_tim.svg";
 import IconCan from "assets/images/icon_can.svg";
@@ -440,6 +441,10 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
       }}
     </CardDetailConsumer>
     <div className="pricing-grid-content">
+      <div className="pricing-grid-content-no-data">
+        <img src={IconTable} alt=""/>
+        <p>There are no data available</p>
+      </div>
       <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
         <div className="h-left d-flex align-items-center justify-content-center">
           <div className="title me-3">Grading</div>
