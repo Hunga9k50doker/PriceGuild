@@ -115,7 +115,6 @@ const CardList = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
 
   useEffect(() => {
-
     if ( router.isReady ) {
       setPrioritize([])
       resetPage(true);
@@ -233,6 +232,7 @@ const CardList = (props: PropTypes) => {
       let params: any = {
         // search_term: query.search_term
       };
+      
       if (query.sport || query?.sport_criteria) {
         params.sport = +(query?.sport ?? query?.sport_criteria);
       }
@@ -320,7 +320,6 @@ const CardList = (props: PropTypes) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
     getListCard([1], true, false, headers)
-
   }
 
   const onLoadMore = () => {
@@ -332,7 +331,8 @@ const CardList = (props: PropTypes) => {
   }
 
   const onChangeSort = (e: any) => {
-    setSortCards(e)
+    setSortCards(e);
+
   }
 
   const getFilterCollection = async () => {
@@ -1146,7 +1146,7 @@ const CardList = (props: PropTypes) => {
                     <div className="modal-content">
                       <div className="modal-header">
                         <h5 className="modal-title" id="sortModalLabel"> Sort by </h5>
-                        <button type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close" >  Close </button>
+                        <button type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close">  Close </button>
                       </div>
                       <div className={`modal-body filter-custom`}>
                         <div className="position-relative">
