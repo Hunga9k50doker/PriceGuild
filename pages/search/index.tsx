@@ -77,6 +77,7 @@ const CardList = (props: PropTypes) => {
   const printRunRef = React.useRef<FilterHandle>(null);
   const sportRef = React.useRef<FilterHandle>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const btnSoftByRef = React.useRef<HTMLButtonElement>(null);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [sortCards, setSortCards] = useState<SelectDefultType>(defaultSort);
   const [isSelect, setIsSelect] = useState<boolean>(false);
@@ -332,7 +333,8 @@ const CardList = (props: PropTypes) => {
 
   const onChangeSort = (e: any) => {
     setSortCards(e);
-
+    //@ts-ignore
+    btnSoftByRef?.current.click();
   }
 
   const getFilterCollection = async () => {
@@ -407,6 +409,9 @@ const CardList = (props: PropTypes) => {
     if (key === "set") {
       typeRef?.current?.reset();
       colorRef?.current?.reset();
+      
+      // @ts-ignore
+      buttonRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, type: [], color: [], isLoad: true });
     }
@@ -417,7 +422,8 @@ const CardList = (props: PropTypes) => {
     }
     // @ts-ignore
     setFilterData({ ...params, [key]: e, isLoad: true });
-
+    // @ts-ignore
+    buttonRef?.current.click();
   }
 
   const removeFilter = (item: FilterType, key: string) => {
@@ -1146,7 +1152,7 @@ const CardList = (props: PropTypes) => {
                     <div className="modal-content">
                       <div className="modal-header">
                         <h5 className="modal-title" id="sortModalLabel"> Sort by </h5>
-                        <button type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close">  Close </button>
+                        <button ref={btnSoftByRef} type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close">  Close </button>
                       </div>
                       <div className={`modal-body filter-custom`}>
                         <div className="position-relative">
