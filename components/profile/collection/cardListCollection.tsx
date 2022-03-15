@@ -121,6 +121,8 @@ const CardListCollection = ({
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isOpenModalDelete, setIsOpenModalDelete] = useState<boolean>(false);
+  const btnSoftByRef = React.useRef<HTMLButtonElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [data, setData] = useState<DataLoadType>({
     cards: [],
     isLoading: true,
@@ -447,6 +449,8 @@ const CardListCollection = ({
       setFilterData({ ...params, [key]: e, isLoad: true });
     }
     resetDataTrack(dataFiler);
+    // @ts-ignore
+    buttonRef?.current.click();
   }
 
   const changeTrackFilter = (index: number) => {
@@ -546,7 +550,9 @@ const CardListCollection = ({
   }
 
   const onChangeSort = (e: any) => {
-    setSortCards(e)
+    setSortCards(e);
+    //@ts-ignore
+    btnSoftByRef?.current.click();
   }
 
   // const onConfirmRemove = () => {
@@ -1516,6 +1522,7 @@ const CardListCollection = ({
                         <div className="modal-header">
                           <h5 className="modal-title" id="sortModalLabel"> Sort by{" "} </h5>
                           <button
+                            ref={btnSoftByRef}
                             type="button"
                             className="btn btn-link text-decoration-none"
                             data-bs-dismiss="modal"
@@ -1587,6 +1594,7 @@ const CardListCollection = ({
                             </span>
                           </h5>
                           <button
+                            ref={buttonRef}
                             type="button"
                             className="btn btn-link text-decoration-none"
                             data-bs-dismiss="modal"
