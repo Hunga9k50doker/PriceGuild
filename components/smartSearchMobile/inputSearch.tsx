@@ -212,7 +212,8 @@ const InputSearchMobile = React.forwardRef<FilterModalHandle, PropTypes>(({
     $(".react-autosuggest__input").blur();
   }, [router?.query])
 
-  const onClear = () => {
+  const onClear = (e: any) => {
+    e.preventDefault();
     setKeySearch("")
     setValue("")
     // @ts-ignore
