@@ -189,7 +189,10 @@ const PieChart = (props: PropTypes) => {
     //@ts-ignore
     options.series[0].dataCustom = props
     //@ts-ignore
-    options.series[0].data = Object.keys(data).map((item) => ({ name: item, y: data[item], drilldownFilter: item,  drilldown: true }))
+    options.series[0].data = Object.keys(data).map((item) => ({ name: item, y: data[item], drilldownFilter: item, drilldown: true }))
+    //@ts-ignore
+    console.log(options.series[0], 'options.series[0]');
+    
     chart.update(options, true, true)
     setTimeout(() => {
       if (widgetSettings.filter) {
