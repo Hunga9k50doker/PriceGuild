@@ -165,7 +165,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
         <div className="text-center">
           <div className="user-image d-flex justify-content-center">
             <div>
-              <img className="w-100 border-circle" src={ profile?.user_info.avatar ? `${process.env.REACT_APP_IMAGE_URL}${profile?.user_info.avatar}` : userPicture}  data-src="holder.js/171x180" alt={profile?.user_info?.username} data-holder-rendered="true" />
+              <img className="w-100 border-circle" src={ profile?.user_info.avatar ? `${profile?.user_info.avatar}` : userPicture}  data-src="holder.js/171x180" alt={profile?.user_info?.username} data-holder-rendered="true" />
             </div>
           </div>
           <div className="content-user-profile-title">
