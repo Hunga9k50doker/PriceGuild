@@ -147,28 +147,39 @@ export const CardDetailReducer = (
       };
     case "RELOAD_PRICING_GRID_SUCCESS": {
       let newState = { ...state };
+    
+      let keySelectPricingGrid = newState.dropDownOptions[newState.pricingGridData.cardGradeSelected];
       //@ts-ignore
       newState.pricingGridDataHold = PricingGridData.fromJson(action.payload.data);
       //@ts-ignore
       newState.priceTooltipPricingGrid = action.payload.null_price_tooltip;
       newState.pricingGridData = newState.pricingGridDataHold.clone();
-      
-      //cardGradeSelected
-      //@ts-ignore
-      newState.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
-      
+     
       newState.listYearPricingCard =
-      newState.pricingGridData.getListYearUnique();
+        newState.pricingGridData.getListYearUnique();
+
       newState.listYearPricingCard.unshift(
         new YearPricingCard({ id: -1, year: "All years" })
       );
+
       newState.pricingGridData = PricingGridData.getPricingGridDataByYear(
-        newState.listYearPricingCard[0],
+        newState.listYearPricingCard[newState.indexPricingSelected],
         newState.pricingGridDataHold
       );
-      //@ts-ignore
-      newState.pricingGridData.dropDownOptions = PricingGridData.dataOption(action.payload.drop_down_options);
-      newState.indexPricingSelected = 0 || state.indexPricingSelected;
+      // check key selected Pricing Grid
+      if (keySelectPricingGrid) {
+        let index = newState.dropDownOptions.findIndex(el => el.index === keySelectPricingGrid.index);
+
+        if (index !== -1) {
+          newState.pricingGridData.cardGradeSelected = index;
+        } else {
+          newState.pricingGridData.cardGradeSelected = 0;
+        }
+      }
+      // keep current data filter by year
+      newState.pricingGridData = newState.pricingGridData.copyWith({
+          dropDownOptions: newState.dropDownOptions
+      }),
 
       // Làm mới instance để không bị tham chiếu
       newState.dataGraded = new Map();
@@ -187,16 +198,32 @@ export const CardDetailReducer = (
     }
     case "SELECT_YEAR_PRICING": {
       let newState = { ...state };
+      
+      let keySelectPricingGrid = newState.dropDownOptions[newState.pricingGridData.cardGradeSelected];
+
       newState.pricingGridData = PricingGridData.getPricingGridDataByYear(
         newState.listYearPricingCard[action.payload?.index],
         newState.pricingGridDataHold
       );
-
+      
       newState.dropDownOptions = PricingGridData.filterOptionByYear(
         newState.dropDownOptionsByYear,
         action.payload.item
       )
+      if (keySelectPricingGrid) {
+        let index = newState.dropDownOptions.findIndex(el => el.index === keySelectPricingGrid.index && el.value === keySelectPricingGrid.value);
       
+        if (index !== -1) {
+          newState.pricingGridData.cardGradeSelected = index;
+        } else {
+          newState.pricingGridData.cardGradeSelected = 0;
+        }
+      }
+
+      newState.pricingGridData = newState.pricingGridData.copyWith({
+        dropDownOptions: newState.dropDownOptions
+      })
+
       return {
         ...newState,
         indexPricingSelected: action.payload?.index,
