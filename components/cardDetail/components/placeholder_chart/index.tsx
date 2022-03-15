@@ -7,9 +7,10 @@ type PropTypes = {
     src: string,
     isNoData?: boolean,
     message?: string,
+    isNoIcon?: boolean,
 }
 
-const PlaceholderChart = ({ src = "", isNoData = false, message, ...props }: PropTypes) => {
+const PlaceholderChart = ({ src = "", isNoData = false, message, isNoIcon = false, ...props }: PropTypes) => {
     return (
         <div className="chart-placeholder">
             {isNoData ?
@@ -19,13 +20,17 @@ const PlaceholderChart = ({ src = "", isNoData = false, message, ...props }: Pro
                 </div> : 
                 <>
                     <img src={src} alt="" className="chart-placeholder-img" />
-                    <OverlayTrigger
-                        overlay={<Tooltip>{ message ?? 'Login to see pricing'}</Tooltip>}
-                    >
-                    {({ ref, ...triggerHandler }) => (
-                        <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />
-                    )}
-                </OverlayTrigger></>}
+                    {
+                        Boolean(!isNoIcon) && 
+                        <OverlayTrigger
+                            overlay={<Tooltip>{ message ?? 'Login to see pricing'}</Tooltip>}
+                        >
+                        {({ ref, ...triggerHandler }) => (
+                            <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />
+                        )}
+                        </OverlayTrigger>
+                    }
+                </>}
           
         </div>
     

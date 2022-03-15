@@ -90,6 +90,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const salesOverviewRef = useRef<any>(null);
   const salesChartdRef = useRef<any>(null);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
+  const [isLoadingSalesChart, setIsLoadingSalesChart] =useState<boolean>(false);
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const refProvider = useRef<any>(null);
   const [isOpenClaim, setIsOpenClaim] = useState<boolean>(false);
@@ -1086,11 +1087,16 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
                   {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
                   {/* ${size(dataGraded) ? '' : 'd-none'} */}
-                  <div>
-                    {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
-                    {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
-                    {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
-                  </div>
+                  {
+                    saleChartState.listCardGrade.length === 0 ?
+                      <PlaceholderChart isNoIcon={true} src={ImageSaleChart.src} /> :
+                      <div>
+                      {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
+                      {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
+                      {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
+                    </div>  
+                  } 
+              
                   {
                     (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? (isEmpty(priceTooltipPricingGrid) ? '' : 'd-none') : 'd-none'}`}>
                       <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
@@ -1142,303 +1148,313 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               }}
             </CardDetailConsumer>
             {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
-              <h2 className="title-profile mb-5"> Sales Chart </h2>
-              <div>
-                  {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
-                  {!Boolean(!loggingIn) && isNotActive && <PlaceholderChart src={ImageLineChart.src} message={notActiveMessage} />}
-              </div>
-              {
-                !Boolean(!loggingIn) && !isNotActive && <div className="pricing-grid-content pricing-grid-content--sales">
-                  <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
-                    <div className="h-left d-flex align-items-center justify-content-center">
-                      <div className="title me-3">Card Grade</div>
-                      <div className="grade hidden-select">
-                        <CardDetailConsumer
-                          shouldBuild={(pre, next) => {
-                            return (
-                              pre.cardData.id !== next.cardData.id ||
-                              pre.saleChartState.cardGradeSelected !==
-                              next.saleChartState.cardGradeSelected || 
-                              pre.saleChartState.gradeTreeSelected !== next.saleChartState.gradeTreeSelected ||
-                              pre.saleChartState.periodSelected !== next.saleChartState.periodSelected ||
-                              pre.saleChartState.calcMaLine !== next.saleChartState.calcMaLine
-                            );
-                          }}
-                        >
-                          {({
-                            state: { saleChartState, cardData },
-                            dispatchReducer,
-                            sagaController,
-                            }) => {
-                              //   let dataSelect = saleChartState.listCardGrade.map(
-                              //   (item, index) => {
-                              //     let name = HelperSales.getStringGrade(
-                              //       item.gradeCompany,
-                              //       item.gradeValue
-                              //     );
-                              //     return { label: name, value: name, index };
-                              //   }
-                              // );
-                              return (
-                              <>
-                                <TreeSelect
-                                  className={classes.treeSelect}
-                                  dropdownClassName="grade-tree-selected-custom"
-                                  dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
-                                  // defaultValue="ALL"
-                                  // treeData={saleChartState.dataGradedTree}
-                                  multiple
-                                  maxTagCount={2}
-                                  treeCheckable
-                                  treeDefaultExpandAll
-                                  value={saleChartState.gradeTreeSelected}
-                                  onChange={(e: string[]) => {
-                                    let dataSelect = e || []
-                                    const hasAll = !!e.find(it => it === 'ALL')
-                                    const checkedAll = saleChartState.gradeTreeSelected?.find(it => it === 'ALL')
-                                    if (hasAll) {
-                                      if (checkedAll) {
-                                        dataSelect = dataSelect.filter(it => it !== 'ALL')
-                                      } else {
-                                        dataSelect = ['ALL']
-                                      }
-                                    }
-                                    if (!dataSelect.length) dataSelect = ['ALL']
-                                    if (_.isEqual(dataSelect.sort(), saleChartState.gradeTreeSelected.sort())) return
-                                    dispatchReducer({
-                                      type: 'SELECT_GRADE_TREE_CHART_TOOL',
-                                      dataSelect: dataSelect,
-                                    });
+              <h2 className="title-profile mb-5"> Sales Chart  </h2>
 
-                                    if ( loggingIn ) {
-                                      sagaController.requestCalcMaxLineV1({
-                                        cardId: +cardData.id,
-                                        currency: userInfo.userDefaultCurrency,
-                                        cardGrades: dataSelect,
-                                        period: saleChartState.periodSelected.id,
-                                        oldData: saleChartState.calcMaLine
-                                      });
-                                    }
-
-                                    const dropdown = document.querySelector('.grade-tree-selected-custom')
-                                    if (dropdown) {
-                                      if (dataSelect.length >= 5) {
-                                        const warning = dropdown.querySelector('.warning-selected')
-                                        if (warning) return
-                                        const span = document.createElement('span')
-                                        span.innerHTML = 'Only 5 ratings can be selected'
-                                        span.className = 'warning-selected'
-                                        dropdown.appendChild(span)
-                                      } else {
-                                        const warning = dropdown.querySelector('.warning-selected')
-                                        warning?.remove()
-                                      }
-                                    }
-                                  }}
-                                  onDropdownVisibleChange={() => {
-                                    const dropdown = document.querySelector('.grade-tree-selected-custom')
-                                    if (dropdown) {
-                                      if (saleChartState.gradeTreeSelected?.length >= 5) {
-                                        const warning = dropdown.querySelector('.warning-selected')
-                                        if (warning) return
-                                        const span = document.createElement('span')
-                                        span.innerHTML = 'Only 5 ratings can be selected'
-                                        span.className = 'warning-selected'
-                                        dropdown.appendChild(span)
-                                      } else {
-                                        const warning = dropdown.querySelector('.warning-selected')
-                                        warning?.remove()
-                                      }
-                                    }
-                                  }}
-                                > 
-                                  { saleChartState.dataGradedTree?.map((item) => {
-                                    const gradeTreeSelected = saleChartState.gradeTreeSelected.filter(it => it !== 'ALL')
-                                    if (item.children?.length) {
-                                      const notInside = gradeTreeSelected?.filter(it => !item.children.find(temp => temp.key === it)) || []
-                                      const disabled = item.children.length + notInside.length > 5
-                                      return (
-                                        <TreeNode value={item.value} title={<span className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></span>} key={item.key} disabled={disabled}>
-                                          {item.children.map((child) => (
-                                            <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)}/>
-                                          ))}
-                                        </TreeNode>
-                                      )
-                                    } else return (
-                                      <TreeNode value={item.value} title={<span className="rc-tree-select-tree-title-custom">{item.label}</span>} key={item.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === item.key) && item.key !== 'ALL'}/>
-                                    )
-                                  }) }
-                                </TreeSelect>
-                                {/* <Select
-                                  value={dataSelect[saleChartState.cardGradeSelected]}
-                                  className="react-select"
-                                  classNamePrefix="react-select"
-                                  onChange={(item) => {
-                                    let index: number = item?.index ?? 0;
-                                    dispatchReducer({
-                                      type: "SELECT_GRADE_CHART_TOOL",
-                                      index,
-                                    });
-                                    sagaController.requestCalcMaxLineV1({
-                                      cardId: +cardData.id,
-                                      currency: userInfo.userDefaultCurrency,
-                                      itemCardGrade:
-                                        saleChartState.listCardGrade[index],
-                                      period: saleChartState.periodSelected.id,
-                                    });
-                                  }}
-                                  options={dataSelect}
-                                /> */}
-                              </>
-                            );
-                          }}
-                        </CardDetailConsumer>
-                      </div>
-                    </div>
-                    <div className="h-right d-flex align-items-center justify-content-center">
-                      <label className="toggle-custom d-flex only-desktop">
-                        {/* <span className="me-3">Sale Points</span> */}
-                        <CardDetailConsumer
-                          shouldBuild={(pre, next) =>
-                            pre.saleChartState.isShowSalePoints !==
-                            next.saleChartState.isShowSalePoints
-                          }
-                        >
-                          {({ state, dispatchReducer }) => {
-                            return (
-                              <div className="ms-1 form-check">
-                                <input
-                                  className="form-check-input cursor-pointer"
-                                  type="checkbox"
-                                  defaultChecked={
-                                    state.saleChartState.isShowSalePoints
-                                  }
-                                  onChange={(e) =>
-                                    dispatchReducer({
-                                      type: "UPDATE_IS_SHOW_POINT",
-                                      isShow: !state.saleChartState.isShowSalePoints,
-                                    })
-                                  }
-                                />
-                                <label className="ml-2 form-check-label fz-14"> Sale Points </label>
-                              </div>
-                            );
-                          }}
-                        </CardDetailConsumer>
-                      </label>
-                      <div className="d-flex align-items-center hidden-select grade"> Moving Average Time Period {" "}
-                        <CardDetailConsumer
-                          shouldBuild={(next, pre) =>
-                            next.saleChartState.timePeriodSelected !==
-                            pre.saleChartState.timePeriodSelected ||
-                            next.cardData.id !== pre.cardData.id ||
-                            next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
-                          }
-                        >
-                          {({
-                            state: { saleChartState, cardData },
-                            sagaController,
-                          }) => {
-                            let dataSelect = saleChartState.listTimePeriod.map(
-                              (item, index) => {
-                                return {
-                                  label: item.name,
-                                  value: `${item.id}`,
-                                  index,
-                                };
-                              }
-                            );
-
-                            return (
-                              <Select
-                                value={
-                                  dataSelect[saleChartState.timePeriodSelected]
-                                }
-                                onChange={(item) => {
-                                  let index: number = item?.index ?? 0;
-                                  sagaController.selectPeriodTime(index);
-
-                                  if ( loggingIn ) {
-                                    sagaController.requestCalcMaxLineV1({
-                                      cardId: +cardData.id,
-                                      currency: userInfo.userDefaultCurrency,
-                                      cardGrades: saleChartState.gradeTreeSelected,
-                                      period: saleChartState.listTimePeriod[index].id,
-                                    });
-                                  }
-                                  
-                                }}
-                                className="react-select"
-                                classNamePrefix="react-select"
-                                options={dataSelect}
-                              />
-                            );
-                          }}
-                        </CardDetailConsumer>
-                        <button className="btn p-0 btn-dot"> <img alt="" src={Icon3Dot} /> </button>
-                      </div>
-                    </div>
-                    <div className="h-option only-mobile"> <button> <img alt="" src={Icon3Dot} /> </button> </div>
+                <div className={isLoadingSalesChart? '':"d-none"}> <PlaceholderChart src={ImageLineChart.src} isNoIcon={true}/>  </div>
+                <div className={!isLoadingSalesChart? '':"d-none"}>
+                  <div>
+                    {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
+                      {!Boolean(!loggingIn) && isNotActive && <PlaceholderChart src={ImageLineChart.src} message={notActiveMessage} />}
                   </div>
-                  <CardDetailConsumer
-                    shouldBuild={(pre, next) => {
-                      return (
-                        pre.saleChartState.calcMaLine !==
-                        next.saleChartState.calcMaLine ||
-                        pre.saleChartState.isShowSalePoints !==
-                        next.saleChartState.isShowSalePoints ||
-                        pre.saleChartState.periodControlSelected !==
-                        next.saleChartState.periodControlSelected ||
-                        next.cardData.id !== pre.cardData.id ||
-                        pre.saleChartState.gradeTreeSelected !== next.saleChartState.gradeTreeSelected
-                      );
-                    }}
-                  >
-                    {({
-                      state: { saleChartState, cardData },
-                      sagaController, dispatchReducer
-                    }) => {
-                      return (
-                        <SaleChart
-                          cardData={cardData}
-                          cardId={+cardData.id}
-                          cardName={cardData.fullName}
-                          saleChartState={saleChartState}
-                          isShowSalePoints={saleChartState.isShowSalePoints}
-                          calcMaLine={saleChartState.calcMaLine}
-                          listRecord={saleChartState.mainListSaleRecord}
-                          updataSaleData={(data: SaleData[]) => {
-                            dispatchReducer({
-                              type: "UPDATE_SALE_DATA",
-                              payload: {
-                                data: data
+                  {
+                    !Boolean(!loggingIn) && !isNotActive && <div className="pricing-grid-content pricing-grid-content--sales">
+                      <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
+                        <div className="h-left d-flex align-items-center justify-content-center">
+                          <div className="title me-3">Card Grade</div>
+                          <div className="grade hidden-select">
+                            <CardDetailConsumer
+                              shouldBuild={(pre, next) => {
+                                return (
+                                  pre.cardData.id !== next.cardData.id ||
+                                  pre.saleChartState.cardGradeSelected !==
+                                  next.saleChartState.cardGradeSelected || 
+                                  pre.saleChartState.gradeTreeSelected !== next.saleChartState.gradeTreeSelected ||
+                                  pre.saleChartState.periodSelected !== next.saleChartState.periodSelected ||
+                                  pre.saleChartState.calcMaLine !== next.saleChartState.calcMaLine
+                                );
+                              }}
+                            >
+                              {({
+                                state: { saleChartState, cardData },
+                                dispatchReducer,
+                                sagaController,
+                                }) => {
+                                  //   let dataSelect = saleChartState.listCardGrade.map(
+                                  //   (item, index) => {
+                                  //     let name = HelperSales.getStringGrade(
+                                  //       item.gradeCompany,
+                                  //       item.gradeValue
+                                  //     );
+                                  //     return { label: name, value: name, index };
+                                  //   }
+                                  // );
+                                  return (
+                                  <>
+                                    <TreeSelect
+                                      className={classes.treeSelect}
+                                      dropdownClassName="grade-tree-selected-custom"
+                                      dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+                                      // defaultValue="ALL"
+                                      // treeData={saleChartState.dataGradedTree}
+                                      multiple
+                                      maxTagCount={2}
+                                      treeCheckable
+                                      treeDefaultExpandAll
+                                      value={saleChartState.gradeTreeSelected}
+                                      onChange={(e: string[]) => {
+                                        let dataSelect = e || []
+                                        const hasAll = !!e.find(it => it === 'ALL')
+                                        const checkedAll = saleChartState.gradeTreeSelected?.find(it => it === 'ALL')
+                                        if (hasAll) {
+                                          if (checkedAll) {
+                                            dataSelect = dataSelect.filter(it => it !== 'ALL')
+                                          } else {
+                                            dataSelect = ['ALL']
+                                          }
+                                        }
+                                        if (!dataSelect.length) dataSelect = ['ALL']
+                                        if (_.isEqual(dataSelect.sort(), saleChartState.gradeTreeSelected.sort())) return
+                                        dispatchReducer({
+                                          type: 'SELECT_GRADE_TREE_CHART_TOOL',
+                                          dataSelect: dataSelect,
+                                        });
+
+                                        if ( loggingIn ) {
+                                          sagaController.requestCalcMaxLineV1({
+                                            cardId: +cardData.id,
+                                            currency: userInfo.userDefaultCurrency,
+                                            cardGrades: dataSelect,
+                                            period: saleChartState.periodSelected.id,
+                                            oldData: saleChartState.calcMaLine
+                                          });
+                                        }
+
+                                        const dropdown = document.querySelector('.grade-tree-selected-custom')
+                                        if (dropdown) {
+                                          if (dataSelect.length >= 5) {
+                                            const warning = dropdown.querySelector('.warning-selected')
+                                            if (warning) return
+                                            const span = document.createElement('span')
+                                            span.innerHTML = 'Only 5 ratings can be selected'
+                                            span.className = 'warning-selected'
+                                            dropdown.appendChild(span)
+                                          } else {
+                                            const warning = dropdown.querySelector('.warning-selected')
+                                            warning?.remove()
+                                          }
+                                        }
+                                      }}
+                                      onDropdownVisibleChange={() => {
+                                        const dropdown = document.querySelector('.grade-tree-selected-custom')
+                                        if (dropdown) {
+                                          if (saleChartState.gradeTreeSelected?.length >= 5) {
+                                            const warning = dropdown.querySelector('.warning-selected')
+                                            if (warning) return
+                                            const span = document.createElement('span')
+                                            span.innerHTML = 'Only 5 ratings can be selected'
+                                            span.className = 'warning-selected'
+                                            dropdown.appendChild(span)
+                                          } else {
+                                            const warning = dropdown.querySelector('.warning-selected')
+                                            warning?.remove()
+                                          }
+                                        }
+                                      }}
+                                    > 
+                                      { saleChartState.dataGradedTree?.map((item) => {
+                                        const gradeTreeSelected = saleChartState.gradeTreeSelected.filter(it => it !== 'ALL')
+                                        if (item.children?.length) {
+                                          const notInside = gradeTreeSelected?.filter(it => !item.children.find(temp => temp.key === it)) || []
+                                          const disabled = item.children.length + notInside.length > 5
+                                          return (
+                                            <TreeNode value={item.value} title={<span className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></span>} key={item.key} disabled={disabled}>
+                                              {item.children.map((child) => (
+                                                <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)}/>
+                                              ))}
+                                            </TreeNode>
+                                          )
+                                        } else return (
+                                          <TreeNode value={item.value} title={<span className="rc-tree-select-tree-title-custom">{item.label}</span>} key={item.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === item.key) && item.key !== 'ALL'}/>
+                                        )
+                                      }) }
+                                    </TreeSelect>
+                                    {/* <Select
+                                      value={dataSelect[saleChartState.cardGradeSelected]}
+                                      className="react-select"
+                                      classNamePrefix="react-select"
+                                      onChange={(item) => {
+                                        let index: number = item?.index ?? 0;
+                                        dispatchReducer({
+                                          type: "SELECT_GRADE_CHART_TOOL",
+                                          index,
+                                        });
+                                        sagaController.requestCalcMaxLineV1({
+                                          cardId: +cardData.id,
+                                          currency: userInfo.userDefaultCurrency,
+                                          itemCardGrade:
+                                            saleChartState.listCardGrade[index],
+                                          period: saleChartState.periodSelected.id,
+                                        });
+                                      }}
+                                      options={dataSelect}
+                                    /> */}
+                                  </>
+                                );
+                              }}
+                            </CardDetailConsumer>
+                          </div>
+                        </div>
+                        <div className="h-right d-flex align-items-center justify-content-center">
+                          <label className="toggle-custom d-flex only-desktop">
+                            {/* <span className="me-3">Sale Points</span> */}
+                            <CardDetailConsumer
+                              shouldBuild={(pre, next) =>
+                                pre.saleChartState.isShowSalePoints !==
+                                next.saleChartState.isShowSalePoints
                               }
-                            })
-                          }}
-                          calcMaxLineRequest={() => {
-                            sagaController.requestCalcMaxLineV1({
-                              cardId: +cardData.id,
-                              currency: userInfo.userDefaultCurrency,
-                              cardGrades: saleChartState.gradeTreeSelected,
-                              period: saleChartState.periodSelected.id
-                            });
-                          }}
-                          reloadPricingGridRequest={async () => {
-                            return sagaController.reloadPricingGrid({
-                              // @ts-ignore
-                              cardcode: cardData.code,
-                              currency: userInfo.userDefaultCurrency,
-                              userid: userInfo.userid,
-                            }).catch((err: any) => {
-                              props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
-                            })
-                          }}
-                        />
-                      );
-                    }}
-                  </CardDetailConsumer>
+                            >
+                              {({ state, dispatchReducer }) => {
+                                return (
+                                  <div className="ms-1 form-check">
+                                    <input
+                                      className="form-check-input cursor-pointer"
+                                      type="checkbox"
+                                      defaultChecked={
+                                        state.saleChartState.isShowSalePoints
+                                      }
+                                      onChange={(e) =>
+                                        dispatchReducer({
+                                          type: "UPDATE_IS_SHOW_POINT",
+                                          isShow: !state.saleChartState.isShowSalePoints,
+                                        })
+                                      }
+                                    />
+                                    <label className="ml-2 form-check-label fz-14"> Sale Points </label>
+                                  </div>
+                                );
+                              }}
+                            </CardDetailConsumer>
+                          </label>
+                          <div className="d-flex align-items-center hidden-select grade"> Moving Average Time Period {" "}
+                            <CardDetailConsumer
+                              shouldBuild={(next, pre) =>
+                                next.saleChartState.timePeriodSelected !==
+                                pre.saleChartState.timePeriodSelected ||
+                                next.cardData.id !== pre.cardData.id ||
+                                next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
+                              }
+                            >
+                              {({
+                                state: { saleChartState, cardData },
+                                sagaController,
+                              }) => {
+                                let dataSelect = saleChartState.listTimePeriod.map(
+                                  (item, index) => {
+                                    return {
+                                      label: item.name,
+                                      value: `${item.id}`,
+                                      index,
+                                    };
+                                  }
+                                );
+
+                                return (
+                                  <Select
+                                    value={
+                                      dataSelect[saleChartState.timePeriodSelected]
+                                    }
+                                    onChange={(item) => {
+                                      let index: number = item?.index ?? 0;
+                                      sagaController.selectPeriodTime(index);
+
+                                      if ( loggingIn ) {
+                                        sagaController.requestCalcMaxLineV1({
+                                          cardId: +cardData.id,
+                                          currency: userInfo.userDefaultCurrency,
+                                          cardGrades: saleChartState.gradeTreeSelected,
+                                          period: saleChartState.listTimePeriod[index].id,
+                                        });
+                                      }
+                                      
+                                    }}
+                                    className="react-select"
+                                    classNamePrefix="react-select"
+                                    options={dataSelect}
+                                  />
+                                );
+                              }}
+                            </CardDetailConsumer>
+                            <button className="btn p-0 btn-dot"> <img alt="" src={Icon3Dot} /> </button>
+                          </div>
+                        </div>
+                        <div className="h-option only-mobile"> <button> <img alt="" src={Icon3Dot} /> </button> </div>
+                      </div>
+                      <CardDetailConsumer
+                        shouldBuild={(pre, next) => {
+                          return (
+                            pre.saleChartState.calcMaLine !==
+                            next.saleChartState.calcMaLine ||
+                            pre.saleChartState.isShowSalePoints !==
+                            next.saleChartState.isShowSalePoints ||
+                            pre.saleChartState.periodControlSelected !==
+                            next.saleChartState.periodControlSelected ||
+                            next.cardData.id !== pre.cardData.id ||
+                            pre.saleChartState.gradeTreeSelected !== next.saleChartState.gradeTreeSelected
+                          );
+                        }}
+                      >
+                        {({
+                          state: { saleChartState, cardData },
+                          sagaController, dispatchReducer
+                        }) => {
+                          {setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0)}
+                          return (
+                            <SaleChart
+                              cardData={cardData}
+                              cardId={+cardData.id}
+                              cardName={cardData.fullName}
+                              saleChartState={saleChartState}
+                              isShowSalePoints={saleChartState.isShowSalePoints}
+                              calcMaLine={saleChartState.calcMaLine}
+                              listRecord={saleChartState.mainListSaleRecord}
+                              updataSaleData={(data: SaleData[]) => {
+                            
+                                dispatchReducer({
+                                  type: "UPDATE_SALE_DATA",
+                                  payload: {
+                                    data: data
+                                  }
+                                })
+                          
+                              }}
+                              calcMaxLineRequest={async () => {
+                              
+                              await sagaController.requestCalcMaxLineV1({
+                                  cardId: +cardData.id,
+                                  currency: userInfo.userDefaultCurrency,
+                                  cardGrades: saleChartState.gradeTreeSelected,
+                                  period: saleChartState.periodSelected.id
+                                });
+                              
+                              }}
+                              reloadPricingGridRequest={async () => {
+                                return sagaController.reloadPricingGrid({
+                                  // @ts-ignore
+                                  cardcode: cardData.code,
+                                  currency: userInfo.userDefaultCurrency,
+                                  userid: userInfo.userid,
+                                }).catch((err: any) => {
+                                  props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+                                })
+                              }}
+                            />
+                          );
+                        }}
+                      </CardDetailConsumer>
+                    </div>
+                  }
                 </div>
-              }
+
               </div>}
             </div>
             {isEmpty(props.code) && (
