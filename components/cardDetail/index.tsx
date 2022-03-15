@@ -405,14 +405,15 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         pre.indexPricingSelected !== next.indexPricingSelected
       }
     >
-      {({ state, dispatchReducer }) => {
+        {({ state: { pricingGridData, listYearPricingCard , indexPricingSelected }, dispatchReducer }) => {
+          setLengthTablePrice(pricingGridData.listDataGradeSelected?.length)
         return (
           <div
             className={"header-pricing-grid btn-group"}
             role="group"
             aria-label="Basic mixed styles example"
           >
-            {state.listYearPricingCard.map((item, index) => {
+            {listYearPricingCard.map((item, index) => {
               return (
                 <button
                   key={index}
@@ -428,7 +429,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   }
                   className={
                     "btn btn-secondary" +
-                    (state.indexPricingSelected === index
+                    (indexPricingSelected === index
                       ? " isActive"
                       : "")
                   }
@@ -440,200 +441,193 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           </div>
         );
       }}
-    </CardDetailConsumer>
-    <div className="pricing-grid-content">
-      <div className="pricing-grid-content-no-data">
-        <img src={IconTable} alt=""/>
-        <p>There are no data available</p>
-      </div>
-      <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
-        <div className="h-left d-flex align-items-center justify-content-center">
-          <div className="title me-3">Grading</div>
-          <div className="grade hidden-select">
-            <CardDetailConsumer
-              shouldBuild={(pre, next) => {
-                return (
-                  pre.pricingGridData.dataGradeSorted !==
-                  next.pricingGridData.dataGradeSorted ||
-                  pre.pricingGridData.cardGradeSelected !==
-                  next.pricingGridData.cardGradeSelected
-                );
-              }}
-            >
-              {({ state: { pricingGridData, dropDownOptions }, dispatchReducer }) => {
-                let dataSelect = [
-                  new PricingGridModel(),
-                  ...pricingGridData.dataGradeSorted,
-                ].map((item, index) => {
-                  let name = item.labelGrade;
-                  return { label: name, value: name, index };
-                });
-               
-                return (
-                  <Select
-                    value={ !isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
-                      dropDownOptions[pricingGridData.cardGradeSelected] : null
-                    }
-                    onChange={(item) => {
-                      if (item)
-                        dispatchReducer({
-                          type: "SELECT_GRADE_PRICING",
-                          index: item.index,
-                        });
-                    }}
-                    className="react-select"
-                    classNamePrefix="react-select"
-                    options={dropDownOptions}
-                    components={{ DropdownIndicator }}
-                  />
-                );
-              }}
-            </CardDetailConsumer>
-          </div>
-        </div>
-      </div>
-      <div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
-        <div onScroll={onScroll}  className="content-pricing-grid-custom-table" id="table_grade">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col"> Grade </th>
-                <th scope="col"> Min </th>
-                <th scope="col"> Max </th>
-                <th scope="col"> Average </th>
-                <th scope="col"> Trade Volume </th>
-                <th scope="col"> </th>
-              </tr>
-            </thead>
-            <CardDetailConsumer
-              shouldBuild={(pre, next) =>
-                pre.pricingGridData.dataGradeSorted !==
-                next.pricingGridData.dataGradeSorted ||
-                pre.pricingGridData !== next.pricingGridData ||
-                pre.pricingGridData.cardGradeSelected !==
-                next.pricingGridData.cardGradeSelected ||
-                pre.saleChartState !== next.saleChartState ||
-                pre.cardData !== next.cardData
-              }
-            >
-              {({ state: { pricingGridData, saleChartState, cardData, priceTooltipPricingGrid },
-                dispatchReducer,
-                sagaController }) => {
-                return (
-                  <tbody>
-                    {
-                      setLengthTablePrice(pricingGridData.listDataGradeSelected?.length)
-                    }
-                    {pricingGridData.listDataGradeSelected.map(
-                      (item, index) => {
-                        return (
-                        // @ts-ignore
-                          Boolean(index < (width < 768 ? ( isOpenSeeFullTable === true ? lengthTablePrice : 10 ) :lengthTablePrice )) &&
-                          <tr
-                            key={index}
-                          > 
-                            <td
-                              style={{
-                                color: UtilsColorGrade.colorTextTable(
-                                  item.gradeCompany,
-                                  item.gradeValue
-                                ),
-                              }}
-                            >
-                              <div className="grade-content">
-                                <div className={`custom-grade d-inline-flex ${HelperSales.checkExistGrade(
-                                  item.gradeCompany,
-                                ) ? 'custom-grade-bold' : ''}`}
-                                  style={{
-                                    backgroundColor:
-                                      UtilsColorGrade.getColorGrade(
-                                        item.gradeCompany
-                                      ),
-                                    color: UtilsColorGrade.colorTextTable(
-                                      item.gradeCompany,
-                                      item.gradeValue
-                                    ),
-                                  }}>
-                                  {HelperSales.getStringGrade(
-                                    item.gradeCompany,
-                                    item.gradeValue
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-                            <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
-                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
-                              >
-                                {({ ref, ...triggerHandler }) => (
-                                  <span ref={ref} {...triggerHandler}>$###</span>
-                                )}
-                              </OverlayTrigger>}</td>
-                            <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
-                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
-                              >
-                                {({ ref, ...triggerHandler }) => (
-                                  <span ref={ref} {...triggerHandler}>$###</span>
-                                )}
-                              </OverlayTrigger>} </td>
-                            <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
-                                overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
-                              >
-                                {({ ref, ...triggerHandler }) => (
-                                  <span ref={ref} {...triggerHandler}>$###</span>
-                                )}
-                              </OverlayTrigger>} </td>
-                            <td> {item.count} </td>
-                            <td>
-                              {
-                                props.onChangeGradeCompare ? (
-                                  <button className="btn btn-line-chart" onClick={() => {
-                                    const index = saleChartState.listCardGrade.findIndex(it => it.gradeCompany === item.gradeCompany && it.gradeValue === item.gradeValue)
-                                    if (index !== -1) {
-                                      props.onChangeGradeCompare && props.onChangeGradeCompare(saleChartState.listCardGrade[index], +cardData.id)
-                                      document.getElementById('sale-chart-comparison')?.scrollIntoView();
-                                    }
-                                  }}>
-                                    <img src={IconChart} alt="View Chart" title="View Chart" />
-                                  </button>
-                                ) : 
-                                  (item.gradeValue !== "ALL" || ["ALL", "RAW"].includes(item.gradeCompany)) && (
-                                    <button className="btn btn-line-chart" onClick={() => {
-                                      const index = saleChartState.listCardGrade.findIndex(it => it.gradeCompany === item.gradeCompany && it.gradeValue === item.gradeValue)
-                                      if (index !== -1) {
-                                        const cardGrades = saleChartState.getGradeTreeSelect(index)
-                                        if (cardGrades?.length) {
-                                          dispatchReducer({ type: 'SELECT_GRADE_CHART_TOOL', index: +index });
-                                          
-                                          if ( loggingIn ) {
-                                            sagaController.requestCalcMaxLineV1({
-                                              cardId: +cardData.id,
-                                              currency: userInfo.userDefaultCurrency,
-                                              cardGrades: cardGrades,
-                                              period: saleChartState.periodSelected.id,
-                                              oldData: saleChartState.calcMaLine
-                                            });
-                                          }
+      </CardDetailConsumer>
+      <div className="pricing-grid-content">
+        {lengthTablePrice !== 0 ?
+          <>
+            <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
+            <div className="h-left d-flex align-items-center justify-content-center">
+              <div className="title me-3">Grading</div>
+              <div className="grade hidden-select">
+                <CardDetailConsumer
+                  shouldBuild={(pre, next) => {
+                    return (
+                      pre.pricingGridData.dataGradeSorted !==
+                      next.pricingGridData.dataGradeSorted ||
+                      pre.pricingGridData.cardGradeSelected !==
+                      next.pricingGridData.cardGradeSelected
+                    );
+                  } }
+                >
+                  {({ state: { pricingGridData, dropDownOptions }, dispatchReducer }) => {
+                    let dataSelect = [
+                      new PricingGridModel(),
+                      ...pricingGridData.dataGradeSorted,
+                    ].map((item, index) => {
+                      let name = item.labelGrade;
+                      return { label: name, value: name, index };
+                    });
 
-                                          goToSalesChart();
+                    return (
+                      <Select
+                        value={!isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
+                          dropDownOptions[pricingGridData.cardGradeSelected] : null}
+                        onChange={(item) => {
+                          if (item)
+                            dispatchReducer({
+                              type: "SELECT_GRADE_PRICING",
+                              index: item.index,
+                            });
+                        } }
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        options={dropDownOptions}
+                        components={{ DropdownIndicator }} />
+                    );
+                  } }
+                </CardDetailConsumer>
+              </div>
+            </div>
+          </div><div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
+              <div onScroll={onScroll} className="content-pricing-grid-custom-table" id="table_grade">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col"> Grade </th>
+                      <th scope="col"> Min </th>
+                      <th scope="col"> Max </th>
+                      <th scope="col"> Average </th>
+                      <th scope="col"> Trade Volume </th>
+                      <th scope="col"> </th>
+                    </tr>
+                  </thead>
+                  <CardDetailConsumer
+                    shouldBuild={(pre, next) => pre.pricingGridData.dataGradeSorted !==
+                      next.pricingGridData.dataGradeSorted ||
+                      pre.pricingGridData !== next.pricingGridData ||
+                      pre.pricingGridData.cardGradeSelected !==
+                      next.pricingGridData.cardGradeSelected ||
+                      pre.saleChartState !== next.saleChartState ||
+                      pre.cardData !== next.cardData}
+                  >
+                    {({ state: { pricingGridData, saleChartState, cardData, priceTooltipPricingGrid }, dispatchReducer, sagaController }) => {
+                      return (
+                        <tbody>
+                          {setLengthTablePrice(pricingGridData.listDataGradeSelected?.length)}
+                          {pricingGridData.listDataGradeSelected.map(
+                            (item, index) => {
+                              return (
+                                // @ts-ignore
+                                Boolean(index < (width < 768 ? (isOpenSeeFullTable === true ? lengthTablePrice : 10) : lengthTablePrice)) &&
+                                <tr
+                                  key={index}
+                                >
+                                  <td
+                                    style={{
+                                      color: UtilsColorGrade.colorTextTable(
+                                        item.gradeCompany,
+                                        item.gradeValue
+                                      ),
+                                    }}
+                                  >
+                                    <div className="grade-content">
+                                      <div className={`custom-grade d-inline-flex ${HelperSales.checkExistGrade(
+                                        item.gradeCompany
+                                      ) ? 'custom-grade-bold' : ''}`}
+                                        style={{
+                                          backgroundColor: UtilsColorGrade.getColorGrade(
+                                            item.gradeCompany
+                                          ),
+                                          color: UtilsColorGrade.colorTextTable(
+                                            item.gradeCompany,
+                                            item.gradeValue
+                                          ),
+                                        }}>
+                                        {HelperSales.getStringGrade(
+                                          item.gradeCompany,
+                                          item.gradeValue
+                                        )}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
+                                    overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}</td>
+                                  <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
+                                    overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>} </td>
+                                  <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
+                                    overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>} </td>
+                                  <td> {item.count} </td>
+                                  <td>
+                                    {props.onChangeGradeCompare ? (
+                                      <button className="btn btn-line-chart" onClick={() => {
+                                        const index = saleChartState.listCardGrade.findIndex(it => it.gradeCompany === item.gradeCompany && it.gradeValue === item.gradeValue);
+                                        if (index !== -1) {
+                                          props.onChangeGradeCompare && props.onChangeGradeCompare(saleChartState.listCardGrade[index], +cardData.id);
+                                          document.getElementById('sale-chart-comparison')?.scrollIntoView();
                                         }
-                                      }
-                                    }}>
-                                      <img src={IconChart} alt="View Chart" title="View Chart" />
-                                    </button>
-                                  )
-                              }
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )}
-                  </tbody>
-                );
-              }}
-            </CardDetailConsumer>
-          </table>
-        </div>
-      </div>
+                                      } }>
+                                        <img src={IconChart} alt="View Chart" title="View Chart" />
+                                      </button>
+                                    ) :
+                                      (item.gradeValue !== "ALL" || ["ALL", "RAW"].includes(item.gradeCompany)) && (
+                                        <button className="btn btn-line-chart" onClick={() => {
+                                          const index = saleChartState.listCardGrade.findIndex(it => it.gradeCompany === item.gradeCompany && it.gradeValue === item.gradeValue);
+                                          if (index !== -1) {
+                                            const cardGrades = saleChartState.getGradeTreeSelect(index);
+                                            if (cardGrades?.length) {
+                                              dispatchReducer({ type: 'SELECT_GRADE_CHART_TOOL', index: +index });
+
+                                              if (loggingIn) {
+                                                sagaController.requestCalcMaxLineV1({
+                                                  cardId: +cardData.id,
+                                                  currency: userInfo.userDefaultCurrency,
+                                                  cardGrades: cardGrades,
+                                                  period: saleChartState.periodSelected.id,
+                                                  oldData: saleChartState.calcMaLine
+                                                });
+                                              }
+
+                                              goToSalesChart();
+                                            }
+                                          }
+                                        } }>
+                                          <img src={IconChart} alt="View Chart" title="View Chart" />
+                                        </button>
+                                      )}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )}
+                        </tbody>
+                      );
+                    } }
+                  </CardDetailConsumer>
+                </table>
+              </div>
+            </div>
+        </>
+         : 
+          <div className="pricing-grid-content-no-data">
+            <img src={IconTable} alt=""/>
+            <p>There are no data available</p>
+          </div>
+        } 
     </div>
     <div>
       {

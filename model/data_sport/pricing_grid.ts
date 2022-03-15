@@ -189,7 +189,7 @@ class PricingGridData {
 
   get listDataGradeSelected(): PricingGridModel[] {
     const item = this.dropDownOptions[this.cardGradeSelected];
-    
+
     if ( item?.value === 'All' || !item ) {
       return this.dataGradeSorted;
     } else {
