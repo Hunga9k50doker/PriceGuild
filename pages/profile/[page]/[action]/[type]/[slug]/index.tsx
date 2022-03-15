@@ -38,6 +38,7 @@ import useWindowDimensions from "utils/useWindowDimensions"
 import cookies from 'next-cookies'
 import Head from 'next/head';
 import { useTranslation } from "react-i18next";
+import { isEmpty } from 'lodash';
 interface ParamTypes {
   page: string,
   action?: string
@@ -285,14 +286,14 @@ const Profile: React.FC = ({ ...props }) => {
   }, [page])
   return (
     <>
-    <Head>
-       <title>{
-        //@ts-ignore
-        `${router.query?.slug ?? ''} - Personal ${router.query?.action === 'wishlists' ? 'Wishlists' : 'Profolio'} | PriceGuide.Cards`}</title>
+     <Head>
+        <title>{
+          //@ts-ignore
+          props?.titlePage ?? ''}</title>
         <meta name="description" content={
-        //@ts-ignore
-        props?.descriptionPage ?? ''} />
-    </Head>
+          //@ts-ignore
+          props?.descriptionPage ?? ''} />
+      </Head>
     <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
       <div className="row ">
         <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
@@ -365,5 +366,23 @@ const Profile: React.FC = ({ ...props }) => {
     </>
   );
 }
+export const getServerSideProps = async (context: any) => { 
+  try {
+    
+    const ctx = context?.query;
+    const pageName = ctx.action === 'wishlists' ? 'Wishlists' : 'Profolio'
+    let titlePage = `${ctx.slug} - Personal ${pageName} | PriceGuide.Cards`;
 
+    return {
+      props: {
+        titlePage,
+    }}
+
+  } catch (error) {
+    
+  }
+  return {
+    props: {},
+  };
+}
 export default Profile;

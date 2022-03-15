@@ -241,7 +241,8 @@ const InputSearchMobile = React.forwardRef<FilterModalHandle, PropTypes>(({
             labelName="label"
             onEnter={onEnter}
             inputProps={inputProps} />
-            {!isEmpty(valueState) && <div onClick={onClear}
+            {!isEmpty(valueState) && <div 
+            onMouseDown={onClear}
             className="cursor-pointer custom-input-close position-absolute" >
             <svg width="12.8" height="12.8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M6.99985 8.27997L12.1199 13.4L13.3999 12.12L8.27985 6.99997L13.3999 1.87997L12.1199 0.599968L6.99985 5.71997L1.87985 0.599968L0.599854 1.87997L5.71985 6.99997L0.599854 12.12L1.87985 13.4L6.99985 8.27997Z" fill="#18213A" />

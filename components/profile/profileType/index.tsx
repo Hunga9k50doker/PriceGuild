@@ -42,7 +42,7 @@ interface ParamTypes {
   type?: string
 }
 
-const Profile: React.FC = () => {
+const ProfileType = () => {
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
@@ -70,7 +70,7 @@ const Profile: React.FC = () => {
       case "personal":
         profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'}); 
         return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
-      case "portfolio":
+      case "portfolio":  console.log('working-type');
         collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
-        if (type !== undefined) { console.log('working type');
+        if (type !== undefined) { console.log('working-type111');
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }
@@ -196,7 +196,6 @@ const Profile: React.FC = () => {
   }
 
   const hideMenu = (pageName: string) => {
-    // if (history.location.pathname === '/profile/settings') return 'hide-menu';
 
     switch (router.pathname) {
       case '/profile/settings':
@@ -223,34 +222,12 @@ const Profile: React.FC = () => {
     ];
     
     for(let i=0 ; i < list_route.length; i++) {
-      // console.log(history.location.pathname, "");
-    //    let match = matchPath(history.location.pathname, {
-    //     path: list_route[i],
-    //     exact: true,
-    //     strict: false
-    //   });
         let match = true;
       if(match) {
         return 'hide-menu';
       }
     }
-    // const match_route = matchPath(history.location.pathname, {
-    //   path: "/profile/collections/:id/analytics",
-    //   exact: true,
-    //   strict: false
-    // });
-    // const match_route_detail = matchPath(history.location.pathname, {
-    //   path: "/profile/collections/:id/:name",
-    //   exact: true,
-    //   strict: false
-    // });
-    // if (match_route) {
-    //   return 'hide-menu';
-    // }
-    // if (match_route_detail) {
-    //   return 'hide-menu';
-    // }
-    // return '';
+
   }
 
   var timerid: any = null;
@@ -335,4 +312,4 @@ const Profile: React.FC = () => {
   );
 }
 
-export default Profile;
+export default ProfileType;
