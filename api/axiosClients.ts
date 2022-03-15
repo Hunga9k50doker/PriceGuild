@@ -43,6 +43,10 @@ axiosClient.interceptors.response.use(
     return Promise.resolve(_response);
   },
   (error) => {
+    if (error?.response?.status === 404) {
+      window.location.href = "/404";
+      return Promise.reject();
+    }
     if (error?.response?.status === 401) {
       MyStorage.resetWhenLogout();
       sessionStorage.setItem(

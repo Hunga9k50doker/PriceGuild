@@ -89,11 +89,11 @@ function SportLandingPage({...props}) {
       }
     }
     catch (err) {
-      console.log(err)
-      //@ts-ignore
-      if (err.status === 200) {
-        router.push('/404')
-      }
+      // console.log(err)
+      // //@ts-ignore
+      // if (err.status === 200) {
+      //   router.push('/404')
+      // }
     }
   }
   
