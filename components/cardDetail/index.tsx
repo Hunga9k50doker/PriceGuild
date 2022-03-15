@@ -1401,7 +1401,6 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                     }) => {
                       return (
                         <SaleChart
-                          gradeCompanys={gradeCompanys}
                           cardData={cardData}
                           cardId={+cardData.id}
                           cardName={cardData.fullName}

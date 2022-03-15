@@ -12,6 +12,7 @@ import { useDebouncedCallback } from "utils/useDebouncedEffect";
 import ModalZoomImage from "components/modal/zoomImage/modalZoomImage"
 import ImageDefault from "assets/images/card_default.png"
 import ReportImage, { CardForm } from "components/modal/reportImage"
+import { api } from "configs/axios";
 
 interface Props {
   listRecord: SaleData[];
@@ -22,7 +23,6 @@ interface Props {
   saleChartState: SaleChartState;
   calcMaxLineRequest: () => void;
   cardName: string;
-  gradeCompanys: any[];
   reloadPricingGridRequest: () => Promise<void>;
   updataSaleData: (data: SaleData[]) => void
 }
@@ -37,7 +37,6 @@ const SaleChart: React.FC<Props> = ({
   reloadPricingGridRequest,
   updataSaleData,
   cardName,
-  gradeCompanys,
   cardData,
 }) => {
   const [calcMaxLineCalled, setCalcMaxLineCalled] = useState(false);
@@ -46,6 +45,7 @@ const SaleChart: React.FC<Props> = ({
   const [strImage, setStrImage] = useState<string>("");
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [point, setPoint] = React.useState<any| undefined>();
+  const [gradeCompanys, setGradeCompany] = useState<Array<any>>([])
 
   const refChart = useRef();
 
@@ -191,6 +191,17 @@ const SaleChart: React.FC<Props> = ({
         }
       }
     })
+    const getGradeCompany = async () => {
+      try {
+        const result = await api.v1.gradeCompany.getList({ has_values: true })
+        if (result.success) {
+          setGradeCompany(result.data)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getGradeCompany()
   }, [])
   
   const onReportSuccess = async (_: CardModel, point: any, cardForm: CardForm, isCorrectCard: boolean) => {

@@ -6117,7 +6117,7 @@ input[type="number"] {
 
 .modal-filter {
   margin: 0;
-  min-height: calc(100%) !important;
+  min-height: calc(100% - 58px) !important;
   &.modal-all {
     .modal-content {
       height: 100vh;

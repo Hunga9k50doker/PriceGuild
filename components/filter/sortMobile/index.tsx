@@ -19,8 +19,7 @@ const SortMobile = React.forwardRef<FilterHandle, PropsType>(({  ...props }, ref
     <div>
       {props?.options?.map((option, key) =>
         <div onClick={()=> props.onChange && props.onChange(option)} 
-          className={` ${props?.value?.value ===option.value ? "active": ""} ${props?.className || ''}
-                    `}
+          className={` ${props?.value?.value ===option.value ? "active": ""} ${props?.className || ''} `}
           >
           {option.label}
           </div>
