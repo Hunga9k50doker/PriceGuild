@@ -1549,7 +1549,6 @@ const CardListCollection = ({
                     aria-labelledby="filterModalLabel"
                     aria-hidden="true"
                   >
-                    {}
                     <div
                       className={`modal-dialog ${
                         filterValue === "all" ? "modal-all" : "align-items-end"
@@ -1575,11 +1574,11 @@ const CardListCollection = ({
                             }
                             `}
                     >
-                      <div className="modal-content">
+                      <div className="modal-content cccc">
                         <div className="modal-header">
-                          <div className="d-none">
+                          {/* <div className="d-none">
                             {renderLengthFilterMobile()}
-                          </div>
+                          </div> */}
                           <h5 className="modal-title" id="filterModalLabel">
                             {renderTitleFilterMobile()}{" "}
                             <span
@@ -1787,34 +1786,6 @@ const CardListCollection = ({
               </div>
             </>}
 
-
-              
-
-
-
-
-                {/* <div className="only-mobile">
-                    <div className="filter-content-action">
-                      <div className="filter-content-action-icon">
-                        <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M0.5 1.59025L0.5 0.6C0.5 0.268629 0.768629 0 1.1 0L14.9 0C15.2314 0 15.5 0.268629 15.5 0.6V1.59025C15.5 1.76301 15.4255 1.92739 15.2957 2.04131L9.70435 6.94576C9.57447 7.05968 9.5 7.22406 9.5 7.39682V11.2136C9.5 11.435 9.37808 11.6384 9.18283 11.7428L7.38283 12.7049C6.98314 12.9185 6.5 12.6289 6.5 12.1757L6.5 7.39682C6.5 7.22406 6.42553 7.05968 6.29565 6.94576L0.704347 2.04131C0.574469 1.92739 0.5 1.76301 0.5 1.59025Z" fill="#18213A"/>
-                        </svg>
-                      </div>
-                      <span>Filters</span>
-                      <div className="filter-content-action-sort d-flex">
-                        <div className="filter-content-action-sort-increase">
-                          <svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.03033 12.4394L3.03033 0.5L4.53033 0.5L4.53033 12.4394L6.25 10.7197L7.31066 11.7804L3.78033 15.3107L0.25 11.7804L1.31066 10.7197L3.03033 12.4394Z" fill="#18213A"/>
-                          </svg>
-                        </div>
-                        <div className="filter-content-action-sort-decrease">
-                          <svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.96967 3.37115L4.96967 15.3105L3.46967 15.3105L3.46967 3.37115L1.75 5.09082L0.689342 4.03016L4.21967 0.499826L7.75 4.03016L6.68934 5.09082L4.96967 3.37115Z" fill="#18213A"/>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                </div> */}
               </div>
             </div>
             <div className="d-flex mb-39 container-collection-profile-info">

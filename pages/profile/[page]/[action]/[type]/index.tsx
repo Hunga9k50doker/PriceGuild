@@ -7,11 +7,11 @@ const Profile: React.FC = (props) => {
   const router = useRouter();
   return (
     <>
-      <Head>
-         <title>{
+     <Head>
+        <title>{
           //@ts-ignore
-          `${router.query?.type ?? ''} - Personal ${router.query?.page === 'wishlists' ? 'Wishlists' : 'Profolio'} | PriceGuide.Cards`}</title>
-         <meta name="description" content={
+          props?.titlePage ?? ''}</title>
+        <meta name="description" content={
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
@@ -19,23 +19,23 @@ const Profile: React.FC = (props) => {
     </>
   );
 }
-// export const getServerSideProps = async (context: any) => { 
-//   try {
+export const getServerSideProps = async (context: any) => { 
+  try {
     
-//     const ctx = context?.query;
-//     const pageName = ctx.page === 'wishlists' ? 'Wishlists' : 'Profolio'
-//     let titlePage = `${ctx.type} - Personal ${pageName} | PriceGuide.Cards`;
+    const ctx = context?.query;
+    const pageName = ctx.page === 'wishlists' ? 'Wishlists' : 'Profolio'
+    let titlePage = `${ctx.type} - Personal ${pageName} | PriceGuide.Cards`;
 
-//     return {
-//       props: {
-//         titlePage,
-//     }}
+    return {
+      props: {
+        titlePage,
+    }}
 
-//   } catch (error) {
+  } catch (error) {
     
-//   }
-//   return {
-//     props: {},
-//   };
-// }
+  }
+  return {
+    props: {},
+  };
+}
 export default Profile;
