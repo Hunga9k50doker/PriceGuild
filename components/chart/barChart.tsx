@@ -84,12 +84,12 @@ const getOptions = (): Highcharts.Options => {
         fontWeight: 'normal',
         textDecoration: 'unset'
       },
-      activeDataLabelStyle: {
-        fontSize: '13px',
-        color: '#666666',
-        fontWeight: 'normal',
-        textDecoration: 'unset'
-      },
+      // activeDataLabelStyle: {
+      //   fontSize: '13px',
+      //   color: '#666666',
+      //   fontWeight: 'normal',
+      //   textDecoration: 'unset'
+      // },
       drillUpButton: {
         theme: {
           r: 6,
