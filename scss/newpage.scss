@@ -2794,3 +2794,22 @@ ul {
     &::-webkit-scrollbar { width: 6px; height: 4px; border-radius: 6px; background-color: rgba(109, 117, 136, 0.15); }
     &::-webkit-scrollbar-thumb { border-radius: 6px; -webkit-box-shadow: none; background: #6D7588; }
 }
+ 
+.modal {
+    z-index: 10055;
+}
+.modal-content {
+    position: relative;
+    animation: animatebottom 0.1s;
+}
+
+@keyframes animatebottom {
+    from {
+        bottom: -300px;
+        opacity: 0;
+    }
+    to {
+        bottom: 0;
+        opacity: 1;
+    }
+}
