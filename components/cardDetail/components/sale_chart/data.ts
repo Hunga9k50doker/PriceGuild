@@ -360,6 +360,9 @@ export const options: Highcharts.Options = {
     },
     credits: {
         enabled: false
+    },
+    drilldown: {
+      series: []
     }
 };
   

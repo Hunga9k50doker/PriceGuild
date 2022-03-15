@@ -66,6 +66,9 @@ const getOptions = () => {
           events: {},
         },
       },
+    },
+    drilldown: {
+      series: []
     }
   }
 }

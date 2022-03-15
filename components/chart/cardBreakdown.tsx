@@ -149,7 +149,10 @@ const options = {
         enabled: false,
       },
       threshold: null
-    }]
+    }],
+    drilldown: {
+      series: []
+    }
 };
 
 const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {

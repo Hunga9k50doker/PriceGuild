@@ -168,6 +168,9 @@ const getOptions = (): Highcharts.Options => {
     },
     chart: {
       height: 700
+    },
+    drilldown: {
+      series: []
     }
   }
 }

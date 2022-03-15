@@ -65,6 +65,9 @@ const options = {
       }
     },
   ],
+  drilldown: {
+    series: []
+  }
 };
 
 const ChartCircleDemo = ({ code, dispatchReducer, dataGraded, keyData }: PropTypes) => {
