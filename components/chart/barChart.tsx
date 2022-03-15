@@ -137,24 +137,24 @@ const drilldownCallback: Highcharts.DrilldownCallbackFunction = function(e) {
         colorByPoint: true,
         //@ts-ignore
         dataCustom: dataCustom,
-        data: Object.keys(result.data[0].data).map((item) => ([item, result.data[0].data[item]]))
+        data: Object.keys(result.data[0].data)?.map((item) => ([item, result?.data[0]?.data[item]]))
       }
       this.addSeriesAsDrilldown(e.point, series)
-      const widgetSettings = result.data[0].widget_settings
-      updateAnalytics(dataCustom.setAnalytics, widgetSettings)
+      const widgetSettings = result?.data[0]?.widget_settings
+      updateAnalytics(dataCustom?.setAnalytics, widgetSettings)
     }
     this.hideLoading()
   }
-  if ((e.point as any).drilldownFilter) getData()
+  if ((e.point as any)?.drilldownFilter) getData()
 }
 
 const drillupCallback: Highcharts.DrillupCallbackFunction = function() {
   if (!this.series?.length) return
-  const dataCustom: PropTypes = (this.series[0].userOptions as any).dataCustom
+  const dataCustom: PropTypes = (this.series[0]?.userOptions as any).dataCustom
   const updateData = async () => {
     const result = await analyticsUpdateWidget(dataCustom.widgetSettings, dataCustom.collection)
     if (result.data.length) {
-      const widgetSettings = result.data[0].widget_settings
+      const widgetSettings = result.data[0]?.widget_settings
       updateAnalytics(dataCustom.setAnalytics, widgetSettings)
     }
   }
@@ -200,7 +200,7 @@ const BarChart = (props: PropTypes) => {
     chart.update(options, true, true)
     setTimeout(() => {
       if (widgetSettings.filter) {
-        const point = chart.series[0].points.find(item => item.name === widgetSettings.filter)
+        const point = chart.series[0]?.points.find(item => item?.name === widgetSettings?.filter)
         point?.doDrilldown()
       }
     });

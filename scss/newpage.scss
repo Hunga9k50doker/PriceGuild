@@ -1765,7 +1765,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    img {
+    img.imgMainIcon {
         margin-bottom: 20px;
         @media (min-width: 768px) {
             margin-bottom: 100px;
