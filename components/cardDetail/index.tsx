@@ -404,14 +404,15 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         pre.indexPricingSelected !== next.indexPricingSelected
       }
     >
-      {({ state, dispatchReducer }) => {
+        {({ state: { pricingGridData, listYearPricingCard , indexPricingSelected }, dispatchReducer }) => {
+          setLengthTablePrice(pricingGridData.listDataGradeSelected?.length)
         return (
           <div
             className={"header-pricing-grid btn-group"}
             role="group"
             aria-label="Basic mixed styles example"
           >
-            {state.listYearPricingCard.map((item, index) => {
+            {listYearPricingCard.map((item, index) => {
               return (
                 <button
                   key={index}
@@ -427,7 +428,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   }
                   className={
                     "btn btn-secondary" +
-                    (state.indexPricingSelected === index
+                    (indexPricingSelected === index
                       ? " isActive"
                       : "")
                   }
@@ -439,8 +440,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           </div>
         );
       }}
-    </CardDetailConsumer>
-    <div className="pricing-grid-content">
+      </CardDetailConsumer>
+      <div className="pricing-grid-content">
         {lengthTablePrice !== 0 ?
           <>
             <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
@@ -619,12 +620,13 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                 </table>
               </div>
             </div>
-          </> : 
+        </>
+         : 
           <div className="pricing-grid-content-no-data">
             <img src={IconTable} alt=""/>
             <p>There are no data available</p>
           </div>
-        }
+        } 
     </div>
     <div>
       {
