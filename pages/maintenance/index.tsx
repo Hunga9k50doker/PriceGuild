@@ -16,11 +16,11 @@ const MaintenancePage: React.FC<PropTypes> = (props) => {
 		<section id="maintenance">
 			<img className="imgMainIcon" src={imgMaintenance} alt="" title="" />
             <h4>Updating Database - PriceGuide.Cards will be back shortly</h4>
-            <div className="alert alert-maintenance" role="alert">
+            {/* <div className="alert alert-maintenance" role="alert">
                 <img src={imgInfo} alt="" title="" />
                 <div className="content">Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)</div>
                 <span> <img className="close" src={imgClose} alt="" title="" /> </span>
-            </div>
+            </div> */}
 		</section>
 	);
 }

@@ -168,6 +168,14 @@ export class HttpClient<SecurityDataType = unknown> {
           window.location.href = "/login";
           return Promise.reject();
         }
+        if (error?.response?.status === 503) {
+          window.location.href = "/maintenance";
+          return Promise.reject();
+        }
+        if (error?.response?.status === 404) {
+          window.location.href = "/404";
+          return Promise.reject();
+        }
         return Promise.reject(error);
       }
     );
