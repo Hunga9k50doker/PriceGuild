@@ -37,6 +37,7 @@ function SamplePrevArrow(props: any) {
 const settings = {
   dots: true,
   infinite: true,
+  lazyLoad: true,
   speed: 500,
   slidesToShow: 6,
   slidesToScroll: 6,
