@@ -10,7 +10,7 @@ import SlectUser from "components/select/selectUser";
 import { api } from "configs/axios";
 import { MetaData } from "utils/constant";
 import { ToastSystem } from "helper/toast_system";
-import { firestore } from "firebase";
+// import { firestore } from "firebase";
 import { useRouter } from 'next/router'
 
 type PropTypes = {
@@ -25,7 +25,7 @@ type MessageType = {
 const Messages = ({ ...props }: PropTypes) => {
   const dispatch = useDispatch();
   const { users, conversations } = useSelector(Selectors.message);
-  const db = firestore();
+  // const db = firestore();
   const { userInfo } = useSelector(Selectors.auth);
   const contentRef = useRef<HTMLDivElement>(null);
   const [userId, setUserId] = useState<number | undefined>(props.userId);
@@ -60,53 +60,53 @@ const Messages = ({ ...props }: PropTypes) => {
   }, [users]);
 
   React.useEffect(() => {
-    if (messageData) {
-      const unsubscribe = db
-        .collection("conversations")
-        .where("user_uid_1", "in", [messageData?.uid_1, messageData?.uid_2])
-        .orderBy("createdAt", "asc")
-        .onSnapshot((querySnapshot) => {
-          const conversations: GroupMessage[] = [];
-          let currentDate: Date = new Date(Date.now());
+    // if (messageData) {
+    //   const unsubscribe = db
+    //     .collection("conversations")
+    //     .where("user_uid_1", "in", [messageData?.uid_1, messageData?.uid_2])
+    //     .orderBy("createdAt", "asc")
+    //     .onSnapshot((querySnapshot) => {
+    //       const conversations: GroupMessage[] = [];
+    //       let currentDate: Date = new Date(Date.now());
 
-          querySnapshot.forEach((doc) => {
-            let itemData = doc.data();
+    //       querySnapshot.forEach((doc) => {
+    //         let itemData = doc.data();
 
-            if (
-              (itemData.user_uid_1 === messageData?.uid_1 &&
-                itemData.user_uid_2 === messageData?.uid_2) ||
-              (itemData.user_uid_1 === messageData?.uid_2 &&
-                itemData.user_uid_2 === messageData?.uid_1)
-            ) {
-              //Type message item
-              let _message: IMessage = {
-                user_uid_1: itemData.user_uid_1,
-                user_uid_2: itemData.user_uid_1,
-                isView: itemData.isView,
-                message: itemData.message,
-                date: new Date(itemData.createdAt.seconds * 1000),
-              };
+    //         if (
+    //           (itemData.user_uid_1 === messageData?.uid_1 &&
+    //             itemData.user_uid_2 === messageData?.uid_2) ||
+    //           (itemData.user_uid_1 === messageData?.uid_2 &&
+    //             itemData.user_uid_2 === messageData?.uid_1)
+    //         ) {
+    //           //Type message item
+    //           let _message: IMessage = {
+    //             user_uid_1: itemData.user_uid_1,
+    //             user_uid_2: itemData.user_uid_1,
+    //             isView: itemData.isView,
+    //             message: itemData.message,
+    //             date: new Date(itemData.createdAt.seconds * 1000),
+    //           };
 
-              ///Nếu date current khác với next date thì là group mới
-              // ||
-              //Case group message đang rỗng
-              if (
-                (currentDate.getTime() / 86400000).toFixed(0) !==
-                (_message.date.getTime() / 86400000).toFixed(0) ||
-                conversations.length === 0
-              ) {
-                currentDate = _message.date;
-                conversations.push({ messages: [_message], date: currentDate });
-              } else {
-                conversations[conversations.length - 1].messages.push(_message);
-              }
-            }
-          });
+    //           ///Nếu date current khác với next date thì là group mới
+    //           // ||
+    //           //Case group message đang rỗng
+    //           if (
+    //             (currentDate.getTime() / 86400000).toFixed(0) !==
+    //             (_message.date.getTime() / 86400000).toFixed(0) ||
+    //             conversations.length === 0
+    //           ) {
+    //             currentDate = _message.date;
+    //             conversations.push({ messages: [_message], date: currentDate });
+    //           } else {
+    //             conversations[conversations.length - 1].messages.push(_message);
+    //           }
+    //         }
+    //       });
 
-          dispatch(MessagesAction.updateConversations(conversations));
-        });
-      return unsubscribe;
-    }
+    //       dispatch(MessagesAction.updateConversations(conversations));
+    //     });
+    //   return unsubscribe;
+    // }
   }, [messageData]);
 
   const initChat = (user: UserMessageType) => {

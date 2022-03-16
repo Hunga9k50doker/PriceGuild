@@ -56,6 +56,12 @@ axiosClient.interceptors.response.use(
       window.location.href = "/login";
       return Promise.reject();
     }
+    if (error?.response?.status === 503) {
+      if (window.location.pathname = "/maintenance") return;
+      
+      window.location.href = "/maintenance";
+      return Promise.reject();
+    }
     let response: BaseResponse & object = {
       message: "Server error please try again",
       status: error?.response?.status ?? 501,

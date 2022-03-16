@@ -30,6 +30,9 @@ import ImageBlurHash from "components/imageBlurHash"
 import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
 import ImageCardSearch from "assets/images/card_search.png";
 import Head from 'next/head';
+import { getDetailMaintenance } from "utils/maintenance";
+import imgInfo from "assets/images/alert-info.svg";
+import imgClose from "assets/images/cross-gray.svg";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -53,12 +56,22 @@ function HomePage() {
   const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm<Inputs>();
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const [priceChart, setPriceChart] = useState<any>({});
+  const [maintenance, setMaintenance] = useState<Array<any>>();
   useEffect(() => {
     dispatch(HomeActions.getLatestCollection());
     // eslint-disable-next-line react-hooks/exhaustive-deps
     getOptionCardBreakDown(1);
+    
+    maintainceMode();
+
   }, [])
 
+  const maintainceMode = async () => {
+
+    let main = await getDetailMaintenance();
+  
+    setMaintenance(main);
+  }
   const changeTransaction = () => {
     const languageCode = i18n.language === "vi" ? "en" : "vi";
     i18n.changeLanguage(languageCode)
@@ -176,6 +189,14 @@ function HomePage() {
     return `/card-details/${cardData?.code}/${url}`;
   }
 
+  useEffect(() => {
+    if (maintenance?.length) {
+      if (maintenance?.[0].type === 2) {
+        router.push('/maintenance')
+      }
+    }
+  },[maintenance])
+
   return (
     <div
       style={{ backgroundColor: "#fafafb" }}
@@ -199,7 +220,13 @@ function HomePage() {
               <a className="btn btn-primary btn-create-portfolio">
                 Create Personal Portfolio
               </a></Link>
-          </div>
+          </div> 
+          {maintenance && maintenance?.[0].type === 1 &&
+          <div className="alert alert-maintenance" role="alert">
+            <img src={imgInfo} alt="" title="" />
+            <div className="content">Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)</div>
+            <span> <img className="close" src={imgClose} alt="" title="" /> </span>
+          </div>}
         </div>
       </div>
       <div className="content-home content-slick mb-10 position-relative mt-5">

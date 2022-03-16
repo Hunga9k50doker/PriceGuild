@@ -153,6 +153,13 @@ export const CardDetailReducer = (
       newState.pricingGridDataHold = PricingGridData.fromJson(action.payload.data);
       //@ts-ignore
       newState.priceTooltipPricingGrid = action.payload.null_price_tooltip;
+       //@ts-ignore
+      newState.dropDownOptionsByYear = PricingGridData.dataOptionByYear(action.payload.drop_down_options_by_year);
+      
+      newState.dropDownOptions = PricingGridData.filterOptionByYear(
+        newState.dropDownOptionsByYear,
+        newState.listYearPricingCard[newState.indexPricingSelected]
+      )
       newState.pricingGridData = newState.pricingGridDataHold.clone();
      
       newState.listYearPricingCard =

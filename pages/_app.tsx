@@ -12,7 +12,7 @@ import "scss/style.scss";
 import "scss/config.scss";
 import "scss/custom.scss";
 import "scss/newpage.scss";
-import firebase from "firebase"
+// import firebase from "firebase"
 import '../i18n';
 import { I18nextProvider } from 'react-i18next';
 import i18next from 'i18next';
