@@ -5748,3 +5748,24 @@ th .form-check-input.form-check-input-head {
     z-index: 999!important;
   }
 }
+.box {
+  .box-action {
+    margin-top: 24px;
+    column-gap: 12px;
+    row-gap:  12px;
+    flex-wrap: wrap;
+    .box-action-content {
+      border: 2px solid #E9EAED;
+      border-radius: 5px;
+      .btn {
+        padding: 9px 12px;
+        &:not(:first-child) {
+          border-left: 1px solid #E9EAED;
+        }
+        &.btn-active {
+          background-color: #E9EAED;
+        }
+      }
+    }
+  }
+}
