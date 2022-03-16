@@ -169,7 +169,7 @@ export class HttpClient<SecurityDataType = unknown> {
           return Promise.reject();
         }
         if (error?.response?.status === 503) {
-          if (window.location.pathname = "/maintenance") return;
+          if (window.location.pathname === "/maintenance") return;
           
           window.location.href = "/maintenance";
           return Promise.reject();
