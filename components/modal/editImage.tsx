@@ -138,7 +138,6 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
       </Modal.Header>
       <Modal.Body>
       <CropImage  src={imageSrc} onGetImage={setAllCropImage}/>
-      <img src={link} alt="" />
       </Modal.Body>
       <Modal.Footer className="modal-footer-crop">
         <button className="btn btn-secondary btn-bg--secondary btn-color--primary" onClick={onClose}>Cancel</button>

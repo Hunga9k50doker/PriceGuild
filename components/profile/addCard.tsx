@@ -819,6 +819,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     },550)
     
   }
+  const onGetTimeCurrent = () => {
+    var date = new Date();
+    return date.valueOf()
+  }
+
   // console.log(is_show_card_detail_collection, 'is_show_card_detail_collection');
   return (
     <div className="add-collection prf-template pl-3 position-relative">
@@ -1507,7 +1512,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <img
                     className="cursor-pointer w-100"
                     src={
-                      imageFront.url ? imageFront.url : backgroundImageUpload.src
+                      imageFront.url ? imageFront.url +`?ver=${onGetTimeCurrent()}`  : backgroundImageUpload.src
                     }
                     alt=""
                   />
@@ -1521,7 +1526,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <div className="border-img">
                   <img
                     className="cursor-pointer w-100"
-                    src={imageBack.url ? imageBack.url : backgroundImageUpload.src}
+                    src={imageBack.url ? imageBack.url +`?ver=${onGetTimeCurrent()}` : backgroundImageUpload.src}
                     alt=""
                   />
                   <input
