@@ -2813,3 +2813,14 @@ ul {
         opacity: 1;
     }
 }
+
+.content-home {
+    .slick-sport {
+        .slick-slider {
+            opacity: 0;
+            &.slick-initialized {
+                opacity: 1;
+            }
+        }
+    }
+}
