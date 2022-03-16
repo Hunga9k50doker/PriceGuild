@@ -1477,7 +1477,7 @@ const CardListCollection = ({
                       data-bs-target="#filterModal"
                     > Filters </span>
                     <button
-                      // onClick={() => setFilterValue("sports")}
+                      onClick={() => setFilterValue("year")}
                       data-bs-toggle="modal"
                       data-bs-target="#sortModal"
                       type="button"
