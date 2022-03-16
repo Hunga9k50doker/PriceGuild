@@ -126,14 +126,14 @@ const SelectGrading = ({
 
   React.useEffect(() => {
     if (isOpen) {
-      // setCards({
-      //   cards: [
-      //     {
-      //       card_id: cardData.code,
-      //       data: [{ ...defaultCard }],
-      //     },
-      //   ],
-      // });
+      setCards({
+        cards: [
+          {
+            card_id: cardData.code,
+            data: [{ ...defaultCard }],
+          },
+        ],
+      });
 
       getData();
     }
