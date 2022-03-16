@@ -9,6 +9,7 @@ import { ToastSystem } from 'helper/toast_system';
 import dynamic from 'next/dynamic';
 // @ts-ignore
 import { EditorProps } from '@toast-ui/react-editor';
+import CropImage from "./CropImage"
 
 // // @ts-ignore
 // const Editor = dynamic<EditorProps>(() => import('@toast-ui//react-image-editor')
@@ -58,8 +59,9 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   const [nameImage, setNameImage] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [allIns, setAllIns] = React.useState<any>(null);
+  const [allCropImage, setAllCropImage] = React.useState<any>(null);
   const [currentPath, setCurrentPath] = React.useState<string | undefined>(null);
-
+  const [link, setLink] = React.useState<any>("");
   React.useImperativeHandle(ref, () => ({
     action(src: string, name: string, current_path?: string) {
       setIsOpen(true);
@@ -70,9 +72,9 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   }));
 
   const saveImageToDisk = () => {
-    if (allIns) {
+    if (allCropImage) {
       setIsLoading(true);
-      const imageEditorInst = allIns;
+      const imageEditorInst = allCropImage?.current?.cropper.getCroppedCanvas();
       const data = imageEditorInst?.toDataURL({ format: "jpeg", quality: 0.7 });
       updateImage(data);
     }
@@ -135,30 +137,8 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
         </button>
       </Modal.Header>
       <Modal.Body>
-      <DynamicComponentWithNoSSR  onGetImage={setAllIns} src={imageSrc}  refParam={imageEditorRef} />
-        {/* {imageSrc.length && typeof window !== "undefined" ? <Editor
-          includeUI={{
-            loadImage: {
-              path: imageSrc,
-              name: "image",
-            },
-            theme: myTheme,
-            menu: ["crop", "flip", "rotate", "draw", "shape", "text", "filter"],
-            initMenu: "",
-            uiSize: {
-              height: "550px",
-            },
-            menuBarPosition: "bottom",
-          }}
-          // cssMaxWidth={1000}
-          cssMaxHeight={500}
-          selectionStyle={{
-            cornerSize: 20,
-            rotatingPointOffset: 70,
-          }}
-          usageStatistics={true}
-          ref={imageEditorRef}
-        /> : null} */}
+      <CropImage  src={imageSrc} onGetImage={setAllCropImage}/>
+      <img src={link} alt="" />
       </Modal.Body>
       <Modal.Footer className="modal-footer-crop">
         <button className="btn btn-secondary btn-bg--secondary btn-color--primary" onClick={onClose}>Cancel</button>
