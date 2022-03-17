@@ -2824,3 +2824,9 @@ ul {
         }
     }
 }
+
+.card-detail-img-item > .img:not(img.d-none) {
+    background-image: url("../assets/images/card_default.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}

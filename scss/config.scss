@@ -862,15 +862,17 @@
         }
       }
       .card-detail-img-item > .img {
-        background-image: url("../assets/images/card_default.png");
-        background-repeat: no-repeat;
-        background-size: cover;
         padding-bottom: 139%;
         overflow: hidden; 
         position: relative;
         &.img-not-bg {
           background-image: unset;
           background: #fff;
+        }
+        &.no-img {
+          background-image: url("../assets/images/card_default.png");
+          background-repeat: no-repeat;
+          background-size: cover;
         }
         img {
           max-width: 100%;
