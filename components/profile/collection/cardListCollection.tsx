@@ -49,7 +49,7 @@ import ModalDeletePortfolio from "components/modal/delete/portfolio";
 // @ts-ignore
 import $ from "jquery"
 import HeaderUser from "components/user/headerUser"
-import { UserInfoType } from "interfaces"
+import { UserInfoType, PgAppProfileType } from "interfaces"
 
 type PropTypes = {
   collection?: string,
@@ -149,7 +149,7 @@ const CardListCollection = ({
     }
     resetPage();
   }, [collection, defaultSearch])
-  const [friend, setFriend] = useState<UserInfoType>()
+  const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
@@ -1088,7 +1088,7 @@ const CardListCollection = ({
       const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
         //@ts-ignore
-        setFriend(res.data?.user_info)
+        setFriend(res.data)
       }
       if (!res.success) {
         // @ts-ignore
@@ -1123,7 +1123,7 @@ const CardListCollection = ({
     return <>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.full_name}</a></li>
+          <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.user_info?.full_name}</a></li>
           <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
           <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
         </ol>
