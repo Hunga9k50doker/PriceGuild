@@ -314,7 +314,7 @@ const Header = (props: any) => {
                   </svg>
                   <span className="ms-1"> Browse </span>
                 </a>
-                <div className="dropdown-menu py-0 mt-0 w-100" aria-labelledby="navbarDropdownBrowse">
+                <div className="dropdown-menu div-browse py-0 mt-0 w-100" aria-labelledby="navbarDropdownBrowse">
                   <div className="w-100 fake-padding">
                     <div className="row">
                       <div className="col-xxl-8 col-md-7">

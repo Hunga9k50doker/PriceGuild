@@ -2828,3 +2828,22 @@ ul {
 .fz-70 {
     font-size: 70% !important;
 }
+
+#__next {
+    overflow: hidden;
+}
+.div-browse {
+    &::after {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: -10px;
+        width: calc(100% + 20px);
+        height: 1000vh;
+        background-color: rgba(24,33,58,.85);
+    }
+    .fake-padding {
+        background-color: #fff;
+    }
+}
