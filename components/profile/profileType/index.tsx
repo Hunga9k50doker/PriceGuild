@@ -70,7 +70,7 @@ const ProfileType = () => {
       case "personal":
         profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'}); 
         return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
-      case "portfolio":  console.log('working-type');
+      case "portfolio":
         collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center'});
         if (action === "add-card") {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
@@ -85,7 +85,7 @@ const ProfileType = () => {
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
         }
-        if (type !== undefined) { console.log('working-type111');
+        if (type !== undefined) {
           //@ts-ignore
           return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
         }

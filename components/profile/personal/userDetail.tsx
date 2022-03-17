@@ -46,7 +46,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
       const params = {
         profileid: userId
       }
-      const res = await api.v1.authorization.getUserInfo(params); 
+      const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
         onSuccess && onSuccess(res.data.user_info, res.data.is_friend);
         setProfileFriend && setProfileFriend(res.data);
