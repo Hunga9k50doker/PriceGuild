@@ -7,6 +7,7 @@ import CardContentHomePage from "components/homePage/cardContentHomePage";
 import JoinCommunityImage from "assets/images/join-community.png";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Loading from "components/loading/loading"
 
 const dataLoader = Array.from(Array(10).keys());
 
@@ -72,7 +73,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
       <div className="row g-0">
         <div className="col-12 col-sm-12 col-md-6 pl-150 leader-board">
           <h2 className="text-title mb-3">Collectors' Leaderboard</h2>
-          <div className="content-table">
+          <div className="content-table content-table--home">
             <table className="table mb-0 table-borderless table-striped table-hover">
               <thead>
                 <tr>
@@ -98,12 +99,14 @@ const LeaderboardHomePage = (props: PropTypes) => {
               </tbody>
             </table>
           </div>
-          {!data.isLoading && !data.cards.length && <>no data</>}
-          {data.isLoading ? dataLoader?.map((item, key) =>
-            <div className="my-2" key={key}>
-              <Skeleton height={30} />
-            </div>
-          ) :
+          {!data.isLoading && !data.cards.length && <Loading type="warning" /> }
+          {data.isLoading ? 
+            <Loading  type ="loading" />
+          // dataLoader?.map((item, key) =>
+            // <div className="my-2" key={key}>
+            //   <Skeleton height={30} />
+            // </div>
+          :
             <div className="d-flex justify-content-center align-items-center mt-4">
               <Link href={"/leaderboard"}>
                 <a  className="btn see-more btn-primary" title="See Leaderboard">

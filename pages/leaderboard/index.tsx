@@ -15,6 +15,7 @@ import Link from "next/link";
 import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery";
+import Loading from "components/loading/loading"
 const rowsPerPage = 50;
 const dataLoader = Array.from(Array(rowsPerPage).keys());
 
@@ -48,6 +49,7 @@ const Leaderboard = () => {
   const [sportsState, setSportsState] = useState<Array<FilterType>>([]);
   const [filterData, setFilterData] = useState<FilterDataType>({});
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
+  const [isError202, SetIsError202] = useState<boolean>(false);
   useEffect(() => {
     if (sports.length) {
       setSportsState(
@@ -72,18 +74,23 @@ const Leaderboard = () => {
         ...filterData,
       };
       const result = await api.v1.portfolio.portfolioLeaderboard(params);
+    
       if (result.success) {
         if (result.data.length) {
           setDataTable(paginate(result.data, rowsPerPage, [1]));
-        }
+        }      
         return setData({
           cards: result.data,
           isLoading: false,
         });
       }
+      if(result.message === "Leaderboard calculation in progress, please try loading again later") {
+        SetIsError202(true)
+      }
       setData((prevState) => {
         return { ...prevState, isLoading: false };
       });
+    
     } catch (err) {
       console.log(err);
       setData((prevState) => {
@@ -444,14 +451,20 @@ const Leaderboard = () => {
                       ))}
                   </tbody>
                 </table>
-                {data.isLoading &&
-                  dataLoader?.map((item, key) => (
-                    <div className="my-2" key={key}>
-                      <Skeleton />
-                    </div>
-                  ))}
+             
               </div>
-
+              
+              {data.isLoading  &&
+                  <Loading type ="loading" />
+                  // dataLoader?.map((item, key) => (
+                  //   <div className="my-2" key={key}>
+                  //     <Skeleton />
+                  //   </div>
+                  // ))
+              }
+              {!data.isLoading && isError202  &&
+                <Loading type="warning" />
+              }
               {!data.isLoading && Boolean(data.cards.length) && (
                 <>
                    {

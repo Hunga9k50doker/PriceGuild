@@ -3755,6 +3755,14 @@ input[type="number"] {
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0px 6px 12px rgba(109, 117, 136, 0.05);
+      &.content-table--home {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        .leader-board-loading {
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+      }
     }
     .table {
       color: #18213a;
