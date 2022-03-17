@@ -1797,37 +1797,6 @@
   }
 }
 
-/* header - mobile */
-.header-page-content {
-  .navbar-spport {
-    .mobile-nav {
-      .section-logo {
-        .image-logo-mobile {
-          display: none;
-        }
-      }
-      .section-search-mobile {
-        display: none;
-      }
-      .section-nav-menu {
-        display: none;
-      }
-    }
-  }
-   .section-search-content {
-    display: none;
-  }
-  .section-menu-content {
-    display: none;
-  }
-  .tab-bottom {
-    display: none;
-  }
-  .section-bowse {
-    display: none;
-  }
-}
-
 @media screen and (max-width: 767.98px) {
   .header-page-content {
     .navbar-main {
@@ -1967,6 +1936,7 @@
     }
     .section-menu-content {
       display: block;
+      visibility: hidden;
       position: fixed;
       top: 0;
       height: 100vh;
@@ -1980,6 +1950,7 @@
       -webkit-overflow-scrolling: touch;
       transition: 0.5s;
       &.active {
+        visibility: visible;
         transform: translateX(-12px);
         -ms-transform: translateX(-12px);
         -webkit-transform: translateX(-12px);
@@ -2209,7 +2180,9 @@
       -webkit-transform: translateX(-100%);
       -webkit-overflow-scrolling: touch;
       transition: 0.5s;
+      visibility: hidden;
       &.active {
+        visibility: visible;
         transform: translateX(0%);
         -ms-transform: translateX(0%);
         -webkit-transform: translateX(0%);
@@ -2393,7 +2366,9 @@
       -webkit-transform: translateX(-100%);
       -webkit-overflow-scrolling: touch;
       transition: 0.5s;
+      visibility: hidden;
       &.active {
+        visibility: visible;
         transform: translateX(0%);
         -ms-transform: translateX(0%);
         -webkit-transform: translateX(0%);
