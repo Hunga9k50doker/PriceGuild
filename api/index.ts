@@ -327,6 +327,14 @@ export class Api<
         });
         return result.data;
       },
+      unSubcribeAcounnt: async (body: any) => {
+        const result = await this.request({
+          path: "/account/unsubscribe",
+          method: "patch",
+          body,
+        });
+        return result.data;
+      },
     },
     getListSport: async () => {
       const result = await this.request<SportType[]>({

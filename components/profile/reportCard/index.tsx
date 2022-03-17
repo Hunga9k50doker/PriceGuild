@@ -5,6 +5,10 @@ import Selectors from "redux/selectors";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { SearchApis } from 'api/search';
 import { useRouter } from 'next/router';
+import * as Yup from 'yup';
+import { RegexString } from 'utils/constant';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { isEmpty } from 'lodash';
 
 type Inputs = {
   portf_req_sport: any,
@@ -23,7 +27,29 @@ const ReportCard = () => {
   const { sports } = useSelector(Selectors.config);
   const [sportSelected, setSportSelected] = useState<any>();
   const { userInfo } = useSelector(Selectors.auth);
-  const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm<Inputs>();
+   const validationSchema = Yup.object().shape({
+    portf_req_sport: Yup.string()
+      .required('Sport is required'),
+    portf_req_year: Yup.string()
+      .required('Year is required'),
+    portf_req_pub: Yup.string()
+      .required('Publisher is required'),
+    portf_req_collection: Yup.string()
+      .required('Collection is required'),
+    portf_req_set_detail: Yup.string()
+      .required('Card Set Details is required'),
+    portf_card_number: Yup.string()
+      .required('Card Number is required'),
+    portf_req_player: Yup.string()
+       .required('Player Name is required'),
+    portf_req_other: Yup.string().required('Other is required')
+   });
+  
+  const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm<Inputs>({
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange'
+  });
+
   const router = useRouter();
 
   const watchSport = watch("portf_req_sport")
@@ -31,7 +57,7 @@ const ReportCard = () => {
   const onSubmit: SubmitHandler<Inputs> = async data => {
     setStateSubmit(true);
     let prms = { ...data };
-
+    console.log(prms, 'alo'); return;
     if (prms.portf_req_sport === "Other") {
       prms.portf_req_sport = prms.portf_req_sport + ' - ' + prms.portf_req_other;
     }
@@ -54,6 +80,12 @@ const ReportCard = () => {
       return;
     }
   }, [])
+  React.useEffect(() => {
+    if(!isEmpty(sports) ) {
+      setSportSelected(sports[0]);
+    }
+  }, [sports])
+  
   const onBack = () => {
     setStateSubmit(false);
     reset({
@@ -66,9 +98,9 @@ const ReportCard = () => {
       portf_req_player: "",
       portf_req_other: "",
     })
-    setSportSelected(undefined)
+    setSportSelected(sports[0])
   }
-
+  
   return (
     <div className="col-sm-12 col-lg-10 col-md-10 col-12 min-vh-100 col-10__helper col-mobile">
       <div className="col-lg-5 col-md-5 col-sm-12 col-12 helper">
@@ -91,6 +123,7 @@ const ReportCard = () => {
                     }}
                     value={sportSelected}
                     getOptionValue={getOptionValue}
+                    defaultValue={sportSelected}
                     getOptionLabel={(option) => option.sportName}
                     className="customScroll"
                     options={[...sports, {id: 0,sportName: "Other"}]}
@@ -103,37 +136,45 @@ const ReportCard = () => {
                       })
                     }}
                   />
+                  {errors.portf_req_sport?.message && <div className="invalid-feedback d-inline">{errors.portf_req_sport?.message}</div>}
                 </div>
 
                 {watchSport === "Other" && 
-                <div className="mb-3 mt-3">
-                <label className="form-label">Other</label>
-                <input {...register("portf_req_other")} type="text" className="form-control" />
-              </div>
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_other ? "error-validation" : ""}`}>
+                  <label className="form-label">Other</label>
+                  <input {...register("portf_req_other")} type="text" className="form-control" />
+                  {errors.portf_req_other?.message && <div className="invalid-feedback d-inline">{errors.portf_req_other?.message}</div>}
+                </div>
                 }
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_year ? "error-validation" : ""}`}>
                   <label className="form-label">Year</label>
                   <input {...register("portf_req_year")} type="text" className="form-control" />
+                  {errors.portf_req_year?.message && <div className="invalid-feedback d-inline">{errors.portf_req_year?.message}</div>}
                 </div>
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_pub ? "error-validation" : ""}`}>
                   <label className="form-label">Publisher</label>
-                  <input {...register("portf_req_pub")}  type="text" className="form-control" />
+                  <input {...register("portf_req_pub")} type="text" className="form-control" />
+                  {errors.portf_req_pub?.message && <div className="invalid-feedback d-inline">{errors.portf_req_pub?.message}</div>}
                 </div>
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_collection ? "error-validation" : ""}`}>
                   <label className="form-label">Collection</label>
-                  <input {...register("portf_req_collection")}  type="text" className="form-control" />
+                  <input {...register("portf_req_collection")} type="text" className="form-control" />
+                  {errors.portf_req_collection?.message && <div className="invalid-feedback d-inline">{errors.portf_req_collection?.message}</div>}
                 </div>
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_set_detail ? "error-validation" : ""}`}>
                   <label className="form-label">Card Set Details</label>
                   <input {...register("portf_req_set_detail")} type="text" className="form-control" />
+                  {errors.portf_req_set_detail?.message && <div className="invalid-feedback d-inline">{errors.portf_req_set_detail?.message}</div>}
                 </div>
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_card_number ? "error-validation" : ""}`}>
                   <label className="form-label">Card Number</label>
                   <input {...register("portf_card_number")} type="text" className="form-control" />
+                  {errors.portf_card_number?.message && <div className="invalid-feedback d-inline">{errors.portf_card_number?.message}</div>}
                 </div>
-                <div className="mb-3 mt-3">
+                <div className={`mb-3 mt-3 form-data ${errors.portf_req_player ? "error-validation" : ""}`}>
                   <label className="form-label">Player Name</label>
-                  <input {...register("portf_req_player")}  type="text" className="form-control" />
+                  <input {...register("portf_req_player")} type="text" className="form-control" />
+                  {errors.portf_req_player?.message && <div className="invalid-feedback d-inline">{errors.portf_req_player?.message}</div>}
                 </div>
                 <div className="mb-3 d-flex justify-content-end align-items-center">
                   {/* <button type="button" className="btn btn-secondary w-100 me-1">Cancel</button> */}
