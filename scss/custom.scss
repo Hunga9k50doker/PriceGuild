@@ -2103,8 +2103,9 @@
         background: #0F0556;
         color: #FFFFFF;
         .box-avatar-mobile {
-          padding: 16px;
           display: flex;
+          justify-content: flex-start;
+          width: 100%;
           .box-photo {
             width: 42px;
             height: 42px;
