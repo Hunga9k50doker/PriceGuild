@@ -100,7 +100,9 @@ const CollectionList = ({
         //@ts-ignore
         setFriend(userInfo);
       } else {
-        getUserDetail();
+        // if (Boolean(Number(router.query.page))) {
+          // getUserDetail();
+        // }
       }
     }
   }, [router.query])
@@ -330,7 +332,7 @@ const CollectionList = ({
       const params = {
         profileid: Number(router.query.page)
       }
-      const res = await api.v1.authorization.getUserInfo(params); 
+      const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
         //@ts-ignore
         setFriend(res.data?.user_info)
@@ -348,7 +350,7 @@ const CollectionList = ({
   }
   
   return (
-    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />}
+    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={profileFriend?.user_info} />}
     <div className="profile-personal-collections">
       <div className="mt-4 profile-personal-collections-head">
         <div className="d-flex justify-content-between align-items-center section-title position-relative">

@@ -1085,7 +1085,7 @@ const CardListCollection = ({
       const params = {
         profileid: Number(router.query.page)
       }
-      const res = await api.v1.authorization.getUserInfo(params); 
+      const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
         //@ts-ignore
         setFriend(res.data?.user_info)
@@ -1106,7 +1106,9 @@ const CardListCollection = ({
         //@ts-ignore
         setFriend(userInfo);
       } else {
-        getUserDetail();
+        if (Boolean(Number(router.query.page))) {
+          getUserDetail();
+        }
       }
     }
   }, [router.query])
