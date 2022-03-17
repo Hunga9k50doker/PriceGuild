@@ -116,6 +116,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [isNotActive, setIsNotAcitve] = React.useState<Boolean>(false);
   const [notActiveMessage, setNotActiveMessage] = React.useState<string>('');
+  const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
+  const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -703,7 +705,12 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     const tooltip = (e.target as any).children[0] as HTMLSpanElement
     if (tooltip) tooltip.style.visibility = 'hidden'
   }
-
+   const onUpdateWishList = (fn: { (action: Types.ActionReducer): void; (arg0: {}): void; }) => {
+     fn({
+      
+    })
+    // setData(prevState => [...prevState?.map(item=> item.code === code ? ({...item,wishlist: 1}): item ) ]);
+  }
   return (
     <CardDetailProvider ref={refProvider}>
       <ChartFlow onUpdateCard={(item) => {
@@ -788,7 +795,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   pre.totalCollectorPort !== next.totalCollectorPort
                 }
               >
-                {({ state: { dataGraded, cardData, frontImage, backImage, totalCollectorPort } }) => {
+                {({ state: { dataGraded, cardData, frontImage, backImage, totalCollectorPort }, dispatchReducer }) => {
                   return (
                     <>
                       {cardData.fullWebName && <Helmet>
@@ -827,36 +834,33 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                         onSetGradeCompany={onSetGradeCompany}
                         isOpen={isOpenGrade}
                         setIsOpen={setIsOpenGrade}
+                        //@ts-ignore
+                        onSuccess={() => {
+                          dispatchReducer({
+                            type: 'UPDATE_DATA_WISHLISH',
+                          })
+                        }}
                       />}
                       <div className="col-12 col-sm-7 col-md-7 card-detail-content px-0">
                         <div className="card-detail-content-info" >
                           <div className="row  card-detail-img my-0">
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item">
                               <div
-                                className="img cursor-pointer"
+                                className={`${cardData.cardFrontImage.img ? '' : 'no-img'} ${checkLoadImage ? '' : 'no-img'} img cursor-pointer`}
                                 onClick={() => cardData.cardFrontImage?.img && openZoom(`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`)}
                               >
-{/* 
-                            {frontImage?.url &&
-                                  <ImageBlurHash
-                                    blurHash={frontImage?.blurHash ?? ""}
-                                    className=""
-                                    src={frontImage?.url ?? ""}
-                                  />
-                                } */}
-
                                 {cardData.cardFrontImage?.img &&
                                   <ImageBlurHash
-                                //    blurHash={frontImage?.blurHash ?? ""}
                                     className=""
                                     src={`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`}
+                                    loadImage={setCheckLoadImage}
                                   />
                                 }
                               </div>
                               {frontImage && frontImage.userId ?
                                 <div className="user info-card"> Uploaded by <strong>
                                     <Link href={frontImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${frontImage.userId}`}>
-                                        <a className="text-reset text-decoration-none">{frontImage.userName}</a>
+                                      <a className="text-reset text-decoration-none">{frontImage.userName}</a>
                                     </Link></strong>
                                 </div>
                                 : ""}
@@ -866,20 +870,21 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 </div>}
                             </div>
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item" >
-                              <div className="img cursor-pointer" onClick={() => backImage?.url && openZoom(backImage?.url)}>
+                              <div className={`${backImage?.url ? '' : 'no-img'} ${checkLoadImageBack ? '' : 'no-img'} img cursor-pointer`} onClick={() => backImage?.url && openZoom(backImage?.url)}>
                                 {backImage?.url &&
                                   <ImageBlurHash
                                     blurHash={backImage?.blurHash ?? ""}
                                     className=""
                                     src={backImage?.url ?? ""}
+                                    loadImage={setCheckLoadImageBack}
                                   />
                                 }
                               </div>
                               {backImage && backImage.userId ?
                                 <div className="user info-card"> Uploaded by <strong>
-                                    <Link href={backImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${backImage.userId}`}>
-                                        <a className="text-reset text-decoration-none">{backImage.userName}</a>
-                                    </Link> </strong>
+                                  <Link href={backImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${backImage.userId}`}>
+                                    <a className="text-reset text-decoration-none">{backImage.userName}</a>
+                                  </Link> </strong>
                                 </div>
                                 : ""}
                               {/* {isEmpty(backImage?.url) && !isEmpty(frontImage?.url) && isEmpty(props.code) && loggingIn &&

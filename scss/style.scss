@@ -117,6 +117,37 @@ ul.navbar-nav {
   }
 }
 
+/* header - mobile */
+.header-page-content {
+  .navbar-spport {
+    .mobile-nav {
+      .section-logo {
+        .image-logo-mobile {
+          display: none;
+        }
+      }
+      .section-search-mobile {
+        display: none;
+      }
+      .section-nav-menu {
+        display: none;
+      }
+    }
+  }
+   .section-search-content {
+    display: none;
+  }
+  .section-menu-content {
+    display: none;
+  }
+  .tab-bottom {
+    display: none;
+  }
+  .section-bowse {
+    display: none;
+  }
+}
+
 @media (max-width: 767.98px) {
   .only-mobile {
     display: block;
@@ -5966,7 +5997,6 @@ input[type="number"] {
 
 .box-card-element {
   width: 100%;
-  background-color: #e9f1ff;
   padding-bottom: 139%;
   img.card-photo {
     width: 100%;
@@ -6467,4 +6497,98 @@ input[type="number"] {
     letter-spacing: 0.005em;
     color: #124de3;
   }
+}
+.restore-account.contact-notify-success {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 280px;
+  padding-top: 150px;
+
+  .title {
+    font-family: Kanit;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 31px;
+    line-height: 130%;
+    text-align: center;
+    color: #0B0E61;
+    padding-bottom: 10px;
+  }
+
+  @media (min-width: 768px) {
+    padding-bottom: 200px;
+  }
+
+  &.mwidth-420 {
+    max-width: 420px;
+  }
+
+  &.mwidth-460 {
+    max-width: 460px;
+  }
+
+  &.mt-65 {
+    margin-top: 25px;
+
+    @media (min-width: 480px) {
+      margin-top: 65px;
+    }
+  }
+
+  &.txt-left {
+    p {
+      text-align: left;
+    }
+  }
+
+  p {
+    font-family: 'Manrope', sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #18213a;
+
+    &.mb-50 {
+      margin-bottom: 30px;
+
+      @media (min-width: 768px) {
+        margin-bottom: 50px;
+      }
+    }
+
+    &.fz-16 {
+      font-size: 16px;
+    }
+
+    .btn {
+      border: 2px solid #e9f1ff;
+      border-radius: 6px;
+      color: #0b0e61;
+      font-weight: 600;
+      font-weight: 16px;
+      width: 210px;
+      padding: 9px;
+      transition: all 0.2s;
+
+      @media (min-width: 768px) {
+        width: 230px;
+        padding: 15px;
+        font-weight: 18px;
+      }
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      &.btn-resend {
+        width: 100%;
+        background-color: #e9f1ff;
+        color: #124de3;
+      }
+    }
+  }
+}
+
+.text-color-blue {
+  color: #124DE3;
 }

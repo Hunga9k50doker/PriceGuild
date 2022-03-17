@@ -332,6 +332,19 @@ export const CardDetailReducer = (
         }),
       };
     }
+    case "UPDATE_DATA_WISHLISH": {
+
+      let newState = {
+        ...state,
+      };
+     
+      state.cardData.wishlist = 1;
+
+      newState.cardData = new CardModel(state.cardData);
+      
+      return newState;
+
+    }
     default:
       return state;
   }
