@@ -28,8 +28,8 @@ const ReportCard = () => {
   const [sportSelected, setSportSelected] = useState<any>();
   const { userInfo } = useSelector(Selectors.auth);
    const validationSchema = Yup.object().shape({
-    portf_req_sport: Yup.string()
-      .required('Sport is required'),
+    // portf_req_sport: Yup.string()
+    //   .required('Sport is required'),
     portf_req_year: Yup.string()
       .required('Year is required'),
     portf_req_pub: Yup.string()
@@ -57,7 +57,7 @@ const ReportCard = () => {
   const onSubmit: SubmitHandler<Inputs> = async data => {
     setStateSubmit(true);
     let prms = { ...data };
-    console.log(prms, 'alo'); return;
+    
     if (prms.portf_req_sport === "Other") {
       prms.portf_req_sport = prms.portf_req_sport + ' - ' + prms.portf_req_other;
     }
@@ -136,7 +136,7 @@ const ReportCard = () => {
                       })
                     }}
                   />
-                  {errors.portf_req_sport?.message && <div className="invalid-feedback d-inline">{errors.portf_req_sport?.message}</div>}
+                  {/* {errors.portf_req_sport?.message && <div className="invalid-feedback d-inline">{errors.portf_req_sport?.message}</div>} */}
                 </div>
 
                 {watchSport === "Other" && 
