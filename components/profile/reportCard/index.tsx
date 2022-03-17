@@ -28,8 +28,6 @@ const ReportCard = () => {
   const [sportSelected, setSportSelected] = useState<any>();
   const { userInfo } = useSelector(Selectors.auth);
    const validationSchema = Yup.object().shape({
-    // portf_req_sport: Yup.string()
-    //   .required('Sport is required'),
     portf_req_year: Yup.string()
       .required('Year is required'),
     portf_req_pub: Yup.string()
@@ -42,7 +40,10 @@ const ReportCard = () => {
       .required('Card Number is required'),
     portf_req_player: Yup.string()
        .required('Player Name is required'),
-    portf_req_other: Yup.string().required('Other is required')
+     portf_req_other: Yup.string().when('portf_req_sport', {
+       is: (val:string) => val === 'Other',
+       then: Yup.string().required('Other is required')
+    })
    });
   
   const { register, handleSubmit, watch, reset, formState: { errors }, setValue } = useForm<Inputs>({
@@ -55,14 +56,18 @@ const ReportCard = () => {
   const watchSport = watch("portf_req_sport")
 
   const onSubmit: SubmitHandler<Inputs> = async data => {
-    setStateSubmit(true);
-    let prms = { ...data };
     
+    let prms = { ...data };
+
     if (prms.portf_req_sport === "Other") {
       prms.portf_req_sport = prms.portf_req_sport + ' - ' + prms.portf_req_other;
     }
 
-    SearchApis.reportCantFindCard(prms);
+    SearchApis.reportCantFindCard(prms).then((response) => {
+      setStateSubmit(true);
+    }).catch(error => {
+      setStateSubmit(false);
+    });
   };
   const getOptionValue = (option: any) => option.id;
 
