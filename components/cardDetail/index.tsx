@@ -833,21 +833,11 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           <div className="row  card-detail-img my-0">
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item">
                               <div
-                                className="img cursor-pointer"
+                                className={`${cardData.cardFrontImage.img ? '' : 'no-img'} img cursor-pointer`}
                                 onClick={() => cardData.cardFrontImage?.img && openZoom(`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`)}
                               >
-{/* 
-                            {frontImage?.url &&
-                                  <ImageBlurHash
-                                    blurHash={frontImage?.blurHash ?? ""}
-                                    className=""
-                                    src={frontImage?.url ?? ""}
-                                  />
-                                } */}
-
                                 {cardData.cardFrontImage?.img &&
                                   <ImageBlurHash
-                                //    blurHash={frontImage?.blurHash ?? ""}
                                     className=""
                                     src={`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`}
                                   />
@@ -856,7 +846,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                               {frontImage && frontImage.userId ?
                                 <div className="user info-card"> Uploaded by <strong>
                                     <Link href={frontImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${frontImage.userId}`}>
-                                        <a className="text-reset text-decoration-none">{frontImage.userName}</a>
+                                      <a className="text-reset text-decoration-none">{frontImage.userName}</a>
                                     </Link></strong>
                                 </div>
                                 : ""}
@@ -866,7 +856,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 </div>}
                             </div>
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item" >
-                              <div className="img cursor-pointer" onClick={() => backImage?.url && openZoom(backImage?.url)}>
+                              <div className={`${backImage?.url ? '' : 'no-img'} img cursor-pointer`} onClick={() => backImage?.url && openZoom(backImage?.url)}>
                                 {backImage?.url &&
                                   <ImageBlurHash
                                     blurHash={backImage?.blurHash ?? ""}
@@ -877,9 +867,9 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                               </div>
                               {backImage && backImage.userId ?
                                 <div className="user info-card"> Uploaded by <strong>
-                                    <Link href={backImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${backImage.userId}`}>
-                                        <a className="text-reset text-decoration-none">{backImage.userName}</a>
-                                    </Link> </strong>
+                                  <Link href={backImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${backImage.userId}`}>
+                                    <a className="text-reset text-decoration-none">{backImage.userName}</a>
+                                  </Link> </strong>
                                 </div>
                                 : ""}
                               {/* {isEmpty(backImage?.url) && !isEmpty(frontImage?.url) && isEmpty(props.code) && loggingIn &&

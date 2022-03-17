@@ -117,6 +117,37 @@ ul.navbar-nav {
   }
 }
 
+/* header - mobile */
+.header-page-content {
+  .navbar-spport {
+    .mobile-nav {
+      .section-logo {
+        .image-logo-mobile {
+          display: none;
+        }
+      }
+      .section-search-mobile {
+        display: none;
+      }
+      .section-nav-menu {
+        display: none;
+      }
+    }
+  }
+   .section-search-content {
+    display: none;
+  }
+  .section-menu-content {
+    display: none;
+  }
+  .tab-bottom {
+    display: none;
+  }
+  .section-bowse {
+    display: none;
+  }
+}
+
 @media (max-width: 767.98px) {
   .only-mobile {
     display: block;
@@ -3755,6 +3786,14 @@ input[type="number"] {
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0px 6px 12px rgba(109, 117, 136, 0.05);
+      &.content-table--home {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        .leader-board-loading {
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+      }
     }
     .table {
       color: #18213a;
@@ -5958,7 +5997,7 @@ input[type="number"] {
 
 .box-card-element {
   width: 100%;
-  background-color: #e9f1ff;
+  background-color: #fff;
   padding-bottom: 139%;
   img.card-photo {
     width: 100%;
