@@ -2075,11 +2075,34 @@
           padding: 6px 40px;
         }
       }
-      .section-account-loggined {
+      .account-loggined {
+        height: 68px;
+        background: #0F0556;
+        display: flex;
+        justify-content: space-evenly;
+        padding: 16px;
+        color: #FFFFFF;
+        button {
+          color: #FFFFFF;
+          font-family: 'Manrope', sans-serif;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 130%;
+          a {
+            color: #FFFFFF;
+            text-decoration: none;
+          }
+        }
+        .btn-login {
+          padding: 6px 40px;
+        }
+      }
+      .account-loggined {
         height: auto;
         background: #0F0556;
         color: #FFFFFF;
-        .section-account-box {
+        .box-avatar-mobile {
           padding: 16px;
           display: flex;
           .box-photo {
@@ -2298,7 +2321,7 @@
             background: #E9F1FF;
             border-radius: 136px;
             img {
-              height: 100%;
+              max-height: 100%;
             }
           }
           .username-text {

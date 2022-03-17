@@ -51,8 +51,8 @@ export type EditImageType = {
   action: (src: string, name: string, current_path: string) => void
 }
 
-
 const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
+  console.log(props);
   const [isOpen, setIsOpen] = React.useState(false);
   const imageEditorRef = React.useRef<FilterHandle>(null);
   const [imageSrc, setImageSrc] = React.useState("");
@@ -140,9 +140,7 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
       </Modal.Body>
       <Modal.Footer className="modal-footer-crop">
         <button className="btn btn-secondary btn-bg--secondary btn-color--primary" onClick={onClose}>Cancel</button>
-        <button disabled={isLoading} onClick={saveImageToDisk} className="btn btn-secondary btn-bg--primary btn-color--white">
-          Done
-          {isLoading && <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />}
+        <button disabled={isLoading} onClick={saveImageToDisk} className="btn btn-secondary btn-bg--primary btn-color--white">  Done {isLoading && <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />}
         </button>
       </Modal.Footer>
     </Modal>);

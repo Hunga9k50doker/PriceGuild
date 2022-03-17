@@ -552,35 +552,35 @@ const Header = (props: any) => {
               ]} />
           </div>
         </div>
-        {!loggingIn ?
-          <div className="section-account">
-            <button className="btn-login btn btn-primary">
-              <Link href="/login">
-                <a onClick={() => { setShowMenuContent(false) }} title="Login">
-                  Login
-                </a>
-              </Link>
-            </button>
-            <button className="btn-create-account btn">
-              <Link href="/register">
-                <a onClick={() => { setShowMenuContent(false) }} title="Create Account">
-                  Create Account
-                </a>
-              </Link>
-            </button>
-          </div> :
-          <div className="section-account-loggined">
-            <div className="section-account-box">
-              <div className="box-photo" onClick={gotoPersonalProfile}>
-                <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
-              </div>
-              <div className="username-text"  onClick={gotoPersonalProfile}>
-                <span className="name"> {userInfo?.firstname} {userInfo?.lastname} </span><br/>
-                <span className="tag-name"> @{userInfo?.username} </span>
+        <div>
+          {!loggingIn ?
+            <div className="clear-box account-loggined">
+              <button className="btn-login btn btn-primary">
+                <Link href="/login">
+                  <a onClick={() => { setShowMenuContent(false) }} title="Login">
+                    Login
+                  </a>
+                </Link>
+              </button>
+              <button className="btn-create-account btn">
+                <Link href="/register">
+                  <a onClick={() => { setShowMenuContent(false) }} title="Create Account"> Create Account </a>
+                </Link>
+              </button>
+            </div> :
+            <div className="clear-box account-loggined">
+              <div className="box-avatar-mobile">
+                <div className="box-photo" onClick={gotoPersonalProfile}>
+                  <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
+                </div>
+                <div className="username-text"  onClick={gotoPersonalProfile}>
+                  <span className="name"> {userInfo?.firstname} {userInfo?.lastname} </span><br/>
+                  <span className="tag-name"> @{userInfo?.username} </span>
+                </div>
               </div>
             </div>
-          </div>
-        }
+          }
+        </div>
         <div className="menu-data">
           <ul className="main-menu">
             <li>
