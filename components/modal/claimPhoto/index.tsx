@@ -79,7 +79,10 @@ const ClaimPhoto = ({ cardDetail, isOpen = false, ...props }: PropTypes) => {
       ToastSystem.error(result.message);
       setIsLoading(false);
     }
-    catch (err) {
+    catch (err:any) {
+      if(err?.response?.status === 413) {
+        ToastSystem.error("Max file size is 10MB");
+      }
       setIsLoading(false);
       console.log(err)
     }
