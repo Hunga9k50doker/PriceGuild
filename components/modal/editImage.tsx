@@ -111,7 +111,6 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
     }
     catch (err) {
       setIsLoading(false);
-      console.log(err)
     }
   }
 

@@ -705,7 +705,12 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     const tooltip = (e.target as any).children[0] as HTMLSpanElement
     if (tooltip) tooltip.style.visibility = 'hidden'
   }
-
+   const onUpdateWishList = (fn: { (action: Types.ActionReducer): void; (arg0: {}): void; }) => {
+     fn({
+      
+    })
+    // setData(prevState => [...prevState?.map(item=> item.code === code ? ({...item,wishlist: 1}): item ) ]);
+  }
   return (
     <CardDetailProvider ref={refProvider}>
       <ChartFlow onUpdateCard={(item) => {
@@ -790,7 +795,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                   pre.totalCollectorPort !== next.totalCollectorPort
                 }
               >
-                {({ state: { dataGraded, cardData, frontImage, backImage, totalCollectorPort } }) => {
+                {({ state: { dataGraded, cardData, frontImage, backImage, totalCollectorPort }, dispatchReducer }) => {
                   return (
                     <>
                       {cardData.fullWebName && <Helmet>
@@ -829,6 +834,12 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                         onSetGradeCompany={onSetGradeCompany}
                         isOpen={isOpenGrade}
                         setIsOpen={setIsOpenGrade}
+                        //@ts-ignore
+                        onSuccess={() => {
+                          dispatchReducer({
+                            type: 'UPDATE_DATA_WISHLISH',
+                          })
+                        }}
                       />}
                       <div className="col-12 col-sm-7 col-md-7 card-detail-content px-0">
                         <div className="card-detail-content-info" >

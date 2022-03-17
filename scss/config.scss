@@ -5760,6 +5760,7 @@ th .form-check-input.form-check-input-head {
       border: 2px solid #E9EAED;
       border-radius: 5px;
       .btn {
+        box-shadow: none!important;
         padding: 9px 12px;
         &:not(:first-child) {
           border-left: 1px solid #E9EAED;
