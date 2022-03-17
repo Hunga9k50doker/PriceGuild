@@ -9,6 +9,7 @@ type PropTypes = {
   className?: string,
   blurHash?: string,
   imageDefault?: any,
+  loadImage?: (e:boolean)=>void,
 }
 
 const ImageBlurHash = ({
@@ -23,6 +24,7 @@ const ImageBlurHash = ({
   const [strImage, SetStrImage] = useState<string>("");
   const onLoadImage = () => {
     setIsloaded(true)
+    props.loadImage && props.loadImage(true)
   }
   
   const openZoomImage = (src : string) => {

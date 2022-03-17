@@ -116,6 +116,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [isNotActive, setIsNotAcitve] = React.useState<Boolean>(false);
   const [notActiveMessage, setNotActiveMessage] = React.useState<string>('');
+  const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
+  const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -844,13 +846,14 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           <div className="row  card-detail-img my-0">
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item">
                               <div
-                                className={`${cardData.cardFrontImage.img ? '' : 'no-img'} img cursor-pointer`}
+                                className={`${cardData.cardFrontImage.img ? '' : 'no-img'} ${checkLoadImage ? '' : 'no-img'} img cursor-pointer`}
                                 onClick={() => cardData.cardFrontImage?.img && openZoom(`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`)}
                               >
                                 {cardData.cardFrontImage?.img &&
                                   <ImageBlurHash
                                     className=""
                                     src={`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`}
+                                    loadImage={setCheckLoadImage}
                                   />
                                 }
                               </div>
@@ -867,12 +870,13 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 </div>}
                             </div>
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item" >
-                              <div className={`${backImage?.url ? '' : 'no-img'} img cursor-pointer`} onClick={() => backImage?.url && openZoom(backImage?.url)}>
+                              <div className={`${backImage?.url ? '' : 'no-img'} ${checkLoadImageBack ? '' : 'no-img'} img cursor-pointer`} onClick={() => backImage?.url && openZoom(backImage?.url)}>
                                 {backImage?.url &&
                                   <ImageBlurHash
                                     blurHash={backImage?.blurHash ?? ""}
                                     className=""
                                     src={backImage?.url ?? ""}
+                                    loadImage={setCheckLoadImageBack}
                                   />
                                 }
                               </div>
