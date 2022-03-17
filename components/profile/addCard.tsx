@@ -1508,6 +1508,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Front")}
                     accept="image/*"
+                    onClick={(e: any) => {e.target.value = ''}}
                   />
                   <img
                     className="cursor-pointer w-100"
@@ -1536,6 +1537,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Back")}
                     accept="image/*"
+                    onClick={(e: any) => {e.target.value = ''}}
                   />
                 </div>
                 <div className="mt-1 form-label"> Card Back </div>

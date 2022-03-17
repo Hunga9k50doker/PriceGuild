@@ -350,7 +350,7 @@ const CollectionList = ({
   }
   
   return (
-    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={profileFriend?.user_info} />}
+    <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={profileFriend} />}
     <div className="profile-personal-collections">
       <div className="mt-4 profile-personal-collections-head">
         <div className="d-flex justify-content-between align-items-center section-title position-relative">
