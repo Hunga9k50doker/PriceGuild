@@ -60,7 +60,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
   }
   React.useEffect(() => {
     if (friendId || page) {
-      getUserDetail()
+      // getUserDetail()
     }
   }, [friendId, page])
 
