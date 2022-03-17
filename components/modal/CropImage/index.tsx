@@ -23,12 +23,14 @@ type PropTypes = {
   onGetImage?: (value: any) => void
 }
 export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
-  const [isLand , setIsLand] = useState<boolean>(true);
+  const [isLand , setIsLand] = useState<boolean>(false);
   const imageEditorRef = React.useRef<any>(null)
   const [zoom, setZoom] = useState<number>(0.5);
   const [image, setImage] = useState<any | undefined>(src);
   const [cropData, setCropData] = useState<any>("#");
   const [cropper, setCropper] = useState<any | undefined>(undefined);
+  const [box, setBox] = useState<any| undefined>(undefined)
+  const [boxLand, setBoxLand] = useState<any| undefined>(undefined)
   const [move, setMove] = useState<{ horizontal: number, vertical: number }>({ horizontal: 0, vertical: 0 })
   const onChange = (e: any) => {
     e.preventDefault();
@@ -69,6 +71,34 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   const onRotate = (value: number) => {
     imageEditorRef.current.cropper.rotate(value)
   }
+
+  const updateRatio  = (value: boolean) => {
+    let cropper = imageEditorRef.current.cropper.getCropBoxData();
+   
+    if(value) {
+     
+      if(isLand !== value) {
+        setBoxLand(cropper)
+      }
+      if(box) {
+        imageEditorRef.current.cropper.setCropBoxData(box);
+      } else {
+        imageEditorRef.current.cropper.setAspectRatio(3.5/ 2.5);
+      }      
+    } 
+    else {
+      if(isLand !== value) {
+        setBox(cropper);
+      }
+   
+      if(boxLand) {
+        imageEditorRef.current.cropper.setCropBoxData(boxLand);
+      } else {
+        imageEditorRef.current.cropper.setAspectRatio( 2.5 / 3.5);
+      }    
+    }
+    setIsLand(value)
+  } 
   useEffect(() => {
     props.onGetImage && props.onGetImage(imageEditorRef)
   }, [imageEditorRef])
@@ -114,10 +144,10 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
               </button>
             </div>
             <div className="box-action-direction box-action-content d-flex">
-              <button className="btn" onClick={() => onMove("vertical", 10)}>
+              <button className="btn" onClick={() => onMove("vertical", -10)}>
                 <img src={IconCropArrowLeft} alt="" />
               </button>
-              <button className="btn" onClick={() => onMove("vertical", -10)}>
+              <button className="btn" onClick={() => onMove("vertical", 10)}>
                 <img src={IconCropArrowRight} alt="" />
               </button>
               <button className="btn" onClick={() => onMove("horizontal", -10)}>
@@ -137,10 +167,10 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
               </button>
             </div>
             <div className="box-action-transform box-action-content d-flex">
-              <button className={`btn ${isLand ? 'btn-active' : ''}`}  onClick={() => {imageEditorRef.current.cropper.setAspectRatio(3.5) / 2.5}}>
+              <button className={`btn ${isLand ? 'btn-active' : ''}`}  onClick={() => { updateRatio(true) }}>
                 <img src={IconCropLandScape} alt="" />
               </button>
-              <button className={`btn ${!isLand ? 'btn-active' : ''}`} onClick={() => {imageEditorRef.current.cropper.setAspectRatio(2.5 / 3.5)}} > 
+              <button className={`btn ${!isLand ? 'btn-active' : ''}`} onClick={() => { updateRatio(false)}} > 
                 <img src={IconCropPortrait} alt="" />
               </button>
             </div>
