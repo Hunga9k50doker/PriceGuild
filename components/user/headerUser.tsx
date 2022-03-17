@@ -12,7 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { useTranslation } from "react-i18next";
 
 type PropTypes = {
-  friend?: UserInfoType,
+  friend?: PgAppProfileType,
   isFriend?: boolean,
   sendMessage?: () => void,
   onTabDetail?: (tab: string) => void,
@@ -60,7 +60,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
   }
   React.useEffect(() => {
     if (friendId || page) {
-      // getUserDetail()
+      getUserDetail()
     }
   }, [friendId, page])
 
@@ -104,11 +104,11 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
         <div className="d-sm-flex justify-content-between align-items-center">
           <div className="avatar-user">
             <div style={{ height: 42, width: 42 }} className="rounded-circle">
-            <img className="w-100" src={ friend?.avatar ? `${process.env.REACT_APP_IMAGE_URL}${friend?.avatar}` : userPicture}  data-src="holder.js/171x180" alt={friend?.username} data-holder-rendered="true" />
+            <img className="w-100" src={ friend?.user_info?.avatar ? `${process.env.REACT_APP_IMAGE_URL}${friend?.user_info?.avatar}` : userPicture}  data-src="holder.js/171x180" alt={friend?.user_info?.username} data-holder-rendered="true" />
             </div>
             <div>
-              <div className="fw-bold">{friend?.full_name}</div>
-              <div>@{friend?.username}</div>
+              <div className="fw-bold">{friend?.user_info?.full_name}</div>
+              <div>@{friend?.user_info?.username}</div>
             </div>
           </div>
           <ul className="tab">
@@ -116,14 +116,14 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
               props.onTabDetail && props.onTabDetail("collection")
               // @ts-ignore
             }} className={`${["collection", "card-collection"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-              { profile?.portfolio_data ? <span>{profile?.portfolio_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span> }
+              { friend?.portfolio_data ? <span>{friend?.portfolio_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span> }
               {t('portfolio.text')}
             </li>
             <li onClick={() => {
                 props.onTabDetail && props.onTabDetail("wishlist")
                 // @ts-ignore
               }} className={`${["wishlist", "card-wishlist"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-               { profile?.wishlist_data ? <span>{profile?.wishlist_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
+               { friend?.wishlist_data ? <span>{friend?.wishlist_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
               Wishlists
             </li>
             {/* {
