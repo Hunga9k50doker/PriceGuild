@@ -56,7 +56,7 @@ const Unsubscribe: React.FC = () => {
                 !isLoading ?
                     <p className="mb-50" dangerouslySetInnerHTML={
                     //@ts-ignore
-                    { __html: status ? `You have already been removed from our mailing list. If you are still getting emails in error, please contact <span class="text-color-blue">info@priceguide.cards</spann>.` : 'Invalid token - If you are having trouble removing yourself from our mailing list please contact <span class="text-color-blue">info@priceguide.cards</spann> and we will manually remove you.' }}></p>   
+                    { __html: status ? `You have already been removed from our mailing list. If you are still getting emails in error, please contact <span class="text-color-blue">info@priceguide.cards</spann>.` : 'Invalid token - If you are having trouble removing yourself from our mailing list please contact <span class="text-color-blue">info@priceguide.cards</span> and we will manually remove you.' }}></p>   
                     :
                     <div>
                         <Skeleton style={{ width: 350 }} height={30} />
