@@ -554,7 +554,11 @@ export class Api<
           method: "POST",
           body,
         });
-        return result.data;
+        let data  = {... result.data };
+        if(result.status === 202) {
+          (data as any).status = 202;
+        }
+        return data;
       },
       pg_app_portfolio_export_generate: async (body: any) => {
         const result = await this.request<any>({
