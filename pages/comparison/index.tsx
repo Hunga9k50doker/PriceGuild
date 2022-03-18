@@ -104,7 +104,7 @@ const Comparison: React.FC = ({ ...props}) => {
 
   useEffect(() => {
     if (errorSaleData && !isCaptCha) {
-      // setIsCaptCha(true);
+      setIsCaptCha(true);
     }
   }, [errorSaleData])
 
