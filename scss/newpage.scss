@@ -2797,6 +2797,9 @@ ul {
  
 .modal {
     z-index: 10055;
+    &.modal-profile-collection {
+        z-index: 1051;
+    }
 }
 .modal-content {
     position: relative;

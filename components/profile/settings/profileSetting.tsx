@@ -126,7 +126,7 @@ const ProfileSetting = ({ profileData }: PropsType) => {
       </div>
       <div className="d-flex align-items-center mt-3 mb-3 box-avatar-picture">
         <div className="avatar">
-          <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
+          <img src={userInfo.userImg ? `${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
         </div>
         <input ref={avatarRef} id="avatarRef" className="d-none" type='file' onChange={onUploadFile} accept="image/*" />
         <button onClick={() => avatarRef?.current?.click()} type="button" className="btn btn-outline-secondary btn-upload-image">Upload Photo</button>
