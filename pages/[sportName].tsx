@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import Head from 'next/head';
 import { api } from 'configs/axios';
 import Sport from "components/sport";
+import Error404 from './404';
 
 function SportLandingPage({...props}) {
+  
+  if (props.statusCode === 404) {
+   return <Error404/>
+  }
   
   return (
     <>
@@ -26,9 +31,10 @@ function capitalizeFirstLetter(string: string) {
 
 export const getServerSideProps = async (context: any) => { 
   try {
-      const params = {
-        sport_name: context?.query?.sportName
-      }
+    const params = {
+      sport_name: context?.query?.sportName
+    }
+
     const result = await api.v1.getPopularPublisher(params);
     const sportName = capitalizeFirstLetter(context?.query?.sportName);
     
@@ -52,11 +58,37 @@ export const getServerSideProps = async (context: any) => {
     let textEditor = titlePage.slice(0, -2);
 
     titlePage = `${textEditor} ${check_more ? '& more' : ''}| PriceGuide.Cards`;
+    
+    let statusCode = 200;
+
+    const prms = {
+        limit: 10,
+        sport_name: context?.query?.sportName,
+        is_newest: true,
+        page: 1,
+    };
+
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      //@ts-ignore
+      body: JSON.stringify(params)
+    }
+    
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/list`, config);
+    const data = await res.json();
+
+    if (!data.success) {
+      statusCode = 404;
+    }
 
     return {props:{
      titlePage,
-      descriptionPage,
-     result
+     descriptionPage,
+     statusCode
     }}
 
   } catch (error) {
