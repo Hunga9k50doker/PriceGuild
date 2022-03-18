@@ -3,7 +3,7 @@ import CardDetail from "components/cardDetail"
 
 const CardDetailPage: React.FC = () => {
   return (
-    <CardDetail />
+    <CardDetail isGradedCardTitle={true}/>
   );
 }
 

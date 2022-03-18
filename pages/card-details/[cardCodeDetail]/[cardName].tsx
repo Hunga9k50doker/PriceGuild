@@ -13,7 +13,7 @@ const CardDetailPage: React.FC = ({ ...props}) => {
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
-      <CardDetail />
+      <CardDetail isGradedCardTitle={true}/>
     </>
   );
 }
