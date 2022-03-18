@@ -9,7 +9,7 @@ function SportLandingPage({...props}) {
   if (props.statusCode === 404) {
    return <Error404/>
   }
-  
+
   return (
     <>
       <Head>
@@ -85,6 +85,14 @@ export const getServerSideProps = async (context: any) => {
       statusCode = 404;
     }
 
+    if (statusCode === 404) {
+        return {
+          redirect: {
+            destination: `/404`,
+            permanent: true
+          }
+      };
+    }
     return {props:{
      titlePage,
      descriptionPage,
