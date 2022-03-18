@@ -100,7 +100,6 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   }
   useEffect(() => {
     props.onGetImage && props.onGetImage(imageEditorRef)
-    console.log(imageEditorRef)
   }, [imageEditorRef])
 
 
@@ -111,6 +110,7 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
           style={{ height: 400, width: "100%" }}
           zoomTo={zoom}
           initialAspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5}
+          aspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5 }
           preview=".img-preview"
           src={image}
           viewMode={1}
