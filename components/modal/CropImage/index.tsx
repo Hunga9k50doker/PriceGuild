@@ -60,7 +60,6 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     setZoom((prev) => (newZoom >= 0 ? newZoom : 0));
   }
   const onMove = (action: string, value: number) => {
-    console.log(imageEditorRef.current.cropper)
     if (action === "vertical") {
       imageEditorRef.current.cropper.move(value, 0);
       return;
@@ -80,29 +79,30 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
       if(isLand !== value) {
         setBoxLand(cropper)
       }
+      imageEditorRef.current.cropper.setAspectRatio(3.5/ 2.5);
       if(box) {
         imageEditorRef.current.cropper.setCropBoxData(box);
-      } else {
-        imageEditorRef.current.cropper.setAspectRatio(3.5/ 2.5);
-      }      
+      }     
     } 
     else {
       if(isLand !== value) {
         setBox(cropper);
       }
-   
+      imageEditorRef.current.cropper.setAspectRatio( 2.5 / 3.5);
       if(boxLand) {
         imageEditorRef.current.cropper.setCropBoxData(boxLand);
-      } else {
-        imageEditorRef.current.cropper.setAspectRatio( 2.5 / 3.5);
-      }    
+      }   
     }
     setIsLand(value)
   } 
+  const cropStart = (e: any) => {
+    // console.log(e.detail,"e nè")
+  }
   useEffect(() => {
     props.onGetImage && props.onGetImage(imageEditorRef)
   }, [imageEditorRef])
-  
+
+
   return (
     <div>
       <div style={{ width: "100%" }}>
@@ -110,6 +110,7 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
           style={{ height: 400, width: "100%" }}
           zoomTo={zoom}
           initialAspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5}
+          aspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5 }
           preview=".img-preview"
           src={image}
           viewMode={1}
@@ -123,6 +124,8 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
             setCropper(instance);
           }}
           guides={true}
+          // crop={cropStart}
+
           ref={imageEditorRef}
         />
       </div>
