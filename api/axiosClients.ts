@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import CapchaListener from "helper/hcapcha_system";
 import { MyStorage } from "helper/local_storage";
 import { ToastSystem } from "helper/toast_system";
 import { BaseResponse } from "model/base";
@@ -68,9 +69,9 @@ axiosClient.interceptors.response.use(
       success: false,
       ...error?.response?.data,
     };
-    if (response.message) {
-      ToastSystem.show(response.message, {status: 'error'})
-    }
+    // if (response.message) {
+    //   ToastSystem.show(response.message, {status: 'error'})
+    // }
     return Promise.reject(response);
   }
 );

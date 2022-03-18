@@ -24,5 +24,16 @@ const MaintenancePage: React.FC<PropTypes> = (props) => {
 		</section>
 	);
 }
+export async function getServerSideProps() {
 
+  try {
+    return {
+      props: {}
+    };
+  } catch(e) {
+   return {}
+  }
+
+  //...
+}
 export default MaintenancePage;

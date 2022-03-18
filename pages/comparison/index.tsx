@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import CardDetail from "components/cardDetail";
+import CardDetail, {RefType as RefTypeCardDetail} from "components/cardDetail";
 import { CardItemType, ManageCollectionType } from "interfaces";
 import { isEmpty, cloneDeep } from "lodash";
 import { Tab, Nav, Row, Col } from "react-bootstrap";
@@ -30,11 +30,13 @@ import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Head from 'next/head';
+import CaptCha from "components/modal/captcha";
 
 const ISSERVER = typeof window === "undefined";
 
 const Comparison: React.FC = ({ ...props}) => {
   const refCompare = useRef<RefTypeSaleChart>(null)
+  const cardDetailRef = useRef<RefTypeCardDetail>(null)
 
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
@@ -81,7 +83,8 @@ const Comparison: React.FC = ({ ...props}) => {
     : 
     !ISSERVER ? JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [] : []
   ); 
-  
+  const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
+
   useEffect(() => {
     if (isEmpty(card)) {
       //@ts-ignore
@@ -96,6 +99,14 @@ const Comparison: React.FC = ({ ...props}) => {
   const { userInfo } = useSelector(Selectors.auth);
   const [activeKey, setActiveKey] = useState<string|undefined>(undefined)
   const pricingGridRef = useRef<any>(null);
+  
+  const [errorSaleData, setErrorSaleDat] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (errorSaleData && !isCaptCha) {
+      // setIsCaptCha(true);
+    }
+  }, [errorSaleData])
 
   const addMoreCard = () => {
     const url = localStorage.getItem("url-search");
@@ -201,6 +212,20 @@ const Comparison: React.FC = ({ ...props}) => {
       },1000)
     }
   }, [isCopy])
+
+  const onSuccessCaptcha = (token: any) => {
+  
+    setIsCaptCha(false)
+
+    const headers = { "captcha-token": token };
+    
+    loadSaleDataCapCha(headers);
+
+  }
+  const loadSaleDataCapCha = (token: any) => { 
+    cardDetailRef.current?.loadSalaData(token);
+    
+  }
   return (
     <div>
       <Head>
@@ -512,7 +537,10 @@ const Comparison: React.FC = ({ ...props}) => {
                               }}
                               onChangeGradeCompare={(cardGrade, cardId) => refCompare.current?.onChangeGrade(cardGrade, `${cardId}`)}
                               errorCard={async (e) => { removeErrorCardDetail(e) }}
-                              errorNoSaleData={async (e) => {errorCardNoSaleData(e)}}
+                              errorNoSaleData={async (e) => { errorCardNoSaleData(e) }}
+                            errorSale={async (e) => { setErrorSaleDat(e) }}
+                            ref={cardDetailRef}
+                            isGradedCardTitle={true}
                             />
                         </Tab.Pane>
                       );
@@ -575,7 +603,11 @@ const Comparison: React.FC = ({ ...props}) => {
                 </a>
             </Link>
         </div>
-      </div> }
+      </div>}
+      <CaptCha
+        isOpen={isCaptCha}
+        onSuccess={onSuccessCaptcha}
+        onClose={() => setIsCaptCha(true)} />
     </div>
   );
 };

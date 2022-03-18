@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 import queryString from "query-string";
 import Select, { components } from "react-select";
 import ChartCircleDemo from "components/chart/chartCircleDemo";
@@ -76,21 +76,25 @@ type PropTypes = {
   onChangeGradeCompare?: (cardGrade: PricingGridModel, cardId: number) => void;
   errorCard?: (code: string) => void;
   errorNoSaleData?: (code: string) => void;
+  errorSale?: (code: boolean) => void;
 };
 
 type ParamTypes = {
   cardCodeDetail : string,
   nameCard: string,
 }
+export interface RefType {
+  loadSalaData: (token: any) => void;
+}
 
-const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-5 mb-3 pb-5", ...props }: PropTypes) => {
+const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [value, setValue] = useState(["ALL"]);
   const dispatch = useDispatch();
   const pricingGridRef = useRef<any>(null);
   const salesOverviewRef = useRef<any>(null);
   const salesChartdRef = useRef<any>(null);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
-  const [isLoadingSalesChart, setIsLoadingSalesChart] =useState<boolean>(false);
+  const [isLoadingSalesChart, setIsLoadingSalesChart] = useState<boolean>(false);
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const refProvider = useRef<any>(null);
   const [isOpenClaim, setIsOpenClaim] = useState<boolean>(false);
@@ -100,7 +104,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [isOpenSeeFullTable, setIsOpenSeeFullTable] = React.useState(false);
   const router = useRouter();
   const [cardDetail] = useState(router.query);
-  const [point, setPoint] = React.useState<any| undefined>();
+  const [point, setPoint] = React.useState<any | undefined>();
   const [frontBack, setFrontBack] = useState<string>("")
   const { cards } = useSelector(Selectors.compare);
   const [wishList, setWishList] = React.useState<
@@ -118,13 +122,15 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const [notActiveMessage, setNotActiveMessage] = React.useState<string>('');
   const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
-
+  const [keepCardCode ,setKeepCardCode] = useState('');
+  
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
-      
-        let cardCode = router?.query?.cardCodeDetail ?? props.code;
-        let controller: CardDetailSaga = refProvider?.current
-          .controller as CardDetailSaga;
+      let cardCode = router?.query?.cardCodeDetail ?? props.code;
+      // @ts-ignore
+      setKeepCardCode(cardCode);
+      let controller: CardDetailSaga = refProvider?.current
+        .controller as CardDetailSaga;
       if (!isEmpty(cardCode)) {
         controller.loadCardDetail({
           // @ts-ignore
@@ -146,12 +152,15 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               setNotActiveMessage(err.message)
             }
             if (err?.status === 409) {
-              //@ts-ignore
-                setIsCaptCha(Boolean(err?.show_captcha))
+            
+              if (Boolean(err?.show_captcha)) {
+                // setIsCaptCha(Boolean(err?.show_captcha)) 
+                props.errorSale && props.errorSale(true);
+              }
             } else {
               props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
             }
-          }) 
+          })
         }
         
         controller.loadPricingGrid({
@@ -160,30 +169,26 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           currency: userInfo.userDefaultCurrency,
           userid: userInfo.userid,
         }).catch((err: any) => {
-            props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+          props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
         })
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
     
   }, [props.code, loggingIn, router.query]);
 
-  const onSuccessCaptcha = (token: any) => {
-    setIsCaptCha(false)
+  useImperativeHandle(ref, () => ({
+    loadSalaData: _loadSaleDataCapCha,
+  }));
 
-    const headers = { "captcha-token": token };
-    
-    loadSaleDataCapCha(headers);
 
-  }
-  const loadSaleDataCapCha = (headers: any = {}) => {
-    let cardCode = router?.query?.cardCodeDetail;
+  const _loadSaleDataCapCha = (headers: any = {}) => {
     let controller: CardDetailSaga = refProvider?.current
       .controller as CardDetailSaga;
 
     controller.loadSaleData({
       // @ts-ignore
-      card_code: cardCode,
+      card_code: keepCardCode,
       currency: userInfo.userDefaultCurrency,
     }, headers);
   }
@@ -208,23 +213,23 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         <nav className="border-botom" aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-            <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
+              <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
                 <a title={`${cardData.sport.name} Card Collections`}>
-                    {cardData.sport.name} Card Collections              
+                  {cardData.sport.name} Card Collections
                 </a>
-            </Link>
+              </Link>
             </li>
             <li className="breadcrumb-item">
               <Link href={`/${cardData.set.url}`}>
                 <a title={cardData.set.title}>
-                    {cardData.set.title}
+                  {cardData.set.title}
                 </a>
               </Link>
             </li>
             <li className="breadcrumb-item">
               <Link href={`/checklist/${cardData.type.id}/${cardData.color.code}/${cardData.color.url}`}>
                 <a title={`${cardData.type.name} - ${cardData.color.name}`}>
-                    {cardData.type.name} - {cardData.color.name}
+                  {cardData.type.name} - {cardData.color.name}
                 </a>
               </Link>
             </li>
@@ -234,8 +239,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
           </ol>
         </nav>
       );
-  }
-  return  <Skeleton width={150} height={34} /> 
+    }
+    return <Skeleton width={150} height={34} />
   
   };
 
@@ -254,7 +259,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   const onComparison = (cardData: CardModel) => {
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
-    if ( dataOld.length === 9 ) {
+    if (dataOld.length === 9) {
       return ToastSystem.error(
         <span> Max number of 9 cards reached on <Link href="/comparison"> comparison list </Link> </span>);
     }
@@ -400,97 +405,97 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   }
   const renderTable = () => {
     return <div ref={pricingGridRef} className="pricing-grid" >
-    <h2 className="mb-5 title-profile title-profile--color">Pricing Grid</h2>
-    <CardDetailConsumer
-      shouldBuild={(pre, next) =>
-        pre.listYearPricingCard !== next.listYearPricingCard ||
-        pre.indexPricingSelected !== next.indexPricingSelected
-      }
-    >
-        {({ state: { pricingGridData, listYearPricingCard , indexPricingSelected }, dispatchReducer }) => {
+      <h2 className="mb-5 title-profile title-profile--color">Pricing Grid</h2>
+      <CardDetailConsumer
+        shouldBuild={(pre, next) =>
+          pre.listYearPricingCard !== next.listYearPricingCard ||
+          pre.indexPricingSelected !== next.indexPricingSelected
+        }
+      >
+        {({ state: { pricingGridData, listYearPricingCard, indexPricingSelected }, dispatchReducer }) => {
           setLengthTablePrice(pricingGridData.listDataGradeSelected?.length)
-        return (
-          <div
-            className={"header-pricing-grid btn-group"}
-            role="group"
-            aria-label="Basic mixed styles example"
-          >
-            {listYearPricingCard.map((item, index) => {
-              return (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() =>
-                    dispatchReducer({
-                      type: "SELECT_YEAR_PRICING",
-                      payload: {
-                        item,
-                        index
-                      },
-                    })
-                  }
-                  className={
-                    "btn btn-secondary" +
-                    (indexPricingSelected === index
-                      ? " isActive"
-                      : "")
-                  }
-                >
-                  {item.year}
-                </button>
-              );
-            })}
-          </div>
-        );
-      }}
+          return (
+            <div
+              className={"header-pricing-grid btn-group"}
+              role="group"
+              aria-label="Basic mixed styles example"
+            >
+              {listYearPricingCard.map((item, index) => {
+                return (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() =>
+                      dispatchReducer({
+                        type: "SELECT_YEAR_PRICING",
+                        payload: {
+                          item,
+                          index
+                        },
+                      })
+                    }
+                    className={
+                      "btn btn-secondary" +
+                      (indexPricingSelected === index
+                        ? " isActive"
+                        : "")
+                    }
+                  >
+                    {item.year}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        }}
       </CardDetailConsumer>
       <div className="pricing-grid-content">
         {lengthTablePrice !== 0 ?
           <>
             <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
-            <div className="h-left d-flex align-items-center justify-content-center">
-              <div className="title me-3">Grading</div>
-              <div className="grade hidden-select">
-                <CardDetailConsumer
-                  shouldBuild={(pre, next) => {
-                    return (
-                      pre.pricingGridData.dataGradeSorted !==
-                      next.pricingGridData.dataGradeSorted ||
-                      pre.pricingGridData.cardGradeSelected !==
-                      next.pricingGridData.cardGradeSelected
-                    );
-                  } }
-                >
-                  {({ state: { pricingGridData, dropDownOptions }, dispatchReducer }) => {
-                    let dataSelect = [
-                      new PricingGridModel(),
-                      ...pricingGridData.dataGradeSorted,
-                    ].map((item, index) => {
-                      let name = item.labelGrade;
-                      return { label: name, value: name, index };
-                    });
+              <div className="h-left d-flex align-items-center justify-content-center">
+                <div className="title me-3">Grading</div>
+                <div className="grade hidden-select">
+                  <CardDetailConsumer
+                    shouldBuild={(pre, next) => {
+                      return (
+                        pre.pricingGridData.dataGradeSorted !==
+                        next.pricingGridData.dataGradeSorted ||
+                        pre.pricingGridData.cardGradeSelected !==
+                        next.pricingGridData.cardGradeSelected
+                      );
+                    }}
+                  >
+                    {({ state: { pricingGridData, dropDownOptions }, dispatchReducer }) => {
+                      let dataSelect = [
+                        new PricingGridModel(),
+                        ...pricingGridData.dataGradeSorted,
+                      ].map((item, index) => {
+                        let name = item.labelGrade;
+                        return { label: name, value: name, index };
+                      });
 
-                    return (
-                      <Select
-                        value={!isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
-                          dropDownOptions[pricingGridData.cardGradeSelected] : null}
-                        onChange={(item) => {
-                          if (item)
-                            dispatchReducer({
-                              type: "SELECT_GRADE_PRICING",
-                              index: item.index,
-                            });
-                        } }
-                        className="react-select"
-                        classNamePrefix="react-select"
-                        options={dropDownOptions}
-                        components={{ DropdownIndicator }} />
-                    );
-                  } }
-                </CardDetailConsumer>
+                      return (
+                        <Select
+                          value={!isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
+                            dropDownOptions[pricingGridData.cardGradeSelected] : null}
+                          onChange={(item) => {
+                            if (item)
+                              dispatchReducer({
+                                type: "SELECT_GRADE_PRICING",
+                                index: item.index,
+                              });
+                          }}
+                          className="react-select"
+                          classNamePrefix="react-select"
+                          options={dropDownOptions}
+                          components={{ DropdownIndicator }} />
+                      );
+                    }}
+                  </CardDetailConsumer>
+                </div>
               </div>
-            </div>
-          </div><div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
+            </div><div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
               <div onScroll={onScroll} className="content-pricing-grid-custom-table" id="table_grade">
                 <table className="table">
                   <thead>
@@ -582,7 +587,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                           props.onChangeGradeCompare && props.onChangeGradeCompare(saleChartState.listCardGrade[index], +cardData.id);
                                           document.getElementById('sale-chart-comparison')?.scrollIntoView();
                                         }
-                                      } }>
+                                      }}>
                                         <img src={IconChart} alt="View Chart" title="View Chart" />
                                       </button>
                                     ) :
@@ -607,7 +612,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                               goToSalesChart();
                                             }
                                           }
-                                        } }>
+                                        }}>
                                           <img src={IconChart} alt="View Chart" title="View Chart" />
                                         </button>
                                       )}
@@ -618,30 +623,27 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           )}
                         </tbody>
                       );
-                    } }
+                    }}
                   </CardDetailConsumer>
                 </table>
               </div>
             </div>
-        </>
-         : 
+          </>
+          :
           <div className="pricing-grid-content-no-data">
-            <img src={IconTable} alt=""/>
+            <img src={IconTable} alt="" />
             <p>There are no data available</p>
           </div>
-        } 
-    </div>
-    <div>
-      {
-        lengthTablePrice > 10 &&
-        <button className="btn-price-full-table only-mobile" onClick={handleSeeFullTable}> See Full Table </button>
-      }
+        }
       </div>
-      <CaptCha
-        isOpen={isCaptCha}
-        onSuccess={onSuccessCaptcha}
-        onClose={() => setIsCaptCha(false)} />
-   </div>
+      <div>
+        {
+          lengthTablePrice > 10 &&
+          <button className="btn-price-full-table only-mobile" onClick={handleSeeFullTable}> See Full Table </button>
+        }
+      </div>
+      
+    </div>
   }
 
   const handleSeeFullTable = () => {
@@ -654,7 +656,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
       <Modal centered show={isOpenSeeFullTable} fullscreen={true} className="modal-seefull modal-seefull-card-detail">
         <Modal.Header>
           <Modal.Title className="text-truncate">Pricing Grid </Modal.Title>
-          <a onClick={() => {setIsOpenSeeFullTable(false);setIsLimitTable(true)}} title="Close"> Close </a>
+          <a onClick={() => { setIsOpenSeeFullTable(false); setIsLimitTable(true) }} title="Close"> Close </a>
         </Modal.Header>
         <Modal.Body className="customScroll">{renderTable()}</Modal.Body>
       </Modal>
@@ -662,10 +664,10 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
   };
 
   const onScroll = () => {
-    if(!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
+    if (!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
       $("#table_grade").addClass('custom-scroll-sticky-card');
     } else {
-      if($("#table_grade table").offset().left == 33 ) {
+      if ($("#table_grade table").offset().left == 33) {
         $("#table_grade").removeClass('custom-scroll-sticky-card');
       }
     }
@@ -673,12 +675,12 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
 
   const [isOpenZoomImage, SetIsOpenZoomImage] = useState<boolean>(false);
   const [strImage, SetStrImage] = useState<string>("");
-  const openZoom = (src:any) => {
+  const openZoom = (src: any) => {
     if (!isEmpty(src)) {
       setPoint(undefined);
       SetIsOpenZoomImage(true);
       SetStrImage(src || "");
-    }  
+    }
   }
 
   const onSetGradeCompany = (data: any) => {
@@ -705,8 +707,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
     const tooltip = (e.target as any).children[0] as HTMLSpanElement
     if (tooltip) tooltip.style.visibility = 'hidden'
   }
-   const onUpdateWishList = (fn: { (action: Types.ActionReducer): void; (arg0: {}): void; }) => {
-     fn({
+  const onUpdateWishList = (fn: { (action: Types.ActionReducer): void; (arg0: {}): void; }) => {
+    fn({
       
     })
     // setData(prevState => [...prevState?.map(item=> item.code === code ? ({...item,wishlist: 1}): item ) ]);
@@ -716,7 +718,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
       <ChartFlow onUpdateCard={(item) => {
         let controller: CardDetailSaga = refProvider?.current.controller as CardDetailSaga;
         props.onUpdateCard && props.onUpdateCard(item, controller)
-      }}/>
+      }} />
       <div className="container-fluid card-detail">
         {isEmpty(props.code) && (
           <CardDetailConsumer shouldBuild={(pre, next) => pre.cardData !== next.cardData}>
@@ -732,12 +734,12 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
               {isEmpty(props.code) && (
                 <CardDetailConsumer
                   shouldBuild={(pre, next) =>
-                  pre.frontImage !== next.frontImage ||
-                  pre.cardData !== next.cardData ||
-                  pre.backImage !== next.backImage ||
-                  pre.totalCollectorPort !== next.totalCollectorPort}>
+                    pre.frontImage !== next.frontImage ||
+                    pre.cardData !== next.cardData ||
+                    pre.backImage !== next.backImage ||
+                    pre.totalCollectorPort !== next.totalCollectorPort}>
                   {({ state: { dataGraded } }) => {
-                    return <> { Boolean(size(dataGraded))  && <a className="cursor-pointer " onClick={goToSalesOverview} title="Sales Overview"> Sales Overview </a> }</>;
+                    return <> {Boolean(size(dataGraded)) && <a className="cursor-pointer " onClick={goToSalesOverview} title="Sales Overview"> Sales Overview </a>}</>;
                   }}
                 </CardDetailConsumer>
               )}
@@ -784,7 +786,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
             )}
           </div>
         </div>
-        <div className={classContent}>
+        <div className={props.classContent ? 'content-home mt-5 mb-3 pb-5' : 'content-home mt-5 mb-3 pb-5'}>
           <div className="row row--card-detail">
             {isEmpty(props.code) && (
               <CardDetailConsumer
@@ -847,21 +849,21 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                             <div className="col-12 col-sm-12 col-md-12 px-0 card-detail-img-item">
                               <div
                                 className={`${cardData.cardFrontImage.img ? '' : 'no-img'} ${checkLoadImage ? '' : 'no-img'} img cursor-pointer`}
-                                onClick={() => cardData.cardFrontImage?.img && openZoom(`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`)}
+                                onClick={() => cardData.cardFrontImage?.img && openZoom(`https://img.priceguide.cards/${cardData.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData.cardFrontImage?.img}.jpg`)}
                               >
                                 {cardData.cardFrontImage?.img &&
                                   <ImageBlurHash
                                     className=""
-                                    src={`https://img.priceguide.cards/${cardData.sport.name==="Non-Sport"?"ns":"sp"}/${cardData.cardFrontImage?.img}.jpg`}
+                                    src={`https://img.priceguide.cards/${cardData.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData.cardFrontImage?.img}.jpg`}
                                     loadImage={setCheckLoadImage}
                                   />
                                 }
                               </div>
                               {frontImage && frontImage.userId ?
                                 <div className="user info-card"> Uploaded by <strong>
-                                    <Link href={frontImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${frontImage.userId}`}>
-                                      <a className="text-reset text-decoration-none">{frontImage.userName}</a>
-                                    </Link></strong>
+                                  <Link href={frontImage.userId === userInfo.userid ? `/profile/personal` : `/friends/${frontImage.userId}`}>
+                                    <a className="text-reset text-decoration-none">{frontImage.userName}</a>
+                                  </Link></strong>
                                 </div>
                                 : ""}
                               {isEmpty(frontImage?.url) && !isEmpty(backImage?.url) && isEmpty(props.code) && loggingIn &&
@@ -891,7 +893,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 <div className="claim info-card"> Are you owner of this card ? {' '}  <a onClick={() => onClaimPhoto("back")} href="javascript:void(0)" className="text-reset" title="Claim a photo"> Claim a photo </a></div>} */}
                             </div>
                           </div>
-                          <ModalZoomImage 
+                          <ModalZoomImage
                             isOpen={isOpenZoomImage}
                             onClose={(isOpenReport) => {
                               SetIsOpenZoomImage(false)
@@ -906,9 +908,9 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           />
                           <ReportImage point={point} gradeCompany={gradeCompanys} cardData={cardData} isOpen={isOpenReport} onClose={() => {
                             setIsOpenReport(false);
-                            if (strImage) SetIsOpenZoomImage(true) 
+                            if (strImage) SetIsOpenZoomImage(true)
                             else setPoint(undefined)
-                           }}/> 
+                          }} />
                         </div>
                         {/* {!frontImage?.userId && !backImage?.userId && isEmpty(props.code) && cardData.sport.id && loggingIn &&
                           <div className="row mt-1 claim info-card">
@@ -946,127 +948,127 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           {!Boolean(cardData.fullWebName) ? <Skeleton width={200} /> : <>
                             {!cardData.minPrice && !cardData.maxPrice ? "N/A" : <>
                               {formatCurrency(cardData.minPrice) +
-                              " - " +
-                              formatCurrency(cardData.maxPrice)}
+                                " - " +
+                                formatCurrency(cardData.maxPrice)}
                             </>}
                           </>}
                         </div>
                         <div className="mt-5 btn-group-action d-flex">
                           {Boolean(cardData?.id) ? <>
                             <button
-                            onClick={() => onAddCollection(Boolean(cardData?.portfolio), cardData)}
-                            type="button"
-                            className="btn btn-add"
-                            title=""
-                            > <img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "} {cardData?.portfolio ? "Added" : "Add"} to { t('portfolio.text')} </button>
-                          <div className="d-flex">
-                            <button
-                              onClick={() => onAddWishList(Boolean(cardData?.wishlist), cardData)}
+                              onClick={() => onAddCollection(Boolean(cardData?.portfolio), cardData)}
                               type="button"
-                              className="btn btn-heart"
-                            > <img alt="Save to Wishlist" src={Boolean(cardData?.wishlist) ? IconHeartTim : IconHeart} />{" "}
-                              <span className="only-mobile"> Save to Wishlist </span>
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-can"
-                              onClick={() => onComparison(cardData)}
-                            > <img alt="" src={Boolean(cards.find(item => item.code === (props.code ?? router?.query?.cardCodeDetail))) ? IconCanTim : IconCan} /> {" "} </button>
-                          </div>
-                          </> :  <div className="btn-add-loading">
-                          <Skeleton height={50}  />
+                              className="btn btn-add"
+                              title=""
+                            > <img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "} {cardData?.portfolio ? "Added" : "Add"} to {t('portfolio.text')} </button>
+                            <div className="d-flex">
+                              <button
+                                onClick={() => onAddWishList(Boolean(cardData?.wishlist), cardData)}
+                                type="button"
+                                className="btn btn-heart"
+                              > <img alt="Save to Wishlist" src={Boolean(cardData?.wishlist) ? IconHeartTim : IconHeart} />{" "}
+                                <span className="only-mobile"> Save to Wishlist </span>
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-can"
+                                onClick={() => onComparison(cardData)}
+                              > <img alt="" src={Boolean(cards.find(item => item.code === (props.code ?? router?.query?.cardCodeDetail))) ? IconCanTim : IconCan} /> {" "} </button>
+                            </div>
+                          </> : <div className="btn-add-loading">
+                            <Skeleton height={50} />
                           </div>}
                         </div>
                         <div className="mt-3 btn-group-see maxw-488">
-                          {Boolean(cardData?.id)  ? <>
-                          {
-                            Boolean(totalCollectorPort) &&
+                          {Boolean(cardData?.id) ? <>
+                            {
+                              Boolean(totalCollectorPort) &&
+                              <button
+                                onClick={() => router.push(`/card-owners/${router?.query?.cardCodeDetail}/${cardData.slugCard}`)}
+                                type="button"
+                                className="btn btn-see-one"
+                              > See {Boolean(totalCollectorPort) ? totalCollectorPort : ""} Card Owners </button>
+                            }
                             <button
-                            onClick={() => router.push(`/card-owners/${router?.query?.cardCodeDetail}/${cardData.slugCard}`)}
-                            type="button"
-                            className="btn btn-see-one"
-                            > See {Boolean(totalCollectorPort) ? totalCollectorPort : "" } Card Owners </button>
-                          }
-                          <button
-                            onClick={() => router.push(`/${cardData.set.url}`)}
-                            type="button"
+                              onClick={() => router.push(`/${cardData.set.url}`)}
+                              type="button"
                               className={`btn btn-see-all ${Boolean(totalCollectorPort) ? "" : "w-100"}`}> See Full Collection </button>
                           </> : <div style={{ width: "100%" }}>
                             <Skeleton height={45} width={"48%"} />
-                              <span style={{width:"4%", display: "inline-flex"}}></span>
+                            <span style={{ width: "4%", display: "inline-flex" }}></span>
                             <Skeleton height={45} width={"48%"} />
-                          </div> }
+                          </div>}
                         </div>
                       </div>
                       <div className="card-detail-content-left__detail p-0">
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Name: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.fullNameWithCode ? 
-                            <span className="form-control-plaintext">
-                              {cardData.fullNameWithCode}
-                            </span>: <Skeleton style={{ width: 100}}/>}
+                            {cardData.fullNameWithCode ?
+                              <span className="form-control-plaintext">
+                                {cardData.fullNameWithCode}
+                              </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Sport: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.sport.name ? 
-                                <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
-                                    <a title={cardData.sport.name}>{cardData.sport.name}</a>
-                                </Link> : <Skeleton style={{ width: 100 }} />}
+                            {cardData.sport.name ?
+                              <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
+                                <a title={cardData.sport.name}>{cardData.sport.name}</a>
+                              </Link> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4  col-form-label"> Publisher: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData?.publisher?.name ? 
-                              <span className="form-control-plaintext"> {cardData?.publisher?.name} </span> : <Skeleton style={{ width: 100}}/>}
+                            {cardData?.publisher?.name ?
+                              <span className="form-control-plaintext"> {cardData?.publisher?.name} </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Year: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.year ? 
-                            <span className="form-control-plaintext"> {cardData.year} </span> : <Skeleton style={{ width: 100}}/>}
+                            {cardData.year ?
+                              <span className="form-control-plaintext"> {cardData.year} </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Collection: </label>
                           <div className="col-sm-9 col-8">
                             {cardData.set.name ?
-                                <Link href={`/${cardData.set.url}`} >
-                                    <a title={cardData.set.name} className="text-reset">{cardData.set.name}</a>
-                                </Link> : <Skeleton style={{ width: 100 }} />}
+                              <Link href={`/${cardData.set.url}`} >
+                                <a title={cardData.set.name} className="text-reset">{cardData.set.name}</a>
+                              </Link> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className=" row">
                           <label className="col-sm-3 col-4 col-form-label"> Base/Insert: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.type.name ? 
-                            <span className="form-control-plaintext">
-                              {cardData.type.name}
-                            </span> : <Skeleton style={{ width: 100}}/>}
+                            {cardData.type.name ?
+                              <span className="form-control-plaintext">
+                                {cardData.type.name}
+                              </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Parallel: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.color.name ? 
-                            <span className="form-control-plaintext">
+                            {cardData.color.name ?
+                              <span className="form-control-plaintext">
                                 <Link href={`/checklist/${cardData.type.id}/${cardData.color.code}/${cardData.color.url}`}>
-                                    <a className="text-reset text-decoration-none">{cardData.color.name}</a>
+                                  <a className="text-reset text-decoration-none">{cardData.color.name}</a>
                                 </Link>
-                            </span> : <Skeleton style={{ width: 100}}/>}
+                              </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                         <div className="row">
                           <label className="col-sm-3 col-4 col-form-label"> Print Run: </label>
                           <div className="col-sm-9 col-8">
-                            {cardData.printRun ? 
-                            <span className="form-control-plaintext">
-                              {cardData.printRun}
-                            </span> : <Skeleton style={{ width: 100}}/>}
+                            {cardData.printRun ?
+                              <span className="form-control-plaintext">
+                                {cardData.printRun}
+                              </span> : <Skeleton style={{ width: 100 }} />}
                           </div>
                         </div>
                       </div>
@@ -1078,88 +1080,88 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
             <div className="section-block-sticky px-0">
               {!Boolean(props.isHideGrid ?? false) && (
                 <>
-                {renderTable()}
-                {isOpenSeeFullTable && renderModalTable()}
+                  {renderTable()}
+                  {isOpenSeeFullTable && renderModalTable()}
                 </>
               )}
               <CardDetailConsumer
-              shouldBuild={(pre, next) =>
-                pre.dataGraded !== next.dataGraded || pre.keyData !== next.keyData || next.saleChartState.calcMaLine !== pre.saleChartState.calcMaLine ||
-                next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
-              }
-            >
+                shouldBuild={(pre, next) =>
+                  pre.dataGraded !== next.dataGraded || pre.keyData !== next.keyData || next.saleChartState.calcMaLine !== pre.saleChartState.calcMaLine ||
+                  next.saleChartState.gradeTreeSelected !== pre.saleChartState.gradeTreeSelected
+                }
+              >
                 {({ state: { dataGraded, keyData, saleChartState, cardData, priceTooltipPricingGrid }, dispatchReducer, sagaController }) => {
-                return <div ref={salesOverviewRef} className={`${isGradedCardTitle ? "chart-graded-card" : ""} p-0`}> 
-                  {isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
-                  {/* ${size(dataGraded) ? '' : 'd-none'} */}
-                  {
-                    saleChartState.listCardGrade.length === 0 ?
-                      <PlaceholderChart isNoIcon={true} src={ImageSaleChart.src} /> :
-                      <div>
-                      {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
-                      {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
-                      {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
-                    </div>  
-                  } 
+                  return <div ref={salesOverviewRef} className={`${props.isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
+                    {props.isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
+                    {/* ${size(dataGraded) ? '' : 'd-none'} */}
+                    {
+                      saleChartState.listCardGrade.length === 0 ?
+                        <PlaceholderChart isNoIcon={true} src={ImageSaleChart.src} /> :
+                        <div>
+                          {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
+                          {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
+                          {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
+                        </div>
+                    }
               
-                  {
-                    (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? (isEmpty(priceTooltipPricingGrid) ? '' : 'd-none') : 'd-none'}`}>
-                      <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
-                        <div className="content-chart">
-                          <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>
-                          <div className="content-chart__description"> Graded card sales overview data is based off sales from all years </div>
-                          <ChartCircleDemo keyData={keyData} dataGraded={dataGraded} dispatchReducer={dispatchReducer} code={props.code} />
-                        </div>
-                      </div>
-                      <div className="col-md-8 col-sm-12 col-12 chart-group">
-                        {renderGrade(dataGraded, dispatchReducer, keyData)}
-                        <div className="row chart-group-list">
-                          <div className="col-12 col-sm-12 col-lg-6 chart">
-                            <SaleBarChart
-                              keyData={keyData}
-                              saleChartState={saleChartState}
-                              listCardGrade={saleChartState.listCardGrade}
-                              dataGraded={dataGraded}
-                              cardId={cardData.id}
-                              periodSelected={saleChartState.periodSelected}
-                              dispatchReducer={dispatchReducer}
-                              sagaController={sagaController}
-                              type={TypeSale.volume} 
-                              onChangeGradeCompare={props.onChangeGradeCompare}
-                            />
-                            <div className="chart-group__grade only-mobile"> {keyData} Grade </div>
-                          </div>
-                          <div className="col-12  col-lg-6 chart chart-right">
-                          <SaleBarChart
-                            keyData={keyData}
-                            saleChartState={saleChartState}
-                            listCardGrade={saleChartState.listCardGrade}
-                            dataGraded={dataGraded}
-                            cardId={cardData.id}
-                            periodSelected={saleChartState.periodSelected}
-                            dispatchReducer={dispatchReducer}
-                            sagaController={sagaController}
-                            type={TypeSale.value} 
-                            onChangeGradeCompare={props.onChangeGradeCompare}
-                          />
+                    {
+                      (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? (isEmpty(priceTooltipPricingGrid) ? '' : 'd-none') : 'd-none'}`}>
+                        <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
+                          <div className="content-chart">
+                            <div className="mb-3 content-chart__title"> Graded Sales Volume by Company </div>
+                            <div className="content-chart__description"> Graded card sales overview data is based off sales from all years </div>
+                            <ChartCircleDemo keyData={keyData} dataGraded={dataGraded} dispatchReducer={dispatchReducer} code={props.code} />
                           </div>
                         </div>
-                        <div className="chart-group__grade"> {keyData} Grade </div>
+                        <div className="col-md-8 col-sm-12 col-12 chart-group">
+                          {renderGrade(dataGraded, dispatchReducer, keyData)}
+                          <div className="row chart-group-list">
+                            <div className="col-12 col-sm-12 col-lg-6 chart">
+                              <SaleBarChart
+                                keyData={keyData}
+                                saleChartState={saleChartState}
+                                listCardGrade={saleChartState.listCardGrade}
+                                dataGraded={dataGraded}
+                                cardId={cardData.id}
+                                periodSelected={saleChartState.periodSelected}
+                                dispatchReducer={dispatchReducer}
+                                sagaController={sagaController}
+                                type={TypeSale.volume}
+                                onChangeGradeCompare={props.onChangeGradeCompare}
+                              />
+                              <div className="chart-group__grade only-mobile"> {keyData} Grade </div>
+                            </div>
+                            <div className="col-12  col-lg-6 chart chart-right">
+                              <SaleBarChart
+                                keyData={keyData}
+                                saleChartState={saleChartState}
+                                listCardGrade={saleChartState.listCardGrade}
+                                dataGraded={dataGraded}
+                                cardId={cardData.id}
+                                periodSelected={saleChartState.periodSelected}
+                                dispatchReducer={dispatchReducer}
+                                sagaController={sagaController}
+                                type={TypeSale.value}
+                                onChangeGradeCompare={props.onChangeGradeCompare}
+                              />
+                            </div>
+                          </div>
+                          <div className="chart-group__grade"> {keyData} Grade </div>
+                        </div>
                       </div>
-                    </div>
-                  }
+                    }
                
-                </div>;
-              }}
-            </CardDetailConsumer>
-            {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
-              <h2 className="title-profile mb-5"> Sales Chart  </h2>
+                  </div>;
+                }}
+              </CardDetailConsumer>
+              {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
+                <h2 className="title-profile mb-5"> Sales Chart  </h2>
 
-                <div className={isLoadingSalesChart? '':"d-none"}> <PlaceholderChart src={ImageLineChart.src} isNoIcon={true}/>  </div>
-                <div className={!isLoadingSalesChart? '':"d-none"}>
+                <div className={isLoadingSalesChart ? '' : "d-none"}> <PlaceholderChart src={ImageLineChart.src} isNoIcon={true} />  </div>
+                <div className={!isLoadingSalesChart ? '' : "d-none"}>
                   <div>
                     {Boolean(!loggingIn) && <PlaceholderChart src={ImageLineChart.src} />}
-                      {!Boolean(!loggingIn) && isNotActive && <PlaceholderChart src={ImageLineChart.src} message={notActiveMessage} />}
+                    {!Boolean(!loggingIn) && isNotActive && <PlaceholderChart src={ImageLineChart.src} message={notActiveMessage} />}
                   </div>
                   {
                     !Boolean(!loggingIn) && !isNotActive && <div className="pricing-grid-content pricing-grid-content--sales">
@@ -1172,7 +1174,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 return (
                                   pre.cardData.id !== next.cardData.id ||
                                   pre.saleChartState.cardGradeSelected !==
-                                  next.saleChartState.cardGradeSelected || 
+                                  next.saleChartState.cardGradeSelected ||
                                   pre.saleChartState.gradeTreeSelected !== next.saleChartState.gradeTreeSelected ||
                                   pre.saleChartState.periodSelected !== next.saleChartState.periodSelected ||
                                   pre.saleChartState.calcMaLine !== next.saleChartState.calcMaLine
@@ -1183,17 +1185,17 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                 state: { saleChartState, cardData },
                                 dispatchReducer,
                                 sagaController,
-                                }) => {
-                                  //   let dataSelect = saleChartState.listCardGrade.map(
-                                  //   (item, index) => {
-                                  //     let name = HelperSales.getStringGrade(
-                                  //       item.gradeCompany,
-                                  //       item.gradeValue
-                                  //     );
-                                  //     return { label: name, value: name, index };
-                                  //   }
-                                  // );
-                                  return (
+                              }) => {
+                                //   let dataSelect = saleChartState.listCardGrade.map(
+                                //   (item, index) => {
+                                //     let name = HelperSales.getStringGrade(
+                                //       item.gradeCompany,
+                                //       item.gradeValue
+                                //     );
+                                //     return { label: name, value: name, index };
+                                //   }
+                                // );
+                                return (
                                   <>
                                     <TreeSelect
                                       className={classes.treeSelect}
@@ -1224,7 +1226,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                           dataSelect: dataSelect,
                                         });
 
-                                        if ( loggingIn ) {
+                                        if (loggingIn) {
                                           sagaController.requestCalcMaxLineV1({
                                             cardId: +cardData.id,
                                             currency: userInfo.userDefaultCurrency,
@@ -1265,8 +1267,8 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                           }
                                         }
                                       }}
-                                    > 
-                                      { saleChartState.dataGradedTree?.map((item) => {
+                                    >
+                                      {saleChartState.dataGradedTree?.map((item) => {
                                         const gradeTreeSelected = saleChartState.gradeTreeSelected.filter(it => it !== 'ALL')
                                         if (item.children?.length) {
                                           const notInside = gradeTreeSelected?.filter(it => !item.children.find(temp => temp.key === it)) || []
@@ -1274,14 +1276,14 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                           return (
                                             <TreeNode value={item.value} title={<span className={`${classes.titleToolTip} rc-tree-select-tree-title-custom-parent`} onMouseOver={(e) => disabled && onMouseOverTreeSelect(e)} onMouseOut={(e) => onMouseOutTreeSelect(e)}>{item.label}<span className="tooltip-custom-tree">A maximum of 5 grades can be compared at once, please select grades individually.</span></span>} key={item.key} disabled={disabled}>
                                               {item.children.map((child) => (
-                                                <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)}/>
+                                                <TreeNode value={child.value} title={<span className="rc-tree-select-tree-title-custom">{child.label}</span>} key={child.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === child.key)} />
                                               ))}
                                             </TreeNode>
                                           )
                                         } else return (
-                                          <TreeNode value={item.value} title={<span className="rc-tree-select-tree-title-custom">{item.label}</span>} key={item.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === item.key) && item.key !== 'ALL'}/>
+                                          <TreeNode value={item.value} title={<span className="rc-tree-select-tree-title-custom">{item.label}</span>} key={item.key} disabled={gradeTreeSelected?.length >= 5 && !gradeTreeSelected?.find(it => it === item.key) && item.key !== 'ALL'} />
                                         )
-                                      }) }
+                                      })}
                                     </TreeSelect>
                                     {/* <Select
                                       value={dataSelect[saleChartState.cardGradeSelected]}
@@ -1372,7 +1374,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                                       let index: number = item?.index ?? 0;
                                       sagaController.selectPeriodTime(index);
 
-                                      if ( loggingIn ) {
+                                      if (loggingIn) {
                                         sagaController.requestCalcMaxLineV1({
                                           cardId: +cardData.id,
                                           currency: userInfo.userDefaultCurrency,
@@ -1412,7 +1414,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                           state: { saleChartState, cardData },
                           sagaController, dispatchReducer
                         }) => {
-                          {setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0)}
+                          { setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0) }
                           return (
                             <SaleChart
                               cardData={cardData}
@@ -1434,7 +1436,7 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
                               }}
                               calcMaxLineRequest={async () => {
                               
-                              await sagaController.requestCalcMaxLineV1({
+                                await sagaController.requestCalcMaxLineV1({
                                   cardId: +cardData.id,
                                   currency: userInfo.userDefaultCurrency,
                                   cardGrades: saleChartState.gradeTreeSelected,
@@ -1495,6 +1497,6 @@ const CardDetail = ({ isGradedCardTitle = true, classContent = "content-home mt-
         onClose={() => setIsOpenLogin(false)} />
     </CardDetailProvider >
   );
-};
+});
 
 export default React.memo(CardDetail);
