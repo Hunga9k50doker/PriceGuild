@@ -571,7 +571,7 @@ const Header = (props: any) => {
             <div className="clear-box account-loggined">
               <div className="box-avatar-mobile">
                 <div className="box-photo" onClick={gotoPersonalProfile}>
-                  <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
+                  <img src={userInfo.userImg ? `${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
                 </div>
                 <div className="username-text"  onClick={gotoPersonalProfile}>
                   <span className="name"> {userInfo?.firstname} {userInfo?.lastname} </span><br/>
@@ -678,7 +678,7 @@ const Header = (props: any) => {
             {loggingIn ?
               <>
                 <div className="avatar">
-                  <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="Profile" data-holder-rendered="true" />
+                  <img src={userInfo.userImg ? `${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="Profile" data-holder-rendered="true" />
                 </div> Profile
               </>
               :
@@ -694,7 +694,7 @@ const Header = (props: any) => {
           <div className="account-user d-flex justify-content-between w-100">
             <div className="box-photo-user d-flex">
               <div className="box-photo ">
-                <img src={userInfo.userImg ? `${process.env.REACT_APP_IMAGE_URL}${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
+                <img src={userInfo.userImg ? `${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"} className="rounded-circle" data-src="holder.js/171x180" alt="171x180" data-holder-rendered="true" />
               </div>
               <div className="username-text d-flex flex-column">
                 <span className="name"> {userInfo?.firstname} {userInfo?.lastname} </span>
