@@ -87,10 +87,11 @@ export const getServerSideProps = async (context: any) => {
 
     if (statusCode === 404) {
         return {
-          redirect: {
-            destination: `/404`,
-            permanent: true
-          }
+          // redirect: {
+          //   destination: `/404`,
+          //   permanent: true
+          // }
+          notFound: true,
       };
     }
     return {props:{
