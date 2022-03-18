@@ -58,6 +58,11 @@ const ReportCard = () => {
   const onSubmit: SubmitHandler<Inputs> = async data => {
     
     let prms = { ...data };
+    
+
+    if (isEmpty(prms.portf_req_sport)) {
+      prms.portf_req_sport = sports[0].sportName;
+    }
 
     if (prms.portf_req_sport === "Other") {
       prms.portf_req_sport = prms.portf_req_sport + ' - ' + prms.portf_req_other;
