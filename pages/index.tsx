@@ -69,7 +69,7 @@ function HomePage() {
   const maintainceMode = async () => {
 
     let main = await getDetailMaintenance();
-  
+    console.log(main, 'vicimer542');
     setMaintenance(main);
   }
   const changeTransaction = () => {
@@ -191,7 +191,7 @@ function HomePage() {
 
   useEffect(() => {
     if (maintenance?.length) {
-      if (maintenance?.[0].type === 2) {
+      if (maintenance?.[0]?.type === 2) {
         router.push('/maintenance')
       }
     }
@@ -221,7 +221,7 @@ function HomePage() {
                 Create Personal Portfolio
               </a></Link>
           </div> 
-          {maintenance && maintenance?.[0].type === 1 &&
+          {maintenance && maintenance?.[0]?.type === 1 &&
           <div className="alert alert-maintenance" role="alert">
             <img src={imgInfo} alt="" title="" />
             <div className="content">Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)</div>
