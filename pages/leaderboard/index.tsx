@@ -49,7 +49,7 @@ const Leaderboard = () => {
   const [sportsState, setSportsState] = useState<Array<FilterType>>([]);
   const [filterData, setFilterData] = useState<FilterDataType>({});
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
-  const [isError202, SetIsError202] = useState<boolean>(false);
+  const [isError202, setIsError202] = useState<boolean>(false);
   useEffect(() => {
     if (sports.length) {
       setSportsState(
@@ -74,7 +74,6 @@ const Leaderboard = () => {
         ...filterData,
       };
       const result = await api.v1.portfolio.portfolioLeaderboard(params);
-    
       if (result.success) {
         if (result.data.length) {
           setDataTable(paginate(result.data, rowsPerPage, [1]));
@@ -85,7 +84,10 @@ const Leaderboard = () => {
         });
       }
       if(result.message === "Leaderboard calculation in progress, please try loading again later") {
-        SetIsError202(true)
+        setIsError202(true)
+      }
+      if(result?.status === 202) {
+        setIsError202(true)
       }
       setData((prevState) => {
         return { ...prevState, isLoading: false };
