@@ -20,20 +20,18 @@ const Unsubscribe: React.FC = ({...props}) => {
     useEffect(() => {
         const restoreAccount = async () => {
             try {
-            const params = {
-                token: code
-            };
+                const params = {
+                    token: code
+                };
+                    
+                const result = await api.v1.account.unSubcribeAcounnt(params);
                 
-            const result = await api.v1.account.unSubcribeAcounnt(params);
+                setStatus(!result.success);
+                setisLoading(false);
             
-            setStatus(!result.success);
-            setisLoading(false);
-            if (!result.success) {
                 //@ts-ignore
                 setTitle(result?.title)
                 setMessage(result?.message)
-                }
-                
             }
 			catch (err) {
 				setStatus(true);
