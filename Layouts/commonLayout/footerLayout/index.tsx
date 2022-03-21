@@ -121,7 +121,7 @@ function Footer() {
                 {/* <li>Links</li> */}
                 <li>
                   <Link href={`/sitemap.xml`}>
-                    <a className="text-reset text-decoration-none" title="Sitemap"> Sitemap </a>
+                    <a target="_blank" className="text-reset text-decoration-none" title="Sitemap"> Sitemap </a>
                   </Link>
                 </li>
                 <li>
