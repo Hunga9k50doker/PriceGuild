@@ -26,7 +26,6 @@ import ArrowUp from "assets/images/long-arrow-up.svg";
 import $ from "jquery";
 import CapchaHandler from "components/capchaHandler";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyAEhlnNzWpoOow4sgMYvdrFNxu2dYjB70A",
   authDomain: "sports-card-price-guide.firebaseapp.com",
@@ -40,11 +39,9 @@ const firebaseConfig = {
 export default function MyApp({ Component, pageProps }: AppProps) {
 
   React.useEffect(() => {
-    
     typeof document !== undefined ? require("bootstrap/dist/js/bootstrap.bundle.min") : null;
     
     // UtilsColorGrade.loadDataColors();
-    
     // firebase.initializeApp(firebaseConfig);
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -53,7 +50,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     };
   }, [])
 
-  
   // @ts-ignore
   const Layout = Component.Layout || DefaultLayout;
   
@@ -63,13 +59,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();
     if (scrollTop >= 500) {
-        $("#back-to-top").addClass("active");
+      $("#back-to-top").addClass("active");
     } else {
       $("#back-to-top").removeClass("active");
     }
   };
 
-  
   return (
     <React.StrictMode>
       <Provider store={store}>
@@ -83,6 +78,5 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         </I18nextProvider>
       </Provider>
     </React.StrictMode>
-
   );
 }
