@@ -1,4 +1,4 @@
 #!/bin/sh
-npm install --force
+npm install
 npm run build:staging
 npm run start:staging
