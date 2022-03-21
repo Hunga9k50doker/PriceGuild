@@ -3,7 +3,7 @@ WORKDIR /home/src/app
 # add app
 COPY . ./
 
-RUN npm install --silent
+RUN npm install --force
 
 # start app
 CMD ["npm", "run", "start:staging"]
