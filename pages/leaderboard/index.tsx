@@ -78,6 +78,8 @@ const Leaderboard = () => {
         if (result.data.length) {
           setDataTable(paginate(result.data, rowsPerPage, [1]));
         }      
+        setIsError202(false);
+
         return setData({
           cards: result.data,
           isLoading: false,
@@ -86,12 +88,19 @@ const Leaderboard = () => {
       if(result.message === "Leaderboard calculation in progress, please try loading again later") {
         setIsError202(true)
       }
+     
       if(result?.status === 202) {
         setIsError202(true)
+        setDataTable([]);
+        setData(() => {
+          return  { cards: [] , isLoading: false };
+        });
+      } else {
+        setData((prevState) => {
+          return { ...prevState, isLoading: false };
+        });
       }
-      setData((prevState) => {
-        return { ...prevState, isLoading: false };
-      });
+      
     
     } catch (err) {
       console.log(err);
@@ -435,7 +444,7 @@ const Leaderboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {!data.isLoading &&
+                    {!data.isLoading && !isError202 &&
                       dataTable?.map((item, key) => (
                         <tr key={key}>
                           <td className="text-center"> {item.rank} </td>
@@ -467,7 +476,7 @@ const Leaderboard = () => {
               {!data.isLoading && isError202  &&
                 <Loading type="warning" />
               }
-              {!data.isLoading && Boolean(data.cards.length) && (
+              {!data.isLoading && Boolean(data.cards.length) && !isError202 && (
                 <>
                    {
 										

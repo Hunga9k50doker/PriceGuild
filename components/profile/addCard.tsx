@@ -1498,7 +1498,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <img
                     className="cursor-pointer w-100"
                     src={
-                      imageFront.url ? imageFront.url   : backgroundImageUpload.src
+                      imageFront.url ? (imageFront.url === backgroundImage.src ? backgroundImageUpload.src :   imageFront.url) : backgroundImageUpload.src
                     }
                     alt=""
                   />
@@ -1512,7 +1512,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <div className="border-img">
                   <img
                     className="cursor-pointer w-100"
-                    src={imageBack.url ? imageBack.url : backgroundImageUpload.src}
+                    src={imageBack.url ? imageBack.url === backgroundImage.src ? backgroundImageUpload.src : imageBack.url : backgroundImageUpload.src}
                     alt=""
                   />
                   <input
