@@ -123,6 +123,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
   const [keepCardCode ,setKeepCardCode] = useState('');
+  const [header, setHeader] = useState<any|undefined>({});
   
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -145,16 +146,20 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
             // @ts-ignore
             card_code: cardCode,
             currency: userInfo.userDefaultCurrency,
-          }).catch(err => {
+          },header).catch(err => {
             //@ts-ignore
             if (err?.status === 403) {
               setIsNotAcitve(true);
               setNotActiveMessage(err.message)
             }
+            // debugger;
             if (err?.status === 409) {
             
               if (Boolean(err?.show_captcha)) {
-                // setIsCaptCha(Boolean(err?.show_captcha)) 
+                if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
+                  setIsCaptCha(Boolean(err?.show_captcha)) 
+                }
+               
                 props.errorSale && props.errorSale(true);
               }
             } else {
@@ -176,9 +181,56 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     }
     
   }, [props.code, loggingIn, router.query]);
+    
+   
+  useEffect(() => {
+    if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") { 
+      if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
+        let cardCode = router?.query?.cardCodeDetail ?? props.code;
+        // @ts-ignore
+        setKeepCardCode(cardCode);
+        let controller: CardDetailSaga = refProvider?.current
+          .controller as CardDetailSaga;
+        if (!isEmpty(cardCode)) {
+  
+          if (loggingIn) {
+     
+            controller.loadSaleData({
+              // @ts-ignore
+              card_code: cardCode,
+              currency: userInfo.userDefaultCurrency,
+            },header).catch(err => {
+              //@ts-ignore
+              if (err?.status === 403) {
+                setIsNotAcitve(true);
+                setNotActiveMessage(err.message)
+              }
+              // debugger;
+              if (err?.status === 409) {
+              
+                if (Boolean(err?.show_captcha)) {
+                  if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
+                    setIsCaptCha(Boolean(err?.show_captcha)) 
+                  }
+                 
+                  props.errorSale && props.errorSale(true);
+                }
+              } else {
+                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+              }
+            })
+          }
+          
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }
+      
+    }
+  }, [header]);
 
   useImperativeHandle(ref, () => ({
     loadSalaData: _loadSaleDataCapCha,
+    
   }));
 
 
@@ -713,6 +765,14 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     })
     // setData(prevState => [...prevState?.map(item=> item.code === code ? ({...item,wishlist: 1}): item ) ]);
   }
+  const onSuccessCaptcha = async (token: any) => {
+    setIsCaptCha(false)
+    const headers = { "captcha-token": token };
+    
+    await setHeader(headers);
+    await setIsLoadingSalesChart(false);
+    // getDetail([1],headers);
+  }
   return (
     <CardDetailProvider ref={refProvider}>
       <ChartFlow onUpdateCard={(item) => {
@@ -1156,7 +1216,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
               </CardDetailConsumer>
               {!Boolean(props.isHideSaleChart) && <div ref={salesChartdRef} id={"charting-tool"} className="pricing-grid">
                 <h2 className="title-profile mb-5"> Sales Chart  </h2>
-
                 <div className={isLoadingSalesChart ? '' : "d-none"}> <PlaceholderChart src={ImageLineChart.src} isNoIcon={true} />  </div>
                 <div className={!isLoadingSalesChart ? '' : "d-none"}>
                   <div>
@@ -1414,7 +1473,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                           state: { saleChartState, cardData },
                           sagaController, dispatchReducer
                         }) => {
-                          { setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0) }
+                          // { setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0) }
                           return (
                             <SaleChart
                               cardData={cardData}
@@ -1484,6 +1543,13 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           </div>
         </div >
       </div >
+      {
+        router.pathname === "/card-details/[cardCodeDetail]/[cardName]" && 
+        <CaptCha
+        isOpen={isCaptCha}
+        onSuccess={onSuccessCaptcha}
+        onClose={() => setIsCaptCha(false)} />
+      } 
       <LoginModal
         onSuccess={() => {
           setIsOpenLogin(false);
