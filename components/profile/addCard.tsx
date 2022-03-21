@@ -992,7 +992,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         </div>
                       </div>
                       <div className="d-flex images justify-content-center align-items-center">
-                        <div className="hide-tablet">
+                        <div className="hide-tablet aspect-sm">
                           <img
                             className="rounded"
                             src={
@@ -1003,7 +1003,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             alt=""
                           />
                         </div>
-                        <div className="ms-2 hide-tablet">
+                        <div className="ms-2 hide-tablet aspect-sm">
                           <img
                             className="rounded"
                             src={

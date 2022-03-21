@@ -181,16 +181,16 @@ const BlogPage: React.FC<PropTypes> = (props) => {
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-30 line-bottom">
-                        <li className="breadcrumb-item">
-                            <Link href="/">
-                                <a title="Home">Home</a>
-                            </Link>
-                        </li>
-                        <li className={`breadcrumb-item ${!archive && 'active'}`}> {archive ?
-                            <Link href="/blog">
-                                <a title="Blog" onClick={() => { setArchive(undefined); setShowDetail(false) }}>Blog</a>
-                            </Link> : 'Blog'}
-                        </li>
+						<li className="breadcrumb-item">
+							<Link href="/">
+								<a title="Home">Home</a>
+							</Link>
+						</li>
+						<li className={`breadcrumb-item ${!archive && 'active'}`}> {archive ?
+							<Link href="/blog">
+								<a title="Blog" onClick={() => { setArchive(undefined); setShowDetail(false) }}>Blog</a>
+							</Link> : 'Blog'}
+						</li>
 						{archive && <li className="breadcrumb-item active" aria-current="page"> {showLatestBreadcrumb()} </li>}
 					</ol>
 				</nav>

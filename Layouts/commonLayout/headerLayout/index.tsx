@@ -207,13 +207,13 @@ const Header = (props: any) => {
                       </a>
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  {/*<li className="nav-item">
                     <Link href="/rookie-cards">
                       <a className="nav-link" aria-current="page" title="Rookie Cards">
                         Rookie Cards
                       </a>
                     </Link>
-                  </li>
+                  </li>*/}
                   <li className="nav-item">
                     <Link href="/leaderboard">
                       <a className="nav-link" aria-current="page" title="Leaderboard">
@@ -221,13 +221,13 @@ const Header = (props: any) => {
                       </a>
                     </Link>
                   </li>
-                  <li className="nav-item nav-item--blog">
+                  {/*<li className="nav-item nav-item--blog">
                     <Link href="/blog">
                       <a className="nav-link" aria-current="page" title="Blog">
-                          Blog
+                        Blog
                       </a>
                     </Link>
-                  </li>
+                  </li>*/}
                   <li className="nav-item">
                     <Link href={`/faq`} >
                       <a className="nav-link" aria-current="page" title="FAQ">
@@ -599,45 +599,37 @@ const Header = (props: any) => {
           <ul className="belong-menu">
             <li>
               <Link href="/top-100">
-                <a onClick={() => { setShowMenuContent(false) }} title="Top 100">
-                  Top 100
-                </a>
+                <a onClick={() => { setShowMenuContent(false) }} title="Top 100"> Top 100 </a>
               </Link>
             </li>
-            <li>
+            {/*<li>
               <Link href="/rookie-cards">
-                <a onClick={() => { setShowMenuContent(false) }} title="Rookie Cards">
-                  Rookie Cards
-                </a>
+                <a onClick={() => { setShowMenuContent(false) }} title="Rookie Cards"> Rookie Cards </a>
               </Link>
-            </li>
+            </li>*/}
             <li>
               <Link href="/leaderboard" >
-                <a onClick={() => { setShowMenuContent(false) }} title="Leaderboard">
-                  Leaderboard
-                </a>
+                <a onClick={() => { setShowMenuContent(false) }} title="Leaderboard"> Leaderboard </a>
               </Link>
             </li>
-            <li>
+            {/*<li>
               <Link href={`/blog`} >
-                <a className="text-reset text-decoration-none" title="Blog">
-                    Blog
-                </a>
+                <a className="text-reset text-decoration-none" title="Blog"> Blog </a>
               </Link>
+            </li>*/}
+            <li> 
+              <Link href={`/faq`} >
+                <a className="text-reset text-decoration-none" title="FAQ"> FAQ </a>
+              </Link> 
             </li>
-            <li> <Link href={`/faq`} >
-              <a className="text-reset text-decoration-none" title="FAQ">
-                FAQ
-              </a>
-            </Link> </li>
-            <li> <Link href={`/about`} >
-              <a className="text-reset text-decoration-none" title="About">
-                About
-              </a>
-            </Link> </li>
+            <li> 
+              <Link href={`/about`} >
+                <a className="text-reset text-decoration-none" title="About"> About </a>
+             </Link> 
+            </li>
             <li>
               <Link href={`/contact`} >
-                <a  className="text-reset text-decoration-none" title="Contact">Contact</a>
+                <a  className="text-reset text-decoration-none" title="Contact"> Contact </a>
               </Link>
             </li>
           </ul>

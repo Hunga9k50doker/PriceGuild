@@ -1421,19 +1421,25 @@ input {
   .entry {
     cursor: pointer;
     .rounded {
-      background-color: #ffffff;
-      border: 1px solid #e9eaed !important;
       &.active {
         background-color: rgba(109, 117, 136, 0.05);
         border: 1px solid #cccfd6;
         box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.15);
       }
       .images {
-        img {
-          height: 56px;
+        .aspect-sm{
+          position: relative;
+          cursor: pointer;
           width: 40px;
-          @media (min-width: 992px) {
-            width: 48px;
+          height: 56px;
+          > img {
+            object-fit: contain;
+            margin: 0 auto;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
           }
         }
         span {
@@ -1895,7 +1901,6 @@ input[type="number"] {
     }
     .image-product {
       .img-product-element {
-        position: absolute;
         object-fit: contain;
         margin: 0 auto;
         height: 100%;

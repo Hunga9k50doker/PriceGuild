@@ -2650,6 +2650,19 @@ th .form-check-input.form-check-input-head {
         &::-webkit-scrollbar {
           display: none;
         }
+        .box-picture-table {
+          width: 44.68px;
+          height: 62px;
+          > img {
+            object-fit: contain;
+            margin: 0 auto;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
       }
       .pricing-grid {
         .grade {
@@ -2718,9 +2731,9 @@ th .form-check-input.form-check-input-head {
                   font-size: 14px;
                   padding: 6px 12px;
                   .box-picture-table  {
-                    width: 44.68px;
                     height: 62px;
                     min-width: 44.68px;
+                    position: relative;
                   }
                   .card-info {
                     font-size: 12px;
