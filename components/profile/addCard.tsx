@@ -47,7 +47,7 @@ type CardForm = {
   group_ref: any;
   grade_value: number;
   note: string;
-  agree_share: number;
+  // agree_share: number;
 };
 
 type PropTypes = {
@@ -73,7 +73,7 @@ const defaultCard: Datum = {
   user_currency: "USD",
   date_acq: new Date(),
   note: "",
-  agree_share: 0,
+  // agree_share: 0,
   group_ref: 0,
   front_image: "",
   back_image: "",
@@ -122,7 +122,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const watchUserPrice = watch("user_price");
   const watchNote = watch("note");
   const watchGradeValue = watch("grade_value");
-  const watchAgreeShare = watch("agree_share");
+  // const watchAgreeShare = watch("agree_share");
   const dataQueries = router.query; 
   const [cards, setCards] = useState<CardsAddType>({
     groups: [],
@@ -162,6 +162,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   // @ts-ignore
   const [oldValueActive, setOldValueActive] = useState<Datum>();
   const [undoChangeStatus, setUndoChangeStatus] = useState<Boolean>(false);
+  
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -220,11 +221,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         }
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setCards({});
     }
   };
-
+  
   React.useEffect(() => {
     if (!isEmpty(router.query)) {
         const getDataGrade = async () => {
@@ -241,7 +242,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             }
           }
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           setGradeCompanys([]);
         }
         };
@@ -306,7 +307,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   React.useEffect(() => {
     let newData = { ...cards };
-  
+
     if (newData?.cards?.length) {
       newData.cards[activeEntry.cardIndex].data[
         activeEntry.entryIndex
@@ -332,18 +333,21 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       // @ts-ignore
       // delete datanew.back_image;
       // @ts-ignore
-        // delete datanew.front_image;
+      // delete datanew.front_image;
     }
 
-    if (!isEqual(dataOld, datanew)) {
+    let dataCompare = {...datanew};
+    delete dataCompare.back_image;
+    delete dataCompare.front_image;
+    
+    if (!isEqual(dataOld, dataCompare)) {
       return setUndoChangeStatus(true);
     } else {
       if (!isEmpty(imageFront.path) || !isEmpty(imageBack.path)) {
         return setUndoChangeStatus(true);
       }
       return setUndoChangeStatus(false);
-    } 
-   
+    }
   }, [imageFront, imageBack]);
 
   React.useEffect(() => {
@@ -358,11 +362,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     }
   }, [watchNote]);
 
-  React.useEffect(() => {
-    if (cards?.cards?.length) {
-      onUpdateValue(watchAgreeShare, "agree_share");
-    }
-  }, [watchAgreeShare]);
+  // React.useEffect(() => {
+  //   if (cards?.cards?.length) {
+  //     onUpdateValue(watchAgreeShare, "agree_share");
+  //   }
+  // }, [watchAgreeShare]);
 
   React.useEffect(() => {
     if (isEmpty(activeEntryData)) {
@@ -371,15 +375,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [cards?.cards])
 
   React.useEffect(() => {
-     if (isEmpty(oldValueActive)) {
+    if (isEmpty(oldValueActive)) {
       // @ts-ignore
-       setOldValueActive({ ...cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex] })
+      setOldValueActive({ ...cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex] })
     }
   }, [activeEntryData])
-
-  // React.useEffect(() => {
-  //   console.log(undoChangeStatus, 'undoChangeStatus');
-  // },[undoChangeStatus])
 
   const onCreate = async (params: any) => {
     try {
@@ -403,7 +403,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if(err?.response?.status === 403) {
         return router.push('/verify-email')
       }
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -411,7 +411,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     let newData = { ...cards };
     if (newData?.cards?.length) {
       if (key === 'date_acq') {
-         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
         moment(e?.value ?? e).format("YYYY-MM-DD");
       } else {
         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
@@ -423,14 +423,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // @ts-ignore
     let dataCompare = { ...newData.cards?.[activeEntry.cardIndex]?.data?.[activeEntry.entryIndex] };
     delete dataCompare.back_image;
-    delete dataCompare.front_image
+    delete dataCompare.front_image;
+
+    const dataEntry = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
     
+    let dataOldCompare = {...dataEntry};
+
     // @ts-ignore
-    if (isEqual(oldValueActive, dataCompare)) {
+    if (isEqual(dataOldCompare, dataCompare)) {
       return setUndoChangeStatus(false);
-    }
-    else {
-       return setUndoChangeStatus(true);
+    } else {
+      return setUndoChangeStatus(true);
     }
   };
 
@@ -449,15 +452,16 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       setCards(newData);
       // set new index on old card
       // @ts-ignore
-      cardsOld?.cards?.[activeEntry.cardIndex]?.data.push({ ...newEntry });
-      setCardsOld(cardsOld);
+      // cardsOld?.cards?.[activeEntry.cardIndex]?.data.push({ ...newEntry });
+      // setCardsOld(cardsOld);
       // end
       setActiveEntry((prevState) => {
-         // @ts-ignore
+        // @ts-ignore
         return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1  };
       });
       setFromValue(newEntry);
     }
+
     isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
@@ -475,7 +479,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       
       setCards(newData);
       // set new index on old card
-     
       setActiveEntry((prevState) => {
         // @ts-ignore
         return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1 };
@@ -489,8 +492,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       }
       onActiveEntry(activeEntry.cardIndex, newData?.cards[activeEntry.cardIndex].data.length - 1, newEntry)
       // @ts-ignore
-      cardsOld?.cards?.[activeEntry.cardIndex]?.data.push({ ...newEntry });
-      setCardsOld(cardsOld);
+      // cardsOld?.cards?.[activeEntry.cardIndex]?.data.push({ ...newEntry });
+      // setCardsOld(cardsOld);
       // end
     }
     // this onActiveEntry function remove activeEntry.entryIndex + 1 to activeEntry.entryIndex
@@ -503,13 +506,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // @ts-ignore
     const dataEntry = cardsOld.cards?.[cardIndex]?.data[entryIndex];
 
+    let oldCompare = { ...data };
+    delete oldCompare.back_image;
+    delete oldCompare.front_image;
+    
     if (!isEmpty(dataEntry)) {
-      if (!isEqual(dataEntry, data)) {
-        setOldValueActive(dataEntry)
+      if (!isEqual(dataEntry, oldCompare)) {
+        setOldValueActive(dataEntry);
         setUndoChangeStatus(true);
       }
     } else {
-      setOldValueActive(old)
+      setOldValueActive(old);
       setUndoChangeStatus(false);
     }
     setActiveEntry({
@@ -521,7 +528,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   const setFromValue = (dataEntry: Datum) => {
-
     setValue("grade_value", dataEntry.grade_value);
     setValue("grade_company", dataEntry.grade_company);
     setValue("user_currency", {
@@ -553,7 +559,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     });
     
     setValue("note", dataEntry.note);
-    setValue("agree_share", dataEntry.agree_share);
+    // setValue("agree_share", dataEntry.agree_share);
   };
   const onCancle = () => {
     router.push("/profile/collections");
@@ -596,7 +602,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         cardsOld.cards[activeEntry.cardIndex].data[activeEntry.entryIndex];
       newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex] =
         cloneDeep(dataEntry);
-      // console.log(dataEntry, 'dataEntry');
       setOldValueActive(dataEntry);
       setFromValue(dataEntry);
       setCards(newData);
@@ -628,7 +633,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     );
   };
   React.useEffect(() => {
-     // @ts-ignore
+    // @ts-ignore
     if (is_show_card_detail_collection && width < 768) {
       
     } else {
@@ -637,7 +642,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [is_show_card_detail_collection]);
 
   React.useEffect(() => {
-     // @ts-ignore
+    // @ts-ignore
     if (width > 768) {
       document.body.removeAttribute("style");
     }
@@ -656,15 +661,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       }) > 1
     )
       return "s";
-    
-    // if (width < 768) {
-    //   if (
-    //     sumBy(cardsMobile?.cards, function (o) {
-    //       return o?.data?.length ?? 1;
-    //     }) > 1
-    //   )
-    //     return "s";
-    // }
     return "";
   };
 
@@ -681,7 +677,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       }
     } catch (error) {
-      
+      //
     }  
     setIsLoadingDelete(true);
     // @ts-ignore
@@ -690,7 +686,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           const params = {
             table: "portfolio",
             portid_list: [
-               // @ts-ignore
+              // @ts-ignore
               cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
                 .port_id,
             ],
@@ -729,8 +725,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           return ToastSystem.error(result.message ?? result.error);
         } catch (err) {
           setIsLoadingDelete(false);
-          //setIsOpenModal(false)
-          console.log(err);
+          // setIsOpenModal(false)
+          // console.log(err);
         }
     }
     onRemoveEntry();
@@ -798,7 +794,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     );
   };
 
-
   const renderTitleRemove = () => {
     //@ts-ignore
     if (width < 768) {
@@ -824,7 +819,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     return date.valueOf()
   }
 
-  // console.log(is_show_card_detail_collection, 'is_show_card_detail_collection');
   return (
     <div className="add-collection prf-template pl-3 position-relative">
       <div>
@@ -902,17 +896,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       <button
                         type="button"
                         className="btn btn-au--custom cursor-default"
-                      >
-                        AU
-                      </button>
+                      > AU </button>
                     )}
                     {Boolean(item.memo) && (
                       <button
                         type="button"
                         className="btn btn-mem--custom cursor-default"
-                      >
-                        MEM
-                      </button>
+                      > MEM </button>
                     )}
                   </div>
                 </div>}
@@ -944,7 +934,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             // dispatch(ConfigAction.updateShowMenuCollection(true))
                           setFromValue(entry);
                           // SetShowContentAddCollection(true);
-                         
                         }
                       }}
                     >
@@ -1057,7 +1046,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             is_show_card_detail_collection ? "d-block-add-collection" : ""
           }`}
         >
-          
           {
             //@ts-ignore
             width < 768 && is_show_card_detail_collection === true && (
@@ -1208,9 +1196,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       <li
                         className="breadcrumb-item active"
                         aria-current="page"
-                      >
-                        Edit Card
-                      </li>
+                      > Edit Card </li>
                     )}
                   </ol>
                 </nav>
@@ -1220,7 +1206,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
           <div className="add-collection-right-content">
             <div className="d-flex justify-content-between align-items-center add-collection-right__title">
-              <h2>
+              <h2 className="minhei-32">
                 {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}{" "}
               </h2>
               { // @ts-ignore
@@ -1308,7 +1294,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   />
                 </div>
               )}
-
               <div className="mb-3">
                 <label htmlFor="" className="form-label">
                   Select Grade Value
@@ -1363,17 +1348,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     Purchase Price{" "}
                     <OverlayTrigger
                      overlay={<Tooltip>This value is private. It can be used in the collection analytics as a substitute value for missing prices.</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <img
-                        ref={ref}
-                        {...triggerHandler}
-                        className="ml-1 label-icon cursor-pointer"
-                        src={IconQuestion.src}
-                        alt=""
-                    />
-                        )}
-                  </OverlayTrigger>
+                    >
+                      {({ ref, ...triggerHandler }) => (
+                        <img
+                          ref={ref}
+                          {...triggerHandler}
+                          className="ml-1 label-icon cursor-pointer"
+                          src={IconQuestion.src}
+                          alt=""
+                        />
+                      )}
+                    </OverlayTrigger>
                   </label>
                   <div className="d-flex purchase-price">
                     <Controller
@@ -1421,19 +1406,19 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <label className="form-label">
                     Date Acquired{" "}
                     <span>
-                    <OverlayTrigger
-                     overlay={<Tooltip>This date is private, it is used in collection analytics to chart your portfolio value over time.</Tooltip>}
-                   >
-                    {({ ref, ...triggerHandler }) => (
-                    <img
-                        ref={ref}
-                        {...triggerHandler}
-                        className="ml-1 label-icon cursor-pointer"
-                        src={IconQuestion.src}
-                        alt=""
-                    />
+                      <OverlayTrigger
+                        overlay={<Tooltip>This date is private, it is used in collection analytics to chart your portfolio value over time.</Tooltip>}
+                      >
+                        {({ ref, ...triggerHandler }) => (
+                          <img
+                            ref={ref}
+                            {...triggerHandler}
+                            className="ml-1 label-icon cursor-pointer"
+                            src={IconQuestion.src}
+                            alt=""
+                          />
                         )}
-                  </OverlayTrigger>
+                      </OverlayTrigger>
                     </span>
                   </label>
                   <Controller
