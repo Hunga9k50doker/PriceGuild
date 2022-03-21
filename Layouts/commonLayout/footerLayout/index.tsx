@@ -10,14 +10,16 @@ function Footer() {
   const { loggingIn } = useSelector(Selectors.auth);
   const { sports } = useSelector(Selectors.config);
   const pathname = router.pathname.split("/")
-  // 
+
   if (pathname[1] === "collections-add-card") {
     return null
   }
+
   const openInNewTab = (url: string) => {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
   }
+
   return (
     <div className={`footer-content container-fluid pt-5`}>
       <div className="container-footer">
@@ -25,70 +27,54 @@ function Footer() {
           <div className="col-md-4 col-sm-11 col-xs-11 menu-logo">
             <div className="footer-text pull-left">
               <div className="d-flex">
-                <img src={logo.src} />
+                <img src={logo.src} alt="PriceGuide" />
               </div>
             </div>
           </div>
           <div className="col-md-2 col-sm-4 col-xs-4 menu-item-footer">
             <p className="heading">
-                <Link href="/">
-                    <a className="text-reset text-decoration-none">
-                        Home
-                    </a>
-                </Link>
+              <Link href="/">
+                <a className="text-reset text-decoration-none" title="Home"> Home </a>
+              </Link>
             </p>
             <ul className="list-unstyled">
-                <li>
-                    <Link href="/search">
-                        <a className="text-reset text-decoration-none">
-                            Search
-                        </a>
-                    </Link>
-                </li>
-              {/* <li>Box Breaks</li> */}
-                <li>
-                    <Link href="/top-100">
-                        <a className="text-reset text-decoration-none">
-                            Top 100
-                        </a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/leaderboard">
-                      <a className="text-reset text-decoration-none">
-                          Leaderboard
-                      </a>
-                    </Link>
-                </li>
-              {/* <li>Market</li> */}
+              <li>
+                <Link href="/search">
+                  <a className="text-reset text-decoration-none" title="Search"> Search </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/top-100">
+                  <a className="text-reset text-decoration-none" title="Top 100"> Top 100 </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/leaderboard">
+                  <a className="text-reset text-decoration-none" title="Leaderboard"> Leaderboard </a>
+                </Link>
+              </li>
               {!loggingIn && <div className='has-auth'>
                 <li className='no-padding'>
-                    <Link href="/login">
-                        <a className="text-reset text-decoration-none">
-                            Login
-                        </a>
-                    </Link>
+                  <Link href="/login">
+                    <a className="text-reset text-decoration-none" title="Login"> Login </a>
+                  </Link>
                 </li>
                 <li className='no-padding'>
-                    <Link href="/register">
-                        <a className="text-reset text-decoration-none">
-                            Create Account
-                        </a>
-                    </Link>
+                  <Link href="/register">
+                    <a className="text-reset text-decoration-none" title="Create Account"> Create Account </a>
+                  </Link>
                 </li>
               </div>}
             </ul>
           </div>
           <div className="col-md-2 col-sm-4 col-xs-4 menu-item-footer mobile-flex-menu">
-            <p className="heading gray-color">Collections</p>
+            <p className="heading gray-color"> Collections </p>
             <ul className="list-unstyled">
               {
                 sports?.map((item, index) => <li key={index}>
-                    <Link href={`/collections/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
-                        <a className="text-reset text-decoration-none" >
-                            {item?.sportName}
-                        </a>
-                    </Link>
+                  <Link href={`/collections/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
+                    <a className="text-reset text-decoration-none" title={item?.sportName}> {item?.sportName} </a>
+                  </Link>
                 </li>)
               }
             </ul>
@@ -98,45 +84,35 @@ function Footer() {
             <ul className="list-unstyled">
               {
                 sports?.map((item, key) => <li key={key} >
-                    <Link href={`/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
-                        <a className="text-reset text-decoration-none">
-                            {item?.sportName}
-                        </a>
-                    </Link>
+                  <Link href={`/${item.sportName.replace(/\s/g, '').toLowerCase()}`}>
+                    <a className="text-reset text-decoration-none" title={item?.sportName}> {item?.sportName} </a>
+                  </Link>
                 </li>)
               }
             </ul>
           </div>
           <div className="col-md-2 col-sm-4 col-xs-4 menu-item-footer">
             <ul className="list-unstyled">
-                <li>
-                    <Link href={`/blog`}>
-                        <a className="text-reset text-decoration-none">
-                        Blog
-                        </a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href={`/faq`}>
-                        <a className="text-reset text-decoration-none">
-                            FAQ
-                        </a>
-                    </Link>
-                </li>
+              {/*<li>
+                <Link href={`/blog`}>
+                  <a className="text-reset text-decoration-none" title="Blog"> Blog </a>
+                </Link>
+              </li>*/}
               <li>
-                <Link href={`/about`}>
-                    <a className="text-reset text-decoration-none">
-                        About
-                    </a>
+                <Link href={`/faq`}>
+                  <a className="text-reset text-decoration-none" title="FAQ"> FAQ </a>
                 </Link>
               </li>
-                <li>
-                    <Link href={`/contact`}>
-                        <a className="text-reset text-decoration-none">
-                            Contact
-                        </a>
-                    </Link>
-                </li>
+              <li>
+                <Link href={`/about`}>
+                  <a className="text-reset text-decoration-none" title="About"> About </a>
+                </Link>
+              </li>
+              <li>
+                <Link href={`/contact`}>
+                  <a className="text-reset text-decoration-none" title="Contact"> Contact </a>
+                </Link>
+              </li>
               <div className='has-auth'>
                 {/* <li>API Documentation</li> */}
                 {/* <li>Feedback</li> */}
@@ -144,25 +120,19 @@ function Footer() {
               <div className='has-auth'>
                 {/* <li>Links</li> */}
                 <li>
-                    <Link href={`/sitemap.xml`}>
-                        <a className="text-reset text-decoration-none">
-                        Sitemap
-                        </a>
-                    </Link>
+                  <Link href={`/sitemap.xml`}>
+                    <a className="text-reset text-decoration-none" title="Sitemap"> Sitemap </a>
+                  </Link>
                 </li>
                 <li>
-                    <Link href={`/terms-of-use`}>
-                        <a className="text-reset text-decoration-none">
-                            Terms of Use
-                        </a>
-                    </Link></li>
-                    <li>
-                        <Link href={`/privacy-policy`}>
-                            <a className="text-reset text-decoration-none">
-                                Privacy Policy
-                            </a>
-                        </Link>
-                    </li>
+                  <Link href={`/terms-of-use`}>
+                    <a className="text-reset text-decoration-none" title="Terms of Use"> Terms of Use </a>
+                  </Link></li>
+                <li>
+                  <Link href={`/privacy-policy`}>
+                    <a className="text-reset text-decoration-none" title="Privacy Policy"> Privacy Policy </a>
+                  </Link>
+                </li>
               </div>
             </ul>
           </div>
@@ -181,21 +151,16 @@ function Footer() {
                 {/* <i className="fa fa-instagram fa-lg" /> */}
                 {/* <i className="fa fa-linkedin-square fa-lg" /> */}
                 <Link href={{ pathname: "https://www.facebook.com/PriceGuideCards" }}>
-                    <a target={"_blank"} style={{color: "#FFFFFF"}}>
-                        <i className="fa fa-facebook pr-3" />
-                    </a> 
+                  <a target={"_blank"} style={{color: "#FFFFFF"}} title="Facebook"> <i className="fa fa-facebook pr-3" /> </a> 
                 </Link>
                 <Link href={{ pathname: "https://twitter.com/PriceGuideCards" }}>
-                    <a style={{color: "#FFFFFF"}} target={"_blank"}>
-                        <i className="fa fa-twitter fa-lg" />
-                    </a>  
+                  <a style={{color: "#FFFFFF"}} target={"_blank"} title="Twitter"> <i className="fa fa-twitter fa-lg" /> </a>  
                 </Link>
               </div>
             </div>
             <div className="only-mobile">
               <div className="text-center pull-right-copy-right">
-                &#169; 2021 Price Guide Limited. All Rights <br/>
-                Reserved.
+                &#169; 2021 Price Guide Limited. All Rights <br/>Reserved.
               </div>
             </div>
           </div>
