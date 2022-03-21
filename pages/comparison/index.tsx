@@ -607,7 +607,7 @@ const Comparison: React.FC = ({ ...props}) => {
       <CaptCha
         isOpen={isCaptCha}
         onSuccess={onSuccessCaptcha}
-        onClose={() => setIsCaptCha(true)} />
+        onClose={() => setIsCaptCha(false)} />
     </div>
   );
 };
