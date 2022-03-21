@@ -3,7 +3,5 @@ WORKDIR /home/src/app
 # add app
 COPY . ./
 
-RUN npm install --force
-
 # start app
-CMD ["npm", "run", "start:staging"]
+ENTRYPOINT ["sh", "entrypoint.sh"]
