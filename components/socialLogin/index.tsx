@@ -285,7 +285,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
             authOptions={{
               clientId: process.env.REACT_APP_APPLE_CLIENT_ID,
               scope: 'email name',
-              redirectURI: 'https://nextjs.priceguide.cards/',
+              redirectURI: 'https://nextjs.priceguide.cards',
               state: '',
               nonce: 'nonce',
               usePopup: true,
