@@ -25,6 +25,8 @@ import ArrowUp from "assets/images/long-arrow-up.svg";
 // @ts-ignore
 import $ from "jquery";
 import CapchaHandler from "components/capchaHandler";
+import {pageView}  from 'libs/ga'
+import { useRouter } from 'next/router'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEhlnNzWpoOow4sgMYvdrFNxu2dYjB70A",
@@ -37,7 +39,7 @@ const firebaseConfig = {
 };
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-
+  const router = useRouter();
   React.useEffect(() => {
     typeof document !== undefined ? require("bootstrap/dist/js/bootstrap.bundle.min") : null;
     
@@ -49,9 +51,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [])
+  useEffect(() => {
+    const handleRouteChange = (url:any) => {
+      pageView(url)
+    }
+  
+    router.events.on('routeChangeComplete', handleRouteChange)
 
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
   // @ts-ignore
   const Layout = Component.Layout || DefaultLayout;
+  
   
   const gotoTop = () => {
     window.scrollTo(0, 0);
@@ -65,6 +80,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }
   };
 
+  
   return (
     <React.StrictMode>
       <Provider store={store}>

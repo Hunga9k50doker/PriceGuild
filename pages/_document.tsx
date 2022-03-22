@@ -10,6 +10,20 @@ export default class CustomDocument extends Document {
         return (
             <Html lang="en">
                 <Head>
+                    <script
+                        async
+                        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+                    />
+                    <script
+                        dangerouslySetInnerHTML={{
+                        __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
+                    `,
+                        }}
+                    />
                     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" />
