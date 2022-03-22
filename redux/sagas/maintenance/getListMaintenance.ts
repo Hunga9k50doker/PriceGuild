@@ -14,6 +14,7 @@ function* getListMaintenance(action: {
 }) {
   try {
     firestore.collection("maintenance_mode")
+      .orderBy("date", "desc")
       .onSnapshot((querySnapshot) => {
         const listData: any = [];
         querySnapshot.forEach((doc) => {

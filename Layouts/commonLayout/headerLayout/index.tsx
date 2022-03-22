@@ -189,7 +189,7 @@ const Header = (props: any) => {
 
   React.useEffect(() => {
     if (maintenanceList?.length) {
-      const dataMaintenance: any = maintenanceList[maintenanceList.length - 1];
+      const dataMaintenance: any = maintenanceList[0];
       switch (dataMaintenance.type) {
         case 2:
           router.push('/maintenance')
