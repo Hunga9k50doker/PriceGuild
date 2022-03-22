@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import { ToastSystem } from 'helper/toast_system';
 import { AuthActions } from 'redux/actions/auth_action';
 import { User } from "model/user";
+import Head from 'next/head';
 type Inputs = {
   username: string,
 };
@@ -81,28 +82,36 @@ const SetUsername: React.FC = () => {
   };
 
   return (
-    <div className="container authenticate-page pb-5">
-      <div className="">
-        <div className="d-flex justify-content-center">
-          <div className="login-form register-account-form mt-4 py-4">
-            <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
-              <h2 className="text-center text-title">Set Username</h2>
-              <div className={`col-12 form-data ${errors.username ? "error-validation" : ""}`}>
-                <label className="text-form">Username</label>
-                <input {...register("username")} type="text" name="username" className="form-control" placeholder="Your Username" />
-                {errors.username?.message && <div className="invalid-feedback d-inline">{errors.username?.message}</div>}
-              </div>
-              <div className="col-12 d-grid gap-2">
-                <button className="btn btn-primary btn-login" type="submit">Save and Confirm</button>
-              </div>
-              <div className="col-12 mt-4">
-                <p className="text-center mb-0 no-credit">You can change it later in Profile Settings</p>
-              </div>
-            </form>
+    <>
+      <Head>
+				<title>Set Username | PriceGuide.Cards</title>
+				<meta name="description" content="" />
+			</Head>
+      <div className="container authenticate-page pb-5">
+        <div className="">
+          <div className="d-flex justify-content-center">
+            <div className="login-form register-account-form mt-4 py-4">
+              <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
+                <h2 className="text-center text-title">Set Username</h2>
+                <div className={`col-12 form-data ${errors.username ? "error-validation" : ""}`}>
+                  <label className="text-form">Username</label>
+                  <input {...register("username")} type="text" name="username" className="form-control" placeholder="Your Username" />
+                  {errors.username?.message && <div className="invalid-feedback d-inline">{errors.username?.message}</div>}
+                </div>
+                <div className="col-12 d-grid gap-2">
+                  <button className="btn btn-primary btn-login" type="submit">Save and Confirm</button>
+                </div>
+                <div className="col-12 mt-4">
+                  <p className="text-center mb-0 no-credit">You can change it later in Profile Settings</p>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
+
+  
   );
 }
 
