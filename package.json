@@ -3,14 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "env-cmd -f .env.development next dev",
-    "build:dev": "env-cmd -f .env.development rm -rf build && next build",
-    "build:staging": "env-cmd -f .env.staging rm -rf build && next build",
-    "build:production": "env-cmd -f .env.production rm -rf build && next build",
-    "start:staging": "env-cmd -f .env.staging rm -rf build && next start",
-    "start:production": "env-cmd -f .env.production rm -rf build && next start",
-    "test": "next test",
-    "eject": "next eject"
+    "build": "env-cmd -f .env next build",
+    "start": "env-cmd -f next start"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.1.0",
