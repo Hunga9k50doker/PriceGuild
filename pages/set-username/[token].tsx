@@ -27,7 +27,7 @@ const SetUsername: React.FC = () => {
       .required('Username is required')
       .min(3, 'Usernames can only contain letters of the alphabet, numbers, -,  _ and a minimum of 3 characters')
       .max(150, 'Usernames can only contain letters of the alphabet, numbers, -,  _, a minimum of 3 and a maximum of 150 characters')
-      .matches(RegexString.username, 'Please provide a valid username'),
+      .matches(RegexString.username, 'Please provide a valid username')
   });
 
   useEffect(() => {
@@ -53,15 +53,22 @@ const SetUsername: React.FC = () => {
   const onSubmit: SubmitHandler<Inputs> = async data => {
 
     try {
-
       let tokenData = JSON.parse(atob(token));
-      const form_request = { username: data.username, userid: tokenData.userid };
-      const result = await api.v1.account.setUserName(form_request);
-      // if (result.success) {
-      //   history.push(`/verify-email`);
-      // dispatch(ConfigAction.updateUserNameSocial(false));
-      // dispatch(ConfigAction.updateEmailVerify(true));
-      // }
+      
+      const formRequest = { username: data.username || MyStorage.user.username, userid: tokenData.userid ||  MyStorage.user.username};
+      await  api.v1.authorization.checkUsername({ username: data.username  })
+      .then(res => {
+        // @ts-ignore
+        if (res.username_available === false) {
+          ToastSystem.error("Username already taken")
+          return;
+        }
+        });
+     
+      const result = await api.v1.account.setUserName(formRequest);
+      if (result.success) {
+        router.push('/')
+      }
     } catch (err) {
       ToastSystem.error("Set Username Error!")
       console.log(err);
