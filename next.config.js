@@ -15,7 +15,8 @@ module.exports = withFonts({
     REACT_APP_IMAGE_COLLECTION_URL: process.env.REACT_APP_IMAGE_COLLECTION_URL, 
     REACT_APP_SITE_KEY: process.env.REACT_APP_SITE_KEY, 
     DOMAIN: process.env.DOMAIN,
-    NEXT_PUBLIC_GOOGLE_ANALYTICS: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS
+    NEXT_PUBLIC_GOOGLE_ANALYTICS: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS,
+    MAINTENANCE_FS_COLLECTION_NAME: process.env.MAINTENANCE_FS_COLLECTION_NAME
   },
   webpack: (config) => {
     config.resolve.modules.push(path.resolve("./"));

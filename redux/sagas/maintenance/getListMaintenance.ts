@@ -13,7 +13,7 @@ function* getListMaintenance(action: {
   dispatch: any;
 }) {
   try {
-    firestore.collection("maintenance_mode")
+    firestore.collection(`${process.env.MAINTENANCE_FS_COLLECTION_NAME}`)
       .orderBy("date", "desc")
       .onSnapshot((querySnapshot) => {
         const listData: any = [];
