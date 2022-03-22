@@ -73,6 +73,15 @@ class _FriendTypeSagas {
   readonly getListFriend = "get-list-friend";
 }
 
+class _MaintenanceTypeSagas {
+  readonly getListMaintenance = "get-list-maintenance"
+}
+
+class  _MaintenanceTypeReducer {
+  readonly updateListMaintenance = "update-list-maintenance";
+}
+
+
 class _FriendTypeReducer {
   readonly updateListFriend = "update-list-friend";
   // readonly updateFriends = "update-friends";
@@ -92,6 +101,7 @@ class _Sagas {
   readonly message = new _MessageTypeSagas();
   readonly compare = new _CompareTypeSagas();
   readonly friend = new _FriendTypeSagas();
+  readonly maintenance = new  _MaintenanceTypeSagas();
 }
 
 class _Reducer {
@@ -105,6 +115,7 @@ class _Reducer {
   readonly compare = new _CompareTypeReducer();
   readonly friend = new _FriendTypeReducer();
   readonly claim = new _ClaimPhotopeReducer();
+  readonly maintenance = new  _MaintenanceTypeReducer();
 }
 
 export class ActionTypes {

@@ -242,6 +242,10 @@ export type MessagesReducerType = {
   users?: UserMessageType[];
 };
 
+export type MaintenanceReducerType = {
+  maintenanceList?: MaintenanceType[];
+};
+
 export type ActionConversationType = {
   uid_1: string | number;
   uid_2: string | number;
@@ -612,6 +616,12 @@ export interface IMessage {
 export interface GroupMessage {
   messages: IMessage[];
   date: Date;
+}
+
+export interface MaintenanceType {
+  value: number;
+  date: Date;
+  message?: string
 }
 
 /// Api Document
