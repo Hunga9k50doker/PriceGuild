@@ -123,7 +123,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
   const [keepCardCode ,setKeepCardCode] = useState('');
-  const [header, setHeader] = useState<any|undefined>({});
+  // const [header, setHeader] = useState<any|undefined>({});
   
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -146,7 +146,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
             // @ts-ignore
             card_code: cardCode,
             currency: userInfo.userDefaultCurrency,
-          },header).catch(err => {
+          }).catch(err => {
             //@ts-ignore
             if (err?.status === 403) {
               setIsNotAcitve(true);
@@ -183,50 +183,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   }, [props.code, loggingIn, router.query]);
     
    
-  useEffect(() => {
-    if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") { 
-      if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
-        let cardCode = router?.query?.cardCodeDetail ?? props.code;
-        // @ts-ignore
-        setKeepCardCode(cardCode);
-        let controller: CardDetailSaga = refProvider?.current
-          .controller as CardDetailSaga;
-        if (!isEmpty(cardCode)) {
-  
-          if (loggingIn) {
-     
-            controller.loadSaleData({
-              // @ts-ignore
-              card_code: cardCode,
-              currency: userInfo.userDefaultCurrency,
-            },header).catch(err => {
-              //@ts-ignore
-              if (err?.status === 403) {
-                setIsNotAcitve(true);
-                setNotActiveMessage(err.message)
-              }
-              // debugger;
-              if (err?.status === 409) {
-              
-                if (Boolean(err?.show_captcha)) {
-                  if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
-                    setIsCaptCha(Boolean(err?.show_captcha)) 
-                  }
-                 
-                  props.errorSale && props.errorSale(true);
-                }
-              } else {
-                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
-              }
-            })
-          }
-          
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }
-      
-    }
-  }, [header]);
+  // useEffect(() => {
+    
+  // }, [header]);
 
   useImperativeHandle(ref, () => ({
     loadSalaData: _loadSaleDataCapCha,
@@ -768,8 +727,49 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const onSuccessCaptcha = async (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-    
-    await setHeader(headers);
+    if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") { 
+      if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
+        let cardCode = router?.query?.cardCodeDetail ?? props.code;
+        // @ts-ignore
+        setKeepCardCode(cardCode);
+        let controller: CardDetailSaga = refProvider?.current
+          .controller as CardDetailSaga;
+        if (!isEmpty(cardCode)) {
+  
+          if (loggingIn) {
+     
+            controller.loadSaleData({
+              // @ts-ignore
+              card_code: cardCode,
+              currency: userInfo.userDefaultCurrency,
+            },headers).catch(err => {
+              //@ts-ignore
+              if (err?.status === 403) {
+                setIsNotAcitve(true);
+                setNotActiveMessage(err.message)
+              }
+              // debugger;
+              if (err?.status === 409) {
+              
+                if (Boolean(err?.show_captcha)) {
+                  if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
+                    setIsCaptCha(Boolean(err?.show_captcha)) 
+                  }
+                 
+                  props.errorSale && props.errorSale(true);
+                }
+              } else {
+                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+              }
+            })
+          }
+          
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }
+      
+    }
+    // await setHeader(headers);
     await setIsLoadingSalesChart(false);
     // getDetail([1],headers);
   }
