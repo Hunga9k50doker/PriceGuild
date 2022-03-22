@@ -9,7 +9,8 @@ import { api } from "configs/axios";
 import { ConfigAction } from "redux/actions/config_action";
 import { useRouter } from 'next/router'
 import { ToastSystem } from 'helper/toast_system';
-
+import { AuthActions } from 'redux/actions/auth_action';
+import { User } from "model/user";
 type Inputs = {
   username: string,
 };
@@ -67,6 +68,10 @@ const SetUsername: React.FC = () => {
      
       const result = await api.v1.account.setUserName(formRequest);
       if (result.success) {
+        let userData = MyStorage.user;
+        userData.username = data.username;
+        MyStorage.user = new User(userData);
+        dispatch(AuthActions.updateInfo(MyStorage.user));
         router.push('/')
       }
     } catch (err) {

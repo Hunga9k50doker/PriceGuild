@@ -42,7 +42,7 @@ const CallbackTwiiter = (props: PropTypes) => {
         let token: any = { userid: response.data.user_data.userid, email: response.data.user_data.email };
         token = btoa(JSON.stringify(token));
 
-        if (isEmpty(response?.data?.user_data?.username)) {
+        if (isEmpty(response?.data?.user_data?.username) || response?.data?.user_data?.username === "") {
           sessionStorage.setItem('redirect', `/set-username/${token}`);
           return;
         }
