@@ -189,13 +189,13 @@ function HomePage() {
     return `/card-details/${cardData?.code}/${url}`;
   }
 
-  useEffect(() => {
-    if (maintenance?.length) {
-      if (maintenance?.[0]?.type === 2) {
-        router.push('/maintenance')
-      }
-    }
-  },[maintenance])
+  // useEffect(() => {
+  //   if (maintenance?.length) {
+  //     if (maintenance?.[0]?.type === 2) {
+  //       router.push('/maintenance')
+  //     }
+  //   }
+  // },[maintenance])
 
   return (
     <div
