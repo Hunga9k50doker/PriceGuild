@@ -34,7 +34,7 @@ const SetUsername: React.FC = () => {
     if (token) {
       try {
         let data = JSON.parse(atob(token));
-        if (!data.userid || !data.email) {
+        if (!data.userid) {
           ToastSystem.error("Token invalid");
           router.push('/')
         }
