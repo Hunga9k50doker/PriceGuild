@@ -157,7 +157,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
   }
 
   const handleLoginTwitter = () => {
-    window.location.href = "https://api-staging.priceguide.cards/social-login/twitter"
+    window.location.href = process.env.REACT_APP_TWITTER_CLIENT_API_CALLBACK
   }
 
   // React.useEffect(() => {
@@ -285,7 +285,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
             authOptions={{
               clientId: process.env.REACT_APP_APPLE_CLIENT_ID,
               scope: 'email name',
-              redirectURI: 'https://nextjs.priceguide.cards/',
+              redirectURI: process.env.REACT_APP_APPLE_CALLBACK,
               state: '',
               nonce: 'nonce',
               usePopup: true,

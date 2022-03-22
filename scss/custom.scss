@@ -401,8 +401,8 @@
                       box-shadow: 0px 12px 48px rgba(109, 117, 136, 0.12);
                       border-radius: 6px;
                       border: none;
-                      width: 224px!important;
-                      padding: 6px!important;
+                      width: 224px !important;
+                      padding: 6px !important;
                       .dropdown-menu-item {
                         padding: 11.5px 15px;
                         align-items: center;
@@ -468,7 +468,6 @@
             transition: transform 0.4s;
           }
         }
-
         .memo_types_title.collapsed {
           img {
             transform: rotate(180deg);
@@ -706,7 +705,7 @@
 
 .breadcrumb-edit-card {
   .breadcrumb-item.active {
-      color: #6D7588 !important;
+    color: #6D7588 !important;
   }
 }
 
@@ -793,6 +792,7 @@
     }
   }
 }
+
 @media screen and (max-width: 1200px) {
   .footer-content {
     .container-footer {
@@ -801,6 +801,7 @@
     }
   }
 }
+
 @media screen and (max-width: 1024px) {
   .footer-content {
     .container-footer {
@@ -809,6 +810,7 @@
     }
   }
 }
+
 @media screen and (max-width: 900px) {
   .footer-content {
     .container-footer {
@@ -820,6 +822,7 @@
     }
   }
 }
+
 @media screen and (max-width: 767px) {
   .footer-content {
     .container-footer {
@@ -853,6 +856,7 @@
     }
   }
 }
+
 @media screen and (max-width: 576px) {
   .footer-content {
     .container-footer {
@@ -872,6 +876,7 @@
     }
   }
 }
+
 .popular-publishers {
   background: rgba(233, 241, 255, 0.35);
   .slick-slider {
@@ -904,18 +909,23 @@
     }
   }
 }
+
 .container-fluid.card-detail .popular-publishers {
-    background-color: transparent;
+  background-color: transparent;
 }
+
 .btn-see-all-trading {
   display: none;
 }
+
 .btn-find-card {
   display: none;
 }
+
 .btn-create-portfolio {
   display: none;
 }
+
 .image-background {
   background-image: url("../assets/images/join-community.png");
   .card-content-home {
@@ -933,6 +943,7 @@
     }
   }
 }
+
 .card-breakdown {
   padding-right: 120px;
   color: #18213A;
@@ -965,6 +976,7 @@
     }
   }
 }
+
 .content-break-down {
   > div {
     &:first-child {
@@ -975,11 +987,9 @@
   }
   .data-chart-info {
     padding-top: 24px;
-    // padding-left: 25px;
     .row {
       input {
         text-align: right;
-        // padding-right: 25px;
         color: #18213a;
         font-family: 'Manrope', sans-serif;
         font-style: normal;
@@ -1053,6 +1063,7 @@
     display: none;
   }
 }
+
 .card-slick-element {
   .data-card-slicker {
     .slick-slider {
@@ -1079,6 +1090,7 @@
     border-radius: 6px;
   }
 }
+
 .latest-collection {
   .data-slicker-collection {
     .slick-slider {
@@ -1130,7 +1142,6 @@
       .leader-board {
         .content-table {
           table {
-            // background-color: #e9f1ff;
             tbody {
               background-color: #fff;
               tr {
@@ -1162,6 +1173,7 @@
     }
   }
 }
+
 @media screen and (max-width: 1024px) {
   .popular-publishers {
     padding-left: 60px;
@@ -1187,7 +1199,7 @@
   .leader-board-join-community {
     .leader-board-home-page {
       .leader-board {
-        padding-left: 60px!important;
+        padding-left: 60px !important;
       }
     }
   }
@@ -1587,6 +1599,7 @@
     }
   }
 }
+
 @media screen and (max-width: 567px) {
   div.header {
     padding: 48px 16px 12px 16px !important;
@@ -1597,6 +1610,7 @@
     }
   }
 }
+
 @media screen and (max-width: 414px) {
   .slick-sport{
     width: 100% !important;
@@ -1622,6 +1636,7 @@
     }
   }
 }
+
 @media screen and (max-width: 320px) {
   .slick-sport {
     width: 100% !important;
@@ -1697,7 +1712,7 @@
       .button-key {
         -ms-overflow-style: none;
         scrollbar-width: none;
-        flex-wrap: nowrap!important;
+        flex-wrap: nowrap !important;
         overflow-x: scroll;
         overflow-y: hidden;
         button {
@@ -2028,12 +2043,10 @@
                   line-height: 130%;
                 }
               }
-
               .select-language__indicators {
                 span {
                   display: none;
                 }
-
                 .select-language__indicator {
                   padding: 5px 12px 5px 5px;
                   svg {
@@ -2399,7 +2412,7 @@
       }
        &-head {
         background-color: #fff;
-         position: sticky;
+        position: sticky;
         top: 0;
        }
        .section-title {
@@ -2437,7 +2450,7 @@
            }
          }
          .section-bowse-item-detail {
-           margin-bottom: 21px!important;
+           margin-bottom: 21px !important;
            &:nth-child(2n) {
             padding-right: 0;
             padding-left: 8px;
@@ -2507,7 +2520,6 @@
     }
   }
 }
-/* add cart wishlist */
 
 /* modal login */ 
 .login-form {
@@ -2661,10 +2673,6 @@
       border-right: none !important;
       max-width: unset !important;
       .card-add-detail {
-        /* .rounded.active {
-          background: rgba(109, 117, 136, 0.05);
-          border: 1px solid #CCCFD6 !important; 
-        } */
         .rounded {
           background: #ffffff;
           border: 1px solid #E9EAED !important;
@@ -2681,12 +2689,7 @@
     .d-block-add-collection.add-collection-right {
       display: none;
       padding: 16px !important;
-      // position: fixed;
-      // top: 70px !important;
-      // height: calc(100vh - 70px);
       width: 100%;
-      // left: 0;
-      // z-index: 999;
       background-color: #FFFFFF;
       overflow-x: scroll;
       .rounded {
@@ -2797,7 +2800,6 @@
             @media screen and (max-width: 1023.98px) {
               right: -25px !important;
             }
-            
           }
           &.slick-prev {
             top: 48% !important;
@@ -2907,7 +2909,8 @@
     }
   }
 }
-// empty collections
+
+/* empty collections */
 .empty-collection {
   min-height: 90vh;
   padding-top: 64px;
@@ -2950,16 +2953,18 @@
     }
   }
 }
+
 .coming-soon {
   font-family: Kanit;
   font-weight: 600;
   font-style: normal;
+  color: #0B0E61;
   font-size: 48px;
   @media screen and (max-width: 767.98px) {
     font-size: 34px;
   }
-  color: #0B0E61;
 }
+
 .chart-placeholder {
   width: 100%;
   height: 100%;
@@ -2984,9 +2989,9 @@
     font-weight: 800;
     color: #FFFFFF;
     border-radius: 6px;
-
   }
 }
+
 .user_link {
   color: #212529 !important;
 }

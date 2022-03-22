@@ -6,9 +6,11 @@ type PropTypes = {
 
 const Market = (props: PropTypes) => {
   return (
-    <div className="container-fluid">
-      <h2 className="mt-3">Market coming soon</h2>
-    </div>
+    <>
+      <div className="container-fluid">
+        <h2 className="mt-3">Market coming soon</h2>
+      </div>
+    </>
   );
 };
 

@@ -55,8 +55,8 @@ const SetUsername: React.FC = () => {
 
     try {
 
-      let data = JSON.parse(atob(token));
-      const form_request = { username: data.username, user_id:  data.userid };
+      let tokenData = JSON.parse(atob(token));
+      const form_request = { username: data.username, userid:  tokenData.userid };
       const result = await api.v1.account.setUserName(form_request);      
       // if (result.success) {
       //   history.push(`/verify-email`);

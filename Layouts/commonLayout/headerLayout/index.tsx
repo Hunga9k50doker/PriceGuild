@@ -40,6 +40,8 @@ import { divide } from "lodash";
 // @ts-ignore
 import $ from "jquery";
 import { useTranslation } from "react-i18next";
+import { getDetailMaintenance } from "utils/maintenance";
+
 const Header = (props: any) => {
   
   const router = useRouter();
@@ -184,6 +186,28 @@ const Header = (props: any) => {
   useEffect(() => {
     setLoginState(Boolean(loggingIn))
   }, [loggingIn])
+
+  const [maintenance, setMaintenance] = useState<Array<any>>();
+
+  useEffect(() => {
+    dispatch(HomeActions.getLatestCollection());
+    maintainceMode();
+  }, [])
+
+  const maintainceMode = async () => {
+
+    let main = await getDetailMaintenance();
+    console.log(main, 'vicimer542');
+    setMaintenance(main);
+  }
+
+  useEffect(() => {
+    if (maintenance?.length) {
+      if (maintenance?.[0]?.type === 2) {
+        router.push('/maintenance')
+      }
+    }
+  },[maintenance])
 
   return (
     <div className="position-relative container-fluid header-page-content">
