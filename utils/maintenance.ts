@@ -1,22 +1,22 @@
-import { firestore } from "./firebase";
+// import { firestore } from "./firebase";
 
 const getDetailMaintenance = async () => {
     
-    try {
+    // try {
         
-        let data: Array<any> = [];
+    //     let data: Array<any> = [];
 
-        const snapshot = await firestore.collection("maintenance_mode").get();
+    //     const snapshot = await firestore.collection("maintenance_mode").get();
 
-        snapshot.docs.forEach((doc: any) => {
-            data.push(doc.data());
-        })
+    //     snapshot.docs.forEach((doc: any) => {
+    //         data.push(doc.data());
+    //     })
 
-        return data;
+    //     return data;
 
-    } catch (error) {
-      
-    }
+    // } catch (error) {
+    //     con
+    // }
 }
 
 export { getDetailMaintenance };

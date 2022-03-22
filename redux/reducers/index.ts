@@ -9,6 +9,7 @@ import {
   FriendReducerType,
   ApiDocumentReducerType,
   ClaimPhotoReducerType,
+  MaintenanceReducerType
 } from "interfaces";
 import { combineReducers } from "redux";
 import categoryReducer from "redux/reducers/category";
@@ -21,6 +22,7 @@ import compareReducer from "./compare";
 import friendReducer from "./friend";
 import apiDocumentReducer from "./api_document";
 import claimPhotoReducer from "./claimPhoto";
+import maintenanceReducer from "./maintenance"
 export interface ReducerType {
   auth: AuthReducerType;
   category: IChooseCategory;
@@ -32,6 +34,7 @@ export interface ReducerType {
   friend: FriendReducerType;
   apiDocumentReducer: ApiDocumentReducerType;
   claimPhoto: ClaimPhotoReducerType;
+  maintenance: MaintenanceReducerType;
 }
 
 const reducers = combineReducers<ReducerType>({
@@ -45,6 +48,7 @@ const reducers = combineReducers<ReducerType>({
   friend: friendReducer,
   apiDocumentReducer: apiDocumentReducer,
   claimPhoto: claimPhotoReducer,
+  maintenance: maintenanceReducer
 });
 
 const createRootReducer = (state: any, action: any) => {

@@ -11,4 +11,5 @@ export default class Selectors {
   static friend = (state: ReducerType) => state.friend;
   static apiDocument = (state: ReducerType) => state.apiDocumentReducer;
   static claimPhoto = (state: ReducerType) => state.claimPhoto;
+  static maintenance = (state: ReducerType) => state.maintenance;
 }

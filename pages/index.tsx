@@ -62,16 +62,16 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     getOptionCardBreakDown(1);
     
-    maintainceMode();
+    // maintainceMode();
 
   }, [])
 
-  const maintainceMode = async () => {
+  // const maintainceMode = async () => {
 
-    let main = await getDetailMaintenance();
-    console.log(main, 'vicimer542');
-    setMaintenance(main);
-  }
+  //   let main = await getDetailMaintenance();
+  //   console.log(main, 'vicimer542');
+  //   setMaintenance(main);
+  // }
   const changeTransaction = () => {
     const languageCode = i18n.language === "vi" ? "en" : "vi";
     i18n.changeLanguage(languageCode)
