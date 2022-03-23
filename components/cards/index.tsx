@@ -54,10 +54,10 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
               </th>
               <th scope="col" style={{width: "10%"}}>
                 <div className="d-flex cursor-pointer align-items-center"> Card No.
-                  {/* <div onClick={() => onSortTable && onSortTable("onCardCode")}  className="ms-1 sort-table d-flex flex-column-reverse">
+                  <div onClick={() => onSortTable && onSortTable("onCardCode")}  className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
                     <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
-                  </div> */}
+                  </div>
                 </div>
               </th>
               <th scope="col" style={{width: "30%"}}>
