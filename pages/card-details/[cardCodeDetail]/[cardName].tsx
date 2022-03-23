@@ -42,7 +42,6 @@ export const getServerSideProps = async (context: any) => {
     let titlePage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} | PriceGuide.Cards`;
     let descriptionPage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} Card Details`;
     
-
     return {props:{
      titlePage,
       descriptionPage,
