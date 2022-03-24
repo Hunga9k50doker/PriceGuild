@@ -52,16 +52,17 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-              <th scope="col" style={{width: "10%"}}>
-                <div className="d-flex cursor-pointer align-items-center"> Card No.
-                  <div onClick={() => onSortTable && onSortTable("onCardCode")}  className="ms-1 sort-table d-flex flex-column-reverse">
+             
+              <th scope="col" style={{width: "30%"}}>
+                <div className="d-flex cursor-pointer"> Card </div>
+              </th>
+              <th scope="col" style={{width: "13%"}}>
+                <div className="d-flex cursor-pointer align-items-center" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
+                  <div   className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
                     <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
                   </div>
                 </div>
-              </th>
-              <th scope="col" style={{width: "30%"}}>
-                <div className="d-flex cursor-pointer"> Card </div>
               </th>
               <th scope="col" style={{width: "10%"}}>
                 <div className="d-flex cursor-pointer"> Grade </div>
@@ -83,7 +84,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "12%"}}>
+              <th scope="col" style={{width: "10%"}}>
                 <div onClick={() =>onSortTable &&  onSortTable("minPrice")} className="d-flex cursor-pointer align-items-center"> Min
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("minPrice", true)}`} aria-hidden="true"></i>
@@ -107,7 +108,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "10%"}}> </th>
+              <th scope="col" style={{width: "9%"}}> </th>
             </tr>
           </thead>
           <tbody>
