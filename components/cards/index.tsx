@@ -52,13 +52,21 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-              <th scope="col" style={{width: "32%"}}>
+              <th scope="col" style={{width: "10%"}}>
+                <div className="d-flex cursor-pointer align-items-center"> Card No.
+                  <div onClick={() => onSortTable && onSortTable("onCardCode")}  className="ms-1 sort-table d-flex flex-column-reverse">
+                    <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
+                    <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
+                  </div>
+                </div>
+              </th>
+              <th scope="col" style={{width: "30%"}}>
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
-              <th scope="col" style={{width: "12%"}}>
+              <th scope="col" style={{width: "10%"}}>
                 <div className="d-flex cursor-pointer"> Grade </div>
               </th>
-              <th scope="col" style={{width: "12%"}}>
+              <th scope="col" style={{width: "10%"}}>
                 <div onClick={() => onSortTable && onSortTable("latest_price")} className="d-flex cursor-pointer align-items-center"> Latest
                   <OverlayTrigger overlay={<Tooltip>Latest prices are calculated from the 28 day moving average</Tooltip>}>
                     {({ ref, ...triggerHandler }) => (
@@ -83,7 +91,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "12%"}}>
+              <th scope="col" style={{width: "10%"}}>
                 <div onClick={() => onSortTable && onSortTable("maxPrice")} className="d-flex cursor-pointer align-items-center"> Max
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("maxPrice", true)}`} aria-hidden="true"></i>
@@ -91,7 +99,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "12%"}}>
+              <th scope="col" style={{width: "10%"}}>
                 <div onClick={() => onSortTable && onSortTable("average_price")} className="d-flex cursor-pointer align-items-center "> Average
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("average_price", true)}`} aria-hidden="true"></i>
@@ -108,6 +116,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
              <td className="position-relative align-middle"> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
              <td className="text-capitalize"> <Skeleton height={30} /> </td>
+             <td> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>

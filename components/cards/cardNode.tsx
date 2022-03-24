@@ -194,6 +194,9 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
          <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" />
         </td>
         <td>
+          {props.item.onCardCode}
+        </td>
+        <td>
           <div className="d-flex ">
             <div className="box-image-picture" style={{ width: 51, minWidth: 51 }}> 
             <img
