@@ -8,7 +8,7 @@ import { ToastSystem } from 'helper/toast_system';
 import { AuthActions } from "redux/actions/auth_action";
 import { MyStorage } from "helper/local_storage";
 import { User } from "model/user";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 type PropTypes = {
   location: any,
@@ -22,7 +22,7 @@ const CallbackTwiiter = (props: PropTypes) => {
   useEffect(() => {
     if (!isEmpty(router.query)) {
       // @ts-ignore 
-      const data = decodeBase64(query.data)
+      const data = decodeBase64(router.query.data)
       registerSocial(JSON.parse(data))
     }
     else {
