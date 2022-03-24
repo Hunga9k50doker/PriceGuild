@@ -38,14 +38,16 @@ const CallbackTwiiter = (props: PropTypes) => {
         MyStorage.user = new User(response.data.user_data);
         MyStorage.token = response.data.token;
         dispatch(AuthActions.updateInfo(MyStorage.user));
-
         let token: any = { userid: response.data.user_data.userid, email: response.data.user_data.email };
         token = btoa(JSON.stringify(token));
 
         if (isEmpty(response?.data?.user_data?.username) || response?.data?.user_data?.username === "") {
-          sessionStorage.setItem('redirect', `/set-username/${token}`);
+         router.push( `/set-username/${token}`);
+          // sessionStorage.setItem('redirect', `/set-username/${token}`);
           return;
         }
+       
+     
         return ToastSystem.success("Login successful");
       }
       ToastSystem.error(response.message);
