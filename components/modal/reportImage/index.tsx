@@ -116,7 +116,7 @@ const Index = ({
       report_grade_company: isCorrectCard ? undefined : `${data.report_grade_company.name}`,
       report_grade_value:  isCorrectCard ? undefined : +data.report_grade_value,
      report_cardcode: props?.cardData?.code,
-     report_saleid: point.id ?? props?.cardData?.cardFrontImage?.id
+     report_saleid: point?.id || props?.cardData?.cardFrontImage?.id
     }
     try {
       const result = await api.v1.card_detail.reportCard(params);
