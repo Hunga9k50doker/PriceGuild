@@ -411,7 +411,7 @@ const CardList = (props: PropTypes) => {
       colorRef?.current?.reset();
       
       // @ts-ignore
-      buttonRef?.current.click();
+      buttonRef?.current && buttonRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, type: [], color: [], isLoad: true });
     }
@@ -423,7 +423,7 @@ const CardList = (props: PropTypes) => {
     // @ts-ignore
     setFilterData({ ...params, [key]: e, isLoad: true });
     // @ts-ignore
-    buttonRef?.current.click();
+    buttonRef?.current && buttonRef?.current.click();
   }
 
   const removeFilter = (item: FilterType, key: string) => {
@@ -1222,7 +1222,7 @@ const CardList = (props: PropTypes) => {
                                             onChange={(e: any, key: string) => { 
                                               onChangeFilter(e, key);
                                               // @ts-ignore
-                                              buttonRef?.current.click();
+                                              buttonRef?.current && buttonRef?.current.click();
                                             }}
                                             isSearch={false}
                                             name="sport"

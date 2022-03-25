@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { api } from 'configs/axios';
 import {
   SelectDefultType,
@@ -82,7 +82,7 @@ type TrackData = {
   name: string;
   isUpdate: boolean
 }
-
+const ISSERVER = typeof window === "undefined";
 const CardListCollection = ({
   isSelectCard = false,
   table = "portfolio",
@@ -141,7 +141,7 @@ const CardListCollection = ({
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
-  
+  const [dataFilterAfterSave] = useState<any>(!ISSERVER ? JSON.parse(localStorage.getItem('setDataFilter') ?? "[]") : []);
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -158,9 +158,24 @@ const CardListCollection = ({
     if (isRefresh) {
       setPagesSelected([1])
       localStorage.removeItem('filterCollection')
-      getListCard([1])
+       //@ts-ignore
+      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
+      console.log((isCheckBackToSave), 'isCheckBackToSave');
+      if (isCheckBackToSave) {
+        //@ts-ignore
+        let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard'));
+        //@ts-ignore
+        let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+        setFilterData(dataFilter);
+        updateDataFilter(dataFilterCustom);
+      }
+      //@ts-ignore
+      getListCard([1], isCheckBackToSave);
+     
     }
   }
+
+  
  const [t, i18n] = useTranslation("common")
   const getFilterSearch = () => {
     let params: any = {}
@@ -200,7 +215,7 @@ const CardListCollection = ({
     return params
   }
   const [dataUpdate, setDataUpdate] = useState<any>({});
-  const getListCard = async (page = [1]) => {
+  const getListCard = async (page = [1], isSaveChange: boolean = false) => {
     try {
         setData(prevState => {
           return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards], };
@@ -227,7 +242,16 @@ const CardListCollection = ({
           sort_by: sortCards?.sort_by
         }
       }
-      const result = await api.v1.portfolio.getUserPortfolio(params);
+
+      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? JSON.parse(JSON.stringify(localStorage.getItem('key_search_profile'))) : params);
+      
+      localStorage.setItem('key_search_profile', JSON.stringify(params));
+      
+      if (isSaveChange) {
+        //@ts-ignore
+        localStorage.setItem('saveChangePortfolio', false);
+      }
+      
       if (result.success) {
         let checkUpdateFilter = JSON.parse(localStorage.getItem("filterCollection") ?? "[]") ?? [];
         if (page.length === 1) {
@@ -297,6 +321,11 @@ const CardListCollection = ({
 
           setDataUpdate(updateFilter);
 
+          if (!isSaveChange) {
+            localStorage.setItem('lastestFilterEditCard', JSON.stringify(updateFilter))
+          }
+
+          console.log(updateFilter, 'updateFilter');
           const grades = updateFilter?.grades;
           let gradeFilter: any = grades?.map((item: { grade_company: any; data: any[]; }) => ({
             id: item.grade_company,
@@ -308,31 +337,33 @@ const CardListCollection = ({
               grade_value: grade.grade_value
             }))
           }))
+          if (!isSaveChange) {
+            dispatch(FilterAction.updateFiltersCardDetail({
+              publishers: convertListDataToGrouped(
+                updateFilter?.publishers,
+                FilterType.firstLetter,
+                (item1, item2) => {
+                  return item1.name.localeCompare(item2.name);
+                }
+              ),
+              collections: convertListDataToGrouped(
+                updateFilter?.collections,
+                FilterType.firstLetter,
+                (item1, item2) => {
+                  return item1.name.localeCompare(item2.name);
+                }
+              ),
+              printRuns: updateFilter?.printRuns,
+              years: updateFilter.years.map((item: { toString: () => any; }) => ({
+                name: item.toString(),
+                id: item,
+              })),
+              auto_memo: updateFilter?.auto_memo,
+              sports: updateFilter?.sports,
+              grades: gradeFilter
+            }));
+          }
           
-          dispatch(FilterAction.updateFiltersCardDetail({
-            publishers: convertListDataToGrouped(
-              updateFilter?.publishers,
-              FilterType.firstLetter,
-              (item1, item2) => {
-                return item1.name.localeCompare(item2.name);
-              }
-            ),
-            collections: convertListDataToGrouped(
-              updateFilter?.collections,
-              FilterType.firstLetter,
-              (item1, item2) => {
-                return item1.name.localeCompare(item2.name);
-              }
-            ),
-            printRuns: updateFilter?.printRuns,
-            years: updateFilter.years.map((item: { toString: () => any; }) => ({
-              name: item.toString(),
-              id: item,
-            })),
-            auto_memo: updateFilter?.auto_memo,
-            sports: updateFilter?.sports,
-            grades: gradeFilter
-          }));
           setCollectionDetail({
             group_ref: Number(collection),
             group_name: result.data?.group_name ?? "",
@@ -387,6 +418,66 @@ const CardListCollection = ({
       });
     }
   }
+
+  const updateDataFilter = (data: any) => { console.log(data, 'datadatadatadata');
+    const grades = data?.grades;
+    let gradeFilter: any = grades?.map((item: { grade_company: any; data: any[]; }) => ({
+      id: item.grade_company,
+      name: item.grade_company,
+      options: item.data?.map((grade: { grade_value: any; display_value: any; grade_company: any; }) => ({
+        id: `${item.grade_company}-${grade.grade_value}`,
+        name: grade.display_value,
+        grade_company: grade.grade_company,
+        grade_value: grade.grade_value
+      }))
+    }))
+
+    dispatch(FilterAction.updateFiltersCardDetail({
+      publishers: convertListDataToGrouped(
+        data?.publishers,
+        FilterType.firstLetter,
+        (item1, item2) => {
+          return item1.name.localeCompare(item2.name);
+        }
+      ),
+      collections: convertListDataToGrouped(
+        data?.collections,
+        FilterType.firstLetter,
+        (item1, item2) => {
+          return item1.name.localeCompare(item2.name);
+        }
+      ),
+      printRuns: data?.printRuns,
+      years: data.years.map((item: { toString: () => any; }) => ({
+        name: item.toString(),
+        id: item,
+      })),
+      auto_memo: data?.auto_memo,
+      sports: data?.sports,
+      grades: gradeFilter
+    }));
+  }
+
+  const setSelectDataFilter = (data: any) => {
+    if (!isEmpty(data?.sports)) {
+      sportRef.current?.reset(data?.sports);
+    }
+    if (!isEmpty(data?.grades)) {
+      gradeRef?.current?.reset(data?.grades);
+    }
+    if (!isEmpty(data?.years)) {
+      yearRef?.current?.reset(data?.years);
+    }
+    if (!isEmpty(data?.collections)) {
+      setRef?.current?.reset(data?.collections);
+    }
+    if (!isEmpty(data?.publishers)) {
+      publisherRef?.current?.reset(data?.publishers);
+    } 
+    if (!isEmpty(data?.auto_memo)) {
+      automemoRef?.current?.reset(data?.auto_memo);
+    }
+  }
   const checkIsUpdate = (key: string) => {
     let index = trackFilter.findIndex(x => x.name === key)
     if (index == -1) {
@@ -395,6 +486,19 @@ const CardListCollection = ({
     return trackFilter[index].isUpdate;
   }
   useEffect(() => {
+    // @ts-ignore
+    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+    // @ts-ignore
+    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
+    
+    if (isCheckBackToSave) {
+      setSelectDataFilter(dataFilter)
+    }
+
+    if (!isEmpty(filterData)) {
+      localStorage.setItem('setDataFilter', JSON.stringify(filterData));
+    }
+    
     if (!isEmpty(filters.years) && !data.isLoading) {
       setPagesSelected([1])
       getListCard([1])
@@ -447,10 +551,10 @@ const CardListCollection = ({
     } else {
        // @ts-ignore
       setFilterData({ ...params, [key]: e, isLoad: true });
-    }
+    } 
     resetDataTrack(dataFiler);
     // @ts-ignore
-    buttonRef?.current.click();
+    buttonRef?.current && buttonRef?.current.click();
   }
 
   const changeTrackFilter = (index: number) => {
@@ -463,7 +567,6 @@ const CardListCollection = ({
       })
       
     }
-    
   }
   const resetDataTrack = (data: Array<string>) => {
     let yearFilter = !data.includes('years');
