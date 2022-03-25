@@ -1226,7 +1226,7 @@ const CardList = (props: PropTypes) => {
                                             onChange={(e: any, key: string) => { 
                                               onChangeFilter(e, key);
                                               // @ts-ignore
-                                              buttonRef?.current.click();
+                                              buttonRef?.current && buttonRef?.current.click();
                                             }}
                                             isSearch={false}
                                             name="sport"
