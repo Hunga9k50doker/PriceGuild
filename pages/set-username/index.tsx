@@ -35,7 +35,22 @@ const SetUsername: React.FC = () => {
       .required('Username is required')
       .min(3, 'Usernames can only contain letters of the alphabet, numbers, -,  _ and a minimum of 3 characters')
       .max(150, 'Usernames can only contain letters of the alphabet, numbers, -,  _, a minimum of 3 and a maximum of 150 characters')
-      .matches(RegexString.username, 'Usernames can only contain letters of the alphabet, numbers, - and _'),
+      .matches(RegexString.username, 'Usernames can only contain letters of the alphabet, numbers, - and _')
+      .test('Unique Username', 'Username already taken',
+        function (value) {
+          return new Promise((resolve, reject) => {
+            api.v1.authorization.checkUsername({ username: value })
+              .then(res => {
+                // @ts-ignore
+                if (res.username_available === false) {
+                  resolve(false);
+                } else {
+                  resolve(true);
+                }
+            })
+          })
+        }
+      ),
   });
 
   useEffect(() => {
