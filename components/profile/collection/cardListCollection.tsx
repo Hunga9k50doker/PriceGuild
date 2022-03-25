@@ -141,7 +141,13 @@ const CardListCollection = ({
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
-  const [dataFilterAfterSave] = useState<any>(!ISSERVER ? JSON.parse(localStorage.getItem('setDataFilter') ?? "[]") : []);
+  const [trackFilter, setTrackFilter] = useState<Array<TrackData>>([]);
+  const [dataUpdate, setDataUpdate] = useState<any>({});
+  const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
+  const [isOpenWishList, setIsOpenWishList] = React.useState(false);
+  const [isOpenGrade, setIsOpenGrade] = React.useState(false);
+  const [cardData, setCardData] = useState<CardModel | undefined>();
+
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -149,6 +155,20 @@ const CardListCollection = ({
     }
     resetPage();
   }, [collection, defaultSearch])
+  
+  useEffect(() => {
+    if (!isEmpty(router.query)) {
+      if (userInfo.userid === +router.query.page) {
+        //@ts-ignore
+        setFriend(userInfo);
+      } else {
+        if (Boolean(Number(router.query.page))) {
+          getUserDetail();
+        }
+      }
+    }
+  }, [router.query])
+  
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
@@ -160,14 +180,27 @@ const CardListCollection = ({
       localStorage.removeItem('filterCollection')
        //@ts-ignore
       let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
-      console.log((isCheckBackToSave), 'isCheckBackToSave');
+      
       if (isCheckBackToSave) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard'));
         //@ts-ignore
         let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+
+        let data: Array<TrackData> = [];
+
+        for (let val of Object.keys(dataFilter)) { 
+          let obj: TrackData = {
+            name: val,
+            isUpdate: false,
+          }
+          data.push(obj);
+        }
+       
+        setTrackFilter(data);
         setFilterData(dataFilter);
         updateDataFilter(dataFilterCustom);
+        
       }
       //@ts-ignore
       getListCard([1], isCheckBackToSave);
@@ -214,7 +247,7 @@ const CardListCollection = ({
     }
     return params
   }
-  const [dataUpdate, setDataUpdate] = useState<any>({});
+  
   const getListCard = async (page = [1], isSaveChange: boolean = false) => {
     try {
         setData(prevState => {
@@ -225,7 +258,14 @@ const CardListCollection = ({
       if (!isEmpty(filterData)) {
         dataFilter = getFilterSearch();
       }
+      //@ts-ignore
+      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile'));
 
+      if (inputSearchRef && isSaveChange) {
+          // @ts-ignore 
+          inputSearchRef.current?.value = prmsSearchSaveData.search_term;
+      }
+      
       const params: any = {
         portid_only: false,
         port_userid: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
@@ -242,16 +282,18 @@ const CardListCollection = ({
           sort_by: sortCards?.sort_by
         }
       }
-
-      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? JSON.parse(JSON.stringify(localStorage.getItem('key_search_profile'))) : params);
+      
+      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? prmsSearchSaveData : params);
       
       localStorage.setItem('key_search_profile', JSON.stringify(params));
       
       if (isSaveChange) {
         //@ts-ignore
         localStorage.setItem('saveChangePortfolio', false);
+        //@ts-ignore
+        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard')));
       }
-      
+     
       if (result.success) {
         let checkUpdateFilter = JSON.parse(localStorage.getItem("filterCollection") ?? "[]") ?? [];
         if (page.length === 1) {
@@ -294,7 +336,7 @@ const CardListCollection = ({
               updateFilter.publishers = result.data.filter.publishers;
             }
             // sports
-            if (!checkIsUpdate('sports')) {
+            if (!checkIsUpdate('sports')) { 
               updateFilter.sports.length = 0;
               updateFilter.sports = dataUpdate?.sports;
             } else {
@@ -319,13 +361,11 @@ const CardListCollection = ({
             }
           }
 
-          setDataUpdate(updateFilter);
-
           if (!isSaveChange) {
+            setDataUpdate(updateFilter);
             localStorage.setItem('lastestFilterEditCard', JSON.stringify(updateFilter))
           }
 
-          console.log(updateFilter, 'updateFilter');
           const grades = updateFilter?.grades;
           let gradeFilter: any = grades?.map((item: { grade_company: any; data: any[]; }) => ({
             id: item.grade_company,
@@ -419,7 +459,7 @@ const CardListCollection = ({
     }
   }
 
-  const updateDataFilter = (data: any) => { console.log(data, 'datadatadatadata');
+  const updateDataFilter = (data: any) => {
     const grades = data?.grades;
     let gradeFilter: any = grades?.map((item: { grade_company: any; data: any[]; }) => ({
       id: item.grade_company,
@@ -504,10 +544,12 @@ const CardListCollection = ({
       getListCard([1])
     }
   }, [filterData, sortCards])
-  const [trackFilter, setTrackFilter] = useState<Array<TrackData>>([]);
+  
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {
+    
     let dataSave = [...trackFilter];
+    
     if (trackFilter.length === 0) {
       trackFilter.push({
         name: key,
@@ -516,7 +558,7 @@ const CardListCollection = ({
       dataSave = [...trackFilter];
     }
     let index = trackFilter.findIndex(x => x.name === key);
-
+    
     if (index === -1) {
       trackFilter.push({
         name: key,
@@ -557,15 +599,15 @@ const CardListCollection = ({
     buttonRef?.current && buttonRef?.current.click();
   }
 
-  const changeTrackFilter = (index: number) => {
+  const changeTrackFilter = (index: number) => { 
     if (trackFilter.length > 1) {
       trackFilter.forEach(function (ele, idx) {
+        
         ele.isUpdate = false;
         if (idx > index && index !== -1) {
           ele.isUpdate = true;
         }
       })
-      
     }
   }
   const resetDataTrack = (data: Array<string>) => {
@@ -758,6 +800,12 @@ const CardListCollection = ({
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
   const handleChange = (event: any) => {
+    // @ts-ignore
+    // let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+    
+    // if (!isEmpty(dataFilter)) {
+    //   setSelectDataFilter(dataFilter)
+    // }
     setPagesSelected([1])
     loadSuggestions([1])
   }
@@ -1054,10 +1102,7 @@ const CardListCollection = ({
     }
   }, [])
 
-  const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
-  const [isOpenWishList, setIsOpenWishList] = React.useState(false);
-  const [isOpenGrade, setIsOpenGrade] = React.useState(false);
-  const [cardData, setCardData] = useState<CardModel | undefined>();
+
   
   const selectWishlist = (item: ManageCollectionType) => {
     setWishList(item);
@@ -1130,7 +1175,7 @@ const CardListCollection = ({
     }
   }
 
-  const onSuccessWhistList = (code: any) => { console.log('abc')
+  const onSuccessWhistList = (code: any) => {
     // @ts-ignore
     setData(prevState => {
       return { ...prevState, cards: prevState.cards?.map(item=> item.code === code ?({...item, wishlist:1}): item )};
@@ -1203,37 +1248,26 @@ const CardListCollection = ({
       console.log("error........", error);
     }
   }
-  useEffect(() => {
-    if (!isEmpty(router.query)) {
-      if (userInfo.userid === +router.query.page) {
-        //@ts-ignore
-        setFriend(userInfo);
-      } else {
-        if (Boolean(Number(router.query.page))) {
-          getUserDetail();
-        }
-      }
-    }
-  }, [router.query])
 
-  const goToProfile = () => {
-   router.push(`/profile/${Number(router.query.page)}`)
-  }
-  const goToCollection = () => {
-   
-  }
-  const renderTab = () => {
-    return <>
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.user_info?.full_name}</a></li>
-          <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
-          <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
-        </ol>
-      </nav>
-    </>
-  }
-  // console.log(data, 'data');
+
+    const goToProfile = () => {
+    router.push(`/profile/${Number(router.query.page)}`)
+    }
+    const goToCollection = () => {
+    
+    }
+    const renderTab = () => {
+      return <>
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.user_info?.full_name}</a></li>
+            <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
+            <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
+          </ol>
+        </nav>
+      </>
+    }
+
   return (
     <>
       {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) &&

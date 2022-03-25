@@ -59,7 +59,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
   }, [props.options])
 
   React.useImperativeHandle(ref, () => ({
-    reset(value) { console.log(value, 'value');
+    reset(value) {
       setCheckedState(value ?? [])
     },
 
