@@ -1288,7 +1288,7 @@ const CardListCollection = ({
           </Link>
         </div>
         <ChosseCollection selectCollection={selectCollection} isOpen={isShow} setIsOpen={setIsShow} />
-        <div className="row container-collection-profile-row">
+        <div className="row container-collection-profile-row page-profile">
           <div className="col-lg-12 col-md-12 pt-4 pb-5 py-0 container-collection-content">
           { !isSearchMobile &&
             <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
@@ -1380,7 +1380,7 @@ const CardListCollection = ({
                     !isSearchMobile &&
                     <div className="d-flex align-items-center fz-14 fz-12-mob">
                       <span className="fw-bold me-1">{count?.count_cards}</span> {t('portfolio.card_in_portfolio')}
-                      <span className="icon-circle clear-padding"> <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" style={{ color: 'rgba(109, 117, 136, 0.35)' }} /> </span>
+                      <span className="icon-circle clear-padding margin-10"> <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" style={{ color: 'rgba(109, 117, 136, 0.35)' }} /> </span>
                       <span className="fw-bold me-1">{count?.count_non_duplicate_cards}</span> Non-duplicate Cards
                   </div>
                 }
