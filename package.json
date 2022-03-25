@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "env-cmd -f .env next build",
-    "start": "env-cmd -f .env next start"
+    "start": "env-cmd -f .env next start",
+    "dev": "env-cmd -f .env next dev"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.1.0",
