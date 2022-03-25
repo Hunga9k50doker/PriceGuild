@@ -166,6 +166,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
 
   const renderUrl = () => {
     const urlCallback = `${window.location.origin}${window.location.pathname}`;
+
     // const client_id = 0tpzpsbcya46bhsc98txdz64sabfie
     const client_id = process.env.REACT_APP_TWITCH_CLIENT_ID;
     const state = MD5(moment().unix()).toString();
@@ -173,15 +174,15 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (query?.code && location.pathname !== "/card-detail") {
+    if (router?.query?.code && location.pathname !== "/card-detail") {
       getDataTwitch()
     }
-  }, [query])
+  }, [router.query])
 
   const getDataTwitch = async () => {
     try {
       const params = {
-        code: query?.code,
+        code: router.query?.code,
         redirect_uri: `${window.location.origin}${window.location.pathname}`,
       }
       const response = await api.v1.authorization.twitchLogin(params);
@@ -207,6 +208,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
   }
 
   const goToTwitch = () => {
+    debugger;
     const url = renderUrl();
     window.location.href = url;
   }
