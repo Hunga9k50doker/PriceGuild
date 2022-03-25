@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { api } from "configs/axios";
 import { ManageCollectionType, PgAppProfileType } from "interfaces";
-// import { matchPath } from "react-router";
 import Collection from "components/modal/collection";
 import CollectionSkeleton from "components/profile/collection/skeleton/collection";
-// import Swal from "sweetalert2";
-// import "sweetalert2/src/sweetalert2.scss";
 import { ToastSystem } from "helper/toast_system";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -15,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { ActionTypes } from "redux/actions/action_types";
 import IconSearch from "assets/images/search.png";
 import IconDot3 from "assets/images/dot-3.svg";
-import ModalDeleteCollection from "components/modal/delete/collection/index";
 import Pagination from "components/panigation";
 import { paginate } from "utils/helper";
 // @ts-ignore
@@ -100,9 +96,7 @@ const CollectionList = ({
         //@ts-ignore
         setFriend(userInfo);
       } else {
-        // if (Boolean(Number(router.query.page))) {
-          // getUserDetail();
-        // }
+        /**/
       }
     }
   }, [router.query])
@@ -112,12 +106,7 @@ const CollectionList = ({
     name: 'collection',
     action: 0,
   });
-  // cần check lại
-  // const matchPatchRoute = matchPath(history.location.pathname, {
-  //   path:  "/friends/:friendId",
-  //   exact: true,
-  //   strict: false
-  // });
+  
   React.useEffect(() => {
     if (collections.data.length) {
       setData(paginate(collections.data, rowsPerPage, [1]));
@@ -126,35 +115,19 @@ const CollectionList = ({
       }       
     }
     else {
-      // setDataSearch([]);
       setData([]);
     }
   }, [collections]);
+
   const { width } = useWindowDimensions();
   const [t, i18n] = useTranslation("common")
-  // const onLoadMore = () => {
-  //   setData(collections.data?.filter((item, key) => key < (page + 1) * limit))
-  //   setPage(page + 1);
-  // }
-
+  
   const onConfirmRemove = (id: number) => {
-    // Swal.fire({
-    //   title: 'Are you sure?',
-    //   text: "You won't be able to revert this!",
-    //   icon: 'warning',
-    //   showCancelButton: true,
-    //   confirmButtonColor: '#3085d6',
-    //   cancelButtonColor: '#d33',
-    //   confirmButtonText: 'Yes, delete it12345!'
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     removeCollection(id)
-    //   }
-    // })
     setIdDelete(id);
     setIsOpenModal(true);
     getData();
   };
+
   const removeCollection = async (id: number) => {
     try {
       const params = {
@@ -176,11 +149,13 @@ const CollectionList = ({
       });
     }
   };
+
   const clearColection = async () => {
     removeCollection(idDelete);
     setIsOpenModal(false);
     getData();
   };
+
   const onHandleModal = (status: boolean) => {
     setIsOpen(status);
     if (!status) {
@@ -266,7 +241,6 @@ const CollectionList = ({
     setData(paginate([...collections.data], rowsPerPage, event));
   };
 
-
   const onChangeSearch = (e: any) => {
     let text = e.target.value;
     setSearchKey(text);
@@ -286,7 +260,6 @@ const CollectionList = ({
       data: filtered,
       isLoading: false,
     });
-  
   };
 
   useEffect(() => {
@@ -339,12 +312,9 @@ const CollectionList = ({
       }
       if (!res.success) {
         // @ts-ignore
-        // if (res.data?.verify_redirect) {
-        //   router.push('/verify-email')
-        // }
+        /**/
       }
     } catch (error) {
-      
       console.log("error........", error);
     }
   }
@@ -355,18 +325,12 @@ const CollectionList = ({
       <div className="mt-4 profile-personal-collections-head">
         <div className="d-flex justify-content-between align-items-center section-title position-relative">
           <h1 className="mb-0 text-capitalize title-profile "> {`${title === 'collection' ? t('portfolio.text')+'s' : title+'s'}`} </h1>
-          {/* <form className="search-form d-none d-md-block" action="" method="get">
-            <div className="input-group">
-              <button type="submit"> <img src={IconSearch} alt="" title="" /> </button>
-              <input type="text" className="form-control" placeholder="Search"/>
-            </div>
-          </form> */}
           <div className="search-mobile" onClick={() => {setSearchMobbile(true)}}>
             <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
           </div>
           {searchMobbile && 
             <div className="search-form search-only-mobile w-100 position-absolute d-flex align-items-center">
-               <div className="input-group position-relative">
+              <div className="input-group position-relative">
                 <button type="submit">
                   <img src={IconSearch.src} alt="" title="" />
                 </button>
@@ -394,9 +358,7 @@ const CollectionList = ({
             <div className="d-flex btn-group-filter">
               {isAnalytics && (
                 <Link href="/profile/portfolio/analytics">
-                  <a className="fw-bold btn-collection-outline" title="Analytics">
-                    Analytics
-                  </a>
+                  <a className="fw-bold btn-collection-outline" title="Analytics"> Analytics </a>
                 </Link>
               )}
               <button
@@ -408,124 +370,113 @@ const CollectionList = ({
           )}
         </div>}
       </div>
-      {/* {collections.data.length > 0 && */}
-        <div className="row profile-personal-collections-content">
-          {collections.isLoading && <CollectionSkeleton />}
-          {data.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => gotoCard(item)}
-              className="col-12 col-md-6 col-lg-6 col-sm-6 mb-4"
-            >
-              <div className="card p-3 cursor-pointer">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div title={item.group_name} className="col-10 text-truncate title fw-bold">
-                    {item.group_name}{" "}
-                    {Boolean(item.type === 2) && (
-                      <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
-                    )}{" "}
-                  </div>
-                  {isEdit && (
-                    <div className="menu col-2 text-right">
-                      <div className="dropdown">
-                        <button onClick={(e) => { e.stopPropagation(); }}
-                          className="btn btn-secondary dropdown-toggle pr-0"
-                          type="button"
-                          id={`dropdownMenuButton${item.group_ref}`}
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
+      <div className="row profile-personal-collections-content">
+        {collections.isLoading && <CollectionSkeleton />}
+        {data.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => gotoCard(item)}
+            className="col-12 col-md-6 col-lg-6 col-sm-6 mb-4"
+          >
+            <div className="card p-3 cursor-pointer">
+              <div className="d-flex justify-content-between align-items-center">
+                <div title={item.group_name} className="col-10 text-truncate title fw-bold">
+                  {item.group_name}{" "}
+                  {Boolean(item.type === 2) && (
+                    <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
+                  )}{" "}
+                </div>
+                {isEdit && (
+                  <div className="menu col-2 text-right">
+                    <div className="dropdown">
+                      <button onClick={(e) => { e.stopPropagation(); }}
+                        className="btn btn-secondary dropdown-toggle pr-0"
+                        type="button"
+                        id={`dropdownMenuButton${item.group_ref}`}
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      > <img src={IconDot3} alt="" title="" /> </button>
+                      <ul className="dropdown-menu" id={`dropdownMenu${item.group_ref}`} aria-labelledby={`dropdownMenuButton${item.group_ref}`}>
+                        <li onClick={(e) => {
+                          e.stopPropagation();
+                          editCollection(item);
+                        }}
                         >
-                          {/* <i className="fa fa-ellipsis-h" aria-hidden="true" /> */}
-                          <img src={IconDot3} alt="" title="" />
-                        </button>
-                        <ul className="dropdown-menu" id={`dropdownMenu${item.group_ref}`} aria-labelledby={`dropdownMenuButton${item.group_ref}`}>
-                          <li onClick={(e) => {
-                            e.stopPropagation();
-                            editCollection(item);
-                          }}
-                          >
-                            <span className="dropdown-item text-capitalize"> Edit {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
-                          </li>
-                          {isAnalytics && (
-                            <>
-                              {/* <li><hr className="dropdown-divider m-0" /></li> */}
-                              <li>
-                                <span onClick={(e) => {
-                                  e.stopPropagation();
-                                  gotoAnalytics(item);
-                                }}
-                                  className="dropdown-item"
-                                > Analytics </span>
-                              </li>
-                            </>
-                          )}
-                          {Boolean(item?.claim) && (
-                            <>
-                              {/* <li><hr className="dropdown-divider m-0" /></li> */}
-                              {/* <li
-                                style={{
-                                  backgroundColor: ids.find(
-                                    (id) => id === item.group_ref
-                                  )
-                                    ? "#dedede"
-                                    : "#fff",
-                                }} onClick={(e) => {
-                                  e.stopPropagation();
-                                  onClaimPhoto(item.group_ref);
-                                }}
-                              >
-                                <span className="dropdown-item text-capitalize claim-photo"> Claim all {item?.claim}{" "} {`Photo${(item?.claim ?? 0) > 1 ? "s" : ""}`} </span>
-                              </li> */}
-                            </>
-                          )}
-                          {/* <li><hr className="dropdown-divider m-0" /></li> */}
-                          <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
-                            <span className="dropdown-item text-capitalize"> Remove {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
-                          </li>
-                        </ul>
-                      </div>
+                          <span className="dropdown-item text-capitalize"> Edit {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
+                        </li>
+                        {isAnalytics && (
+                          <>
+                            <li onClick={(e) => {
+                                e.stopPropagation();
+                                gotoAnalytics(item);
+                              }}>
+                              <span className="dropdown-item"> Analytics </span>
+                            </li>
+                          </>
+                        )}
+                        {Boolean(item?.claim) && (
+                          <>
+                            {/* <li><hr className="dropdown-divider m-0" /></li> */}
+                            {/* <li
+                              style={{
+                                backgroundColor: ids.find(
+                                  (id) => id === item.group_ref
+                                )
+                                  ? "#dedede"
+                                  : "#fff",
+                              }} onClick={(e) => {
+                                e.stopPropagation();
+                                onClaimPhoto(item.group_ref);
+                              }}
+                            >
+                              <span className="dropdown-item text-capitalize claim-photo"> Claim all {item?.claim}{" "} {`Photo${(item?.claim ?? 0) > 1 ? "s" : ""}`} </span>
+                            </li> */}
+                          </>
+                        )}
+                        {/* <li><hr className="dropdown-divider m-0" /></li> */}
+                        <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
+                          <span className="dropdown-item text-capitalize"> Remove {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
+                        </li>
+                      </ul>
                     </div>
-                  )}
-                </div>
-                <div className="card-body p-0 d-flex flex-column justify-content-end detail">
-                  <div>{item.total_card} Cards</div>
-                  <div>{item.unique_card} Non-duplicate Cards</div>
-                </div>
+                  </div>
+                )}
+              </div>
+              <div className="card-body p-0 d-flex flex-column justify-content-end detail">
+                <div>{item.total_card} Cards</div>
+                <div>{item.unique_card} Non-duplicate Cards</div>
               </div>
             </div>
-          ))}
-          {!collections.isLoading && Boolean(collections.data.length) && (
-            <>
-              {
-										
-                Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
+          </div>
+        ))}
+        {!collections.isLoading && Boolean(collections.data.length) && (
+          <>
+            {
+                  
+              Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
+                (collections.data.length ?? 0) / rowsPerPage
+              ))) && (
+                <div className="d-flex justify-content-center">
+                  <button
+                    onClick={onLoadMore}
+                    type="button"
+                    className="btn btn-light load-more"
+                  > Load More </button>
+                </div>
+              )
+            }
+            <div className="d-flex justify-content-center mt-3 pagination-page">
+              <Pagination
+                pagesSelected={pagesSelected}
+                onSelectPage={handlePageClick}
+                totalPage={Math.ceil(
                   (collections.data.length ?? 0) / rowsPerPage
-                ))) && (
-                  <div className="d-flex justify-content-center">
-                    <button
-                      onClick={onLoadMore}
-                      type="button"
-                      className="btn btn-light load-more"
-                    >
-                      Load More
-                    </button>
-                  </div>
-                )
-              }
-              <div className="d-flex justify-content-center mt-3 pagination-page">
-                <Pagination
-                  pagesSelected={pagesSelected}
-                  onSelectPage={handlePageClick}
-                  totalPage={Math.ceil(
-                    (collections.data.length ?? 0) / rowsPerPage
-                  )}
-                />
-              </div>
-            </>
-          )}
-          {/* {data.length !== collections.data.length && <div className="d-flex justify-content-center align-items-center"> <button onClick={onLoadMore} type="button" className="btn btn-secondary btn-load-more">Load more</button> </div>} */}
+                )}
+              />
+            </div>
+          </>
+        )}
       </div>
-        {/* } */}
       {collections.data.length === 0 && !collections.isLoading && searchKey === '' &&
         Boolean(!matchPatchRoute)  &&
          <div className="empty-collection">
@@ -535,7 +486,6 @@ const CollectionList = ({
           <button className="btn btn-primary" onClick={() => onHandleModal(true)} >Create {title ==="wishlist" ? "Wishlist": t('portfolio.text')}</button>
         </div>
       </div>}
-
       {
         matchPatchRoute && 
         !collections.isLoading && collections.data.length === 0 && searchKey === '' ?  
@@ -546,14 +496,12 @@ const CollectionList = ({
         </div>
         : <></>
       }
-
       {
         collections && collections.data.length === 0 && !collections.isLoading  && searchKey !== '' &&
         <div className="message-profile-null">
           No results were found matching keyword 
         </div>
-      }
-      
+      } 
       <Collection
         onConfirmRemove={() => { setIsOpenModal(true); setIsOpen(false)}}
         collectionDetail={collectionDetail}
