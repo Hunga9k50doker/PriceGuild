@@ -235,6 +235,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               <label htmlFor="" className="form-label text-capitalize">{title === 'collection' ? t('portfolio.text') : title } Name</label>
               <input {...register("collectionName", { required: true })} 
                 placeholder={`Enter ${renderTextLower(title)} Name`}
+                maxLength={50}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
             </div>

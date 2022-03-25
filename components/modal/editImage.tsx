@@ -52,7 +52,6 @@ export type EditImageType = {
 }
 
 const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
-  console.log(props);
   const [isOpen, setIsOpen] = React.useState(false);
   const imageEditorRef = React.useRef<FilterHandle>(null);
   const [imageSrc, setImageSrc] = React.useState("");

@@ -231,9 +231,7 @@ const CardList = (props: PropTypes) => {
         return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards] };
       });
 
-      let params: any = {
-        // search_term: query.search_term
-      };
+      let params: any = {};
       
       if (query.sport || query?.sport_criteria) {
         params.sport = +(query?.sport ?? query?.sport_criteria);
@@ -324,7 +322,7 @@ const CardList = (props: PropTypes) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-    getListCard([1], true, false, headers)
+     getListCard([1], false, true, headers)
   }
 
   const onLoadMore = () => {
@@ -1226,7 +1224,7 @@ const CardList = (props: PropTypes) => {
                                             onChange={(e: any, key: string) => { 
                                               onChangeFilter(e, key);
                                               // @ts-ignore
-                                              buttonRef?.current.click();
+                                              buttonRef?.current && buttonRef?.current.click();
                                             }}
                                             isSearch={false}
                                             name="sport"
