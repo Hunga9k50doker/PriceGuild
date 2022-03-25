@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import queryString from 'query-string';
 import { api } from 'configs/axios';
-import { FilterType, SelectDefultType, FilyerCollection, ManageCollectionType } from "interfaces"
+import { FilterType, SelectDefultType, FilyerCollection, ManageCollectionType, QueryResponse } from "interfaces"
 import Cards from "components/cards"
 import { rowsPerPage } from "configs/common"
 import { FilterHandle } from "components/filter/customCheckBox"
@@ -36,6 +36,7 @@ import IconCloseMobile from "assets/images/close_mobile.svg";
 import CaptCha from "components/modal/captcha";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
+import mockup_search_data from 'utils/mockup_search_data.json';
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -272,7 +273,10 @@ const CardList = (props: PropTypes) => {
           sort_by: sortCards?.sort_by
         }
       }
+
       const result = await api.v1.elasticSearch.searchCard(params, headers);
+      //@ts-ignore
+      // const result: QueryResponse<CardModel[]> = mockup_search_data
       if (page[page.length - 1] === 1) {
         // @ts-ignore
         dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
@@ -411,7 +415,7 @@ const CardList = (props: PropTypes) => {
       colorRef?.current?.reset();
       
       // @ts-ignore
-      buttonRef?.current.click();
+      buttonRef?.current && buttonRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, type: [], color: [], isLoad: true });
     }
@@ -423,7 +427,7 @@ const CardList = (props: PropTypes) => {
     // @ts-ignore
     setFilterData({ ...params, [key]: e, isLoad: true });
     // @ts-ignore
-    buttonRef?.current.click();
+    buttonRef?.current && buttonRef?.current.click();
   }
 
   const removeFilter = (item: FilterType, key: string) => {
