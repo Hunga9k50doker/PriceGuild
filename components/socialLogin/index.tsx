@@ -208,7 +208,6 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
   }
 
   const goToTwitch = () => {
-    debugger;
     const url = renderUrl();
     window.location.href = url;
   }
