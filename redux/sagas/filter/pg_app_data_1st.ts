@@ -4,6 +4,7 @@ import { ActionTypes } from "redux/actions/action_types";
 import { FilterType, SearchCardType } from "interfaces";
 import { FilterAction } from "redux/actions/filter_action";
 import { convertListDataToGrouped } from "utils/helper";
+import mockup_filter from 'utils/mockup_filter.json'
 
 function* pgAppdata(action: { type: string; action: SearchCardType }) {
   try {
@@ -11,7 +12,7 @@ function* pgAppdata(action: { type: string; action: SearchCardType }) {
       FilterApi.getFilter,
       action.action
     );
-
+    // let response = mockup_filter;
     response.data.collections.sort(FilterType.compare);
     response.data.publishers.sort(FilterType.compare);
 
