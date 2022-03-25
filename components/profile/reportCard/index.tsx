@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { RegexString } from 'utils/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
+import { api } from 'configs/axios';
 
 type Inputs = {
   portf_req_sport: any,
@@ -82,13 +83,31 @@ const ReportCard = () => {
     }
   }, [stateSubmit])
   React.useEffect(() => {
-    if(userInfo ) {
-      if(!userInfo?.activated) {
-     router.push('/verify-email');
+    async function fetchData() {
+      if(userInfo) {
+        try {
+          const params = {
+            profileid: userInfo.userid
+          }
+          const res = await api.v1.authorization.getUserInfo(params);
+          if (res.success) {
+          }
+          if (!res.success) {
+            // @ts-ignore
+            if (res.data?.verify_redirect) {
+              router.push('/verify-email')
+            }
+          }
+        } catch (error: any) {
+          if(error?.response?.status === 403) {
+            return router.push('/verify-email')
+          }
+          console.log("error........", error);
+        }
       }
- 
-      return;
+     
     }
+    fetchData();
   }, [])
   React.useEffect(() => {
     if(!isEmpty(sports) ) {

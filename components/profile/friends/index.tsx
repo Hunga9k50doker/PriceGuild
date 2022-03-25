@@ -25,10 +25,31 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
   const router = useRouter();
 
   React.useEffect(() => {
-    if(userInfo && !userInfo?.activated) {
-      router.push('/verify-email');
-      return;
+    async function fetchData() {
+      if(userInfo) {
+        try {
+          const params = {
+            profileid: userInfo.userid
+          }
+          const res = await api.v1.authorization.getUserInfo(params);
+          if (res.success) {
+          }
+          if (!res.success) {
+            // @ts-ignore
+            if (res.data?.verify_redirect) {
+              router.push('/verify-email')
+            }
+          }
+        } catch (error: any) {
+          if(error?.response?.status === 403) {
+            return router.push('/verify-email')
+          }
+          console.log("error........", error);
+        }
+      }
+     
     }
+    fetchData();
     dispatch(FriendAction.getListFriend({
       user_id: props?.userId ?? userInfo?.userid
     }))

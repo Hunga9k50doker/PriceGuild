@@ -4,14 +4,17 @@ import { AuthenticationApi } from 'api/authentication';
 import { useRouter } from 'next/router'
 import { isEmpty } from 'lodash';
 import Head from 'next/head';
-
+import { AuthActions } from 'redux/actions/auth_action';
+import { useDispatch, useSelector } from 'react-redux';
+import Selectors from 'redux/selectors';
 type PropTypes = {
   location: any,
 }
 const AccountActivationPage: React.FC<PropTypes> = (props) => {
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState<boolean | undefined>();
-
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector(Selectors.auth);
   useEffect(() => {
     if (!isEmpty(router?.query)) {
       AuthenticationApi.activationAccount({
@@ -19,6 +22,11 @@ const AccountActivationPage: React.FC<PropTypes> = (props) => {
         token: (router?.query.token ?? '').toString(),
       }).then(value => {
         setIsSuccess(true);
+        let userData = {...userInfo};
+        if(userData) {
+          userData.activated = true;
+          dispatch(AuthActions.updateInfo(userInfo));
+        }
         setTimeout(() => {
           router.push("/profile/personal")
         }, 3000);

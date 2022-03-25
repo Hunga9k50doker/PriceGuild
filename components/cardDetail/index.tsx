@@ -63,6 +63,7 @@ import classes from './styles.module.scss'
 import * as _ from 'lodash'
 import { useTranslation } from "react-i18next";
 import CaptCha from "components/modal/captcha";
+import { api } from "configs/axios";
 
 type PropTypes = {
   code?: string;
@@ -348,6 +349,17 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
+    const getGradeCompany = async () => {
+      try {
+        const result = await api.v1.gradeCompany.getList({ has_values: true })
+        if (result.success) {
+          setGradeCompany(result.data)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getGradeCompany();
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
