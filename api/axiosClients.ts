@@ -63,6 +63,10 @@ axiosClient.interceptors.response.use(
       window.location.href = "/maintenance";
       return Promise.reject();
     }
+    if (error?.response?.status === 412) {
+      window.location.href = "/set-username";
+      return Promise.reject();
+    }
     let response: BaseResponse & object = {
       message: "Server error please try again",
       status: error?.response?.status ?? 501,
