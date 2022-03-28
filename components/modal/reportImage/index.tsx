@@ -14,6 +14,8 @@ type PropTypes = {
   cardData?: CardModel;
   gradeCompany?: any;
   point?: any;
+  isReportImage ?: boolean;
+  setIsReportImage?: (flag: boolean) => void
 };
 
 export type CardForm = {
@@ -31,6 +33,7 @@ const Index = ({
   isOpen = false,
   gradeCompany,
   point,
+  isReportImage = false,
   ...props
 }: PropTypes) => {
 
@@ -124,6 +127,9 @@ const Index = ({
       if (result.success) {
         if (props.cardData && point) {
           props?.onSuccess && props.onSuccess(props.cardData, point, data, isCorrectCard);
+        }
+        if(isReportImage) {
+           props?.setIsReportImage && props.setIsReportImage(false);
         }
         props?.onClose && props.onClose();
         return ToastSystem.success(result.message);
