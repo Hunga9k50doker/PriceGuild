@@ -1692,8 +1692,9 @@
             font-size: 14px;
             line-height: 1;
             padding: 8px 10px;
+            outline: none !important;
+            box-shadow: none !important;
         }
-        
     }
 }
 
@@ -2860,7 +2861,5 @@ ul {
 }
 
 .filter-top {
-    &.search {
-        
-    }
+    &.search {}
 }
