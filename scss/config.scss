@@ -663,6 +663,7 @@
         }
         .css-1pahdxg-control {
           height: 56px !important;
+          border: 2px solid #124de3;
         }
         .css-tj5bde-Svg {
           fill: #6d7588;
@@ -1303,24 +1304,23 @@
 }
 
 .card-detail-header {
-  margin: 0 -16px !important;
-  &.invisible {
-    height: 0 !important;
-    padding: 0 !important;
-    .card-detail-header-content {
-      height: 0 !important;
-    }
-  }
-  position: sticky;
+  position: fixed;
   background-color: #fff;
   top: 0;
+  left: 0;
   padding: 0;
-  z-index: 1000;
-  margin: 0;
+  z-index: 1040;
+  width: 100%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.1s ease;
+  &.show {
+    transform: scaleY(1);
+  }
   &-content {
     align-items: center;
     border-bottom: 1px solid #e9eaed;
-    padding: 22px 150px 24px 150px;
+    padding: 12px 150px 11px 150px;
     .card-detail-header-nav {
       a {
         font-weight: 500;
@@ -1335,7 +1335,8 @@
         height: 46px;
         .btn-add {
           font-size: 16px;
-          width: 236px;
+          line-height: 1.5;
+          font-weight: normal;
           padding-left: 14px;
         }
         .btn-heart {
@@ -1349,14 +1350,6 @@
         }
       }
     }
-  }
-  &::before {
-    content: "";
-    height: 1px;
-    position: absolute;
-    background: #e9eaed;
-    margin-left: -160px;
-    bottom: 0;
   }
 }
 

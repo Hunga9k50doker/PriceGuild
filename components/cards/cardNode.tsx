@@ -215,6 +215,9 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </div>
           </div>
         </td>
+        <td>
+          {props.item.onCardCode}
+        </td>
         <td className="text-capitalize">
           {props.item.grade_display_value && <div className={`custom-grade ${props.item.grade_company.name === "ungraded" && props.item.grade_value === 1 ? '' : 'custom-grade-bold'}`} style={{
             backgroundColor: props.item.grade_company.name === "ungraded"  && props.item.grade_value === 1 ? 'transparent' : props.item.grade_company.color_2,

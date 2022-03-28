@@ -193,6 +193,7 @@ const App = ({
     // @ts-ignore
     setValueState()
     setSuggestions([])
+    $(".react-autosuggest__input").focus();
   }
 
   return (

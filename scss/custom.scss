@@ -1851,15 +1851,18 @@
           }
           .section-search-suggest {
             width: 100%;
+            border-radius: 6px;
+            background-color: #fff;
             .react-autosuggest__container {
               .react-autosuggest__input {
-                width: 100% !important;
+                width: calc(100% - 35px) !important;
                 padding-left: 35px;
-                padding-right: 30px;
+                padding-right: 0px;
                 height: 42px !important;
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
-                border-radius: 6px;
+                border: none;
+                background: transparent;
               }
               .react-autosuggest__suggestions-container {
                 z-index: 100000;
@@ -1957,7 +1960,7 @@
       height: 100vh;
       width: 100%;
       background-color: #FFFFFF;
-      z-index: 9999;
+      z-index: 1050;
       overflow-x: scroll;
       transform: translateX(112%);
       -ms-transform: translateX(112%);
@@ -2210,7 +2213,7 @@
       height: 100vh;
       width: 100%;
       background-color: #FFFFFF;
-      z-index: 1000;
+      z-index: 1050;
       overflow-x: scroll;
       transform: translateX(-100%);
       -ms-transform: translateX(-100%);

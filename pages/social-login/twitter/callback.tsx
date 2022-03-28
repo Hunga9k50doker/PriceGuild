@@ -8,7 +8,7 @@ import { ToastSystem } from 'helper/toast_system';
 import { AuthActions } from "redux/actions/auth_action";
 import { MyStorage } from "helper/local_storage";
 import { User } from "model/user";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 type PropTypes = {
   location: any,
@@ -22,7 +22,7 @@ const CallbackTwiiter = (props: PropTypes) => {
   useEffect(() => {
     if (!isEmpty(router.query)) {
       // @ts-ignore 
-      const data = decodeBase64(query.data)
+      const data = decodeBase64(router.query.data)
       registerSocial(JSON.parse(data))
     }
     else {
@@ -38,14 +38,16 @@ const CallbackTwiiter = (props: PropTypes) => {
         MyStorage.user = new User(response.data.user_data);
         MyStorage.token = response.data.token;
         dispatch(AuthActions.updateInfo(MyStorage.user));
-
         let token: any = { userid: response.data.user_data.userid, email: response.data.user_data.email };
         token = btoa(JSON.stringify(token));
 
         if (isEmpty(response?.data?.user_data?.username) || response?.data?.user_data?.username === "") {
-          sessionStorage.setItem('redirect', `/set-username/${token}`);
+         router.push( `/set-username/${token}`);
+          // sessionStorage.setItem('redirect', `/set-username/${token}`);
           return;
         }
+       
+     
         return ToastSystem.success("Login successful");
       }
       ToastSystem.error(response.message);

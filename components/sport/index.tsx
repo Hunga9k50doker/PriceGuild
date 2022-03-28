@@ -277,7 +277,6 @@ function SportLandingPage({...props}) {
                     type="text"
                     readOnly
                     className="form-control-plaintext"
-                    id="staticEmail"
                     value={cardData?.fullNameWithCode} /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -298,7 +297,6 @@ function SportLandingPage({...props}) {
                       type="text"
                       readOnly
                       className="form-control-plaintext"
-                      id="staticEmail"
                       value={cardData?.publisher?.name} /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -319,7 +317,6 @@ function SportLandingPage({...props}) {
                       type="text"
                       readOnly
                       className="form-control-plaintext"
-                      id="staticEmail"
                       value={cardData?.type?.name} /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -331,7 +328,6 @@ function SportLandingPage({...props}) {
                       type="text"
                       readOnly
                       className="form-control-plaintext"
-                      id="staticEmail"
                       value={cardData?.color.name} /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -347,7 +343,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={`+${formatNumber(cardPrice?.change)}%`} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
@@ -359,7 +354,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={formatCurrency(cardPrice?.latest)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
@@ -371,7 +365,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={formatCurrency(cardPrice?.min)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
@@ -383,7 +376,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={formatCurrency(cardPrice?.max)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
@@ -395,7 +387,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={formatCurrency(cardPrice?.average)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
@@ -407,7 +398,6 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        id="staticEmail"
                         value={cardPrice?.total_trades} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>

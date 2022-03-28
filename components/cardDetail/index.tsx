@@ -62,8 +62,8 @@ import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
 import classes from './styles.module.scss'
 import * as _ from 'lodash'
 import { useTranslation } from "react-i18next";
-import { checkImageExist } from "./components/sale_chart/data";
 import CaptCha from "components/modal/captcha";
+import { api } from "configs/axios";
 
 type PropTypes = {
   code?: string;
@@ -123,7 +123,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
   const [keepCardCode ,setKeepCardCode] = useState('');
-  // const [header, setHeader] = useState<any|undefined>({});
   
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
@@ -177,26 +176,17 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
         })
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
     
   }, [props.code, loggingIn, router.query]);
-    
-   
-  // useEffect(() => {
-    
-  // }, [header]);
-
+  
   useImperativeHandle(ref, () => ({
     loadSalaData: _loadSaleDataCapCha,
-    
   }));
-
 
   const _loadSaleDataCapCha = (headers: any = {}) => {
     let controller: CardDetailSaga = refProvider?.current
       .controller as CardDetailSaga;
-
     controller.loadSaleData({
       // @ts-ignore
       card_code: keepCardCode,
@@ -218,7 +208,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   }
 
   const renderBreadcrumbs = (cardData: CardModel) => {
-      
     if (cardData?.id) {
       return (
         <nav className="border-botom" aria-label="breadcrumb">
@@ -252,7 +241,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
       );
     }
     return <Skeleton width={150} height={34} />
-  
   };
 
   const selectCollection = (item: ManageCollectionType) => {
@@ -284,14 +272,12 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     if (dataOld.find((item: any) => item.code === cardData.code)) {
       dataOld = dataOld.filter((item: any) => item.code !== cardData.code)
       dispatch(CompareAction.removeCard(cardData.code));
-      // ToastSystem.success("Card removed from comparison list");
       ToastSystem.success(
         <span> Card removed from <Link href="/comparison">comparison list</Link> </span>
       );
     }
     else {
       dataOld.push(cardNew)
-      // ToastSystem.success("Card added to comparison list");
       ToastSystem.success(
         <span> Card added to <Link href="/comparison">comparison list</Link> </span>
       );
@@ -317,9 +303,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           {Array.from(vale.keys()).map((item, key) =>
             <li
               key={key}
-              // style={{
-              //   backgroundColor: colors[key]
-              // }}
               onClick={() => {
                 dispatchReducer({ type: 'UPDATE_KEY_GRADE', key: item });
               }} className={`nav-item ${gradeName === item ? "active" : ""}`} role="presentation">
@@ -341,13 +324,13 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
       const divOffset = stickyData.top;
       const dist = divOffset - scrollTop;
       if (dist <= 0) {
-        $(".card-detail-header").removeClass("invisible");
-
+        $(".card-detail-header").addClass("show");
       } else {
-        $(".card-detail-header").addClass("invisible");
+        $(".card-detail-header").removeClass("show");
       }
     }
   };
+
   // @ts-ignore
   const DropdownIndicator = props => {
     return (
@@ -363,13 +346,24 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
       )
     );
   };
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
+    const getGradeCompany = async () => {
+      try {
+        const result = await api.v1.gradeCompany.getList({ has_values: true })
+        if (result.success) {
+          setGradeCompany(result.data)
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getGradeCompany();
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
 
   const onAddWishList = (status: boolean, item: any) => {
     setCardData(item)
@@ -390,7 +384,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
 
     setCardData(undefined);
     //@ts-ignore
-    // setCardSelected([item.code]);
     if (!loggingIn) {
       return setIsOpenLogin(true)
     }
@@ -403,11 +396,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     setIsOpen(true)
   }
 
-
   const goToPricingGrid = () => {
     window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop - 93 })
   }
-
   const goToSalesOverview = () => {
     window.scrollTo({ behavior: 'smooth', top: salesOverviewRef.current.offsetTop - 93 })
   }
@@ -416,7 +407,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   }
   const renderTable = () => {
     return <div ref={pricingGridRef} className="pricing-grid" >
-      <h2 className="mb-5 title-profile title-profile--color">Pricing Grid</h2>
+      <h2 className="mb-5 title-profile title-profile--color"> Pricing Grid </h2>
       <CardDetailConsumer
         shouldBuild={(pre, next) =>
           pre.listYearPricingCard !== next.listYearPricingCard ||
@@ -506,7 +497,8 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                   </CardDetailConsumer>
                 </div>
               </div>
-            </div><div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
+            </div>
+            <div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
               <div onScroll={onScroll} className="content-pricing-grid-custom-table" id="table_grade">
                 <table className="table">
                   <thead>
@@ -619,7 +611,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                                   oldData: saleChartState.calcMaLine
                                                 });
                                               }
-
+                                              
                                               goToSalesChart();
                                             }
                                           }
@@ -666,7 +658,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     return (
       <Modal centered show={isOpenSeeFullTable} fullscreen={true} className="modal-seefull modal-seefull-card-detail">
         <Modal.Header>
-          <Modal.Title className="text-truncate">Pricing Grid </Modal.Title>
+          <Modal.Title className="text-truncate"> Pricing Grid </Modal.Title>
           <a onClick={() => { setIsOpenSeeFullTable(false); setIsLimitTable(true) }} title="Close"> Close </a>
         </Modal.Header>
         <Modal.Body className="customScroll">{renderTable()}</Modal.Body>
@@ -718,12 +710,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     const tooltip = (e.target as any).children[0] as HTMLSpanElement
     if (tooltip) tooltip.style.visibility = 'hidden'
   }
-  const onUpdateWishList = (fn: { (action: Types.ActionReducer): void; (arg0: {}): void; }) => {
-    fn({
-      
-    })
-    // setData(prevState => [...prevState?.map(item=> item.code === code ? ({...item,wishlist: 1}): item ) ]);
-  }
+  
   const onSuccessCaptcha = async (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
@@ -735,9 +722,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
         let controller: CardDetailSaga = refProvider?.current
           .controller as CardDetailSaga;
         if (!isEmpty(cardCode)) {
-  
           if (loggingIn) {
-     
             controller.loadSaleData({
               // @ts-ignore
               card_code: cardCode,
@@ -748,9 +733,8 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                 setIsNotAcitve(true);
                 setNotActiveMessage(err.message)
               }
-              // debugger;
-              if (err?.status === 409) {
               
+              if (err?.status === 409) {
                 if (Boolean(err?.show_captcha)) {
                   if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
                     setIsCaptCha(Boolean(err?.show_captcha)) 
@@ -763,15 +747,12 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
               }
             })
           }
-          
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       }
       
     }
-    // await setHeader(headers);
+    
     await setIsLoadingSalesChart(false);
-    // getDetail([1],headers);
   }
   return (
     <CardDetailProvider ref={refProvider}>
@@ -787,11 +768,11 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
             }}
           </CardDetailConsumer>
         )}
-        <div className="card-detail-header invisible">
+        <div className="card-detail-header">
           <div className="d-flex justify-content-between card-detail-header-content">
             <div className="card-detail-header-nav">
               <a className="cursor-pointer" onClick={goToPricingGrid} title="Pricing Grid"> Pricing Grid </a>
-              {isEmpty(props.code) && (
+              {/*isEmpty(props.code) && (
                 <CardDetailConsumer
                   shouldBuild={(pre, next) =>
                     pre.frontImage !== next.frontImage ||
@@ -802,7 +783,8 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                     return <> {Boolean(size(dataGraded)) && <a className="cursor-pointer " onClick={goToSalesOverview} title="Sales Overview"> Sales Overview </a>}</>;
                   }}
                 </CardDetailConsumer>
-              )}
+              )*/}
+              <a className="cursor-pointer" onClick={goToSalesOverview} title="Sales Overview"> Sales Overview </a>
               <a className="cursor-pointer" onClick={goToSalesChart} title="Sales Chart"> Sales Chart </a>
             </div>
             {isEmpty(props.code) && (
@@ -820,8 +802,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                           type="button"
                           className="btn btn-add"
                         >
-                          {" "}
-                          <img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "}
+                          {" "}<img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "}
                           {cardData?.portfolio ? "Added" : "Add"} to {t('portfolio.text')}
                         </button>
                         <button
@@ -949,8 +930,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                   </Link> </strong>
                                 </div>
                                 : ""}
-                              {/* {isEmpty(backImage?.url) && !isEmpty(frontImage?.url) && isEmpty(props.code) && loggingIn &&
-                                <div className="claim info-card"> Are you owner of this card ? {' '}  <a onClick={() => onClaimPhoto("back")} href="javascript:void(0)" className="text-reset" title="Claim a photo"> Claim a photo </a></div>} */}
                             </div>
                           </div>
                           <ModalZoomImage
@@ -972,11 +951,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                             else setPoint(undefined)
                           }} />
                         </div>
-                        {/* {!frontImage?.userId && !backImage?.userId && isEmpty(props.code) && cardData.sport.id && loggingIn &&
-                          <div className="row mt-1 claim info-card">
-                            <div className="text-center"> Are you owner of this card ? {' '} <a onClick={() => onClaimPhoto("all")} href="javascript:void(0)" className="text-reset" title="Claim a photo"> Claim a photo </a> </div>
-                          </div>
-                        } */}
                       </div>
                       <div className="col-12 col-sm-5 com-md-5  card-detail-content-right mt-1 px-0">
                         <div className="card-detail-content-right__title d-flex align-items-center">
@@ -1153,17 +1127,15 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                 {({ state: { dataGraded, keyData, saleChartState, cardData, priceTooltipPricingGrid }, dispatchReducer, sagaController }) => {
                   return <div ref={salesOverviewRef} className={`${props.isGradedCardTitle ? "chart-graded-card" : ""} p-0`}>
                     {props.isGradedCardTitle && <h2 className={`mb-5 title-profile `}> Graded Card Sales Overview </h2>}
-                    {/* ${size(dataGraded) ? '' : 'd-none'} */}
                     {
                       saleChartState.listCardGrade.length === 0 ?
-                        <PlaceholderChart isNoIcon={true} src={ImageSaleChart.src} /> :
-                        <div>
-                          {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
-                          {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
-                          {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
-                        </div>
+                      <PlaceholderChart isNoIcon={true} src={ImageSaleChart.src} /> :
+                      <div>
+                        {(Boolean(!loggingIn)) && <PlaceholderChart src={ImageSaleChart.src} />}
+                        {(Boolean(loggingIn) && !size(dataGraded)) && <PlaceholderChart src={ImageSaleChart.src} isNoData={true} />}
+                        {(Boolean(loggingIn) && !isEmpty(priceTooltipPricingGrid)) && <PlaceholderChart src={ImageSaleChart.src} message={notActiveMessage} />}
+                      </div>
                     }
-              
                     {
                       (Boolean(loggingIn) || saleChartState.listCardGrade.length !== 0) && <div className={`row chart-graded-card-content ${size(dataGraded) ? (isEmpty(priceTooltipPricingGrid) ? '' : 'd-none') : 'd-none'}`}>
                         <div className={`col-sm-12 col-12 col-md-4 chart p-0`}>
@@ -1191,7 +1163,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                               />
                               <div className="chart-group__grade only-mobile"> {keyData} Grade </div>
                             </div>
-                            <div className="col-12  col-lg-6 chart chart-right">
+                            <div className="col-12 col-lg-6 chart chart-right">
                               <SaleBarChart
                                 keyData={keyData}
                                 saleChartState={saleChartState}
@@ -1210,7 +1182,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         </div>
                       </div>
                     }
-               
                   </div>;
                 }}
               </CardDetailConsumer>
@@ -1245,15 +1216,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                 dispatchReducer,
                                 sagaController,
                               }) => {
-                                //   let dataSelect = saleChartState.listCardGrade.map(
-                                //   (item, index) => {
-                                //     let name = HelperSales.getStringGrade(
-                                //       item.gradeCompany,
-                                //       item.gradeValue
-                                //     );
-                                //     return { label: name, value: name, index };
-                                //   }
-                                // );
                                 return (
                                   <>
                                     <TreeSelect
@@ -1271,6 +1233,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                         let dataSelect = e || []
                                         const hasAll = !!e.find(it => it === 'ALL')
                                         const checkedAll = saleChartState.gradeTreeSelected?.find(it => it === 'ALL')
+
                                         if (hasAll) {
                                           if (checkedAll) {
                                             dataSelect = dataSelect.filter(it => it !== 'ALL')
@@ -1278,6 +1241,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                             dataSelect = ['ALL']
                                           }
                                         }
+
                                         if (!dataSelect.length) dataSelect = ['ALL']
                                         if (_.isEqual(dataSelect.sort(), saleChartState.gradeTreeSelected.sort())) return
                                         dispatchReducer({
@@ -1344,26 +1308,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                         )
                                       })}
                                     </TreeSelect>
-                                    {/* <Select
-                                      value={dataSelect[saleChartState.cardGradeSelected]}
-                                      className="react-select"
-                                      classNamePrefix="react-select"
-                                      onChange={(item) => {
-                                        let index: number = item?.index ?? 0;
-                                        dispatchReducer({
-                                          type: "SELECT_GRADE_CHART_TOOL",
-                                          index,
-                                        });
-                                        sagaController.requestCalcMaxLineV1({
-                                          cardId: +cardData.id,
-                                          currency: userInfo.userDefaultCurrency,
-                                          itemCardGrade:
-                                            saleChartState.listCardGrade[index],
-                                          period: saleChartState.periodSelected.id,
-                                        });
-                                      }}
-                                      options={dataSelect}
-                                    /> */}
                                   </>
                                 );
                               }}
@@ -1372,7 +1316,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         </div>
                         <div className="h-right d-flex align-items-center justify-content-center">
                           <label className="toggle-custom d-flex only-desktop">
-                            {/* <span className="me-3">Sale Points</span> */}
                             <CardDetailConsumer
                               shouldBuild={(pre, next) =>
                                 pre.saleChartState.isShowSalePoints !==
@@ -1441,7 +1384,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                           period: saleChartState.listTimePeriod[index].id,
                                         });
                                       }
-                                      
                                     }}
                                     className="react-select"
                                     classNamePrefix="react-select"
@@ -1473,7 +1415,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                           state: { saleChartState, cardData },
                           sagaController, dispatchReducer
                         }) => {
-                          // { setIsLoadingSalesChart(saleChartState.mainListSaleRecord.length === 0) }
                           return (
                             <SaleChart
                               cardData={cardData}
@@ -1484,24 +1425,20 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                               calcMaLine={saleChartState.calcMaLine}
                               listRecord={saleChartState.mainListSaleRecord}
                               updataSaleData={(data: SaleData[]) => {
-                            
                                 dispatchReducer({
                                   type: "UPDATE_SALE_DATA",
                                   payload: {
                                     data: data
                                   }
                                 })
-                          
                               }}
                               calcMaxLineRequest={async () => {
-                              
                                 await sagaController.requestCalcMaxLineV1({
                                   cardId: +cardData.id,
                                   currency: userInfo.userDefaultCurrency,
                                   cardGrades: saleChartState.gradeTreeSelected,
                                   period: saleChartState.periodSelected.id
                                 });
-                              
                               }}
                               reloadPricingGridRequest={async () => {
                                 return sagaController.reloadPricingGrid({
@@ -1520,7 +1457,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                     </div>
                   }
                 </div>
-
               </div>}
             </div>
             {isEmpty(props.code) && (

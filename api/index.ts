@@ -157,8 +157,8 @@ export class HttpClient<SecurityDataType = unknown> {
       (response) => {
         return Promise.resolve(response);
       },
-      
       async (error) => {
+
         if (error?.response?.status === 401) {
           MyStorage.resetWhenLogout();
           sessionStorage.setItem(
@@ -178,6 +178,12 @@ export class HttpClient<SecurityDataType = unknown> {
           window.location.href = "/404";
           return Promise.reject();
         }
+        if (error?.response?.status === 412) {
+          window.location.href = "/set-username";
+          return Promise.reject();
+        }
+        
+        
         return Promise.reject(error);
       }
     );

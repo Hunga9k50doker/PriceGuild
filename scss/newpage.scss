@@ -554,6 +554,9 @@
                 text-align: left;
             }
         }
+        .fz-24 {
+            font-size: 24px;
+        }
         p {
             font-family: 'Manrope', sans-serif;
             font-size: 18px;
@@ -589,6 +592,9 @@
                     width: 100%;
                     background-color: #e9f1ff;
                     color: #124de3;
+                }
+                &.btn-primary {
+                    color: #fff;
                 }
             }
         }
@@ -1692,8 +1698,9 @@
             font-size: 14px;
             line-height: 1;
             padding: 8px 10px;
+            outline: none !important;
+            box-shadow: none !important;
         }
-        
     }
 }
 
@@ -2850,4 +2857,15 @@ ul {
 
 .minhei-32 {
     min-height: 32px;
+}
+.css-1uccc91-singleValue {
+    font-size: 16px !important;
+}
+
+.margin-10 {
+    margin: 0 10px;
+}
+
+.filter-top {
+    &.search {}
 }
