@@ -183,18 +183,19 @@ const CardListCollection = ({
       
       if (isCheckBackToSave) {
         //@ts-ignore
-        let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard'));
+        let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
         //@ts-ignore
-        let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+        let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
 
         let data: Array<TrackData> = [];
-
-        for (let val of Object.keys(dataFilter)) { 
-          let obj: TrackData = {
-            name: val,
-            isUpdate: false,
+        if (!isEmpty(dataFilter)) {
+          for (let val of Object.keys(dataFilter)) { 
+            let obj: TrackData = {
+              name: val,
+              isUpdate: false,
+            }
+            data.push(obj);
           }
-          data.push(obj);
         }
        
         setTrackFilter(data);
@@ -263,7 +264,7 @@ const CardListCollection = ({
 
       if (inputSearchRef && isSaveChange) {
           // @ts-ignore 
-          inputSearchRef.current?.value = prmsSearchSaveData.search_term;
+          inputSearchRef.current?.value = prmsSearchSaveData?.search_term;
       }
       
       const params: any = {

@@ -14,9 +14,11 @@ type Inputs = {
 	subject: string,
 	message: string,
 };
+
 type PropTypes = {
 	location: any,
 }
+
 const AboutPage: React.FC<PropTypes> = (props) => {
 
 	const [token, setToken] = useState(null);
@@ -53,7 +55,6 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 			}
 		}
 		catch (err) {}
-	
 	};
 
   React.useEffect(() => {
@@ -71,13 +72,11 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">
-                        <li className="breadcrumb-item">
-                            <Link href="/" >
-                                <a title="Home">
-                                    Home
-                                </a>
-                            </Link>
-                        </li>
+						<li className="breadcrumb-item">
+							<Link href="/" >
+								<a title="Home"> Home </a>
+							</Link>
+						</li>
 						<li className="breadcrumb-item active" aria-current="page"> Contact </li>
 					</ol>
 				</nav>
