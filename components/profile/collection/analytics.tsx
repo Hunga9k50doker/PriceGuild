@@ -8,9 +8,8 @@ import { api } from 'configs/axios';
 import { AnalyticsType, WidgetSettings } from "interfaces"
 import { MetaData } from "utils/constant"
 import Swal from 'sweetalert2'
-// import 'sweetalert2/src/sweetalert2.scss'
 import { ToastSystem } from "helper/toast_system";
-import { isEmpty } from "lodash"
+import { isEmpty, isNil } from "lodash"
 import PieChart from 'components/chart/pieChart';
 import TableChart from 'components/chart/tableChart';
 import BarChart from 'components/chart/barChart';
@@ -34,13 +33,13 @@ type DataChartTable = {
   latest?: number,
   average?: number;
 }
+
 type ChartForm = {
   type: string,
   lv1: any;
   lv2: any;
   data: any
 };
-
 
 const CollectionAnalytics = ({ collection }: PropTypes) => {
 
@@ -60,7 +59,6 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
       }
       const result = await api.v1.analytics.analyticsGetWidgetData(params);
       if (result.success) {
-        console.log(result)
         setAnalytics(result.data.widget_data);
         setCollectionDetail(result.data.collection)
       }
@@ -69,7 +67,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
 
     }
   }
-
+  
   React.useEffect(() => {
     getData();
     if(router.asPath === "/profile/portfolio/analytics") {
@@ -238,6 +236,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   const isNumber = (table_data:string) => {
     return ( table_data === 'totalUni' || table_data === 'total' );
   }
+
   const onChange = async (e:any, data: any, ) => {
     console.log(e.value, "s")
     const params = {
@@ -261,6 +260,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
       return ToastSystem.success(result.message);
     }
   }
+
   const renderChart = (item: AnalyticsType, key: number) => {
     switch (item.widget_settings.type) {
       case "pie":
@@ -284,17 +284,6 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
                       <li><button onClick={() => onHandleChart(item.widget_settings)} className="dropdown-item" type="button">Edit Widget</button></li>
                       <li><button onClick={() => onConfirmRemove(item.widget_settings.id)} className="dropdown-item" type="button">Remove Widget</button></li>
-                      {/* <li className="dropdown-item p-12" onClick={(e) =>{e.stopPropagation()}}>
-                        <label htmlFor="" className="form-label">Drill-down group by</label>
-                        <div className="custom-select-56">
-                              <Select
-                                value={MetaData.groupedBy.find(item1 => item1.value.toString() === item.widget_settings?.lv2) ?? { value: 1, label: "Year" }}
-                                onChange={(e) => onChange(e, item )}
-                                classNamePrefix="select-price"
-                                className="select-price customScroll"
-                                options={MetaData.groupedBy} />
-                        </div>
-                      </li> */}
                     </ul>
                   </div>
                 </div>
@@ -316,7 +305,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
             <h3 className="mb-0 title-profile fs-40">{renderNameChart(item.widget_settings)}</h3>
             {key == 0 && 
               <div className="d-flex justify-content-end mt-3">
-                <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom">Add Widget</button>
+                <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom"> Add Widget </button>
               </div>
             }
           </div>
@@ -352,7 +341,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
             <h3 className="mb-0 title-profile fs-40">{renderNameChart(item.widget_settings)}</h3>
             {key == 0 && 
               <div className="d-flex justify-content-end mt-3">
-                <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom">Add Widget</button>
+                <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom"> Add Widget </button>
               </div>
             }
           </div>
@@ -375,7 +364,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               <h3 className="mb-0 title-profile fs-40">{renderNameChart(item.widget_settings)}</h3>
               {key == 0 && 
                 <div className="d-flex justify-content-end mt-3">
-                  <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom">Add Widget</button>
+                  <button type="button" onClick={() => onHandleChart()} className="ms-3 btn btn-primary--custom"> Add Widget </button>
                 </div>
               }
             </div>
@@ -411,24 +400,19 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
     <div className="profile-collections-analytics">
       { Boolean(isAll) ? <nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb">
-        <li className="breadcrumb-item">
+          <li className="breadcrumb-item">
             <Link href={`/profile/portfolio`}>
-              <a title={t('portfolio.text')}>
-                {t('portfolio.text')}
-              </a>
+              <a title={t('portfolio.text')}> {t('portfolio.text')} </a>
             </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">Analytics </li>
         </ol>
-        
       </nav> :
         isEmpty(collectionDetail)  ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
           <ol className="breadcrumb">
           <li className="breadcrumb-item">
               <Link href={`/profile/portfolio`}>
-                <a title={t('portfolio.text')}>
-                  {t('portfolio.text')}
-                </a>
+                <a title={t('portfolio.text')}> {t('portfolio.text')} </a>
               </Link>
             </li>
             <li className="breadcrumb-item">
@@ -438,7 +422,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                 </a>
               </Link>
             </li>
-            <li className="breadcrumb-item active" aria-current="page">Analytics </li>
+            <li className="breadcrumb-item active" aria-current="page"> Analytics </li>
           </ol>
         </nav>
       }
@@ -452,17 +436,21 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
         </Link>
       </div>
       }
-      
-      {isEmpty(analytics) && <div className="d-flex mt-3 justify-content-center">
+      {isNil(analytics) && <div className="d-flex mt-3 justify-content-center">
         <div className="spinner-border" role="status">
           <span className="sr-only">Loading...</span>
         </div>
-      </div> }
+      </div>}
+      {analytics?.length === 0 && <section id="page-resd" className="pt-5">
+        <div className="contact-notify-success mwidth-460 mt-5">
+          <h4 className="fz-24 mb-5"> <strong>You don't have any widgets yet. <br/>Let's create your first widget now!</strong> </h4>
+          <p> <button onClick={() => onHandleChart()} title="Add Widget" className="btn btn-primary"> Add Widget </button> </p>
+        </div>
+      </section> }
       {analytics?.map((item, key) => 
         <div className="profile-collections-analytics-item">
           {renderChart(item, key)}
         </div>)}
-      
       <UpsertChart
         onConfirmRemove={onConfirmRemove}
         onSuccess={onSuccess}
@@ -470,7 +458,8 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
         collection={collection}
         isOpen={isOpen}
         setIsOpen={setIsOpen} />
-    </div>);
+    </div>
+  );
 }
 
 export default CollectionAnalytics;
