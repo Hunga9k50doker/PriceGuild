@@ -1,11 +1,14 @@
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import SkeletonCard from "components/Skeleton/cardItem"
 import { isEmpty } from "lodash";
 import { formatCurrency } from "utils/helper"
 import Skeleton from 'react-loading-skeleton';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import CardNoData from "components/cards/cardNoData"
+import { useRouter } from 'next/router'
+
 // @ts-ignore
 import $ from "jquery"
 
@@ -28,6 +31,12 @@ interface PropTypes<T> {
 }
 
 const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, ...props }: PropTypes<T>) => {
+  const router = useRouter();
+  const [isProfile, setIsProfile] = useState<boolean>(false);
+  useEffect(() => {
+    if(router.pathname === "/profile/[page]/[action]/[type]" && (Boolean(router?.query?.page === "wishlists" || router?.query?.page ===  "portfolio")))
+      setIsProfile(true)
+  }, [])
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
       if (sortCards?.sort_value === name && sortCards?.sort_by !== "asc" && props.cards.length) {
@@ -132,8 +141,18 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
       }
       { !(Boolean(isTable) && Boolean(isInline)) && props.isLoading && <SkeletonCard isInline={isInline} numberLine={28} />}
       <div className="col-lg-12 text-left">
-        {!props.cards.length && !props.isLoading &&  <div className="no-results">No results found</div>}
+        {!props.cards.length && !props.isLoading &&  
+          <>
+            {
+              isProfile? <CardNoData title={router?.query?.page === "wishlists"? "wishlist " : "portfolio"}/> :
+              <div className="no-results">No results found</div>
+            }
+          </>
+    
+        }
+        
       </div>
+  
       <div className="col-lg-12 text-center">
         <div className="pagination__option">
           {props.isLoadMore && (<button onClick={props.onLoadMore} className="btn  btn-load-more" type="button" disabled={props.isLoading}>
