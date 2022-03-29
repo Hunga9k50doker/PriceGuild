@@ -37,6 +37,8 @@ import CaptCha from "components/modal/captcha";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { ToastSystem } from "helper/toast_system";
+import mockup_search_data from 'utils/mockup_search_data.json';
 
 
 const defaultSort: SelectDefultType = {
@@ -312,6 +314,8 @@ const CardList = (props: PropTypes) => {
             null_price_tooltip: result.null_price_tooltip,
           };
         });
+      } else {
+        ToastSystem.error(result?.error)
       }
      
       setData(prevState => {

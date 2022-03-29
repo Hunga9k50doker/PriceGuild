@@ -52,7 +52,7 @@ import $ from "jquery";
 import ChartFlow from "./components/chartFlow"
 import ModalZoomImage from "components/modal/zoomImage/modalZoomImage"
 import ImageDefault from "assets/images/card_default.png"
-import ReportImage from "components/modal/reportImage"
+import ReportImage, {CardForm} from "components/modal/reportImage"
 import "rc-tree-select/assets/index.css";
 // @ts-ignore
 import TreeSelect, { TreeNode } from "rc-tree-select";
@@ -123,7 +123,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [checkLoadImage, setCheckLoadImage] = useState<boolean>(false);
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
   const [keepCardCode ,setKeepCardCode] = useState('');
-  
+  const [isReportImage, setIsReportImage] = useState<boolean>(true);
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
       let cardCode = router?.query?.cardCodeDetail ?? props.code;
@@ -754,6 +754,11 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     
     await setIsLoadingSalesChart(false);
   }
+
+  const  onHandleReportImage = (e:boolean) => {
+    setIsReportImage(e);
+    loadCardDetail()
+  }
   return (
     <CardDetailProvider ref={refProvider}>
       <ChartFlow onUpdateCard={(item) => {
@@ -936,7 +941,10 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                             isOpen={isOpenZoomImage}
                             onClose={(isOpenReport) => {
                               SetIsOpenZoomImage(false)
-                              if (isOpenReport) setIsOpenReport(true)
+                              if (isOpenReport) {
+                                setIsOpenReport(true)
+                                setIsReportImage(true);
+                              }
                               else {
                                 SetStrImage('')
                                 setPoint(undefined)
@@ -945,10 +953,15 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                             src={strImage}
                             imageDefaultZoom={ImageDefault}
                           />
-                          <ReportImage point={point} gradeCompany={gradeCompanys} cardData={cardData} isOpen={isOpenReport} onClose={() => {
+                          <ReportImage point={point} gradeCompany={gradeCompanys}
+                            isReportImage= {isReportImage}
+                            setIsReportImage={(e) => {onHandleReportImage(e)}}
+                           cardData={cardData} isOpen={isOpenReport} onClose={() => {
                             setIsOpenReport(false);
+                            setIsReportImage(false);
                             if (strImage) SetIsOpenZoomImage(true)
                             else setPoint(undefined)
+                         
                           }} />
                         </div>
                       </div>

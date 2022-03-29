@@ -898,7 +898,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               <Skeleton style={{ height: 75, marginBottom: 15 }} />
             </div>
           )}
-          <div className="card-scroll clear-scroll mt-14">
+          <div className="card-scroll  mt-14">
             {cards?.cards?.map((item, key) => (
               <div key={key} className="card-add">
                 <div className="card-add-info d-flex align-items-center">
