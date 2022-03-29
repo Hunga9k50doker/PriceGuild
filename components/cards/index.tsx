@@ -28,9 +28,11 @@ interface PropTypes<T> {
   onSelectAll?: () => void
   onSortTable?: (value: string) => void,
   sortCards?: any,
+  nameSearch?: string
 }
 
-const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, ...props }: PropTypes<T>) => {
+const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, nameSearch = "",...props }: PropTypes<T>) => {
+  console.log(nameSearch,"name search")
   const router = useRouter();
   const [isProfile, setIsProfile] = useState<boolean>(false);
   useEffect(() => {
@@ -144,7 +146,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
         {!props.cards.length && !props.isLoading &&  
           <>
             {
-              isProfile? <CardNoData title={router?.query?.page === "wishlists"? "wishlist " : "portfolio"}/> :
+              isProfile && nameSearch === "" && props.cards.length === 0 ? <CardNoData title={router?.query?.page === "wishlists"? "wishlist " : "portfolio"}/> :
               <div className="no-results">No results found</div>
             }
           </>
