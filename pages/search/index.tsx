@@ -366,7 +366,7 @@ const CardList = (props: PropTypes) => {
     catch (err) { }
   }
 
-  useEffect(() => { console.log(filterData, 'filterData');
+  useEffect(() => {
     if (!isEmpty(filterData)) {
       dispatch(SearchFilterAction.updateSearchFilter(filterData))
     }
@@ -391,7 +391,7 @@ const CardList = (props: PropTypes) => {
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
-    
+    console.log(prioritize, 'prioritize');
     let dataSave = [...prioritize];
     if (!prioritize.find(item => item.name === key)) {
       setPrioritize(prevState => [...prevState.map(item => ({ ...item, isChange: false })), { name: key, isChange: true }])
@@ -643,7 +643,7 @@ const CardList = (props: PropTypes) => {
     return query.q ? `“${query.q}”` : filterData?.sport?.[0]?.name ?? sportName?.sportName
   }
 
-  React.useEffect(() => {
+  React.useEffect(() => { console.log('setPrioritize', 'setPrioritize');
     if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
       const params: any = {};
       let prioritizeState: any = [];
@@ -663,8 +663,12 @@ const CardList = (props: PropTypes) => {
         prioritizeState.push({ name: 'publisher', isChange: true }); 
         publisherRef?.current?.reset([publisherState]);
       } else {
-        prioritizeState.push({ name: 'publisher', isChange: true }); 
-        publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
+        if (Boolean(isFilterStore)) {
+          if (!isEmpty(dataFilterState?.publisher)) {
+            prioritizeState.push({ name: 'publisher', isChange: true }); 
+          }
+          publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
+        }
       }
       const yearState = filters?.years?.find(item => item?.name === query?.year);
       if (yearState) {
@@ -675,8 +679,12 @@ const CardList = (props: PropTypes) => {
         yearRef?.current?.reset([yearState]);
         prioritizeState.push({ name: 'year', isChange: true })
       } else {
-        yearRef?.current?.reset(dataFilterState?.year ?? []);
-        prioritizeState.push({ name: 'year', isChange: true })
+        if (Boolean(isFilterStore)) {
+          yearRef?.current?.reset(dataFilterState?.year ?? []);
+          if (!isEmpty(dataFilterState?.year)) {
+            prioritizeState.push({ name: 'year', isChange: true })
+          }
+        }
       }
 
       // @ts-ignore
@@ -688,8 +696,12 @@ const CardList = (props: PropTypes) => {
         prioritizeState.push({ name: 'set', isChange: true })
         setRef?.current?.reset([collectionState]);
       } else {
-        prioritizeState.push({ name: 'set', isChange: true })
-        setRef?.current?.reset(dataFilterState?.set ?? []);
+        if (Boolean(isFilterStore)) {
+          if (!isEmpty(dataFilterState?.set)) {
+            prioritizeState.push({ name: 'set', isChange: true })
+          }
+          setRef?.current?.reset(dataFilterState?.set ?? []);
+        }
       }
       if (isEmpty(query)) {
         const sportDeafult = filters?.sports?.find(item => item.id === (userInfo?.userDefaultSport ?? 1));
