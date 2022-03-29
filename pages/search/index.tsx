@@ -716,7 +716,7 @@ const CardList = (props: PropTypes) => {
       </div>}
       {Object.keys(filterOld ?? {}).map((key, index) => {
         if (key === "sport") return null;
-        return <React.Fragment key={index}>{filterOld?.[key].map((item, i) =>
+        return <React.Fragment key={index}>{filterOld?.[key]?.map((item, i) =>
           <div key={item.id} className="d-flex align-items-center ms-2 mb-2 btn-clear">
             <div className="btn-text-clear">{item.name}</div>
             <button type="button" onClick={() => removeFilter(item, key)} className="btn--hidden">
