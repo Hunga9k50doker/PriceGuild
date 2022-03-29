@@ -57,6 +57,7 @@ function HomePage() {
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const [priceChart, setPriceChart] = useState<any>({});
   const [maintenance, setMaintenance] = useState<Array<any>>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     dispatch(HomeActions.getLatestCollection());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,6 +128,7 @@ function HomePage() {
   }
   
   const getCardDetail = async () => {
+    await setIsLoading(true);
     try {
       let prms = {
         card_code: cardSelected?.cardCode,
@@ -135,12 +137,12 @@ function HomePage() {
 
       // const res = await api.v1.card_detail_home.cardDetail(prms);
       const res = await CardDetailApis.loadCardDetail(prms);
-
+      await setIsLoading(false);
       if (res.success) { 
         setCardData(new CardModel(res.data?.card_detail))
       }
     } catch (error) {
-      
+      await setIsLoading(false);
     }
   }
 
@@ -292,67 +294,99 @@ function HomePage() {
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Name:</label>
               <div className="col-8 col-sm-9">
-                {cardData?.fullNameWithCode ? <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={cardData?.fullNameWithCode} />  : <Skeleton style={{ width: 100 }} />}
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                    <>
+                    {cardData?.fullNameWithCode ? <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        value={cardData?.fullNameWithCode} />  : <Skeleton style={{ width: 100 }} />}
+                    </>
+                }
               </div>
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Sport:</label>
               <div className="col-8 col-sm-9 pt-2">
-                {cardData?.sport?.name ? 
-                  <Link  href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
-                    <a className="text-reset" title={cardData?.sport?.name}>{cardData?.sport?.name}</a>
-                  </Link> : ''}
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                    <>
+                    {cardData?.sport?.name ? 
+                      <Link  href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
+                        <a className="text-reset" title={cardData?.sport?.name}>{cardData?.sport?.name}</a>
+                      </Link> : ''}
+                    </>
+                }
               </div>
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Publisher:</label>
               <div className="col-8 col-sm-9">
-                {cardData?.publisher?.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  value={cardData?.publisher?.name}
-                /> : <Skeleton style={{ width: 100 }} />}
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                    <>
+                      {cardData?.publisher?.name ? 
+                      <input
+                        type="text"
+                        readOnly
+                        className="form-control-plaintext"
+                        value={cardData?.publisher?.name}
+                      /> : <Skeleton style={{ width: 100 }} />}
+                    </>
+                }
               </div>
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Collection:</label>
               <div className="col-8 col-sm-9 pt-2">
-               {cardData?.set.name ?
-                  <Link href={`/${cardData?.set.url}`}>
-                    <a className="text-reset" title={cardData.set.name}>
-                      {cardData.set.name}
-                    </a>
-                     </Link> : <Skeleton style={{ width: 100 }} />}
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                    <>
+                      {cardData?.set.name ?
+                      <Link href={`/${cardData?.set.url}`}>
+                        <a className="text-reset" title={cardData.set.name}>
+                          {cardData.set.name}
+                        </a>
+                      </Link> : <Skeleton style={{ width: 100 }} />}
+                    </>
+                }
               </div>
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Base/Insert:</label>
               <div className="col-8 col-sm-9">
-                {cardData?.type.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  value={cardData?.type?.name}
-                /> : <Skeleton style={{ width: 100 }} />}
-              </div>
+              {
+                isLoading ? <Skeleton style={{ width: 100 }} /> :
+                  <>
+                  {cardData?.type.name ? 
+                  <input
+                    type="text"
+                    readOnly
+                    className="form-control-plaintext"
+                    value={cardData?.type?.name}
+                  /> : <Skeleton style={{ width: 100 }} />}
+                </>
+              }
+                </div>
+          
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Parallel:</label>
+
               <div className="col-8 col-sm-9">
-                {cardData?.color.name ? 
-                <input
-                  type="text"
-                  readOnly
-                  className="form-control-plaintext"
-                  value={cardData?.color.name}
-                />  : <Skeleton style={{ width: 100 }} />}
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                  <>
+                    {cardData?.color.name ? 
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={cardData?.color.name}
+                    />  : <Skeleton style={{ width: 100 }} />}
+                  </>
+                }
               </div>
             </div>
           </div>
