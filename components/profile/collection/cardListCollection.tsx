@@ -179,8 +179,8 @@ const CardListCollection = ({
       setPagesSelected([1])
       localStorage.removeItem('filterCollection')
        //@ts-ignore
-      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
-      
+      // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
+      let isCheckBackToSave = false;
       if (isCheckBackToSave) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
@@ -530,7 +530,8 @@ const CardListCollection = ({
     // @ts-ignore
     let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
     // @ts-ignore
-    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
+    // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
+    let isCheckBackToSave = false;
     
     if (isCheckBackToSave) {
       setSelectDataFilter(dataFilter)
