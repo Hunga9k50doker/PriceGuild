@@ -80,7 +80,10 @@ class _MaintenanceTypeSagas {
 class  _MaintenanceTypeReducer {
   readonly updateListMaintenance = "update-list-maintenance";
 }
-
+class  _SearchFilterTypeReducer {
+  readonly updateSearchFilter = "update-search-filter";
+  readonly isFilter = "is-filter"
+}
 
 class _FriendTypeReducer {
   readonly updateListFriend = "update-list-friend";
@@ -115,7 +118,8 @@ class _Reducer {
   readonly compare = new _CompareTypeReducer();
   readonly friend = new _FriendTypeReducer();
   readonly claim = new _ClaimPhotopeReducer();
-  readonly maintenance = new  _MaintenanceTypeReducer();
+  readonly maintenance = new _MaintenanceTypeReducer();
+  readonly search_filter = new  _SearchFilterTypeReducer();
 }
 
 export class ActionTypes {

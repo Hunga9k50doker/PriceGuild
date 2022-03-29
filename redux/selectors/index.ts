@@ -12,4 +12,5 @@ export default class Selectors {
   static apiDocument = (state: ReducerType) => state.apiDocumentReducer;
   static claimPhoto = (state: ReducerType) => state.claimPhoto;
   static maintenance = (state: ReducerType) => state.maintenance;
+  static searchFilter = (state: ReducerType) => state.searchFilter;
 }

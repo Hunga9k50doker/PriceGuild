@@ -21,6 +21,7 @@ type PropsType = {
 export type FilterHandle = {
   reset: (value?: any) => void;
   getLengthOption: () => number;
+  getOptionData: () => Array<FilterType>;
 };
 
 type PrioritizeType = {
@@ -65,6 +66,9 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
     getLengthOption() {
       return renderLength()
     },
+    getOptionData() {
+      return options ?? [];
+    }
   }));
 
   const renderLength = () => {

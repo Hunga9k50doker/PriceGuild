@@ -36,7 +36,8 @@ import IconCloseMobile from "assets/images/close_mobile.svg";
 import CaptCha from "components/modal/captcha";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
-import mockup_search_data from 'utils/mockup_search_data.json';
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -115,7 +116,7 @@ const CardList = (props: PropTypes) => {
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
-
+  const { filterSearch, isFilterStore } = useSelector(Selectors.searchFilter);
   useEffect(() => {
     if ( router.isReady ) {
       setPrioritize([])
@@ -126,13 +127,20 @@ const CardList = (props: PropTypes) => {
 
   const resetPage = (isChange: boolean = false) => {
 
-    if (!(isEmpty(filterData) || filterData === undefined)) {
-      // @ts-ignore
-      setFilterData({ isLoad: false })
+    
+    if (Boolean(isFilterStore)) {
+      setFilterData(filterSearch);
+      setDataFilterState(filterSearch);
+    } else {
+      if (!(isEmpty(filterData) || filterData === undefined)) {
+        // @ts-ignore
+        setFilterData({ isLoad: false })
+      }
+      resetFilter();
     }
-    setPagesSelected([1])
-    getListCard([1], isChange, false)
-    resetFilter();
+    setPagesSelected([1]);
+    getListCard([1], isChange, isFilterStore ? true : false)
+    
   }
 
   const getFilterSearch = () => {
@@ -276,12 +284,16 @@ const CardList = (props: PropTypes) => {
       //@ts-ignore
       // const result: QueryResponse<CardModel[]> = mockup_search_data
       if (page[page.length - 1] === 1) {
-        // @ts-ignore
-        dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
+        if(!Boolean(isFilterStore)){
+          // @ts-ignore
+          dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
+        }
         if (isChange) {
           setIsChangeRouter(isChange)
         }
       }
+      if(Boolean(isFilterStore))
+      dispatch(SearchFilterAction.updateIsFilter(false))
       if (result.success) {
         if (page.length === 1) {
           return setData({
@@ -350,7 +362,10 @@ const CardList = (props: PropTypes) => {
     catch (err) { }
   }
 
-  useEffect(() => {
+  useEffect(() => { console.log(filterData, 'filterData');
+    if (!isEmpty(filterData)) {
+      dispatch(SearchFilterAction.updateSearchFilter(filterData))
+    }
     if (!isEmpty(filters.years) && isFirst) {
       if (filterData?.set) {
         getFilterCollection()
@@ -485,7 +500,7 @@ const CardList = (props: PropTypes) => {
       }
     })
   }
-
+  
   const handleOptionsPrintRun = () => {
     const maxValue = Math.max(...filters.printRuns);
     const minValue = Math.min(...filters.printRuns);
@@ -584,10 +599,35 @@ const CardList = (props: PropTypes) => {
   }
 
   const selectCollection = (item: ManageCollectionType) => {
+    dispatch(SearchFilterAction.updateIsFilter(true))
+
+    getDataOptionInput();
+
     router.push(
       `/collections-add-card?collection=${item.group_ref}&code=${cardSelected.toString()}`
     );
   };
+
+  const getDataOptionInput = () => {
+    let publisher = publisherRef?.current?.getOptionData() ?? [];
+    let year = yearRef?.current?.getOptionData() ?? [];
+    let set = setRef?.current?.getOptionData() ?? [];
+    let auto = automemoRef?.current?.getOptionData() ?? [];
+    let print = printRunRef?.current?.getOptionData() ?? [];
+    let sport = sportRef?.current?.getOptionData() ?? [];
+    
+    dispatch(FilterAction.updateFiltersCardDetail({
+      //@ts-ignore
+      publishers: publisher,
+      //@ts-ignore
+      collections: set,
+      //@ts-ignore
+      printRuns: print,
+      years: year,
+      auto_memo: auto,
+      sports: sport,
+    }));
+  }
 
   const renderSportName = () => {
     const sportName = sports.find(item => item.id === +(query?.sport ?? query.sport_criteria));
@@ -600,7 +640,7 @@ const CardList = (props: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (isChangeRouter && filters.years.length && filters.publishers.length) {
+    if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
       const params: any = {};
       let prioritizeState: any = [];
       const sportState = filters?.sports?.find(item => item.id === +query?.sport_criteria);
@@ -616,8 +656,11 @@ const CardList = (props: PropTypes) => {
         params.publisher = [publisherState];
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
-        prioritizeState.push({ name: 'publisher', isChange: true })
+        prioritizeState.push({ name: 'publisher', isChange: true }); 
         publisherRef?.current?.reset([publisherState]);
+      } else {
+        prioritizeState.push({ name: 'publisher', isChange: true }); 
+        publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
       }
       const yearState = filters?.years?.find(item => item?.name === query?.year);
       if (yearState) {
@@ -626,6 +669,9 @@ const CardList = (props: PropTypes) => {
           prioritizeState[0].isChange = false;
         }
         yearRef?.current?.reset([yearState]);
+        prioritizeState.push({ name: 'year', isChange: true })
+      } else {
+        yearRef?.current?.reset(dataFilterState?.year ?? []);
         prioritizeState.push({ name: 'year', isChange: true })
       }
 
@@ -637,6 +683,9 @@ const CardList = (props: PropTypes) => {
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
         prioritizeState.push({ name: 'set', isChange: true })
         setRef?.current?.reset([collectionState]);
+      } else {
+        prioritizeState.push({ name: 'set', isChange: true })
+        setRef?.current?.reset(dataFilterState?.set ?? []);
       }
       if (isEmpty(query)) {
         const sportDeafult = filters?.sports?.find(item => item.id === (userInfo?.userDefaultSport ?? 1));
@@ -646,7 +695,9 @@ const CardList = (props: PropTypes) => {
       params.isLoad = false;
       setIsChangeRouter(false)
       setPrioritize(prioritizeState)
-      setFilterData(params)
+      if (!Boolean(isFilterStore)) {
+        setFilterData(params)
+      }
 
     }
 
@@ -719,7 +770,7 @@ const CardList = (props: PropTypes) => {
       }
     }
   };
-
+  
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -988,7 +1039,7 @@ const CardList = (props: PropTypes) => {
       return { ...prevState, cards: prevState.cards?.map(item=> item.code === code ? ({...item,wishlist: 1}): item )};
     });
   }
-
+  
   return (
     <div className="container-fluid container-search-page">
       <Head>

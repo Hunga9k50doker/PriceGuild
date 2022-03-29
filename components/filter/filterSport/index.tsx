@@ -24,7 +24,8 @@ type PropsType = {
 
 export type FilterHandle = {
   reset: () => void;
-  setSport: (id: number| string) => void;
+  setSport: (id: number | string) => void;
+  getOptionData: () => Array<FilterType>;
 };
 
 const defaultSelect: FilterType = {
@@ -96,7 +97,10 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>(({ isLoadingSta
         // @ts-ignore
         setCheckedState([checkedState])
       }
-    } 
+    }, 
+    getOptionData() {
+      return options ?? []
+    }
   }));
 
   const renderContent = (e: FilterType, i: number) => {

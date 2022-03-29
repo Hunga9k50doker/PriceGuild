@@ -35,6 +35,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+
 
 const ungraded = "ungraded";
 const NotSpecified = "1";
@@ -109,6 +111,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
+  const { isFilterStore } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -162,7 +165,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   // @ts-ignore
   const [oldValueActive, setOldValueActive] = useState<Datum>();
   const [undoChangeStatus, setUndoChangeStatus] = useState<Boolean>(false);
-  
+  const [isFilterState, setIsFilterState] = useState<boolean>(false);
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -171,7 +174,18 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   //   }
   //   return () => window.removeEventListener("resize", resizeWindow);
   // }, [windowWidth]);
-
+  React.useEffect(() => {
+    console.log(isFilterStore);
+    if(!Boolean(isFilterState))
+    setIsFilterState(isFilterStore);
+  }, [isFilterStore])
+  
+  React.useEffect(() => {
+    if (Boolean(isFilterState) && Boolean(isFilterStore)) {
+      dispatch(SearchFilterAction.updateIsFilter(false))
+    }
+  },[isFilterState])
+  
   const getDataCards = async () => {
     try {
       const params = {
@@ -382,6 +396,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const onCreate = async (params: any) => {
     try {
+      if (!isEdit) {
+         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+      }
       setIsLoading(true);
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
@@ -391,6 +408,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           localStorage.setItem('saveChangePortfolio', true);
           router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
         } else {
+         
           router.back();
         }
         return ToastSystem.success(result.message ?? "Create successfully");
@@ -654,8 +672,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [width]);
 
   const onSaveEntry = () => {
-    // setCardsMobile(cloneDeep(cards));
-    // SetShowContentAddCollection(false);
     dispatch(ConfigAction.updateShowMenuCollection(false))
   };
 

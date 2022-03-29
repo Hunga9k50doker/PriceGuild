@@ -141,7 +141,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     e.stopPropagation();
     if(props.isSelect) return;
     if (props.item.portfolio) {
-      return router.push(`/profile/collections`)
+      return router.push(`/profile/portfolio`)
     }
     props.onAddCollection && props.onAddCollection();
   }
