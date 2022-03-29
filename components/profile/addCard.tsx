@@ -221,7 +221,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         }
       }
     } catch (err) {
-      // console.log(err);
       setCards({});
     }
   };
@@ -387,10 +386,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
-        // @ts-ignore
-        localStorage.setItem('saveChangePortfolio', true);
-
-        router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+        if (isEdit) {
+          // @ts-ignore
+          localStorage.setItem('saveChangePortfolio', true);
+          router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+        } else {
+          router.back();
+        }
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
