@@ -179,7 +179,7 @@ const CardListCollection = ({
       setPagesSelected([1])
       localStorage.removeItem('filterCollection')
        //@ts-ignore
-      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
+      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
       
       if (isCheckBackToSave) {
         //@ts-ignore
@@ -251,16 +251,16 @@ const CardListCollection = ({
   
   const getListCard = async (page = [1], isSaveChange: boolean = false) => {
     try {
-        setData(prevState => {
-          return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards], };
-        });
+      setData(prevState => {
+        return { ...prevState, isLoading: true, cards: page.length === 1 ? [] : [...prevState.cards], };
+      });
       
       let dataFilter = {};
       if (!isEmpty(filterData)) {
         dataFilter = getFilterSearch();
       }
       //@ts-ignore
-      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile'));
+      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile') ?? '{}') ?? {};
 
       if (inputSearchRef && isSaveChange) {
           // @ts-ignore 
@@ -292,7 +292,7 @@ const CardListCollection = ({
         //@ts-ignore
         localStorage.setItem('saveChangePortfolio', false);
         //@ts-ignore
-        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard')));
+        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {});
       }
      
       if (result.success) {
@@ -528,9 +528,9 @@ const CardListCollection = ({
   }
   useEffect(() => {
     // @ts-ignore
-    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
+    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
     // @ts-ignore
-    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio'));
+    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
     
     if (isCheckBackToSave) {
       setSelectDataFilter(dataFilter)
