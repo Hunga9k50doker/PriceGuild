@@ -39,7 +39,7 @@ import Head from 'next/head';
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { ToastSystem } from "helper/toast_system";
 import mockup_search_data from 'utils/mockup_search_data.json';
-
+import { FilterResponse, FilterApi } from "api/filter";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -119,6 +119,7 @@ const CardList = (props: PropTypes) => {
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
   const { filterSearch, isFilterStore } = useSelector(Selectors.searchFilter);
+  const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
   useEffect(() => {
     if ( router.isReady ) {
       setPrioritize([])
@@ -289,6 +290,10 @@ const CardList = (props: PropTypes) => {
         if(!Boolean(isFilterStore)){
           // @ts-ignore
           dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
+        } else {
+          let response = await FilterApi.getFilter(params);
+         
+          setPrintRunsState(response.data?.printRuns)
         }
         if (isChange) {
           setIsChangeRouter(isChange)
@@ -505,8 +510,9 @@ const CardList = (props: PropTypes) => {
   }
   
   const handleOptionsPrintRun = () => {
-    const maxValue = Math.max(...filters.printRuns);
-    const minValue = Math.min(...filters.printRuns);
+    const maxValue = filters.printRuns ? Math.max(...filters.printRuns): NaN;
+    const minValue = filters.printRuns ? Math.min(...filters.printRuns): NaN;
+    
     const data = MetaData.printRun.filter((e) => {
       if (e.id === 1) {
         return maxValue > 0
@@ -515,7 +521,7 @@ const CardList = (props: PropTypes) => {
         return minValue === 0;
       }
       if (e.id === 3) {
-        return filters.printRuns.find((num) => num === 1)
+        return filters.printRuns?.find((num) => num === 1)
       }
       if (e.id === 4) {
         return maxValue >= 2
@@ -530,7 +536,7 @@ const CardList = (props: PropTypes) => {
         return maxValue > 299
       }
     })
-
+    
     return data;
   }
 
@@ -616,16 +622,16 @@ const CardList = (props: PropTypes) => {
     let year = yearRef?.current?.getOptionData() ?? [];
     let set = setRef?.current?.getOptionData() ?? [];
     let auto = automemoRef?.current?.getOptionData() ?? [];
-    let print = printRunRef?.current?.getOptionData() ?? [];
+    // let print = printRunRef?.current?.getOptionData() ?? [];
     let sport = sportRef?.current?.getOptionData() ?? [];
-    
+      
     dispatch(FilterAction.updateFiltersCardDetail({
       //@ts-ignore
       publishers: publisher,
       //@ts-ignore
       collections: set,
       //@ts-ignore
-      printRuns: print,
+      printRuns: printRunsState,
       years: year,
       auto_memo: auto,
       sports: sport,
@@ -643,7 +649,7 @@ const CardList = (props: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
+    if (isChangeRouter && filters.years.length && filters.publishers.length) {
       const params: any = {};
       let prioritizeState: any = [];
       const sportState = filters?.sports?.find(item => item.id === +query?.sport_criteria);
@@ -669,7 +675,7 @@ const CardList = (props: PropTypes) => {
           publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
         }
       }
-      const yearState = filters?.years?.find(item => item?.name === query?.year); console.log(yearState, 'yearStateyearState');
+      const yearState = filters?.years?.find(item => item?.name === query?.year);
       if (yearState) {
         params.year = [yearState]
         if (prioritizeState.length) {
@@ -702,6 +708,18 @@ const CardList = (props: PropTypes) => {
           setRef?.current?.reset(dataFilterState?.set ?? []);
         }
       }
+      if (Boolean(isFilterStore)) { 
+          if (!isEmpty(dataFilterState?.printRun)) {
+            prioritizeState.push({ name: 'printRun', isChange: true })
+          }
+          printRunRef?.current?.reset(dataFilterState?.printRun ?? []);
+        
+          if (!isEmpty(dataFilterState?.auto_memo)) {
+            prioritizeState.push({ name: 'auto_memo', isChange: true })
+          }
+          automemoRef?.current?.reset(dataFilterState?.auto_memo ?? []);
+      }
+
       if (isEmpty(query)) {
         const sportDeafult = filters?.sports?.find(item => item.id === (userInfo?.userDefaultSport ?? 1));
         params.sport = [sportDeafult];
