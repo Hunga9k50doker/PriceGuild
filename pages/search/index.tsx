@@ -336,7 +336,7 @@ const CardList = (props: PropTypes) => {
   const onChangeSort = (e: any) => {
     setSortCards(e);
     //@ts-ignore
-    btnSoftByRef?.current.click();
+    btnSoftByRef?.current && btnSoftByRef?.current.click();
   }
 
   const getFilterCollection = async () => {
