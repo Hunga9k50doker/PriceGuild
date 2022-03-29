@@ -388,9 +388,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         setIsLoading(false);
         if (isEdit) {
           // @ts-ignore
-          // localStorage.setItem('saveChangePortfolio', true);
-          // ${+params?.data[0]?.group_ref}/${params?.data[0]?.sport}
-          router.push(`${'/profile/portfolio/'}`);
+          localStorage.setItem('saveChangePortfolio', true);
+          router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
         } else {
           router.back();
         }
