@@ -179,14 +179,14 @@ const CardListCollection = ({
       setPagesSelected([1])
       localStorage.removeItem('filterCollection')
        //@ts-ignore
-      // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
-      let isCheckBackToSave = false;
+      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
+      // let isCheckBackToSave = false;
       if (isCheckBackToSave) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
         //@ts-ignore
         let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
-
+ 
         let data: Array<TrackData> = [];
         if (!isEmpty(dataFilter)) {
           for (let val of Object.keys(dataFilter)) { 
@@ -249,7 +249,7 @@ const CardListCollection = ({
     return params
   }
   
-  const getListCard = async (page = [1], isSaveChange: boolean = false) => {
+  const getListCard = async (page = [1], isSaveChange: boolean = false) => { console.log(isSaveChange, 'isSaveChange');
     try {
         setData(prevState => {
           return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards], };
@@ -286,7 +286,7 @@ const CardListCollection = ({
       
       const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? prmsSearchSaveData : params);
       
-      localStorage.setItem('key_search_profile', JSON.stringify(params));
+      
       
       if (isSaveChange) {
         //@ts-ignore
@@ -365,6 +365,7 @@ const CardListCollection = ({
           if (!isSaveChange) {
             setDataUpdate(updateFilter);
             localStorage.setItem('lastestFilterEditCard', JSON.stringify(updateFilter))
+            localStorage.setItem('key_search_profile', JSON.stringify(params));
           }
 
           const grades = updateFilter?.grades;
@@ -530,8 +531,8 @@ const CardListCollection = ({
     // @ts-ignore
     let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
     // @ts-ignore
-    // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
-    let isCheckBackToSave = false;
+    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
+    // let isCheckBackToSave = false;
     
     if (isCheckBackToSave) {
       setSelectDataFilter(dataFilter)
@@ -802,12 +803,6 @@ const CardListCollection = ({
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
   const handleChange = (event: any) => {
-    // @ts-ignore
-    // let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
-    
-    // if (!isEmpty(dataFilter)) {
-    //   setSelectDataFilter(dataFilter)
-    // }
     setPagesSelected([1])
     loadSuggestions([1])
   }
