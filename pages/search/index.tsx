@@ -375,7 +375,7 @@ const CardList = (props: PropTypes) => {
         getFilterCollection()
       }
       // @ts-ignore
-      if (filterData?.isLoad !== false) {
+      if (filterData?.isLoad !== false && !Boolean(isFilterStore)) {
         setPagesSelected([1])
         getListCard()
       }
@@ -391,7 +391,6 @@ const CardList = (props: PropTypes) => {
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
-    console.log(prioritize, 'prioritize');
     let dataSave = [...prioritize];
     if (!prioritize.find(item => item.name === key)) {
       setPrioritize(prevState => [...prevState.map(item => ({ ...item, isChange: false })), { name: key, isChange: true }])
@@ -643,7 +642,7 @@ const CardList = (props: PropTypes) => {
     return query.q ? `“${query.q}”` : filterData?.sport?.[0]?.name ?? sportName?.sportName
   }
 
-  React.useEffect(() => { console.log('setPrioritize', 'setPrioritize');
+  React.useEffect(() => {
     if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
       const params: any = {};
       let prioritizeState: any = [];
@@ -670,7 +669,7 @@ const CardList = (props: PropTypes) => {
           publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
         }
       }
-      const yearState = filters?.years?.find(item => item?.name === query?.year);
+      const yearState = filters?.years?.find(item => item?.name === query?.year); console.log(yearState, 'yearStateyearState');
       if (yearState) {
         params.year = [yearState]
         if (prioritizeState.length) {
@@ -680,10 +679,10 @@ const CardList = (props: PropTypes) => {
         prioritizeState.push({ name: 'year', isChange: true })
       } else {
         if (Boolean(isFilterStore)) {
-          yearRef?.current?.reset(dataFilterState?.year ?? []);
           if (!isEmpty(dataFilterState?.year)) {
             prioritizeState.push({ name: 'year', isChange: true })
           }
+          yearRef?.current?.reset(dataFilterState?.year ?? []);
         }
       }
 
