@@ -2002,6 +2002,7 @@ const CardListCollection = ({
               isLoading={data.isLoading}
               isLoadMore={false}
               cards={data.cards}
+              nameSearch={inputSearchRef ? inputSearchRef?.current?.value : "" }
             />
             <div className={`${!data.isLoading && Boolean(data.rows) ? "": "d-none"}`}>
               {
