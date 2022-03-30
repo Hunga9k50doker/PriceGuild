@@ -989,7 +989,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       <div className="d-flex images justify-content-center align-items-center">
                         <div className="hide-tablet aspect-sm">
                           <img
-                            className="rounded"
                             src={
                               entry?.image_upload?.front
                                 ? entry?.image_upload?.front
@@ -1000,7 +999,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         </div>
                         <div className="ms-2 hide-tablet aspect-sm">
                           <img
-                            className="rounded"
                             src={
                               entry?.image_upload?.back
                                 ? entry?.image_upload?.back
