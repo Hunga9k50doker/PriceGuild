@@ -127,7 +127,9 @@ const CardList = (props: PropTypes) => {
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
-
+  // useEffect(() => {
+  //   console.log(prioritize, 'prioritize');
+  // },[prioritize])
   const resetPage = (isChange: boolean = false) => {
 
     
@@ -148,10 +150,18 @@ const CardList = (props: PropTypes) => {
 
   const getFilterSearch = () => {
     let params: any = {}
-    const filterOld = { ...filterData };
-    if (filterOld.isLoad !== undefined) {
-      delete filterOld.isLoad
+    let filterOld = {};
+    if (Boolean(isFilterStore)) {
+      filterOld = {...filterSearch}
+    } else {
+      filterOld = {...filterData}
     }
+     // @ts-ignore
+    if (filterOld?.isLoad !== undefined) {
+       // @ts-ignore
+      delete filterOld?.isLoad
+    }
+    console.log(filterOld, 'filterOld');
     for (const [key, value] of Object.entries(filterOld ?? {})) {
       // @ts-ignore
       const arrayValue = value.map(item => {
@@ -162,6 +172,7 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
       }).sort((a, b) => a - b);
       if (key === "printRun") {
+         // @ts-ignore
         if (value.length) {
           params.printRun = [
             [
@@ -254,10 +265,15 @@ const CardList = (props: PropTypes) => {
 
       if (query.q ) {
         params.search_term = query.q;
+      } console.log(filterData, 'filterDatafilterDatafilterData');
+      if (Boolean(isFilterStore) && isFilter) {
+         params.filter = getFilterSearch();
+      } else {
+        if (!isEmpty(filterData) && isFilter) {
+          params.filter = getFilterSearch();
+        }
       }
-      if (!isEmpty(filterData) && isFilter) {
-        params.filter = getFilterSearch();
-      }
+     
       if (params.filter?.sport?.length) {
         params.sport = params.filter?.sport[0]
         delete params.filter?.sport
@@ -290,17 +306,14 @@ const CardList = (props: PropTypes) => {
         if(!Boolean(isFilterStore)){
           // @ts-ignore
           dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
-        } else {
-          let response = await FilterApi.getFilter(params);
-         
-          setPrintRunsState(response.data?.printRuns)
         }
         if (isChange) {
           setIsChangeRouter(isChange)
         }
       }
-      if(Boolean(isFilterStore))
-      dispatch(SearchFilterAction.updateIsFilter(false))
+      if (Boolean(isFilterStore)) {
+        dispatch(SearchFilterAction.updateIsFilter(false))
+      }
       if (result.success) {
         if (page.length === 1) {
           return setData({
@@ -396,7 +409,8 @@ const CardList = (props: PropTypes) => {
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
-    let dataSave = [...prioritize];
+    setPrintRunsState(filters.printRuns)
+    let dataSave = [...prioritize]; console.log(dataSave, 'dataSavedataSave');
     if (!prioritize.find(item => item.name === key)) {
       setPrioritize(prevState => [...prevState.map(item => ({ ...item, isChange: false })), { name: key, isChange: true }])
     } else {
@@ -557,7 +571,7 @@ const CardList = (props: PropTypes) => {
   const optionsParallel = React.useMemo(() => handleOptionsParallel(), [filterData?.type]);
 
   const resetFilter = () => {
-    publisherRef?.current?.reset();
+    setPrioritize([])
     yearRef?.current?.reset();
     setRef?.current?.reset();
     automemoRef?.current?.reset();
@@ -565,6 +579,7 @@ const CardList = (props: PropTypes) => {
     colorRef?.current?.reset();
     printRunRef?.current?.reset();
     sportRef?.current?.reset()
+    publisherRef?.current?.reset();
   }
 
   const onSelectItem = (code: any) => {
@@ -735,7 +750,7 @@ const CardList = (props: PropTypes) => {
     }
 
   }, [filters.years, filters.publishers, isChangeRouter, filters.collections, filters.sports])
-
+  
   const resetFilterUI = () => {
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {

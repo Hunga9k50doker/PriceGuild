@@ -14,4 +14,22 @@ export class SearchFilterAction {
       payload,
     };
   }
+  static updateIsFilterTop100(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.isFilter100,
+      payload,
+    };
+  }
+  static updateSeachFilterTop100(payload: any) {
+     return {
+      type: ActionTypes.reducer.search_filter.updateSearchFilterTop100,
+      payload,
+    };
+  }
+  static updateIsEditSaveCard(payload: any) {
+     return {
+      type: ActionTypes.reducer.search_filter.isEdit,
+      payload,
+    };
+  }
 }

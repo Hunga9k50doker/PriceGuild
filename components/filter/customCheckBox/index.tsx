@@ -35,7 +35,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
   const [checkedState, setCheckedState] = useState<Array<FilterType>>([]);
   const [keySearch, setKeySearch] = useState<string>("")
   const [optionsSearch, setOptionsSearch] = useState<Array<FilterType> | undefined>()
-
+  
   useEffect(() => {
     if (!(props?.prioritize ?? []).length) {
       setOptions(props.options)
@@ -60,7 +60,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
   }, [props.options])
 
   React.useImperativeHandle(ref, () => ({
-    reset(value) {
+    reset(value) { 
       setCheckedState(value ?? [])
     },
 
@@ -75,7 +75,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
   const renderLength = () => {
     return sumBy((optionsSearch?? options), function (o) { return o.options?.length ?? 1; })
   }
-  // console.log(checkedState, 'checkedState');
+  
   const checker = (arr: any, target: any) => target.every((v: any) => checkedState?.map((item) => item.id).includes(v.id));
 
   const renderContent = (e: FilterType, i: number) => {

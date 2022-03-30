@@ -50,6 +50,7 @@ import ModalDeletePortfolio from "components/modal/delete/portfolio";
 import $ from "jquery"
 import HeaderUser from "components/user/headerUser"
 import { UserInfoType, PgAppProfileType } from "interfaces"
+import { SearchFilterAction } from "redux/actions/search_filter_action";
 
 type PropTypes = {
   collection?: string,
@@ -147,7 +148,7 @@ const CardListCollection = ({
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
-
+  const { isEditCardData } = useSelector(Selectors.searchFilter);
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -178,10 +179,8 @@ const CardListCollection = ({
     if (isRefresh) {
       setPagesSelected([1])
       localStorage.removeItem('filterCollection')
-       //@ts-ignore
-      let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
-      // let isCheckBackToSave = false;
-      if (isCheckBackToSave) {
+
+      if (isEditCardData) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
         //@ts-ignore
@@ -204,7 +203,7 @@ const CardListCollection = ({
         
       }
       //@ts-ignore
-      getListCard([1], isCheckBackToSave);
+      getListCard([1], isEditCardData);
      
     }
   }
@@ -260,7 +259,7 @@ const CardListCollection = ({
         dataFilter = getFilterSearch();
       }
       //@ts-ignore
-      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile'));
+      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile') ?? '{}') ?? {};
 
       if (inputSearchRef && isSaveChange) {
           // @ts-ignore 
@@ -289,10 +288,9 @@ const CardListCollection = ({
       
       
       if (isSaveChange) {
+        dispatch(SearchFilterAction.updateIsEditSaveCard(false));
         //@ts-ignore
-        localStorage.setItem('saveChangePortfolio', false);
-        //@ts-ignore
-        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard')));
+        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? {}) ?? {});
       }
      
       if (result.success) {
@@ -529,12 +527,9 @@ const CardListCollection = ({
   }
   useEffect(() => {
     // @ts-ignore
-    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
-    // @ts-ignore
-    let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio') ?? 'false') ?? false;
-    // let isCheckBackToSave = false;
+    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
     
-    if (isCheckBackToSave) {
+    if (isEditCardData) {
       setSelectDataFilter(dataFilter)
     }
 

@@ -82,7 +82,10 @@ class  _MaintenanceTypeReducer {
 }
 class  _SearchFilterTypeReducer {
   readonly updateSearchFilter = "update-search-filter";
-  readonly isFilter = "is-filter"
+  readonly isFilter = "is-filter";
+  readonly updateSearchFilterTop100 = "update-search-filter-100";
+  readonly isFilter100 = "is-filter-100";
+  readonly isEdit = "is-edit";
 }
 
 class _FriendTypeReducer {

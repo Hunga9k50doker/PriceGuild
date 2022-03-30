@@ -111,7 +111,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { isFilterStore } = useSelector(Selectors.searchFilter);
+  const { isFilterStore, isFilterStoreTop100 } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -166,6 +166,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const [oldValueActive, setOldValueActive] = useState<Datum>();
   const [undoChangeStatus, setUndoChangeStatus] = useState<Boolean>(false);
   const [isFilterState, setIsFilterState] = useState<boolean>(false);
+  const [isFilterTop100State, setIsFilterTop100State] = useState<boolean>(false);
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -175,7 +176,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   //   return () => window.removeEventListener("resize", resizeWindow);
   // }, [windowWidth]);
   React.useEffect(() => {
-    console.log(isFilterStore);
     if(!Boolean(isFilterState))
     setIsFilterState(isFilterStore);
   }, [isFilterStore])
@@ -184,7 +184,18 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (Boolean(isFilterState) && Boolean(isFilterStore)) {
       dispatch(SearchFilterAction.updateIsFilter(false))
     }
-  },[isFilterState])
+  }, [isFilterState])
+
+  React.useEffect(() => {
+    if ((Boolean(isFilterTop100State) && Boolean(isFilterStoreTop100))) {
+      dispatch(SearchFilterAction.updateIsFilterTop100(false))
+    }
+  }, [isFilterTop100State])
+  
+  React.useEffect(() => {
+     if(!Boolean(isFilterState))
+      setIsFilterState(isFilterStoreTop100);
+  },[isFilterStoreTop100])
   
   const getDataCards = async () => {
     try {
@@ -397,7 +408,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const onCreate = async (params: any) => {
     try {
       if (!isEdit) {
-         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+        if (Boolean(isFilterState)) {
+          dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+        }
+        if (Boolean(isFilterStoreTop100)) {
+          dispatch(SearchFilterAction.updateIsFilterTop100(isFilterStoreTop100));
+        }
       }
       setIsLoading(true);
       const result = await api.v1.portfolio.saveCards(params);
@@ -405,7 +421,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         setIsLoading(false);
         if (isEdit) {
           // @ts-ignore
-          localStorage.setItem('saveChangePortfolio', true);
+          // localStorage.setItem('saveChangePortfolio', true);
+          dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
         } else {
          
