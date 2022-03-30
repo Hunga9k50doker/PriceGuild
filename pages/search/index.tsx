@@ -127,9 +127,7 @@ const CardList = (props: PropTypes) => {
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
-  // useEffect(() => {
-  //   console.log(prioritize, 'prioritize');
-  // },[prioritize])
+
   const resetPage = (isChange: boolean = false) => {
 
     
@@ -161,7 +159,7 @@ const CardList = (props: PropTypes) => {
        // @ts-ignore
       delete filterOld?.isLoad
     }
-    console.log(filterOld, 'filterOld');
+  
     for (const [key, value] of Object.entries(filterOld ?? {})) {
       // @ts-ignore
       const arrayValue = value.map(item => {
@@ -265,7 +263,7 @@ const CardList = (props: PropTypes) => {
 
       if (query.q ) {
         params.search_term = query.q;
-      } console.log(filterData, 'filterDatafilterDatafilterData');
+      }
       if (Boolean(isFilterStore) && isFilter) {
          params.filter = getFilterSearch();
       } else {
@@ -410,7 +408,7 @@ const CardList = (props: PropTypes) => {
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
     setPrintRunsState(filters.printRuns)
-    let dataSave = [...prioritize]; console.log(dataSave, 'dataSavedataSave');
+    let dataSave = [...prioritize];
     if (!prioritize.find(item => item.name === key)) {
       setPrioritize(prevState => [...prevState.map(item => ({ ...item, isChange: false })), { name: key, isChange: true }])
     } else {
