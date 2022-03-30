@@ -2594,7 +2594,7 @@ nav {
         .card-add-detail {
             .images {
                 .hide-tablet {
-                    @media (min-width: 768px) and (max-width: 995px) {
+                    @media (min-width: 768px) and (max-width: 995.98px) {
                         display: none !important;
                     }
                 }
