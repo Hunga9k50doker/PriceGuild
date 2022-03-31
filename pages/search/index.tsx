@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import queryString from 'query-string';
 import { api } from 'configs/axios';
 import { FilterType, SelectDefultType, FilyerCollection, ManageCollectionType, QueryResponse } from "interfaces"
@@ -130,7 +130,6 @@ const CardList = (props: PropTypes) => {
 
   const resetPage = (isChange: boolean = false) => {
 
-    
     if (Boolean(isFilterStore)) {
       setFilterData(filterSearch);
       setDataFilterState(filterSearch);
@@ -671,7 +670,7 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
         prioritizeState.push({ name: 'sport', isChange: true })
-      }
+      } 
       // @ts-ignore
       let publisherState = dataFilterState?.publishers?.find(publisher => publisher?.name === query?.publisherName);
       if (publisherState) {
@@ -1072,12 +1071,16 @@ const CardList = (props: PropTypes) => {
     }
   }
 
-  const defaultValueSport = () => {
+  const defaultValueSport = useMemo(() => {
+    if (Boolean(isFilterStore)) {
+      return filterSearch?.sport?.[0]?.id ?? 1
+    }
     if (isEmpty(query)) {
       return userInfo?.userDefaultSport ?? 1
     }
+    
   return +(query?.sport ?? query?.sport_criteria)
-  }
+  },[query])
 
   const onUpdateWishList = (code: string) => {
     // @ts-ignore
@@ -1126,7 +1129,7 @@ const CardList = (props: PropTypes) => {
                               isSearch={false}
                               name="sport"
                               isCount={Boolean(query.q)}
-                              defaultValue={defaultValueSport()}
+                              defaultValue={defaultValueSport}
                               options={filters.sports} />
                           </div>
                         </div>
@@ -1326,7 +1329,7 @@ const CardList = (props: PropTypes) => {
                                             isSearch={false}
                                             name="sport"
                                             isCount={Boolean(query.q)}
-                                            defaultValue={defaultValueSport()}
+                                            defaultValue={defaultValueSport}
                                             options={filters.sports} />
                                         </div>
                                       </div>

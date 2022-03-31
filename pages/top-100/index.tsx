@@ -34,6 +34,7 @@ import { CardModel } from "model/data_sport/card_sport";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import filterSport from "components/filter/filterSport";
 
 const rowsPerPage = 20;
 
@@ -122,11 +123,11 @@ const Top100 = (props: PropTypes) => {
     }
 
     getListCard();
-    
+    console.log(filterData, 'filterData');
   }, [filterData, sortData]);
 
   useEffect(() => {
-    if (Boolean(isFilterStoreTop100)) { console.log(filterSearchTop100?.a_filter, 'filterSearchTop100');
+    if (Boolean(isFilterStoreTop100)) { 
       setFilterData(filterSearchTop100);
     }
   }, [isFilterStoreTop100])
@@ -531,7 +532,8 @@ const Top100 = (props: PropTypes) => {
                               isSearch={false}
                               onChange={onChangeFilter}
                               name="sport"
-                              defaultValue={2}
+                              //@ts-ignore
+                              defaultValue={+filterData?.sport?.[0]?.id ?? 2}
                               isDefault={false}
                               options={sportsState}
                             />
