@@ -75,7 +75,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   const onCreateSuccess = () => {
     getData(true);
     setIsOpen(false);
-    setIsModal(false)
+    // setIsModal(false)
   }
 
   const onHandleModal = (status: boolean) => {

@@ -45,6 +45,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       .required('This field is required').min(1, 'This field is required'),
 
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataJson, setDataJson] = useState<any>({
     head: [],
     body: [],
@@ -90,6 +91,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         name: data.collectionName,
         type: Number(data.type)
       }
+      await setIsLoading(true);
       const result = await api.v1.collection.createCollection(params);
       if (result.success) {
         props.onSuccess && props.onSuccess({
@@ -105,6 +107,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
             </a>
           </Link>
       </div>) : '';
+      await setIsLoading(false);
       }
       ToastSystem.error(result.message ?? result.error);
     }
@@ -311,7 +314,16 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-outline btn-close-modal m-0" onClick={() => props?.onClose && props.onClose()}>Cancel</button>
-        <button onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}</button>
+        <button disabled={isLoading} onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}  
+         
+         { isLoading &&
+          <span
+              className="spinner-grow spinner-grow-sm"
+              role="status"
+              aria-hidden="true"
+          />
+         } 
+        </button>
       </Modal.Footer>
     </Modal>);
 }
