@@ -188,7 +188,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     } else {
       host = process.env.DOMAIN;
     }
-    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name?.replace(/\s/g, "-")}`);
+    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/','-').replaceAll(' ', '')}`);
 
     return data_url;
   }
@@ -202,7 +202,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     } else {
       host = process.env.DOMAIN;
     }
-    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name?.replace(/\s/g, "-")}`);
+    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/','-').replaceAll(' ', '')}`);
 
     return data_url;
 }
