@@ -7,6 +7,7 @@ let initialState: any = {
   filterSearchTop100: {},
   isFilterStoreTop100: false,
   isEditCardData: false,
+  pageSelected: 1,
 };
 
 const maintenanceReducer = (
@@ -42,6 +43,12 @@ const maintenanceReducer = (
       return {
         ...state,
         isEditCardData: action.payload
+      };
+    }
+    case ActionTypes.reducer.search_filter.pageSelected: { 
+      return {
+        ...state,
+        pageSelected: action.payload
       };
     }
     default: {

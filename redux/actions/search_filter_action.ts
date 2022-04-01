@@ -32,4 +32,10 @@ export class SearchFilterAction {
       payload,
     };
   }
+  static updatePageSelected(payload: any) {
+     return {
+      type: ActionTypes.reducer.search_filter.pageSelected,
+      payload,
+    };
+  }
 }

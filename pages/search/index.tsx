@@ -118,7 +118,7 @@ const CardList = (props: PropTypes) => {
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
-  const { filterSearch, isFilterStore } = useSelector(Selectors.searchFilter);
+  const { filterSearch, isFilterStore, pageSelected } = useSelector(Selectors.searchFilter);
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
   useEffect(() => {
     if ( router.isReady ) {
@@ -129,7 +129,7 @@ const CardList = (props: PropTypes) => {
   }, [router.query])
 
   const resetPage = (isChange: boolean = false) => {
-
+    
     if (Boolean(isFilterStore)) {
       setFilterData(filterSearch);
       setDataFilterState(filterSearch);
@@ -139,9 +139,10 @@ const CardList = (props: PropTypes) => {
         setFilterData({ isLoad: false })
       }
       resetFilter();
+      dispatch(SearchFilterAction.updatePageSelected(1))
     }
-    setPagesSelected([1]);
-    getListCard([1], isChange, isFilterStore ? true : false)
+    setPagesSelected(Boolean(isFilterStore) ? [pageSelected] : [1]);
+    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false)
     
   }
 
@@ -796,6 +797,9 @@ const CardList = (props: PropTypes) => {
     if (timerid) {
       clearTimeout(timerid);
     }
+
+    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+
     timerid = setTimeout(() => {
       setPagesSelected(event)
       getListCard(event, false)

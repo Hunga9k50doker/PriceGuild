@@ -148,7 +148,7 @@ const CardListCollection = ({
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
-  const { isEditCardData } = useSelector(Selectors.searchFilter);
+  const { isEditCardData, pageSelected } = useSelector(Selectors.searchFilter);
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -169,7 +169,7 @@ const CardListCollection = ({
       }
     }
   }, [router.query])
-  
+
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
@@ -177,9 +177,8 @@ const CardListCollection = ({
     setTrackFilter([])
     resetFilter();
     if (isRefresh) {
-      setPagesSelected([1])
       localStorage.removeItem('filterCollection')
-
+      
       if (isEditCardData) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
@@ -200,10 +199,15 @@ const CardListCollection = ({
         setTrackFilter(data);
         setFilterData(dataFilter);
         updateDataFilter(dataFilterCustom);
-        
+      } else {
+        localStorage.removeItem('setDataFilter');
+         dispatch(SearchFilterAction.updatePageSelected(1))
       }
+
+      setPagesSelected(Boolean(isEditCardData) ? [pageSelected] : [1]);
+
       //@ts-ignore
-      getListCard([1], isEditCardData);
+      getListCard(pageSelected && Boolean(isEditCardData) ? [pageSelected] : [1], isEditCardData);
      
     }
   }
@@ -1032,6 +1036,9 @@ const CardListCollection = ({
     if (timerid) {
       clearTimeout(timerid);
     }
+
+    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+
     timerid = setTimeout(() => {
       setPagesSelected(event)
       getListCard(event)

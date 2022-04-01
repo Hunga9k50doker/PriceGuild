@@ -86,6 +86,7 @@ class  _SearchFilterTypeReducer {
   readonly updateSearchFilterTop100 = "update-search-filter-100";
   readonly isFilter100 = "is-filter-100";
   readonly isEdit = "is-edit";
+  readonly pageSelected = "page-selected";
 }
 
 class _FriendTypeReducer {
