@@ -143,7 +143,7 @@ const CardList = (props: PropTypes) => {
     }
     setPagesSelected(Boolean(isFilterStore) ? [pageSelected] : [1]);
     getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false)
-    
+    // pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1]
   }
 
   const getFilterSearch = () => {
@@ -232,6 +232,7 @@ const CardList = (props: PropTypes) => {
   }
 
   const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}) => {
+    console.log(page, 'pagepagepage');
     if (page[page.length-1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
       //   collections: [],
@@ -306,6 +307,10 @@ const CardList = (props: PropTypes) => {
           dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
         }
         if (isChange) {
+          setIsChangeRouter(isChange)
+        }
+      } else {
+        if (Boolean(isFilterStore)) { 
           setIsChangeRouter(isChange)
         }
       }
@@ -662,7 +667,7 @@ const CardList = (props: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (isChangeRouter && filters.years.length && filters.publishers.length) {
+    if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
       const params: any = {};
       let prioritizeState: any = [];
       const sportState = filters?.sports?.find(item => item.id === +query?.sport_criteria);
