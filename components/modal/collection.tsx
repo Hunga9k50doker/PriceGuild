@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { api } from 'configs/axios';
@@ -20,7 +20,6 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { MyStorage } from 'helper/local_storage';
 
-
 type PropTypes = {
   isOpen: boolean,
   onClose?: () => void,
@@ -36,8 +35,10 @@ type CollectionForm = {
   type: string;
 };
 
-
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
+
+  const inputNameRef = useRef<HTMLInputElement>(null);
+
   const CSVRef = React.useRef<HTMLLinkElement>(null)
   const validationSchema = Yup.object().shape({
     collectionName: Yup.string()
@@ -177,6 +178,17 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       head: [],
       body: [],
     })
+    if ( isOpen === true ) {
+      let timerid = null;
+      if (timerid) {
+        clearTimeout(timerid);
+      }
+      timerid = setTimeout(() => {
+        console.log(inputNameRef.current?.focus)
+        inputNameRef.current?.focus();
+      }, 350);
+     
+    }
   }, [isOpen])
   
   const renderLinkShareFB = () => {
@@ -236,6 +248,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               <input {...register("collectionName", { required: true })} 
                 placeholder={`Enter ${renderTextLower(title)} Name`}
                 maxLength={50}
+                autoFocus
+                ref={inputNameRef}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
             </div>
