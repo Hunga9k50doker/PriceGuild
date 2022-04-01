@@ -252,7 +252,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
+  
     var file = e.target.files[0];
+    if(file?.size >= 10485760) {
+      return ToastSystem.error("Please upload a file smaller than 10 MB");
+    }
     if (file) {
       var url = URL.createObjectURL(file);
       let current_path: string =
