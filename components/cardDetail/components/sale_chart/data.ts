@@ -48,8 +48,14 @@ export const getCluster = (fillColor: string = colorCluster) => {
     return {
         enabled: true,
         allowOverlap: true,
+        zoomType: 'x',
+        minimumClusterSize: 3,
         animation: {
             duration: 450
+        },
+        layoutAlgorithm: {
+            type: 'grid',
+            gridSize: 50
         },
         // layoutAlgorithm: {
         //     type: 'grid',
@@ -259,7 +265,16 @@ export const options: Highcharts.Options = {
     },
     xAxis: {
         type: 'datetime',
-        crosshair: false
+        crosshair: false,
+        ordinal: false,
+        minRange: 24 * 3600 * 1000,
+        events: {
+            setExtremes: function (e) {
+                if (e.trigger && ["rangeSelectorButton", "navigator"].includes(e.trigger)) {
+                    this.chart.zoomOut()
+                }
+            }
+        }
     },
     yAxis: {
         opposite: false,
@@ -268,6 +283,7 @@ export const options: Highcharts.Options = {
         }
     },
     scrollbar: {
+        liveRedraw: false,
         enabled: false,
         height: 0,
         zIndex: -1,
@@ -293,6 +309,10 @@ export const options: Highcharts.Options = {
         series: {
             type: 'line'
         }
+    },
+    boost: {
+        useGPUTranslations: true,
+        usePreallocated: true,
     },
     tooltip: {
         split: false,
@@ -356,13 +376,18 @@ export const options: Highcharts.Options = {
         enabled: false,
     },
     chart: {
-        height: 530
+        height: 530,
+        zoomType: 'x',
+        animation: false,
     },
     credits: {
         enabled: false
     },
     drilldown: {
       series: []
+    },
+    exporting : {
+        enabled: false
     }
 };
   
