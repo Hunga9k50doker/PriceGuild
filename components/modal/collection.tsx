@@ -55,7 +55,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const [t, i18n] = useTranslation("common")
   const pathname = router.pathname.split("/")
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<CollectionForm>({
+  const { register, handleSubmit, reset, setValue, formState: { errors }, setFocus,clearErrors, resetField  } = useForm<CollectionForm>({
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
@@ -187,8 +187,10 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         clearTimeout(timerid);
       }
       timerid = setTimeout(() => {
-        console.log(inputNameRef.current?.focus)
-        inputNameRef.current?.focus();
+        // console.log(inputNameRef.current?.focus)
+        // inputNameRef.current?.focus();
+        resetField("collectionName");
+        setFocus("collectionName");
       }, 350);
      
     }
@@ -220,7 +222,13 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name?.replace(/\s/g, "-")}`);
 
     return data_url;
-}
+  }
+  const onChange = (e:any) => {
+    const {value} = e.target;
+    if(value) {
+      clearErrors("collectionName")
+    }
+  }
 
   return (
     <Modal
@@ -252,7 +260,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                 placeholder={`Enter ${renderTextLower(title)} Name`}
                 maxLength={50}
                 autoFocus
-                ref={inputNameRef}
+                // ref={inputNameRef}
+                onChange={onChange}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
             </div>
@@ -328,7 +337,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-outline btn-close-modal m-0" onClick={() => props?.onClose && props.onClose()}>Cancel</button>
-        <button disabled={isLoading} onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}  
+        <button  onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}  
          
          { isLoading &&
           <span
