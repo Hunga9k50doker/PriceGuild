@@ -87,6 +87,8 @@ class  _SearchFilterTypeReducer {
   readonly isFilter100 = "is-filter-100";
   readonly isEdit = "is-edit";
   readonly pageSelected = "page-selected";
+  readonly isAddCardCheckList = "is-add-card-check-list";
+  readonly isAddCardProfile = "is-add-card-profile";
 }
 
 class _FriendTypeReducer {

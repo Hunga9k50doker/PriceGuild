@@ -5,6 +5,8 @@ import { ManageCollectionType } from "interfaces"
 import {  PgAppProfileType } from "interfaces"
 import { useRouter } from 'next/router'
 import { isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import Selectors from 'redux/selectors';
 
 type PropTypes = {
   isButtonRight?: boolean,
@@ -26,7 +28,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
   });
   const [profileDataFriend, setProfileDataFriend] = useState<PgAppProfileType | undefined>();
   const router = useRouter();
-
+  const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const getData = async () => {
     try {
       if(isProfileFriend) {
@@ -57,7 +59,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
       } else {
         const params = {
           table: table,
-          user_id: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId
+          user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
         }
         const result = await api.v1.collection.getManageCollections(params);
         if (result.success) {

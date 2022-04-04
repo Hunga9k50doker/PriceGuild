@@ -38,4 +38,16 @@ export class SearchFilterAction {
       payload,
     };
   }
+  static updateIsAddCardCheckList(payload: any) {
+      return {
+       type: ActionTypes.reducer.search_filter.isAddCardCheckList,
+       payload,
+     };
+  }
+  static updateIsAddCardProfile(payload: any) {
+      return {
+       type: ActionTypes.reducer.search_filter.isAddCardProfile,
+       payload,
+     };
+  }
 }

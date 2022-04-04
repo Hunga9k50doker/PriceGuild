@@ -36,7 +36,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
     try {
       const params = {
         table: table,
-        user_id: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userInfo?.userid,
+        user_id: loggingIn ? userInfo?.userid : !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userInfo?.userid,
       }
       const result = await api.v1.collection.getManageCollections(params);
       if (result.success) {

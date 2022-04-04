@@ -148,7 +148,8 @@ const CardListCollection = ({
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
-  const { isEditCardData, pageSelected } = useSelector(Selectors.searchFilter);
+  const { isEditCardData, pageSelected, isAddCardProfile } = useSelector(Selectors.searchFilter);
+  
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -169,7 +170,7 @@ const CardListCollection = ({
       }
     }
   }, [router.query])
-
+  
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
@@ -179,7 +180,7 @@ const CardListCollection = ({
     if (isRefresh) {
       localStorage.removeItem('filterCollection')
       
-      if (isEditCardData) {
+      if (isEditCardData || isAddCardProfile) {
         //@ts-ignore
         let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
         //@ts-ignore
@@ -204,10 +205,10 @@ const CardListCollection = ({
          dispatch(SearchFilterAction.updatePageSelected(1))
       }
 
-      setPagesSelected(Boolean(isEditCardData) ? [pageSelected] : [1]);
+      setPagesSelected(Boolean(isEditCardData) || Boolean(isAddCardProfile) ? [pageSelected] : [1]);
 
       //@ts-ignore
-      getListCard(pageSelected && Boolean(isEditCardData) ? [pageSelected] : [1], isEditCardData);
+      getListCard(pageSelected && (Boolean(isEditCardData) || Boolean(isAddCardProfile)) ? [pageSelected] : [1], (isEditCardData || isAddCardProfile));
      
     }
   }
@@ -252,7 +253,7 @@ const CardListCollection = ({
     return params
   }
   
-  const getListCard = async (page = [1], isSaveChange: boolean = false) => { console.log(isSaveChange, 'isSaveChange');
+  const getListCard = async (page = [1], isSaveChange: boolean = false) => {
     try {
         setData(prevState => {
           return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards], };
@@ -272,7 +273,7 @@ const CardListCollection = ({
       
       const params: any = {
         portid_only: false,
-        port_userid: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
+        port_userid: loggingIn ? Number(userId ?? userInfo?.userid) :  !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
         table: table,
         view_mode: "grouped",
         group_ref: Number(collection),
@@ -533,7 +534,7 @@ const CardListCollection = ({
     // @ts-ignore
     let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
     
-    if (isEditCardData) {
+    if (isEditCardData || isAddCardProfile) {
       setSelectDataFilter(dataFilter)
     }
 
@@ -745,10 +746,11 @@ const CardListCollection = ({
   const selectCollection = async (item: ManageCollectionType) => {
     setIsShow(false)
     if (table === "wishlist" || isFriend) {
-    const cardCode = data.cards?.filter(item=> cardSelected.includes(item.portid))?.map(item=> item.code)
-    return  router.push(
-        `/collections-add-card?collection=${item.group_ref}&code=${cardCode.toString()}`
-      );
+      const cardCode = data.cards?.filter(item => cardSelected.includes(item.portid))?.map(item => item.code)
+      dispatch(SearchFilterAction.updateIsAddCardProfile(true))
+      return  router.push(
+          `/collections-add-card?collection=${item.group_ref}&code=${cardCode.toString()}`
+        );
     }
     try {
       const params = {

@@ -111,7 +111,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { isFilterStore, isFilterStoreTop100 } = useSelector(Selectors.searchFilter);
+  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -167,6 +167,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const [undoChangeStatus, setUndoChangeStatus] = useState<Boolean>(false);
   const [isFilterState, setIsFilterState] = useState<boolean>(false);
   const [isFilterTop100State, setIsFilterTop100State] = useState<boolean>(false);
+  const [isSaveCardCheckList, setIsSaveCardCheckList] = useState<boolean>(false);
+  const [isSaveCardProfile, setIsSaveCardProfile] = useState<boolean>(false);
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -191,11 +193,33 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       dispatch(SearchFilterAction.updateIsFilterTop100(false))
     }
   }, [isFilterTop100State])
+
+  React.useEffect(() => {
+     if ((Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList))) {
+       dispatch(SearchFilterAction.updateIsAddCardCheckList(false))
+     }
+  }, [isSaveCardCheckList])
+  
+  React.useEffect(() => {
+     if ((Boolean(isSaveCardProfile) && Boolean(isAddCardProfile))) {
+       dispatch(SearchFilterAction.updateIsAddCardProfile(false))
+     }
+  }, [isSaveCardProfile])
   
   React.useEffect(() => {
      if(!Boolean(isFilterState))
       setIsFilterState(isFilterStoreTop100);
   },[isFilterStoreTop100])
+  
+  React.useEffect(() => {
+    if(!Boolean(isSaveCardCheckList))
+      setIsSaveCardCheckList(isSaveCardCheckList);
+  }, [isAddCardCheckList])
+
+  React.useEffect(() => {
+    if(!Boolean(isSaveCardProfile))
+      setIsSaveCardProfile(isSaveCardProfile);
+  }, [isAddCardProfile])
   
   const getDataCards = async () => {
     try {
@@ -413,6 +437,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         }
         if (Boolean(isFilterStoreTop100)) {
           dispatch(SearchFilterAction.updateIsFilterTop100(isFilterStoreTop100));
+        }
+        if (Boolean(isAddCardCheckList)) {
+          dispatch(SearchFilterAction.updateIsAddCardCheckList(isAddCardCheckList));
+        }
+        if (Boolean(isAddCardProfile)) {
+          dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
         }
       }
       setIsLoading(true);

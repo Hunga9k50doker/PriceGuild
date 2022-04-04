@@ -75,13 +75,13 @@ const Profile: React.FC = ({ ...props }) => {
         case 'portfolio':
             if (slug !== undefined) {
                 // @ts-ignore
-                return <div className="col-12 col-md-12 min-vh-100"><CardListCollection isSelectCard={false} isEditCard={false} userId={Number(page)} collection={type} /></div>
+                return <div className="col-12 col-md-12 min-vh-100"><CardListCollection  isFriend={true} key="card-collection" isEditCard={false} userId={Number(page)} collection={type} /></div>
             }
               return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
           case 'wishlists':
             if (slug) {
                 // @ts-ignore
-                return <div className="col-12 col-md-12 min-vh-100 container-collection"><CardListCollection isSelectCard={false} title="wishlist" table="wishlist" userId={Number(page)} isEditCard={false} collection={type} /></div>
+                return <div className="col-12 col-md-12 min-vh-100 container-collection"><CardListCollection title="wishlist" table="wishlist" userId={Number(page)} isEditCard={false} collection={type} /></div>
             }
             return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
         default:

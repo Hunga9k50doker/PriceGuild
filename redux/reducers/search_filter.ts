@@ -8,6 +8,8 @@ let initialState: any = {
   isFilterStoreTop100: false,
   isEditCardData: false,
   pageSelected: 1,
+  isAddCardCheckList: false,
+  isAddCardProfile: false,
 };
 
 const maintenanceReducer = (
@@ -50,6 +52,18 @@ const maintenanceReducer = (
         ...state,
         pageSelected: action.payload
       };
+    }
+    case ActionTypes.reducer.search_filter.isAddCardCheckList: { 
+       return {
+         ...state,
+         isAddCardCheckList: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.isAddCardProfile: { 
+       return {
+         ...state,
+         isAddCardProfile: action.payload
+       };
     }
     default: {
       return state;
