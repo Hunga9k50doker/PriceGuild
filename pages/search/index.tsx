@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import queryString from 'query-string';
 import { api } from 'configs/axios';
 import { FilterType, SelectDefultType, FilyerCollection, ManageCollectionType, QueryResponse } from "interfaces"
 import Cards from "components/cards"
@@ -38,8 +37,6 @@ import { useTranslation } from "react-i18next";
 import Head from 'next/head';
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { ToastSystem } from "helper/toast_system";
-import mockup_search_data from 'utils/mockup_search_data.json';
-import { FilterResponse, FilterApi } from "api/filter";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -120,6 +117,7 @@ const CardList = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const { filterSearch, isFilterStore, pageSelected } = useSelector(Selectors.searchFilter);
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
+
   useEffect(() => {
     if ( router.isReady ) {
       setPrioritize([])
@@ -154,9 +152,10 @@ const CardList = (props: PropTypes) => {
     } else {
       filterOld = {...filterData}
     }
-     // @ts-ignore
+    
+    // @ts-ignore
     if (filterOld?.isLoad !== undefined) {
-       // @ts-ignore
+      // @ts-ignore
       delete filterOld?.isLoad
     }
   
@@ -232,7 +231,7 @@ const CardList = (props: PropTypes) => {
   }
 
   const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}) => {
-    console.log(page, 'pagepagepage');
+    
     if (page[page.length-1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
       //   collections: [],
@@ -244,9 +243,11 @@ const CardList = (props: PropTypes) => {
       //   grades: [],
       // }));
     }
+
     if (!isFirst) {
       setIsFirst(true)
     }
+
     try {
       setData(prevState => {
         return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards] };
@@ -300,7 +301,6 @@ const CardList = (props: PropTypes) => {
 
       const result = await api.v1.elasticSearch.searchCard(params, headers);
       //@ts-ignore
-      // const result: QueryResponse<CardModel[]> = mockup_search_data
       if (page[page.length - 1] === 1) {
         if(!Boolean(isFilterStore)){
           // @ts-ignore
@@ -343,8 +343,7 @@ const CardList = (props: PropTypes) => {
       setData(prevState => {
         return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
       });
-    }
-    catch (err) {
+    } catch (err) {
       //@ts-ignore
       if (err?.response?.status === 409) {
         //@ts-ignore
@@ -360,7 +359,7 @@ const CardList = (props: PropTypes) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-     getListCard([1], false, true, headers)
+    getListCard([1], false, true, headers)
   }
 
   const onLoadMore = () => {
@@ -428,8 +427,7 @@ const CardList = (props: PropTypes) => {
           }
         }
         setPrioritize(dataSave)
-      }
-      else {
+      } else {
         dataSave = [...prioritize];
         dataSave = dataSave.map(item => item.name === key ? { ...item, isChange: true } : { ...item, isChange: false });
         setPrioritize(dataSave)
@@ -628,7 +626,6 @@ const CardList = (props: PropTypes) => {
 
   const selectCollection = (item: ManageCollectionType) => {
     dispatch(SearchFilterAction.updateIsFilter(true))
-
     getDataOptionInput();
 
     router.push(
@@ -744,13 +741,14 @@ const CardList = (props: PropTypes) => {
         params.sport = [sportDeafult];
         prioritizeState.push({ name: 'sport', isChange: true })
       }
+
       params.isLoad = false;
       setIsChangeRouter(false)
       setPrioritize(prioritizeState)
+
       if (!Boolean(isFilterStore)) {
         setFilterData(params)
       }
-
     }
 
   }, [filters.years, filters.publishers, isChangeRouter, filters.collections, filters.sports])
@@ -764,7 +762,7 @@ const CardList = (props: PropTypes) => {
       {Boolean(!checkFilter(filterOld ?? {})) && <div
         onClick={() => resetPage(false)}
         className="mb-2 cursor-pointer d-flex ms-2 ps-2 pe-2 cus btn-reset-collection">
-        <div>Reset Filters</div>
+        <div> Reset Filters </div>
       </div>}
       {Object.keys(filterOld ?? {}).map((key, index) => {
         if (key === "sport") return null;
@@ -786,11 +784,8 @@ const CardList = (props: PropTypes) => {
     }
     return <>
       {Boolean(!checkFilter(filterOld ?? {})) && <button
-          onClick={() => resetPage(false)}
-          className="btn btn-primary clear-select">
-          Reset Filters
-      </button>}
-     
+        onClick={() => resetPage(false)}
+        className="btn btn-primary clear-select"> Reset Filters </button>}
     </>
    }
   
@@ -812,6 +807,7 @@ const CardList = (props: PropTypes) => {
     }, 550);
   }
 
+  const [scrollY, setScrollY] = useState<number>(0);
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();
     const stickyData = $(".p-sticky-header").offset();
@@ -824,6 +820,7 @@ const CardList = (props: PropTypes) => {
         $(".action-list").removeClass("d-none");
       }
     }
+    setScrollY(window.pageYOffset)
   };
   
   useEffect(() => {
@@ -866,7 +863,6 @@ const CardList = (props: PropTypes) => {
         return setTimeout(() => {
           setLengthFilter(publisherRef?.current?.getLengthOption() ?? 0) ;
         },350);
-        
       case "year":
         return setTimeout(() => {
           setLengthFilter(yearRef?.current?.getLengthOption() ?? 0) ;
@@ -916,7 +912,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.publisher?.length})</button> : ""
+          > Clear Selected ({filterData?.publisher?.length}) </button> : ""
       case "year":
         return Boolean(filterData?.year?.length) ?
           <button
@@ -933,7 +929,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.year?.length})</button> : ""
+           >Clear Selected ({filterData?.year?.length}) </button> : ""
       case "set":
         return Boolean(filterData?.set?.length) ?
           <button
@@ -954,7 +950,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.set?.length})</button> : ""
+          > Clear Selected ({filterData?.set?.length}) </button> : ""
       case "auto_memo":
         return Boolean(filterData?.auto_memo?.length) ?
           <button
@@ -971,7 +967,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.auto_memo?.length})</button> : ""
+          > Clear Selected ({filterData?.auto_memo?.length}) </button> : ""
       case "type":
         return Boolean(filterData?.type?.length) ?
           <button
@@ -989,7 +985,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.type?.length})</button> : ""
+          > Clear Selected ({filterData?.type?.length}) </button> : ""
       case "color":
         return Boolean(filterData?.color?.length) ?
           <button
@@ -1006,7 +1002,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.color?.length})</button> : ""
+          > Clear Selected ({filterData?.color?.length}) </button> : ""
       case "printRun":
         return Boolean(filterData?.printRun?.length) ?
           <button
@@ -1023,7 +1019,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.printRun?.length})</button> : ""
+          > Clear Selected ({filterData?.printRun?.length}) </button> : ""
       default:
         return ""
     }
@@ -1039,9 +1035,8 @@ const CardList = (props: PropTypes) => {
       {Boolean(!checkFilter(filterOld ?? {})) && <div
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select">
-        <div>Reset Filters</div>
+        <div> Reset Filters </div>
       </div>}
-
     </>
   }
 
@@ -1224,7 +1219,7 @@ const CardList = (props: PropTypes) => {
           </>
         }
         <div className="col-lg-10 col-md-10 pt-5 pb-5 col-search-page">
-        {
+          {
             //@ts-ignore
             width < 768 && <>
             <div className={`filter-mobile position-relative filter-mobile--search ${!data.cards.length && !data.isLoading ? "d-none": ""}`}>
@@ -1273,16 +1268,6 @@ const CardList = (props: PropTypes) => {
                               <div className="sidebar__categories">
                                 <div className="section-title">
                                    <SortMobile className="section-title-item" onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} />
-                                  {/* <FilterSport
-                                    isAll={Boolean(query.search_term)}
-                                    isDefault={(Boolean(query.search_term) && !Boolean(query?.sport))}
-                                    ref={sportRef}
-                                    onChange={onChangeFilter}
-                                    isSearch={false}
-                                    name="sport"
-                                    isCount={Boolean(query.search_term)}
-                                    defaultValue={+(query?.sport ?? query?.sport_criteria)}
-                                    options={filters.sports} /> */}
                                 </div>
                               </div>
                             </div>
@@ -1306,7 +1291,7 @@ const CardList = (props: PropTypes) => {
                         <div className="d-none">{renderLengthFilterMobile()}</div>
                         <h5 className="modal-title" id="filterModalLabel">{renderTitleFilterMobile()} 
                         <span>{(filterValue ==="sport" || filterValue=== "all" )? renderLengthFilterMobile(): lengthFilter}</span></h5>
-                        <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close" >  Close </button>
+                        <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close"> Close </button>
                       </div>
                       <div className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""}`}>
                         <div className="position-relative">
@@ -1481,23 +1466,21 @@ const CardList = (props: PropTypes) => {
           </>}
           <h1 className="filter-title"> {renderTitle()} </h1>
           <div className={`d-flex justify-content-between align-items-start p-head-search p-head-search--mobile ${isSelect ? 'p-sticky-header p-sticky-header--full' : ''}`}>
-            {isSelect ? <div className="d-flex align-items-center ml-1 btn-group-head-search hai">
+            {isSelect ? <div className={`d-flex align-items-center ml-1 btn-group-head-search ${scrollY > 400 ? 'sticky-zero' : ''}`}>
               <div className="me-2 fz-14">
                 <span className="fw-bold">{cardSelected.length}</span> cards selected
               </div>
-              {Boolean(cardSelected.length) &&
-               <button
-               type="button"
-               onClick={() => {
-                 setCardData(undefined);
-                 if (loggingIn) {
-                   setIsOpen(true)
-                 }
-                 else {
-                   setIsOpenLogin(true);
-                 }
-               }}
-               className="me-2 btn  btn-portfolio"
+              {Boolean(cardSelected.length) && <button
+                type="button"
+                onClick={() => {
+                  setCardData(undefined);
+                  if (loggingIn) {
+                    setIsOpen(true)
+                  } else {
+                    setIsOpenLogin(true);
+                  }
+                }}
+                className="me-2 btn  btn-portfolio"
                 > Add to { t('portfolio.text')} </button>
               }
               {/* {cardSelected.length < 2 &&
@@ -1540,7 +1523,7 @@ const CardList = (props: PropTypes) => {
                               }
                             }}
                             className="me-2 btn  btn-portfolio"
-                          >Add to { t('portfolio.text')} </button>
+                          > Add to { t('portfolio.text')} </button>
                           {/* <button type="button" className="me-2 btn btn-wishlist">Add to Wishlist</button> */}
                         </div>
                       }
