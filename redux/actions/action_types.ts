@@ -89,6 +89,12 @@ class  _SearchFilterTypeReducer {
   readonly pageSelected = "page-selected";
   readonly isAddCardCheckList = "is-add-card-check-list";
   readonly isAddCardProfile = "is-add-card-profile";
+  readonly cardSelected = "card-selected";
+  readonly paramsSearchFilterProfile = "params-search-filter-profile";
+  readonly changeGradeCardValue = "change-grade-card-value";
+  readonly newGradeChangedValue = "new-grade-change-value";
+  readonly setDataFilter = "set-data-filter";
+  readonly lastestFilterEditCard = "lastest-filter-edit-card";
 }
 
 class _FriendTypeReducer {

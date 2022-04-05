@@ -23,6 +23,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import IconDot3 from "assets/images/dot-3.svg";
 // @ts-ignore
 import $ from "jquery"
+import { SearchFilterAction } from "redux/actions/search_filter_action";
 
 type PropTypes = {
   item: CardModel & { [key: string]: any },
@@ -74,6 +75,9 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
 
   const onEdit = (e?: any) => {
     e.stopPropagation();
+    
+    dispatch(SearchFilterAction.updateCardSelectedProfile(props.item));
+    
     !props.isSelect && router.push(`/profile/collections/edit-card?collection=${props.item.group_ref}&code=${props.item.code}`)
   }
 

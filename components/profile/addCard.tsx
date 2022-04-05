@@ -111,7 +111,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile } = useSelector(Selectors.searchFilter);
+  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -656,6 +656,24 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         delete card.back_image;
         delete card.cardid;
         delete card.portid;
+        if (card?.port_id === cardSelectedStore?.portid) {
+          let flag = false;
+          if (card?.grade_company !== cardSelectedStore?.grade_company?.name) {
+            flag = true;
+          }
+
+          if (card?.grade_value !== cardSelectedStore?.grade_value) {
+            flag = true
+          }
+          
+          if (flag) {
+            dispatch(SearchFilterAction.updateChangedGradeValue(true));
+            dispatch(SearchFilterAction.updateNewGradeValue({
+              company: card?.grade_company,
+              value: card?.grade_value
+            }))
+          }
+        }
       });
     });
     const params = {

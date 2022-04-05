@@ -10,6 +10,12 @@ let initialState: any = {
   pageSelected: 1,
   isAddCardCheckList: false,
   isAddCardProfile: false,
+  cardSelectedStore: {},
+  paramsSearchFilterProfile: {},
+  changeGradeCardEdit: false,
+  newGradeChanged: {},
+  dataFilterStore: {},
+  lastestFilterEditCardStore: {}
 };
 
 const maintenanceReducer = (
@@ -63,6 +69,42 @@ const maintenanceReducer = (
        return {
          ...state,
          isAddCardProfile: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.cardSelected: { 
+       return {
+         ...state,
+         cardSelectedStore: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.paramsSearchFilterProfile: { 
+       return {
+         ...state,
+         paramsSearchFilterProfile: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.changeGradeCardValue: { 
+       return {
+         ...state,
+         changeGradeCardEdit: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.newGradeChangedValue: { 
+       return {
+         ...state,
+         newGradeChanged: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.setDataFilter: { 
+       return {
+         ...state,
+         dataFilterStore: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.lastestFilterEditCard: { 
+       return {
+         ...state,
+         lastestFilterEditCardStore: action.payload
        };
     }
     default: {

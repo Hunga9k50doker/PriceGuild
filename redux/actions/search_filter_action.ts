@@ -50,4 +50,40 @@ export class SearchFilterAction {
        payload,
      };
   }
+  static updateCardSelectedProfile(payload: any) {
+      return {
+       type: ActionTypes.reducer.search_filter.cardSelected,
+       payload,
+     };
+  }
+  static updateParamsSearchFilterProfile(payload: any) {
+      return {
+       type: ActionTypes.reducer.search_filter.paramsSearchFilterProfile,
+       payload,
+     };
+  }
+  static updateChangedGradeValue(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.changeGradeCardValue,
+      payload,
+    };
+  }
+  static updateNewGradeValue(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.newGradeChangedValue,
+      payload,
+    };
+  }
+  static updateSetDataFilter(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.setDataFilter,
+      payload,
+    };
+  }
+  static updateLastestFilterEditCard(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.lastestFilterEditCard,
+      payload,
+    };
+  }
 }
