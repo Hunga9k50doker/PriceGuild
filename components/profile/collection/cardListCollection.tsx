@@ -294,6 +294,9 @@ const CardListCollection = ({
       
       if (isSaveChange) {
         dispatch(SearchFilterAction.updateIsEditSaveCard(false));
+
+        dispatch(SearchFilterAction.updateIsAddCardProfile(false));
+        
         //@ts-ignore
         setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? {}) ?? {});
       }
