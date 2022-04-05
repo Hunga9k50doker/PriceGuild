@@ -1197,6 +1197,12 @@ input {
     }
   }
   &-right {
+    @media screen and (min-width: 768px) {
+      width: calc(100% - 415px) !important;
+      &.section-garding{
+        width: 100%  !important;
+      }
+    }
     .mt-56 {
       margin-top: 56px;
     }
