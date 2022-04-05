@@ -302,7 +302,8 @@ const CardList = (props: PropTypes) => {
           };
         });
       } else {
-        ToastSystem.error(result?.error || "No results found is 204!")
+        if(result?.error)
+          ToastSystem.error(result?.error)
       }
      
       setData(prevState => {
