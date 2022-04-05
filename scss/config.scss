@@ -4241,7 +4241,7 @@ th .form-check-input.form-check-input-head {
             max-height: calc(100vh - 148px) !important;
             margin: 0px 6px 0 12px;
             li {
-              padding: 6px 12px;
+              padding: 6px 0;
               .form-check {
                 padding-left: 10px !important;
               }
@@ -4353,9 +4353,9 @@ th .form-check-input.form-check-input-head {
             padding: 0;
           }
           .checkbox-select__filters-wrapp {
-            margin: 12px 6px 12px 12px !important;
+            margin: 0 6px !important;
             li {
-              padding: 12px;
+              padding: 9px;
             }
           }
         }
@@ -4385,9 +4385,9 @@ th .form-check-input.form-check-input-head {
           .checkbox-select__filters-wrapp {
             max-height: 168px !important;
             height: auto;
-            margin: 12px 6px 12px 12px !important;
+            margin: 0 6px !important;
             li {
-              padding: 12px;
+              padding: 9px;
             }
           }
         }
