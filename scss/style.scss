@@ -1180,8 +1180,13 @@ input {
       width: 7.375rem;
       height: 46px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
+      padding-left: 0;
+      padding-right: 0;
       color: #124de3 !important;
+      @media (min-width: 1025px) {
+        font-size: 16px;
+      }
     }
     .btn-add {
       background: #124de3 !important;
@@ -1189,10 +1194,15 @@ input {
       width: 14.625rem;
       height: 46px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
+      padding-left: 0;
+      padding-right: 0;
       color: #ffffff !important;
-      @media (min-width: 1201px) {
+      @media (min-width: 768px) {
         margin-left: 15px;
+      }
+      @media (min-width: 1025px) {
+        font-size: 16px;
       }
     }
   }
@@ -1491,7 +1501,7 @@ input {
         }
       }
       .box-left {
-        max-width: calc(100% - 30px);
+        max-width: calc(100% - 110px);
         @media (min-width: 1050px) {
           max-width: calc(100% - 140px);
         }
@@ -4401,7 +4411,7 @@ input[type="number"] {
     }
     .modal-body {
       overflow-y: auto;
-      margin: 16px;
+      margin: 0;
       @media (min-width: 768px) {
         margin: 32px;
       }

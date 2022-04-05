@@ -203,15 +203,6 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
   }));
 
   useEffect(() => {
-    options.rangeSelector?.buttons?.forEach((_, index) => {
-      // @ts-ignore
-      options.rangeSelector.buttons[index].events = {
-        click: () => {
-          const chart = chartRef()
-          chart?.zoomOut()
-        }
-      }
-    })
     const getGradeCompany = async () => {
       try {
         const result = await api.v1.gradeCompany.getList({ has_values: true })

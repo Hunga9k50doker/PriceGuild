@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript,DocumentContext } from 'next/document'
+import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
 
 export default class CustomDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -16,7 +16,7 @@ export default class CustomDocument extends Document {
                     />
                     <script
                         dangerouslySetInnerHTML={{
-                        __html: `
+                            __html: `
                         window.dataLayer = window.dataLayer || [];
                         function gtag(){dataLayer.push(arguments);}
                         gtag('js', new Date());
@@ -32,7 +32,22 @@ export default class CustomDocument extends Document {
                         rel="stylesheet"
                     />
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-                    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+                    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+                    <script
+                        dangerouslySetInnerHTML={{
+                            __html: `
+						(function(h,o,t,j,a,r){
+							h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+							h._hjSettings={hjid:2898266,hjsv:6};
+							a=o.getElementsByTagName('head')[0];
+							r=o.createElement('script');r.async=1;
+							r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+							a.appendChild(r);
+						})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+                    `,
+                        }}
+                    />
                 </Head>
                 <body>
                     <Main />

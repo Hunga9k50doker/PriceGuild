@@ -1962,16 +1962,13 @@
       background-color: #FFFFFF;
       z-index: 1050;
       overflow-x: scroll;
-      transform: translateX(112%);
-      -ms-transform: translateX(112%);
-      -webkit-transform: translateX(112%);
-      -webkit-overflow-scrolling: touch;
+      right: -100%;
       transition: 0.5s;
       &.active {
         visibility: visible;
-        transform: translateX(-12px);
-        -ms-transform: translateX(-12px);
-        -webkit-transform: translateX(-12px);
+        transform: translateX(-100%);
+        -ms-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
       }
       .section-logo-nav {
          height: 122px;
@@ -2215,17 +2212,15 @@
       background-color: #FFFFFF;
       z-index: 1050;
       overflow-x: scroll;
-      transform: translateX(-100%);
-      -ms-transform: translateX(-100%);
-      -webkit-transform: translateX(-100%);
+      left: -100%;
       -webkit-overflow-scrolling: touch;
       transition: 0.5s;
       visibility: hidden;
       &.active {
         visibility: visible;
-        transform: translateX(0%);
-        -ms-transform: translateX(0%);
-        -webkit-transform: translateX(0%);
+        transform: translateX(100%);
+        -ms-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
       }
       .box-title {
         background-color: #FFFFFF;
@@ -2401,17 +2396,14 @@
       background: #FFFFFF;
       z-index: 1000;
       display: block;
-      transform: translateX(-100%);
-      -ms-transform: translateX(-100%);
-      -webkit-transform: translateX(-100%);
-      -webkit-overflow-scrolling: touch;
+      left: -100%;
       transition: 0.5s;
       visibility: hidden;
       &.active {
         visibility: visible;
-        transform: translateX(0%);
-        -ms-transform: translateX(0%);
-        -webkit-transform: translateX(0%);
+        transform: translateX(100%);
+        -ms-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
       }
        &-head {
         background-color: #fff;

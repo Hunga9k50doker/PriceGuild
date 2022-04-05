@@ -336,7 +336,8 @@ const CardList = (props: PropTypes) => {
           };
         });
       } else {
-        ToastSystem.error(result?.error)
+        if(result?.error)
+          ToastSystem.error(result?.error)
       }
      
       setData(prevState => {
