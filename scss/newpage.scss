@@ -2081,7 +2081,7 @@ nav {
     }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
     .add-collection-left {
         .card-add-group-button {
             flex-direction: column-reverse;
@@ -2617,7 +2617,9 @@ nav {
 
 .card-scroll {
     &.clear-scroll {
-        max-height: unset !important;
+        @media screen and (max-width: 767.98px) {
+            max-height: unset !important;
+        }
     }
 }
 
@@ -2839,6 +2841,53 @@ ul {
 #__next {
     overflow: hidden;
 }
+
+body.edit-card {
+    #__next {
+        overflow: visible;
+    }
+    .div-browse {
+        &::after {
+            height: 240vh;
+        }
+    }
+    @media (min-width: 768px) and (max-width: 992px) {
+        .add-collection-left {
+            width: 296px !important;
+            .sticky-collection {
+                width: 260px;
+            }
+        }
+        .add-collection-right {
+            width: calc(100% - 310px) !important;
+        }
+    }
+    @media (min-width: 768px) {
+        .add-collection-left {
+            > .box {
+                display: flex;
+                justify-content: space-around;
+                align-items: flex-start;
+                height: 1500px;
+                > .sticky-collection {
+                    position: sticky;
+                    top: 0;
+                    margin-bottom: 20px;
+                    max-width: 100%;
+                }
+            }
+        }
+        .page-profile-list {
+            height: 1500px;
+            .menu-sticky {
+                position: sticky;
+                top: 2rem;;
+            }
+        }
+        
+    }
+}
+
 .div-browse {
     &::after {
         content: '';
@@ -2864,8 +2913,4 @@ ul {
 
 .margin-10 {
     margin: 0 10px;
-}
-
-.filter-top {
-    &.search {}
 }

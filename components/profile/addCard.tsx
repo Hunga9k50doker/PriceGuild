@@ -887,167 +887,171 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               <Skeleton style={{ height: 75, marginBottom: 15 }} />
             </div>
           )}
-          <div className="card-scroll clear-scroll mt-14">
-            {cards?.cards?.map((item, key) => (
-              <div key={key} className="card-add">
-                <div className="card-add-info d-flex align-items-center">
-                  {item?.sport}{" "}
-                  <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
-                  {item?.year}{" "}
-                  <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
-                  {item?.publisher}
-                </div>
-                <div className="mb-3 fs-5 card-add-description mt-2">
-                  {item?.web_name}
-                </div>
-                {(Boolean(item.auto) || Boolean(item.memo)) && <div className="card-add-group mb-3">
-                  <div className="btn-group">
-                    {Boolean(item.auto) && (
-                      <button
-                        type="button"
-                        className="btn btn-au--custom cursor-default"
-                      > AU </button>
-                    )}
-                    {Boolean(item.memo) && (
-                      <button
-                        type="button"
-                        className="btn btn-mem--custom cursor-default"
-                      > MEM </button>
-                    )}
-                  </div>
-                </div>}
-             
-                {item?.data?.map((entry, k) => (
-                  <div
-                    key={k}
-                    onClick={(e) => {
-                      //@ts-ignore
-                      if (width >= 768) {
-                        onActiveEntry(key, k, entry);
-                      }
-                    }}
-                    className="mb-3 card-add-detail entry"
-                  >
-                    <div
-                      className={`d-flex justify-content-between ${
-                        activeEntry.cardIndex === key &&
-                        activeEntry.entryIndex === k
-                          ? "active"
-                          : ""
-                      }  rounded border border-1 p-2`}
-                      onClick={() => {
-                        //@ts-ignore
-                        if (width < 768) {
-                          onActiveEntry(key, k, entry);
-                          // setCards(cloneDeep(cardsMobile));
-                          scrollTopAsync(0, dispatch)
-                            // dispatch(ConfigAction.updateShowMenuCollection(true))
-                          setFromValue(entry);
-                          // SetShowContentAddCollection(true);
-                        }
-                      }}
-                    >
-                      <div className="box-left">
-                        <div className="d-block justify-content-between align-items-center card-add-detail__txt">
-                          <div
-                            className={`me-1 ${
-                              entry.grade_company &&
-                              entry.grade_company?.name == ungraded &&
-                              `${entry.grade_value}` == NotSpecified
-                                ? ""
-                                : "card-add-detail-grade text-nowrap"
-                            }`}
-                            style={{
-                              backgroundColor:
-                                entry.grade_company &&
-                                entry.grade_company?.name === ungraded &&
-                                `${entry.grade_value}` == NotSpecified
-                                  ? "transparent"
-                                  : entry.grade_company?.color_2 ??
-                                    entry.grade_company?.grade_color_2,
-                              color:
-                                entry.grade_company?.name === ungraded &&
-                                `${entry.grade_value}` == NotSpecified
-                                  ? "#18213A"
-                                  : entry.grade_company?.color_1 ??
-                                    entry.grade_company?.grade_color_1,
-                            }}
-                          >
-                            {renderGradeValue(entry)}
-                          </div>
-                          <strong className="text-ellipsis">
-                            {Boolean(+entry.user_price) && formatCurrencyCustom(
-                              entry.user_price,
-                              entry.user_currency
-                            )}
-                          </strong>{" "}
-                        </div>
-                        <div className="card-add-detail__name">
-                          {cards?.groups?.find(
-                            (item) =>
-                              item.id ===
-                              (entry?.group_ref?.id ?? entry?.group_ref)
-                          )?.group_name ?? ""}
-                        </div>
-                      </div>
-                      <div className="d-flex images justify-content-center align-items-center">
-                        <div className="hide-tablet aspect-sm">
-                          <img
-                            src={
-                              entry?.image_upload?.front
-                                ? entry?.image_upload?.front
-                                : backgroundImage.src
-                            }
-                            alt=""
-                          />
-                        </div>
-                        <div className="ms-2 hide-tablet aspect-sm">
-                          <img
-                            src={
-                              entry?.image_upload?.back
-                                ? entry?.image_upload?.back
-                                : backgroundImage.src
-                            }
-                            alt=""
-                          />
-                        </div>
-                        <span>
-                          <img src={IconArrow.src} alt="" />
-                        </span>
-                      </div>
+          <div className="box">
+            <div className="sticky-collection">
+              <div className="card-scroll clear-scroll mt-14">
+                {cards?.cards?.map((item, key) => (
+                  <div key={key} className="card-add">
+                    <div className="card-add-info d-flex align-items-center">
+                      {item?.sport}{" "}
+                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      {item?.year}{" "}
+                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      {item?.publisher}
                     </div>
+                    <div className="mb-3 fs-5 card-add-description mt-2">
+                      {item?.web_name}
+                    </div>
+                    {(Boolean(item.auto) || Boolean(item.memo)) && <div className="card-add-group mb-3">
+                      <div className="btn-group">
+                        {Boolean(item.auto) && (
+                          <button
+                            type="button"
+                            className="btn btn-au--custom cursor-default"
+                          > AU </button>
+                        )}
+                        {Boolean(item.memo) && (
+                          <button
+                            type="button"
+                            className="btn btn-mem--custom cursor-default"
+                          > MEM </button>
+                        )}
+                      </div>
+                    </div>}
+                
+                    {item?.data?.map((entry, k) => (
+                      <div
+                        key={k}
+                        onClick={(e) => {
+                          //@ts-ignore
+                          if (width >= 768) {
+                            onActiveEntry(key, k, entry);
+                          }
+                        }}
+                        className="mb-3 card-add-detail entry"
+                      >
+                        <div
+                          className={`d-flex justify-content-between ${
+                            activeEntry.cardIndex === key &&
+                            activeEntry.entryIndex === k
+                              ? "active"
+                              : ""
+                          }  rounded border border-1 p-2`}
+                          onClick={() => {
+                            //@ts-ignore
+                            if (width < 768) {
+                              onActiveEntry(key, k, entry);
+                              // setCards(cloneDeep(cardsMobile));
+                              scrollTopAsync(0, dispatch)
+                                // dispatch(ConfigAction.updateShowMenuCollection(true))
+                              setFromValue(entry);
+                              // SetShowContentAddCollection(true);
+                            }
+                          }}
+                        >
+                          <div className="box-left">
+                            <div className="d-block justify-content-between align-items-center card-add-detail__txt">
+                              <div
+                                className={`me-1 ${
+                                  entry.grade_company &&
+                                  entry.grade_company?.name == ungraded &&
+                                  `${entry.grade_value}` == NotSpecified
+                                    ? ""
+                                    : "card-add-detail-grade text-nowrap"
+                                }`}
+                                style={{
+                                  backgroundColor:
+                                    entry.grade_company &&
+                                    entry.grade_company?.name === ungraded &&
+                                    `${entry.grade_value}` == NotSpecified
+                                      ? "transparent"
+                                      : entry.grade_company?.color_2 ??
+                                        entry.grade_company?.grade_color_2,
+                                  color:
+                                    entry.grade_company?.name === ungraded &&
+                                    `${entry.grade_value}` == NotSpecified
+                                      ? "#18213A"
+                                      : entry.grade_company?.color_1 ??
+                                        entry.grade_company?.grade_color_1,
+                                }}
+                              >
+                                {renderGradeValue(entry)}
+                              </div>
+                              <strong className="text-ellipsis">
+                                {Boolean(+entry.user_price) && formatCurrencyCustom(
+                                  entry.user_price,
+                                  entry.user_currency
+                                )}
+                              </strong>{" "}
+                            </div>
+                            <div className="card-add-detail__name">
+                              {cards?.groups?.find(
+                                (item) =>
+                                  item.id ===
+                                  (entry?.group_ref?.id ?? entry?.group_ref)
+                              )?.group_name ?? ""}
+                            </div>
+                          </div>
+                          <div className="d-flex images justify-content-center align-items-center">
+                            <div className="hide-tablet aspect-sm">
+                              <img
+                                src={
+                                  entry?.image_upload?.front
+                                    ? entry?.image_upload?.front
+                                    : backgroundImage.src
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <div className="ms-2 hide-tablet aspect-sm">
+                              <img
+                                src={
+                                  entry?.image_upload?.back
+                                    ? entry?.image_upload?.back
+                                    : backgroundImage.src
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <span>
+                              <img src={IconArrow.src} alt="" />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
-          <hr className="hr--color mt-4 mb-3" />
-          {Boolean(cards.cards?.length) && (
-            <div className="mt-2 d-flex justify-content-between align-items-center card-add-group-button">
-              <button
-                onClick={onCancle}
-                type="button"
-                className="btn-lg btn btn-cancel mb-2"
-              > Cancel </button>
-              <button
-                onClick={onSubmitForm}
-                disabled={isLoading}
-                type="button"
-                className="btn-lg btn btn-add mb-2"
-              >
-                {isEdit
-                  ? "Save Changes"
-                  : `Add Card${renderTextButton()} to ${t('portfolio.text')}`}
-                {isLoading && (
-                  <span
-                    className="spinner-grow spinner-grow-sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
+              <hr className="hr--color mt-4 mb-3" />
+              {Boolean(cards.cards?.length) && (
+                <div className="mt-2 d-flex justify-content-between align-items-center card-add-group-button">
+                  <button
+                    onClick={onCancle}
+                    type="button"
+                    className="btn-lg btn btn-cancel mb-2"
+                  > Cancel </button>
+                  <button
+                    onClick={onSubmitForm}
+                    disabled={isLoading}
+                    type="button"
+                    className="btn-lg btn btn-add mb-2"
+                  >
+                    {isEdit
+                      ? "Save Changes"
+                      : `Add Card${renderTextButton()} to ${t('portfolio.text')}`}
+                    {isLoading && (
+                      <span
+                        className="spinner-grow spinner-grow-sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
         <div
           className={`col-md-8 col-12 add-collection-right ${
@@ -1147,9 +1151,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           </div>
                         </div>
                         <div className="d-flex images justify-content-center align-items-center">
-                          <div>
+                          <div className="aspect-sm">
                             <img
-                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.front
                                   ? entry?.image_upload?.front
@@ -1158,9 +1161,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               alt=""
                             />
                           </div>
-                          <div className="ms-2">
+                          <div className="ms-2 aspect-sm">
                             <img
-                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.back
                                   ? entry?.image_upload?.back

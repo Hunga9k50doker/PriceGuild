@@ -32,7 +32,6 @@ interface PropTypes<T> {
 }
 
 const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, nameSearch = "",...props }: PropTypes<T>) => {
-  console.log(nameSearch,"name search")
   const router = useRouter();
   const [isProfile, setIsProfile] = useState<boolean>(false);
   useEffect(() => {
