@@ -795,15 +795,10 @@ const CollectionDetail = (props: PropTypes) => {
             cardData={cardData}
             isOpen={isOpenGrade}
             onSuccess={(code) => {
-              let dataNew = [...(collection?.cards ?? [])];
+              let dataNew = [...(dataTable?? [])];
               dataNew = dataNew.map((card) => card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }
               );
-              // return setCollection((prevState) => {
-              //   return {
-              //     ...prevState,
-              //     cards: dataNew,
-              //   };
-              // });
+              return setDataTable(dataNew);
             } }
             setIsOpen={setIsOpenGrade} />
         )}
