@@ -233,7 +233,7 @@ const CollectionDetail = (props: PropTypes) => {
   };
   const renderOptionIcon = (data: any) => {
     return Boolean(data.portfolio)
-      ? IconCanFull
+      ? IconFolderFull
       : IconDot3;
   };
 
