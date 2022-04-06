@@ -15,7 +15,9 @@ let initialState: any = {
   changeGradeCardEdit: false,
   newGradeChanged: {},
   dataFilterStore: {},
-  lastestFilterEditCardStore: {}
+  lastestFilterEditCardStore: {},
+  isModeProfileTableStore: false, 
+  isModeSearchTableStore: false, 
 };
 
 const maintenanceReducer = (
@@ -105,6 +107,18 @@ const maintenanceReducer = (
        return {
          ...state,
          lastestFilterEditCardStore: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.setModeProfile: { 
+       return {
+         ...state,
+         isModeProfileTableStore: action.payload
+       };
+    }
+    case ActionTypes.reducer.search_filter.setModeSearch: { 
+       return {
+         ...state,
+         isModeSearchTableStore: action.payload
        };
     }
     default: {

@@ -149,7 +149,7 @@ const CardListCollection = ({
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
-  const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore } = useSelector(Selectors.searchFilter);
+  const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
 
   useEffect(() => {
     if (inputSearchRef) {
@@ -192,7 +192,10 @@ const CardListCollection = ({
     resetFilter();
     if (isRefresh) {
       localStorage.removeItem('filterCollection')
-
+      
+      if (Boolean(isModeProfileTableStore)) {
+        setIsInline(true)
+      }
       if (isEditCardData || isAddCardProfile) {
 
         let data: Array<TrackData> = [];
@@ -476,8 +479,11 @@ const CardListCollection = ({
       }
       if (!result.success && isEmpty(result.data?.card_data) && Boolean(isSaveChange)) {
         ToastSystem.error('No matching results for previous filters, re-setting filters.');
-        resetFilter()
+        setFilterData({});
+        resetFilter();
+        dispatch(SearchFilterAction.updateSetDataFilter({}));
         getListCard([1]);
+        
       }
       // ToastSystem.error(result.message);
       setCollectionDetail({
@@ -1578,10 +1584,14 @@ const CardListCollection = ({
                     </div>
                   }
                   <div className="d-flex btn-group-card">
-                    <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
+                    <button type="button" onClick={() => {
+                      setIsInline(prevState => !prevState)
+                      dispatch(SearchFilterAction.updateModeProfile(false))
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState);
-                      setIsSelect(false)
+                      setIsSelect(false);
+                      dispatch(SearchFilterAction.updateModeProfile(true))
                     }} className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                       {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine/>
@@ -2126,12 +2136,16 @@ const CardListCollection = ({
               <div className="only-mobile">
                 <div className="d-flex justify-content-end container-collection-profile-info__group">
                   <div className="d-flex btn-group-card">
-                    <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0 btn-mul-dot`}>
+                    <button type="button" onClick={() => {
+                      setIsInline(prevState => !prevState)
+                      dispatch(SearchFilterAction.updateModeProfile(false))
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0 btn-mul-dot`}>
                       <IconDotMoBile isActive={!isInline ? true : false} />
                     </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState)
                       setIsSelect(false)
+                      dispatch(SearchFilterAction.updateModeProfile(true))
                     } } className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                       {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine />

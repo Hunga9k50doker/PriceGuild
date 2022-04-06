@@ -86,4 +86,16 @@ export class SearchFilterAction {
       payload,
     };
   }
+  static updateModeProfile(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.setModeProfile,
+      payload,
+    };
+  }
+  static updateModeSearch(payload: any) {
+    return {
+      type: ActionTypes.reducer.search_filter.setModeSearch,
+      payload,
+    };
+  }
 }

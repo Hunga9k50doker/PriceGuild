@@ -115,7 +115,7 @@ const CardList = (props: PropTypes) => {
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
-  const { filterSearch, isFilterStore, pageSelected } = useSelector(Selectors.searchFilter);
+  const { filterSearch, isFilterStore, pageSelected, isModeSearchTableStore } = useSelector(Selectors.searchFilter);
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
 
   useEffect(() => {
@@ -127,7 +127,9 @@ const CardList = (props: PropTypes) => {
   }, [router.query])
 
   const resetPage = (isChange: boolean = false) => {
-    
+    if (Boolean(isModeSearchTableStore)) {
+      setIsInline(true);
+    }
     if (Boolean(isFilterStore)) {
       setFilterData(filterSearch);
       setDataFilterState(filterSearch);
@@ -1537,10 +1539,16 @@ const CardList = (props: PropTypes) => {
                 <Select onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} className="react-select-smart" classNamePrefix="react-select-smart" />
               </div>
               <div className="d-flex btn-group-card">
-                <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
+                <button type="button" onClick={() => {
+                  setIsInline(prevState => !prevState)
+                  dispatch(SearchFilterAction.updateModeSearch(false))
+                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                   <i className="fa fa-th" aria-hidden="true"></i>
                 </button>
-                <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
+                <button type="button" onClick={() => {
+                  setIsInline(prevState => !prevState)
+                  dispatch(SearchFilterAction.updateModeSearch(true))
+                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
                   {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                   <img src={IconList.src} alt="" title="" />
                 </button>

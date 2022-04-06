@@ -95,6 +95,8 @@ class  _SearchFilterTypeReducer {
   readonly newGradeChangedValue = "new-grade-change-value";
   readonly setDataFilter = "set-data-filter";
   readonly lastestFilterEditCard = "lastest-filter-edit-card";
+  readonly setModeProfile = "set-mode-profile";
+  readonly setModeSearch = "set-mode-search";
 }
 
 class _FriendTypeReducer {
