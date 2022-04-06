@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { ManageCollectionType } from "interfaces";
+import { ManageCollectionType, SalesOverviewType } from "interfaces";
 import { api } from "configs/axios";
 import "nouislider/distribute/nouislider.css";
 import { useForm, Controller } from "react-hook-form";
@@ -22,7 +22,7 @@ import Link from 'next/link'
 type PropTypes = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  cardData: CardModel;
+  cardData: CardModel | SalesOverviewType;
   wishList?: ManageCollectionType;
   onSuccess?: (code: string) => void;
   onSetGradeCompany?: (data: any)=> void
