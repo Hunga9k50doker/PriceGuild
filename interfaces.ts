@@ -413,7 +413,9 @@ export type SalesOverviewType = {
   setYear: string;
   year: string;
   publisherName: string;
-  image?: string
+  image?: string;
+  portfolio?: number;
+  wishlist?: number;
 };
 
 export type LeaderboardType = {
