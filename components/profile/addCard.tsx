@@ -251,7 +251,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             name: selecedData?.group_name,
           });
           setValue("group_ref", selecedData);
-          setFromValue(dataEntry);
+          if (isEmpty(cardSelectedStore)) {
+             setFromValue(dataEntry);
+          }
+         
         } else {
           const selecedData = data?.groups?.find(
             (item) => item.id === +(dataQueries?.collection ?? 0)
@@ -421,13 +424,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   // }, [watchAgreeShare]);
 
   React.useEffect(() => {
-    if (isEmpty(activeEntryData)) {
-      setActiveEntryData(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex])
-    }
     if (!isEmpty(cards.cards) && !isEmpty(cardSelectedStore)) {
       if (cards.cards?.[activeEntry.cardIndex]?.data.length) {
-        let index = cards.cards?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
-        onActiveEntry(activeEntry.cardIndex, index !== -1 ? index : 0, cards?.cards?.[activeEntry.cardIndex]?.data[index] ? cards?.cards?.[activeEntry.cardIndex]?.data[index] : cards?.cards?.[activeEntry.cardIndex]?.data[0])
+        let cardData = cloneDeep(cards.cards);
+        let index = cardData?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
+       
+        return onActiveEntry(activeEntry.cardIndex,  index ?? 0 , cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]);
+        
       }
     }
   }, [cards?.cards])
@@ -465,7 +468,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
         } else {
-         
           router.back();
         }
         return ToastSystem.success(result.message ?? "Create successfully");
@@ -641,7 +643,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // setValue("agree_share", dataEntry.agree_share);
   };
   const onCancle = () => {
-    router.push("/profile/collections");
+    // router.push("/profile/collections");
+    if (isEdit) {
+      dispatch(SearchFilterAction.updateIsEditSaveCard(true));
+      router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+    } else {
+      if (Boolean(isFilterState)) {
+        dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+      }
+      if (Boolean(isFilterStoreTop100)) {
+        dispatch(SearchFilterAction.updateIsFilterTop100(isFilterStoreTop100));
+      }
+      if (Boolean(isAddCardCheckList)) {
+        dispatch(SearchFilterAction.updateIsAddCardCheckList(isAddCardCheckList));
+      }
+      if (Boolean(isAddCardProfile)) {
+        dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
+      }
+
+      router.back();
+    }
   };
 
   const onSubmitForm = () => {
@@ -908,10 +929,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       fn(ConfigAction.updateShowMenuCollection(true));
     },550)
     
-  }
-  const onGetTimeCurrent = () => {
-    var date = new Date();
-    return date.valueOf()
   }
 
   return (
@@ -1311,7 +1328,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 </button>
               )}
               {// @ts-ignore
-                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && renderTextButton() === "s" && (
+                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.port_id) && renderTextButton() === "s" && (
                 <button
                   type="button"
                   onClick={onRemoveEntry}
