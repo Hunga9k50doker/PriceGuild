@@ -32,7 +32,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
 
   const router = useRouter();
   
-  const getData = async () => {
+  const getData = async (isAdd:boolean = false) => {
     try {
       const params = {
         table: table,
@@ -42,6 +42,13 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       if (result.success) {
         setCollections(result.data)
         setDataSearch(result.data)
+       
+        if(isAdd) {
+          let collectionNew = result.data[ result.data.length -1];
+          props.selectCollection && props.selectCollection(collectionNew)
+          setIsOpen(false);
+          setIsModal(false)
+        }
       }
       if (!result.success) {
         // @ts-ignore
@@ -66,9 +73,9 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   }
 
   const onCreateSuccess = () => {
-    getData();
-    setIsOpen(true);
-    setIsModal(false)
+    getData(true);
+    setIsOpen(false);
+    // setIsModal(false)
   }
 
   const onHandleModal = (status: boolean) => {

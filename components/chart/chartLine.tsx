@@ -119,7 +119,9 @@ const getOptions = (): Highcharts.Options => {
     },
     xAxis: {
       type: 'datetime',
-      crosshair: false
+      crosshair: false,
+      ordinal: false,
+      minRange: 24 * 3600 * 1000,
     },
     yAxis: {
         opposite: false,
@@ -128,6 +130,7 @@ const getOptions = (): Highcharts.Options => {
         }
     },
     scrollbar: {
+      liveRedraw: false,
       enabled: false,
       height: 0,
       zIndex: -1,
@@ -140,6 +143,10 @@ const getOptions = (): Highcharts.Options => {
       rifleColor: 'transparent',
       barBorderWidth: 0,
       barBackgroundColor: 'transparent'
+    },
+    boost: {
+      useGPUTranslations: true,
+      usePreallocated: true,
     },
     tooltip: {
       enabled: false
@@ -167,7 +174,9 @@ const getOptions = (): Highcharts.Options => {
       enabled: true,
     },
     chart: {
-      height: 700
+      height: 700,
+      zoomType: 'x',
+      animation: false,
     },
     drilldown: {
       series: []

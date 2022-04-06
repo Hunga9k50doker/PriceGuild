@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { api } from 'configs/axios';
@@ -20,7 +20,6 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { MyStorage } from 'helper/local_storage';
 
-
 type PropTypes = {
   isOpen: boolean,
   onClose?: () => void,
@@ -36,8 +35,10 @@ type CollectionForm = {
   type: string;
 };
 
-
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
+
+  const inputNameRef = useRef<HTMLInputElement>(null);
+
   const CSVRef = React.useRef<HTMLLinkElement>(null)
   const validationSchema = Yup.object().shape({
     collectionName: Yup.string()
@@ -45,6 +46,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       .required('This field is required').min(1, 'This field is required'),
 
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataJson, setDataJson] = useState<any>({
     head: [],
     body: [],
@@ -53,7 +55,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const [t, i18n] = useTranslation("common")
   const pathname = router.pathname.split("/")
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<CollectionForm>({
+  const { register, handleSubmit, reset, setValue, formState: { errors }, setFocus,clearErrors, resetField  } = useForm<CollectionForm>({
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
@@ -90,6 +92,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         name: data.collectionName,
         type: Number(data.type)
       }
+      await setIsLoading(true);
       const result = await api.v1.collection.createCollection(params);
       if (result.success) {
         props.onSuccess && props.onSuccess({
@@ -105,6 +108,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
             </a>
           </Link>
       </div>) : '';
+      await setIsLoading(false);
       }
       ToastSystem.error(result.message ?? result.error);
     }
@@ -177,6 +181,19 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       head: [],
       body: [],
     })
+    if ( isOpen === true ) {
+      let timerid = null;
+      if (timerid) {
+        clearTimeout(timerid);
+      }
+      timerid = setTimeout(() => {
+        // console.log(inputNameRef.current?.focus)
+        // inputNameRef.current?.focus();
+        resetField("collectionName");
+        setFocus("collectionName");
+      }, 350);
+     
+    }
   }, [isOpen])
   
   const renderLinkShareFB = () => {
@@ -188,7 +205,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     } else {
       host = process.env.DOMAIN;
     }
-    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name?.replace(/\s/g, "-")}`);
+    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/','-').replaceAll(' ', '')}`);
 
     return data_url;
   }
@@ -202,10 +219,16 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     } else {
       host = process.env.DOMAIN;
     }
-    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name?.replace(/\s/g, "-")}`);
+    let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/','-').replaceAll(' ', '')}`);
 
     return data_url;
-}
+  }
+  const onChange = (e:any) => {
+    const {value} = e.target;
+    if(value) {
+      clearErrors("collectionName")
+    }
+  }
 
   return (
     <Modal
@@ -236,6 +259,9 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               <input {...register("collectionName", { required: true })} 
                 placeholder={`Enter ${renderTextLower(title)} Name`}
                 maxLength={50}
+                autoFocus
+                // ref={inputNameRef}
+                onChange={onChange}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
             </div>
@@ -311,7 +337,16 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-outline btn-close-modal m-0" onClick={() => props?.onClose && props.onClose()}>Cancel</button>
-        <button onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}</button>
+        <button  onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}  
+         
+         { isLoading &&
+          <span
+              className="spinner-grow spinner-grow-sm"
+              role="status"
+              aria-hidden="true"
+          />
+         } 
+        </button>
       </Modal.Footer>
     </Modal>);
 }

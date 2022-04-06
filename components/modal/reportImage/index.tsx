@@ -176,179 +176,181 @@ const Index = ({
           </svg>
         </button>
       </Modal.Header>
-      <Modal.Body className="customScroll modal-body-custom ">
-        <div className="product-item">
-          <div className="sub-title">
-            {props?.cardData?.sport.name}
-            <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>
-            {props?.cardData?.year}
-            <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>{" "}
-            {props.cardData?.publisher?.name}
-          </div>
-          <div className="card-title cursor-pointer">
-            {" "}
-            {props?.cardData?.fullWebName}
-          </div>
-          <div className="d-flex">
-            {Boolean(true) && (
-              <button
-                type="button"
-                className="cursor-default btn me-1 btn-au btn-au--custom mb-3"
-              >
-                {" "}
-                AU{" "}
-              </button>
-            )}
-            {Boolean(true) && (
-              <button
-                type="button"
-                className="cursor-default btn btn-mem btn-mem--custom mb-3"
-              >
-                {" "}
-                MEM{" "}
-              </button>
-            )}
-          </div>
-        </div>
-        <form className="row">
-          <div className={`col-12 form-data `}>
-            <label className="text-form mt-1">Error Type</label>
-            <div className="tab d-flex">
-              <div
-                className={`tab-item  cursor-pointer w-50 ${
-                  Boolean(isCorrectCard) ? "active" : ""
-                } `}
-                onClick={() => {
-                  setIsCorrectCard(true);
-                  setValue("report_type", 1);
-                }}
-              >
-                Incorrect Card
-              </div>
-              <div
-                className={`tab-item cursor-pointer w-50  ${
-                  !Boolean(isCorrectCard) ? "active" : ""
-                }`}
-                onClick={() => {
-                  setIsCorrectCard(false);
-                  setValue("report_type", 2);
-                }}
-              >
-                Incorrect Grade
-              </div>
+      <Modal.Body className="modal-body-custom hide-scroll">
+        <div className="customScroll">
+          <div className="product-item">
+            <div className="sub-title">
+              {props?.cardData?.sport.name}
+              <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>
+              {props?.cardData?.year}
+              <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>{" "}
+              {props.cardData?.publisher?.name}
+            </div>
+            <div className="card-title cursor-pointer">
+              {" "}
+              {props?.cardData?.fullWebName}
+            </div>
+            <div className="d-flex">
+              {Boolean(true) && (
+                <button
+                  type="button"
+                  className="cursor-default btn me-1 btn-au btn-au--custom mb-3"
+                >
+                  {" "}
+                  AU{" "}
+                </button>
+              )}
+              {Boolean(true) && (
+                <button
+                  type="button"
+                  className="cursor-default btn btn-mem btn-mem--custom mb-3"
+                >
+                  {" "}
+                  MEM{" "}
+                </button>
+              )}
             </div>
           </div>
-
-          <div className={`add-collection-right section-garding ps-0 pt-0  ${!isCorrectCard ? "" : "d-none"}`}>
-            {!isEmpty(gradeCompany) && (
-              <div className="mb-3 mt-3">
-                <label htmlFor="" className="form-label">
-                  Select Grading
-                </label>
-                <Controller
-                  control={control}
-                  name="report_grade_company"
-                  render={({ field: { onChange, value } }) => (
-                    <Select
-                      value={value}
-                      onChange={(e) => {
-                        onChange(e);
-                        // onUpdateValue(e, "group_ref")
-                        setValue("report_grade_value", e.values[0].value);
-                      }}
-                      components={{ Option }}
-                      classNamePrefix="react-select-grading"
-                      className="react-select-grading"
-                      getOptionLabel={(value: any) => value.name}
-                      getOptionValue={(item: any) => item.id}
-                      options={gradeCompany ?? []}
-                    />
-                  )}
-                />
-              </div>
-            )}
-            {
-              watchGrade?.name !== "ungraded" && 
-              <div>
-                <label htmlFor="" className="form-label">
-                  Select Grade Value
-                </label>
+          <form className="row">
+            <div className={`col-12 form-data `}>
+              <label className="text-form mt-1">Error Type</label>
+              <div className="tab d-flex">
                 <div
-                  className="w-100 btn-group btn-group-sm grade-value-checkbox pl-3"
-                  role="group"
-                  aria-label="Basic radio toggle button group"
+                  className={`tab-item  cursor-pointer w-50 ${
+                    Boolean(isCorrectCard) ? "active" : ""
+                  } `}
+                  onClick={() => {
+                    setIsCorrectCard(true);
+                    setValue("report_type", 1);
+                  }}
                 >
-                  {gradeValue?.map((item, key) => (
-                    <div key={key} className="item-value">
-                      <input
-                        type="radio"
-                        {...register("report_grade_value", { required: true })}
-                        className="btn-check"
-                        name="report_grade_value"
-                        value={`${item.value}`}
-                        id={`grade-${item.value}`}
-                        autoComplete="off"
-                        defaultChecked={key === 0}
-                      />
-                      <label
-                        style={{
-                          backgroundColor:
-                            +watchGradeValue === +item.value
-                              ? watchGrade?.color_4
-                              : "#FFF",
-                          color:
-                            +watchGradeValue === +item.value
-                              ? watchGrade?.color_3
-                              : "#18213A",
-                        }}
-                        className="btn btn-light text-capitalize"
-                        htmlFor={`grade-${item.value}`}
-                      >
-                        {item.display_value_short}
-                      </label>
-                    </div>
-                  ))}
+                  Incorrect Card
+                </div>
+                <div
+                  className={`tab-item cursor-pointer w-50  ${
+                    !Boolean(isCorrectCard) ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    setIsCorrectCard(false);
+                    setValue("report_type", 2);
+                  }}
+                >
+                  Incorrect Grade
                 </div>
               </div>
-            }
-         
-            <div className="form-check">
-              <input
-                {...register("report_authentic")}
-                className="form-check-input"
-                type="checkbox"
-                id="flexCheckDefault"
-              />
-              <label className="form-check-label" htmlFor="flexCheckDefault">
-                Graded Only as Authentic
-              </label>
             </div>
-            <div className="form-check">
-              <input
-                {...register("report_auto_only_grade")}
-                className="form-check-input"
-                type="checkbox"
-                id="flexCheckChecked"
-              />
-              <label className="form-check-label" htmlFor="flexCheckChecked">
-                Auto Grade Only
-              </label>
-            </div>
-          </div>
 
-          <div className={`col-12 position-relative`}>
-            <label className="text-form  mt-3">
-              Note <span>(optional)</span>
-            </label>
-            <div className="position-relative">
-              <textarea
-                {...register("report_note")}
-                className="form-control mt-1"
-                placeholder="Placeholder"
-              ></textarea>
+            <div className={`add-collection-right section-garding ps-0 pt-0  ${!isCorrectCard ? "" : "d-none"}`}>
+              {!isEmpty(gradeCompany) && (
+                <div className="mb-3 mt-3">
+                  <label htmlFor="" className="form-label">
+                    Select Grading
+                  </label>
+                  <Controller
+                    control={control}
+                    name="report_grade_company"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e);
+                          // onUpdateValue(e, "group_ref")
+                          setValue("report_grade_value", e.values[0].value);
+                        }}
+                        components={{ Option }}
+                        classNamePrefix="react-select-grading"
+                        className="react-select-grading"
+                        getOptionLabel={(value: any) => value.name}
+                        getOptionValue={(item: any) => item.id}
+                        options={gradeCompany ?? []}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+              {
+                watchGrade?.name !== "ungraded" && 
+                <div>
+                  <label htmlFor="" className="form-label">
+                    Select Grade Value
+                  </label>
+                  <div
+                    className="w-100 btn-group btn-group-sm grade-value-checkbox pl-3"
+                    role="group"
+                    aria-label="Basic radio toggle button group"
+                  >
+                    {gradeValue?.map((item, key) => (
+                      <div key={key} className="item-value">
+                        <input
+                          type="radio"
+                          {...register("report_grade_value", { required: true })}
+                          className="btn-check"
+                          name="report_grade_value"
+                          value={`${item.value}`}
+                          id={`grade-${item.value}`}
+                          autoComplete="off"
+                          defaultChecked={key === 0}
+                        />
+                        <label
+                          style={{
+                            backgroundColor:
+                              +watchGradeValue === +item.value
+                                ? watchGrade?.color_4
+                                : "#FFF",
+                            color:
+                              +watchGradeValue === +item.value
+                                ? watchGrade?.color_3
+                                : "#18213A",
+                          }}
+                          className="btn btn-light text-capitalize"
+                          htmlFor={`grade-${item.value}`}
+                        >
+                          {item.display_value_short}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }
+          
+              <div className="form-check">
+                <input
+                  {...register("report_authentic")}
+                  className="form-check-input"
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="form-check-label" htmlFor="flexCheckDefault">
+                  Graded Only as Authentic
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  {...register("report_auto_only_grade")}
+                  className="form-check-input"
+                  type="checkbox"
+                  id="flexCheckChecked"
+                />
+                <label className="form-check-label" htmlFor="flexCheckChecked">
+                  Auto Grade Only
+                </label>
+              </div>
             </div>
-          </div>
-        </form>
+
+            <div className={`col-12 position-relative`}>
+              <label className="text-form  mt-3">
+                Note <span>(optional)</span>
+              </label>
+              <div className="position-relative">
+                <textarea
+                  {...register("report_note")}
+                  className="form-control mt-1"
+                  placeholder="Details of the error"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <div className="d-flex">

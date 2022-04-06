@@ -45,7 +45,7 @@ import Head from "next/head";
 import CaptCha from "components/modal/captcha";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 
-const rowsPerPage = 20;
+const rowsPerPage = 100;
 
 type ParamTypes = {
   id: string;
@@ -102,7 +102,7 @@ const CollectionBase = ({ ...props}) => {
   });
   const checkListRef = useRef<any>(null);
   const [isSelect, setIsSelect] = useState<boolean>(false);
-  const [isInline, setIsInline] = useState<boolean>(false);
+  const [isInline, setIsInline] = useState<boolean>(true);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const { isAddCardCheckList, pageSelected } = useSelector(Selectors.searchFilter);
   React.useEffect(() => {

@@ -6,6 +6,7 @@ import 'tui-image-editor/dist/tui-image-editor.css';
 import closeImge from "assets/images/clear_modal.png"
 import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
+import { isNil } from "lodash";
 import dynamic from 'next/dynamic';
 // @ts-ignore
 import { EditorProps } from '@toast-ui/react-editor';
@@ -80,23 +81,41 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   };
 
   const updateImage = async (data: any) => {
+   
     try {
       let result: any = null;
       if (props.isClaim) {
-        const body = {
-          image: data,
-          card_code: props.code,
-          front_back: nameImage === "Front" ? "F" : "B",
-          current_path: currentPath
+
+        try {
+          const body = {
+            image: data,
+            card_code: props.code,
+            front_back: nameImage === "Front" ? "F" : "B",
+            current_path: currentPath
+          }
+          result = await api.v1.communal_images.uploadImageCommunalv2(body);
         }
-        result = await api.v1.communal_images.uploadImageCommunalv2(body);
+        catch(error: any) {
+          if (error.message  ==="Network Error" && isNil(error?.response?.status)) {
+            console.log('The file you tried to upload is too large.')
+          }
+        }
+     
       } else {
-        const params = {
-          image: data,
-          card_code: props.code,
-          current_path: currentPath
+        try {
+          const params = {
+            image: data,
+            card_code: props.code,
+            current_path: currentPath
+          }
+          result = await api.v1.portfolio.uploadImage(params)
         }
-        result = await api.v1.portfolio.uploadImage(params)
+        catch(error: any) {
+          if (error.message  ==="Network Error" && isNil(error?.response?.status)) {
+            ToastSystem.error("The file you tried to upload is too large.");
+          }
+        }
+        
       }
 
       if (result.success) {

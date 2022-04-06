@@ -80,6 +80,17 @@ const Header = (props: any) => {
     } else {
       dispatch(ConfigAction.updateShowTabBar(true));
     }
+
+    let routerAction = router.query?.action;
+    let routerPathname = router?.pathname;
+    
+    document.body.classList.remove('edit-card');
+    if ( routerAction === 'edit-card' ) {
+      document.body.classList.add('edit-card');
+    }
+    if ( routerPathname === '/collections-add-card' ) {
+      document.body.classList.add('edit-card');
+    }
   }, [router.query])
 
   useEffect(() => {
