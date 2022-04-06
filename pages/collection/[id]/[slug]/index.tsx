@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import moment from "moment";
 import Select from "react-select";
 import Skeleton from "react-loading-skeleton";
-import { CollectionType, SalesOverviewType } from "interfaces";
+import { CollectionType, SalesOverviewType, ManageCollectionType } from "interfaces";
 import { api } from "configs/axios";
 import ParameterTitle from "components/Skeleton/collection/parameterTitle";
 import { formatCurrency, gen_card_url } from "utils/helper";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { isEmpty } from "lodash";
+import { isEmpty, truncate } from "lodash";
 import ScrollspyNav from "components/scrollspy/lib/ScrollspyNav";
 import ArrowRight from "assets/images/arrow-right-blue.svg";
 import ArrowGray from "assets/images/arrow-gray.svg";
@@ -21,6 +21,20 @@ import CaptCha from "components/modal/captcha";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
+import IconFolder from "assets/images/icon-folder-svg.svg";
+import IconFolderFull from "assets/images/icon-folder-active.svg";
+import IconHeart from "assets/images/icon_heart.svg";
+import IconHeartFull from "assets/images/icon_heart_tim.svg";
+import IconDot3 from "assets/images/dot-3.svg";
+import IconCanFull from "assets/images/icon_can_tim.svg";
+import IconCan from "assets/images/icon_can.svg";
+import { useSelector, useDispatch } from "react-redux";
+import Selectors from "redux/selectors";
+import LoginModal from "components/modal/login";
+import ChosseCollection from "components/modal/chosseCollection";
+import { ToastSystem } from "helper/toast_system";
+import { CompareAction } from "redux/actions/compare_action";
+import SelectGrading from "components/modal/selectGrading";
 
 type PropTypes = {
   location: any;
@@ -52,7 +66,15 @@ const CollectionDetail = (props: PropTypes) => {
   const router = useRouter();
   const { id } = router.query;
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
-  
+  const { loggingIn } = useSelector(Selectors.auth);
+  const [cardData, setCardData] = useState<SalesOverviewType | undefined>();
+  const [isOpenCollection, setIsOpenCollection] = useState<boolean>(false);
+  const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
+  const [isOpenWishList, setIsOpenWishList] = React.useState(false);
+  const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
+  const dispatch = useDispatch();
+  const { cards } = useSelector(Selectors.compare);
+
   const [dataTable, setDataTable] = useState<Array<SalesOverviewType>>([]);
   const [filterData, setFilterData] = useState<FilterDataType>({
     timePeriod: 7,
@@ -63,20 +85,20 @@ const CollectionDetail = (props: PropTypes) => {
   });
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const getDetail = async (headers: any ={}): Promise<void> => {
+  const getDetail = async (headers: any = {}): Promise<void> => {
     try {
       const res = await api.v1.collection.getDetail({ setID: Number(id) }, headers);
       if (res.success) {
         return setCollection(res.data);
       }
-      setIsCaptCha(Boolean(res?.show_captcha) )
-    
+      setIsCaptCha(Boolean(res?.show_captcha))
+
     } catch (error) {
       console.log("error........", error);
     }
   };
   const [t, i18n] = useTranslation("common")
-  React.useEffect(() => { 
+  React.useEffect(() => {
     if (!isEmpty(router.query)) {
       getDetail();
     }
@@ -122,25 +144,20 @@ const CollectionDetail = (props: PropTypes) => {
   const renderButtonFilter = (day: number) => {
     switch (day) {
       case 7:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 7 ? "isActive" : ""
-        } `;
+        return `btn btn-secondary ${filterData?.timePeriod === 7 ? "isActive" : ""
+          } `;
       case 14:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 14 ? "isActive" : ""
-        } `;
+        return `btn btn-secondary ${filterData?.timePeriod === 14 ? "isActive" : ""
+          } `;
       case 30:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 30 ? "isActive" : ""
-        } `;
+        return `btn btn-secondary ${filterData?.timePeriod === 30 ? "isActive" : ""
+          } `;
       case 90:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 90 ? "isActive" : ""
-        } `;
+        return `btn btn-secondary ${filterData?.timePeriod === 90 ? "isActive" : ""
+          } `;
       case 365:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 365 ? "isActive" : ""
-        } `;
+        return `btn btn-secondary ${filterData?.timePeriod === 365 ? "isActive" : ""
+          } `;
       default:
     }
   };
@@ -186,7 +203,7 @@ const CollectionDetail = (props: PropTypes) => {
     }
   };
 
-  const goToDetail = (type: number, color: string,url: string) => {
+  const goToDetail = (type: number, color: string, url: string) => {
     router.push(`/checklist/${type}/${color}/${url}`);
   };
   const onGoToCard = (item: any) => {
@@ -206,15 +223,28 @@ const CollectionDetail = (props: PropTypes) => {
             </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-              <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
-                <a title={collection?.title}> {collection?.title} </a>
-              </Link>
+            <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
+              <a title={collection?.title}> {collection?.title} </a>
+            </Link>
           </li>
         </ol>
       </nav>
     );
   };
+  const renderOptionIcon = (data: any) => {
+    return Boolean(data.portfolio)
+      ? IconCanFull
+      : IconDot3;
+  };
 
+  const onAddWishList = (item: any) => {
+    setCardData(item);
+    if (loggingIn) {
+      setIsOpenWishList(true);
+    } else {
+      setIsOpenLogin(true);
+    }
+  };
   const renderTable = () => {
     return (
       <div className="row content-home sale-overview-collection">
@@ -293,9 +323,8 @@ const CollectionDetail = (props: PropTypes) => {
                 </div>
               </div>
               <div
-                className={`box-table-memo-sl-over customScroll ${
-                  dataTable.length > 0 ? "table-scroll" : ""
-                }`}
+                className={`box-table-memo-sl-over customScroll ${dataTable.length > 0 ? "table-scroll" : ""
+                  }`}
               >
                 <table className="table">
                   <thead>
@@ -382,14 +411,13 @@ const CollectionDetail = (props: PropTypes) => {
                                 currentTarget.onerror = null;
                                 currentTarget.src = CardPhotoBase;
                               }}
-                              src={
-                                item?.image
-                                  ? `https://img.priceguide.cards/${
-                                      item.sportName === "Non-Sport"
-                                        ? "ns"
-                                        : "sp"
+                                src={
+                                  item?.image
+                                    ? `https://img.priceguide.cards/${item.sportName === "Non-Sport"
+                                      ? "ns"
+                                      : "sp"
                                     }/${item?.image}.jpg`
-                                  : CardPhotoBase
+                                    : CardPhotoBase
                                 }
                               />
                             </div>
@@ -401,7 +429,7 @@ const CollectionDetail = (props: PropTypes) => {
                                 <div className="circle-gray"></div>
                                 <div> {item.publisherName} </div>
                               </div>
-                              <div onClick={()=> onGoToCard(item)} className="card-title cursor-pointer">
+                              <div onClick={() => onGoToCard(item)} className="card-title cursor-pointer">
                                 {`${item.cardName} # ${item.onCardCode}`}
                               </div>
                               <div className="tag-data d-flex">
@@ -419,8 +447,63 @@ const CollectionDetail = (props: PropTypes) => {
                         <td>{formatCurrency(item.maxSales)}</td>
                         <td>{item.tradeVol}</td>
                         <td>
-                          <div className="icon-folder">
+                          {/* <div className="icon-folder">
                             <img src={FolderPlus} alt="FolderPlus" />
+                          </div> */}
+                          <div className="dropdown dropdown--top">
+                            <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                            <div
+                              className="dropdown-menu"
+                              aria-labelledby="navbarDropdownDot"
+                              data-bs-popper="none"
+                            >
+                              <div
+                                onClick={() => {
+                                  setCardData(undefined);
+                                  setCardSelected([item.cardCode]);
+                                  if (loggingIn) {
+                                    setIsOpenCollection(true);
+                                  } else {
+                                    setIsOpenLogin(true);
+                                  }
+                                }}
+                                className="dropdown-menu-item d-flex cursor-pointer"
+                              >
+                                <div className="dropdown-menu-item__icon">
+                                  <img
+                                    alt=""
+                                    src={!Boolean(item.portfolio)
+                                      ? IconFolder
+                                      : IconFolderFull} />
+                                </div>
+                                <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
+                              </div>
+                              <div
+                                onClick={() => onAddWishList({
+                                  ...item,
+                                  code: item.cardCode,
+                                })}
+                                className="dropdown-menu-item  d-flex cursor-pointer"
+                              >
+                                <div className="dropdown-menu-item__icon">
+                                  <img
+                                    alt=""
+                                    src={!Boolean(item.wishlist)
+                                      ? IconHeart
+                                      : IconHeartFull} />
+                                </div>
+                                <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                              </div>
+                              <div
+                                onClick={() => onComparison(item)}
+                                className="dropdown-menu-item  d-flex cursor-pointer"
+                              >
+                                <div className="dropdown-menu-item__icon">
+                                  <img alt="" src={renderCompareIcon(item)} />
+                                </div>
+                                <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                              </div>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -459,14 +542,66 @@ const CollectionDetail = (props: PropTypes) => {
     const headers = { "captcha-token": token };
     getDetail(headers)
   }
+  const renderCompareIcon = (data: any) => {
+    return Boolean(cards.find((item) => item.code === data.cardCode))
+      ? IconCanFull
+      : IconCan;
+    // return Boolean(false)
+    //   ? IconCanFull
+    //   : IconCan;
+  };
+  const [wishList, setWishList] = React.useState<
+    ManageCollectionType | undefined
+  >();
+  const [isOpenGrade, setIsOpenGrade] = React.useState<boolean>(false);
+  const selectWishlist = (item: ManageCollectionType) => {
+    setWishList(item);
+    setIsOpenWishList(false);
+    setIsOpenGrade(true);
+  };
+  const selectCollection = (item: ManageCollectionType) => {
+
+
+    router.push(
+      `/collections-add-card?collection=${
+        item.group_ref
+      }&code=${cardSelected.toString()}`
+    );
+  };
+  const onComparison = (cardData: any) => {
+    let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
+    if ( dataOld.length === 9 ) {
+      return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
+    }
+
+    const cardNew = {
+      code: cardData.cardCode,
+      lastname: cardData.lastname,
+      firstname: cardData.firstname,
+    };
+
+    if (dataOld.find((item: any) => item.code === cardData.cardCode)) {
+      dataOld = dataOld.filter((item: any) => item.code !== cardData.cardCode);
+      dispatch(CompareAction.removeCard(cardData.cardCode));
+      // ToastSystem.success("Card removed from comparison list");
+      ToastSystem.success(<span>Card removed from <Link href="/comparison">comparison list</Link> </span>);
+    } else {
+      dataOld.push(cardNew);
+      // ToastSystem.success("Card added to comparison list");
+      ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
+      dispatch(CompareAction.addCard(cardNew));
+    }
+    
+    localStorage.setItem("comparison", JSON.stringify(dataOld));
+  };
 
   return (
     <div className="container-fluid card-detail collection-detail">
       <Head>
         <title>
           {
-          //@ts-ignore
-          props?.data?.title ?? ''} | PriceGuide.Cards</title>
+            //@ts-ignore
+            props?.data?.title ?? ''} | PriceGuide.Cards</title>
         <meta name="description" content={`${
           //@ts-ignore
           props?.data?.title ?? ''} Collection Overview. Browse set and check out the top sales from the collection.`} />
@@ -521,13 +656,13 @@ const CollectionDetail = (props: PropTypes) => {
               <h1 className="mb-3 collection-title"> {collection?.title} </h1>
               <ul className="collection-gallery-info">
                 <li>
-                  <label>Release Date:</label> {typeof collection?.release_date ==="number" ? collection?.release_date : moment(collection?.release_date, "MM/DD/YYYY").format( "MMM Do YYYY" )}
+                  <label>Release Date:</label> {typeof collection?.release_date === "number" ? collection?.release_date : moment(collection?.release_date, "MM/DD/YYYY").format("MMM Do YYYY")}
                 </li>
                 <li>
-                    <label>Sport:</label>
-                    <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
-                      <a title={collection?.sport?.name}> {collection?.sport?.name} </a>
-                    </Link>
+                  <label>Sport:</label>
+                  <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
+                    <a title={collection?.sport?.name}> {collection?.sport?.name} </a>
+                  </Link>
                 </li>
                 <li>
                   <label>Publisher:</label> {collection?.publisher?.name}
@@ -546,7 +681,7 @@ const CollectionDetail = (props: PropTypes) => {
                 <li>
                   <label>{t('portfolio.card_in_portfolio')}:</label> {collection?.total_cards}
                 </li>
-            </ul>
+              </ul>
             </div>
           )}
         </div>
@@ -644,15 +779,54 @@ const CollectionDetail = (props: PropTypes) => {
         {renderTable()}
         {isOpen && renderModalTable()}
       </div>
+      <ChosseCollection
+          selectCollection={selectWishlist}
+          table="wishlist"
+          title="wishlist"
+          isOpen={isOpenWishList}
+          setIsOpen={setIsOpenWishList} />
+        <ChosseCollection
+          selectCollection={selectCollection}
+          isOpen={isOpenCollection}
+          setIsOpen={setIsOpenCollection} />
+          {cardData && loggingIn && (
+          <SelectGrading
+            wishList={wishList}
+            cardData={cardData}
+            isOpen={isOpenGrade}
+            onSuccess={(code) => {
+              let dataNew = [...(collection?.cards ?? [])];
+              dataNew = dataNew.map((card) => card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }
+              );
+              // return setCollection((prevState) => {
+              //   return {
+              //     ...prevState,
+              //     cards: dataNew,
+              //   };
+              // });
+            } }
+            setIsOpen={setIsOpenGrade} />
+        )}
+      
+      <LoginModal
+          onSuccess={() => {
+            setIsOpenLogin(false);
+            if (cardData) {
+              setIsOpenWishList(true);
+            } else {
+              setIsOpenCollection(true);
+            }
+          } }
+          isOpen={isOpenLogin}
+          onClose={() => setIsOpenLogin(false)} />
     </div>
   );
 };
 
-export const getServerSideProps = async (context:any) => {
+export const getServerSideProps = async (context: any) => {
   try {
 
     const res = await api.v1.collection.getDetail({ setID: Number(context.query.id) }, {});
-    
     return {
       props: {
         data: res?.data
