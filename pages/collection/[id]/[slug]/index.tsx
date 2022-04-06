@@ -232,8 +232,9 @@ const CollectionDetail = (props: PropTypes) => {
     );
   };
   const renderOptionIcon = (data: any) => {
-    return Boolean(data.portfolio)
-      ? IconFolderFull
+ 
+    return    Boolean(cards.find((item) => item.code === data.cardCode))
+      ? IconCanFull
       : IconDot3;
   };
 
