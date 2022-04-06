@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Selectors from "redux/selectors";
 import { api } from "configs/axios";
@@ -420,6 +420,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (isEmpty(activeEntryData)) {
       setActiveEntryData(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex])
     }
+    if (!isEmpty(cards.cards) && !isEmpty(cardSelectedStore)) {
+      if (cards.cards?.[activeEntry.cardIndex]?.data.length) {
+        let index = cards.cards?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
+        onActiveEntry(activeEntry.cardIndex, index !== -1 ? index : 0, cards?.cards?.[activeEntry.cardIndex]?.data[index] ? cards?.cards?.[activeEntry.cardIndex]?.data[index] : cards?.cards?.[activeEntry.cardIndex]?.data[0])
+      }
+    }
   }, [cards?.cards])
 
   React.useEffect(() => {
@@ -571,7 +577,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   const onActiveEntry = (cardIndex: number, entryIndex: number, data: any) => {
-    
     let old = { ...data };
     // @ts-ignore
     const dataEntry = cardsOld.cards?.[cardIndex]?.data[entryIndex];

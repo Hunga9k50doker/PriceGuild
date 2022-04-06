@@ -47,7 +47,7 @@ const maintenanceReducer = (
         isFilterStoreTop100: action.payload,
       };
     }
-    case ActionTypes.reducer.search_filter.isEdit: { 
+    case ActionTypes.reducer.search_filter.isEdit: {
       return {
         ...state,
         isEditCardData: action.payload

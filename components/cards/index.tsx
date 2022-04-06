@@ -11,6 +11,8 @@ import { useRouter } from 'next/router'
 
 // @ts-ignore
 import $ from "jquery"
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 
 interface PropTypes<T> {
   cards: Array<T>;
@@ -34,6 +36,7 @@ interface PropTypes<T> {
 const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, nameSearch = "",...props }: PropTypes<T>) => {
   const router = useRouter();
   const [isProfile, setIsProfile] = useState<boolean>(false);
+  const { dataFilterStore } = useSelector(Selectors.searchFilter);
   useEffect(() => {
     if(router.pathname === "/profile/[page]/[action]/[type]" && (Boolean(router?.query?.page === "wishlists" || router?.query?.page ===  "portfolio")))
       setIsProfile(true)
@@ -145,7 +148,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
         {!props.cards.length && !props.isLoading &&  
           <>
             {
-              isProfile && nameSearch === "" && props.cards.length === 0 ? <CardNoData title={router?.query?.page === "wishlists"? "wishlist " : "portfolio"}/> :
+              isProfile && nameSearch === "" && props.cards.length === 0 && isEmpty(dataFilterStore) ? <CardNoData title={router?.query?.page === "wishlists"? "wishlist " : "portfolio"}/> :
               <div className="no-results">No results found</div>
             }
           </>

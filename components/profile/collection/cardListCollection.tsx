@@ -150,8 +150,7 @@ const CardListCollection = ({
   const [cardData, setCardData] = useState<CardModel | undefined>();
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore } = useSelector(Selectors.searchFilter);
-  // console.log(cardSelectedStore,'cardSelectedStore');
-  // console.log(changeGradeCardEdit, newGradeChanged, 'changeGradeCardEdit, newGradeChanged');
+
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -176,12 +175,11 @@ const CardListCollection = ({
   useEffect(() => {
     if (!isEmpty(newGradeChangedState)) {
       let filterTemp = cloneDeep(filterData); 
-      console.log(filterTemp?.grades, 'filterTemp?.grades');
       
       filterTemp?.grades?.push(newGradeChangedState);
     
       setFilterData(filterTemp);
-      console.log(filterTemp?.grades, 'filterTemp?.grades');
+      
       gradeRef?.current?.reset(filterTemp?.grades);
       
     }
@@ -194,7 +192,7 @@ const CardListCollection = ({
     resetFilter();
     if (isRefresh) {
       localStorage.removeItem('filterCollection')
-      
+
       if (isEditCardData || isAddCardProfile) {
 
         let data: Array<TrackData> = [];
@@ -209,12 +207,17 @@ const CardListCollection = ({
         }
         
         setTrackFilter(data);
-        setFilterData(dataFilterStore);
+        if (!isEmpty(dataFilterStore)) {
+          setFilterData(dataFilterStore);
+        }
         updateDataFilter(lastestFilterEditCardStore);
         
        
       } else {
-          dispatch(SearchFilterAction.updatePageSelected(1))
+        if (!isEmpty(dataFilterStore)) {
+          dispatch(SearchFilterAction.updateSetDataFilter({}));
+        }
+        dispatch(SearchFilterAction.updatePageSelected(1))
       }
 
       setPagesSelected(Boolean(isEditCardData) || Boolean(isAddCardProfile) ? [pageSelected] : [1]);
@@ -459,9 +462,20 @@ const CardListCollection = ({
           };
         });
       }
-      if (!result.success && isEmpty(result.data?.card_data) && Boolean(isEditCardData)) {
+      if (!result.success && isEmpty(dataFilterStore)) {
+        dispatch(SearchFilterAction.updateSetDataFilter({}));
+        dispatch(FilterAction.updateFiltersCardDetail({
+          publishers: [],
+          collections: [],
+          printRuns: [],
+          years: [],
+          auto_memo: [],
+          sports: [],
+          grades: [],
+        }));
+      }
+      if (!result.success && isEmpty(result.data?.card_data) && Boolean(isSaveChange)) {
         ToastSystem.error('No matching results for previous filters, re-setting filters.');
-        setFilterData({});
         resetFilter()
         getListCard([1]);
       }
@@ -496,9 +510,6 @@ const CardListCollection = ({
       });
     }
   }
-  useEffect(() => {
-    console.log(lastestFilterEditCardStore, 'lastestFilterEditCardStorelastestFilterEditCardStore');
-  }, [lastestFilterEditCardStore])
   
   const compareDataGradeFilter = async (data: any) => {
 
@@ -520,7 +531,7 @@ const CardListCollection = ({
           }
         }); 
       } else {
-       console.log(isCheckGradeValue, 'isCheckGradeValue');
+      //  console.log(isCheckGradeValue, 'isCheckGradeValue');
       }
     } else {
       let indexFilter = filters.grades?.findIndex((itemGrade: any) => itemGrade.name === cardSelectedStore?.grade_company?.name);
@@ -537,7 +548,6 @@ const CardListCollection = ({
     let gradeNewItem = data.find((item: any) => item?.grade_company === newGradeChanged?.company);
     //check changed new grade_value in company
     if (!isEmpty(gradeNewItem)) {
-      console.log(gradeNewItem, 'gradeNewItem');
       
       let checkFilterData = filters.grades?.find((filterItem: any) => filterItem.name === gradeNewItem?.grade_company)
       if (checkFilterData !== undefined) {
@@ -628,7 +638,7 @@ const CardListCollection = ({
       }
     } else {
       if (index !== -1) {
-        let idx = dataLastest?.grades?.[index]?.data?.findIndex((itemIxd: any) => itemIxd.grade_value === option); console.log(idx, 'idx');
+        let idx = dataLastest?.grades?.[index]?.data?.findIndex((itemIxd: any) => itemIxd.grade_value === option);
         dataLastest?.grades?.[index]?.data.splice(idx, 1);
       }
     }
