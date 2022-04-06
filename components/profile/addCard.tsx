@@ -610,7 +610,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const setFromValue = (dataEntry: Datum) => {
     setValue("grade_value", dataEntry.grade_value);
-    setValue("grade_company", dataEntry.grade_company);
+    setValue("grade_company", dataEntry?.grade_company);
     setValue("user_currency", {
       value: dataEntry.user_currency,
       label: dataEntry.user_currency,
@@ -680,7 +680,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
         card.date_acq = moment(card.date_acq).format("YYYY-MM-DD");
         card.group_ref = card.group_ref?.id ?? card.group_ref;
-        card.grade_company = card.grade_company.name;
+        card.grade_company = card?.grade_company.name;
         card.grade_value = +card.grade_value;
         delete card.front_image;
         delete card.back_image;
@@ -899,7 +899,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       (item: any) => item?.value == entry?.grade_value
     );
     const grade_value_name =
-      entry.grade_company?.name === ungraded && entry.grade_value == NotSpecified
+      entry?.grade_company?.name === ungraded && entry.grade_value == NotSpecified
         ? ""
         : gradeCompanyShow?.display_value ?? entry.grade_value;
     return (
@@ -1055,26 +1055,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             <div className="d-block justify-content-between align-items-center card-add-detail__txt">
                               <div
                                 className={`me-1 ${
-                                  entry.grade_company &&
-                                  entry.grade_company?.name == ungraded &&
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name == ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? ""
                                     : "card-add-detail-grade text-nowrap"
                                 }`}
                                 style={{
                                   backgroundColor:
-                                    entry.grade_company &&
-                                    entry.grade_company?.name === ungraded &&
+                                    entry?.grade_company &&
+                                    entry?.grade_company?.name === ungraded &&
                                     `${entry.grade_value}` == NotSpecified
                                       ? "transparent"
-                                      : entry.grade_company?.color_2 ??
-                                        entry.grade_company?.grade_color_2,
+                                      : entry?.grade_company?.color_2 ??
+                                        entry?.grade_company?.grade_color_2,
                                   color:
-                                    entry.grade_company?.name === ungraded &&
+                                    entry?.grade_company?.name === ungraded &&
                                     `${entry.grade_value}` == NotSpecified
                                       ? "#18213A"
-                                      : entry.grade_company?.color_1 ??
-                                        entry.grade_company?.grade_color_1,
+                                      : entry?.grade_company?.color_1 ??
+                                        entry?.grade_company?.grade_color_1,
                                 }}
                               >
                                 {renderGradeValue(entry)}
@@ -1212,26 +1212,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             <div className="d-block align-items-center">
                               <div
                                 className={`me-1 ${
-                                  entry.grade_company &&
-                                  entry.grade_company?.name == ungraded &&
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name == ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? ""
                                     : "card-add-detail-grade text-nowrap"
                                 }`}
                                 style={{
                                   backgroundColor:
-                                  entry.grade_company &&
-                                  entry.grade_company?.name === ungraded &&
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name === ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? "transparent"
-                                    : entry.grade_company?.color_2 ??
-                                      entry.grade_company?.grade_color_2,
+                                    : entry?.grade_company?.color_2 ??
+                                      entry?.grade_company?.grade_color_2,
                                 color:
-                                  entry.grade_company?.name === ungraded &&
+                                  entry?.grade_company?.name === ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? "#18213A"
-                                    : entry.grade_company?.color_1 ??
-                                      entry.grade_company?.grade_color_1,
+                                    : entry?.grade_company?.color_1 ??
+                                      entry?.grade_company?.grade_color_1,
                                 }}
                               >
                                 {renderGradeValue(entry)}
@@ -1291,7 +1291,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb breadcrumb-edit-card mt-1">
                     <li className="breadcrumb-item">
-                        <Link href="/profile/portfolio">{ t('portfolio.text') }</Link>
+                      <Link href="/profile/portfolio">
+                        {t('portfolio.text')}
+                      </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
