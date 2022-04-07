@@ -23,11 +23,14 @@ import { isEmpty } from "lodash";
 import HeaderUser from "components/user/headerUser"
 import { TabType } from "../friends/friendDetail";
 import { UserInfoType } from "interfaces"
+import IconFolder from "assets/images/folder.svg"
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
   data: Array<ManageCollectionType>;
   isLoading: boolean;
+  showAllCardsFolder?: boolean;
+  allCardsCount?: any;
 };
 
 type CollectionListType = {
@@ -181,6 +184,9 @@ const CollectionList = ({
   };
 
   const gotoAnalytics = (item: ManageCollectionType) => {
+    if (item.group_ref === 0) {
+      return router.push(`/profile/portfolio/analytics`);
+    }
     router.push(`/profile/portfolio/${item.group_ref}/analytics`);
   };
 
@@ -384,7 +390,11 @@ const CollectionList = ({
                   {item.group_name}{" "}
                   {Boolean(item.type === 2) && (
                     <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
-                  )}{" "}
+                  )}
+                  {Boolean(item.type === 0) && item.group_ref === 0 && (
+                    <img src={IconFolder} alt="icon-folder" />
+                  )}
+                  {" "}
                 </div>
                 {isEdit && (
                   <div className="menu col-2 text-right">

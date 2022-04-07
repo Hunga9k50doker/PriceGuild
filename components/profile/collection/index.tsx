@@ -62,10 +62,33 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
           user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
         }
         const result = await api.v1.collection.getManageCollections(params);
+        let dataCollections: Array<ManageCollectionType> = []; 
+        //@ts-ignore
+        if (result?.show_all_cards_folder) {
+           
+          let itemAllCard = {
+            group_ref: 0,
+            group_name: "All Cards",
+            type: 0,
+            //@ts-ignore
+            unique_card: result?.all_cards_count.unique_card,
+            //@ts-ignore
+            total_card: result?.all_cards_count.total_card,
+            claim: 0
+          }
+          dataCollections.push(itemAllCard);
+        }
+        
+        dataCollections = [...dataCollections, ...result.data];
+
         if (result.success) {
           setCollections({
-            data: result.data,
+            data: dataCollections,
             isLoading: false,
+            //@ts-ignore
+            showAllCardsFolder: result?.show_all_cards_folder,
+            //@ts-ignore
+            allCardsCount: result?.all_cards_count
           })
         }
         if (!result.success) {

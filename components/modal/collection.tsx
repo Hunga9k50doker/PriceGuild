@@ -36,7 +36,7 @@ type CollectionForm = {
 };
 
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
-
+  console.log(collectionDetail, 'collectionDetail');
   const inputNameRef = useRef<HTMLInputElement>(null);
 
   const CSVRef = React.useRef<HTMLLinkElement>(null)
