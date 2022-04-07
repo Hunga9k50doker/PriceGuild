@@ -53,8 +53,8 @@ type ParamTypes = {
 }
 
 const defaultSort: SelectDefultType = {
-  value: true,
-  label: "Newest",
+  value: 'newest',
+  label: "Newest"
 };
 
 const CollectionList = () => {
@@ -80,6 +80,7 @@ const CollectionList = () => {
     filter_publishers: []
 
   });
+  
   const [filterData, setFilterData] = useState<
     { [key: string]: Array<FilterType> } | undefined
   >(undefined);
@@ -172,7 +173,7 @@ const CollectionList = () => {
   const getFilterSearch = () => {
     let params: any = {};
     for (const [key, value] of Object.entries(filterData ?? {})) {
-      // @ts-ignore
+      //@ts-ignore
       const arrayValue = value.map((item) => item.id).sort((a, b) => a - b);
       params[key] = arrayValue?.length ? arrayValue : undefined;
     }
@@ -182,7 +183,7 @@ const CollectionList = () => {
   const getListCard = async (
     page: number[] = [1],
     isFilter: boolean = true,
-    isSort?: boolean,
+    isSort?: string,
     keySearchState?: string
   ) => {
     try {
@@ -194,15 +195,39 @@ const CollectionList = () => {
         };
       });
 
-      let filterParams = {  };
+      let filterParams = {};
       if (isFilter) {
         filterParams = { ...filterParams, ...getFilterSearch() };
+      } 
+      if (keySearch === '' || keySearchState === '') {
+        if (!isEmpty(prioritize)) {
+          let dataPriorlities = [ ...prioritize ];
+          let index = dataPriorlities.findIndex((item: any) => item.name === 'publishers');
+
+          if (index !== -1) {
+            dataPriorlities.splice(index,1)
+          }
+          setPrioritize(dataPriorlities);
+        }
+        
+        //@ts-ignore
+        if (filterParams?.publishers.length > 0) {
+          //@ts-ignore
+          delete filterParams?.publishers;
+          publisherRef.current?.reset();
+          let filter = { ...filterData };
+          
+          delete filter?.publishers;
+
+          setFilterData(filter);
+        }
       }
       let params: any = {
         limit: rowsPerPage,
         sport_name: sport,
         filter: !isEmpty(filterParams) ? filterParams : undefined,
-        is_newest: isSort ?? isNewest.value,
+        // is_newest: isSort ?? isNewest.value,
+        sort: isSort ?? isNewest.value,
         search_term: keySearchState ?? keySearch,
         page: page[page.length - 1],
       };
@@ -263,7 +288,7 @@ const CollectionList = () => {
   
   const onSortTable = (sortValue: any) => {
     setIsNewest(sortValue);
-    setPagesSelected([1])
+    setPagesSelected([1]);
     getListCard([1], true, sortValue.value);
   };
 
