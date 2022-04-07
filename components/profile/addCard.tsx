@@ -1194,7 +1194,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
                         <Link
-                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name}`}
+                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name.replaceAll("/", "-")}`}
                         >
                           {groupRef?.name}
                         </Link>
