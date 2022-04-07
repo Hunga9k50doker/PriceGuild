@@ -206,12 +206,13 @@ const CollectionList = () => {
 
           if (index !== -1) {
             dataPriorlities.splice(index,1)
+            // dataPriorlities[index].isChange = false;/
           }
           setPrioritize(dataPriorlities);
         }
         
         //@ts-ignore
-        if (filterParams?.publishers.length > 0) {
+        if (!isEmpty(filterParams?.publishers)) {
           //@ts-ignore
           delete filterParams?.publishers;
           publisherRef.current?.reset();
