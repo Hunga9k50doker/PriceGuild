@@ -23,6 +23,7 @@ import CheckBoxMobile from "components/filter/checkBoxMobile";
 import SortMobile from "components/filter/sortMobile";
 import Pagination from "components/panigation";
 import { useRouter } from 'next/router'
+import IconSearch from "assets/images/search.png";
 import Link from 'next/link'
 // @ts-ignore
 import $ from "jquery"
@@ -70,6 +71,7 @@ const CollectionList = () => {
   const { sports } = useSelector(Selectors.config);
   const [sportsState, setSportsState] = useState<Array<FilterType>>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchMobbile, setSearchMobbile] = useState<boolean>(false);
   const [data, setData] = useState<DataLoadType>({
     cards: [],
     isLoading: true,
@@ -289,7 +291,6 @@ const CollectionList = () => {
         collectionRef?.current?.reset(values);
         break;
       default:
-        // code block
     }
     // @ts-ignore
     return setFilterData((prevState) => {
@@ -434,6 +435,7 @@ const CollectionList = () => {
         return "3";
     }
   };
+
   const renderButtonClear = () => {
     switch (filterValue) {
       case "years":
@@ -516,6 +518,13 @@ const CollectionList = () => {
       ]);
     }
   };
+
+  useEffect(() => {
+    //@ts-ignore
+    if (width > 768) {
+      setSearchMobbile(false);
+    }
+  }, [width]);
   
   return (
     <div className="container-fluid collection-list">
@@ -604,7 +613,6 @@ const CollectionList = () => {
             </div>
           </>
         )}
-
         <div className="col-lg-10 col-md-10 pb-5 content-page"> 
             {
             // @ts-ignore
@@ -650,7 +658,6 @@ const CollectionList = () => {
                   >
                     Collection
                   </button> */}
-
                   <div className="btn btn-filter btn-primary btn-sm">
                     <button
                       onClick={() => setFilterValue("all")}
@@ -672,7 +679,6 @@ const CollectionList = () => {
                         />
                       </svg>
                     </button>
-
                     <span
                       data-bs-toggle="modal"
                       data-bs-target="#filterModal"
@@ -680,7 +686,6 @@ const CollectionList = () => {
                       Filters
                       {renderNumberFilter()}
                     </span>
-
                     <button
                       onClick={() => setFilterValue("sport")}
                       data-bs-toggle="modal"
@@ -710,9 +715,7 @@ const CollectionList = () => {
                       </svg>
                     </button>
                   </div>
-
                   {/* start modal */}
-
                   <div
                     className="modal fade"
                     id="sortModal"
@@ -871,8 +874,7 @@ const CollectionList = () => {
                                         </div>
                                       </div>
                                     </div>
-
-                                           <div
+                                    <div
                                       className={`accordion ${
                                         filterValue === "publishers" ||
                                         filterValue === "all"
@@ -965,8 +967,29 @@ const CollectionList = () => {
             </>
           )}
 
-          <div className="header-container d-flex justify-content-between align-items-center">
+          <div className="header-container d-flex justify-content-between align-items-center p-relative">
             <h1 className="title"> {" "} {data.name ? data.name : <Skeleton width={500} />} {" "} </h1>
+            <div className="search-mobile" onClick={() => {setSearchMobbile(true)}}>
+              <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
+            </div>
+            {searchMobbile && 
+              <div className="search-form search-form-collections search-only-mobile position-absolute d-flex align-items-center">
+                <div className="input-group position-relative">
+                  <button type="submit">
+                    <img src={IconSearch.src} alt="search button" title="" />
+                  </button>
+                  <input type="text" className="form-control" placeholder="Search" value={keySearch} onChange={handleChange} />
+                  {keySearch &&
+                    <div className="position-absolute ic-close-search" onClick={onClearSearch}>
+                      <svg width="12.8" height="12.8" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M6.99985 8.27997L12.1199 13.4L13.3999 12.12L8.27985 6.99997L13.3999 1.87997L12.1199 0.599968L6.99985 5.71997L1.87985 0.599968L0.599854 1.87997L5.71985 6.99997L0.599854 12.12L1.87985 13.4L6.99985 8.27997Z" fill="#18213A" />
+                      </svg>
+                    </div>
+                  }
+                </div>
+                <span className="text-close" onClick={() => {setSearchMobbile(false)}}>Close</span>
+              </div>
+            }
             <div className="search">
               <i className="fa fa-search" />
               <input
@@ -1055,7 +1078,6 @@ const CollectionList = () => {
             isLoadMore={false}
             cards={data.cards}
           />
-
           {!data.isLoading && Boolean(data.rows) && (
             <>
              {						
