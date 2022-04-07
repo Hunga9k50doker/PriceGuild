@@ -5,8 +5,6 @@ import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
 import { ManageCollectionType } from "interfaces"
 import { isEmpty } from "lodash"
-import closeImge from "assets/images/close.png"
-import IconExport from "assets/images/export.png"
 import IconDelete from "assets/images/delete.png"
 import SheetIcon from "assets/images/sheet.svg"
 import * as Yup from 'yup';
@@ -100,6 +98,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
           type: Number(data.type)
         });
         resetForm(); console.log(pathname[1], 'pathname[0]')
+        setIsLoading(false);
         return pathname[1] !== 'search' ? ToastSystem.success(<div className="toast-grade-content">
           Create new { title === 'collection' ? 'portfolio' : title } successfully {" "}
           <Link href={`/profile/${title === 'collection' ? 'portfolio' : title+'s'}/${result?.data?.id}/${result?.data?.group_name}`}>
@@ -108,7 +107,6 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
             </a>
           </Link>
       </div>) : '';
-      await setIsLoading(false);
       }
       ToastSystem.error(result.message ?? result.error);
     }
@@ -133,12 +131,11 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   },[dataJson])
 
   const getDataJson = async () => {
-
     try {
-         const result = await api.v1.portfolio.pg_app_portfolio_export_generate({
-          "collection": `${collectionDetail?.group_ref}`,
-          "list_name":table
-         })
+      const result = await api.v1.portfolio.pg_app_portfolio_export_generate({
+        "collection": `${collectionDetail?.group_ref}`,
+        "list_name":table
+      })
       setDataJson(result)
     }
     catch (err) {
@@ -189,10 +186,9 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       timerid = setTimeout(() => {
         // console.log(inputNameRef.current?.focus)
         // inputNameRef.current?.focus();
-        resetField("collectionName");
-        setFocus("collectionName");
+        isEmpty(collectionDetail) && resetField("collectionName");
+        isCheckGroupRef() &&  setFocus("collectionName");
       }, 350);
-     
     }
   }, [isOpen])
   
@@ -230,6 +226,10 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     }
   }
 
+  const isCheckGroupRef = ()=> {
+    return isEmpty(collectionDetail) || (!isEmpty(collectionDetail) && collectionDetail?.group_ref !== 0)
+  }
+
   return (
     <Modal
       onHide={() => {
@@ -254,8 +254,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       <Modal.Body className="customScroll">
         <form className="form-collection" onSubmit={handleSubmit(onClickSubmit)}>
           <div className="col-mar-10">
-            <div className="form-check-edit-collection mb-3">
-              <label htmlFor="" className="form-label text-capitalize">{title === 'collection' ? t('portfolio.text') : title } Name</label>
+            {isCheckGroupRef() && <div className="form-check-edit-collection mb-3">
+              <label className="form-label text-capitalize">{title === 'collection' ? t('portfolio.text') : title } Name</label>
               <input {...register("collectionName", { required: true })} 
                 placeholder={`Enter ${renderTextLower(title)} Name`}
                 maxLength={50}
@@ -264,9 +264,9 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                 onChange={onChange}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
-            </div>
-            <div className={`mb-3 form-check-radio ${isEmpty(collectionDetail) ? 'pb-0' : '' }`}>
-              <label htmlFor="" className="form-label">Who can see this {title === 'collection' ? t('portfolio.text_normal') : title }</label>
+            </div>}
+            {isCheckGroupRef() && <div className={`mb-3 form-check-radio ${isEmpty(collectionDetail) ? 'pb-0' : '' }`}>
+              <label className="form-label">Who can see this {title === 'collection' ? t('portfolio.text_normal') : title }</label>
               <div className={`row pe-10 form-collection--checked ${!isEmpty(collectionDetail)? 'edit' : ''}`}>
                 <div className="form-check ms-3 col form-check-inline ">
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="onlyme" value="2" />
@@ -277,7 +277,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                   <label className="form-check-label cursor-pointer" htmlFor="everyone">Everyone</label>
                 </div>
               </div>
-            </div>
+            </div>}
             {/* {!isEmpty(collectionDetail) && Boolean(collectionDetail?.claim) && <>
               <div className="mb-3 form-collection-claim">
                 <div className="d-flex justify-content-center">
@@ -291,14 +291,14 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               </div>
               <hr className="hr--color" />
             </>} */}
-            {!isEmpty(collectionDetail) && <> <div className="mb-3 form-collection-social">
-              <label htmlFor="" className="form-label text-capitalize form-label-check-box">Share {title === 'collection' ? t('portfolio.text') : title }</label>
+            {!isEmpty(collectionDetail) && <> <div className="form-collection-social">
+            {isCheckGroupRef() && <label className="form-label text-capitalize form-label-check-box">Share {title === 'collection' ? t('portfolio.text') : title }</label>}
               <div className="d-flex justify-content-between btn-social">
-                <div className="d-flex btn-social-content">
+                {isCheckGroupRef() && <div className="d-flex btn-social-content">
                   <div className="text-center col cursor-pointer">
                     <Link href={renderLinkShareTwitter()}>
                       <a className="py-2 btn btn-social-twitter" target='_blank'>
-                         <i className="fa fa-twitter fa-2" aria-hidden="true" />
+                        <i className="fa fa-twitter fa-2" aria-hidden="true" />
                       </a>
                     </Link>
                   </div>
@@ -309,8 +309,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                       </a>
                     </Link>
                   </div>
-                </div>
-                <div className="text-right col cursor-pointer">
+                </div>}
+                <div className="text-center col cursor-pointer">
                 <button
                     type="button"
                     className="shadow-none btn btn-outline-secondary btn-export"
@@ -326,28 +326,27 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                 </div>
               </div>
             </div>
-              <div className="btn-group-remove--mobile">
+              {isCheckGroupRef() && <div className="btn-group-remove--mobile">
                 <div className="text-center d-flex justify-content-center mt-3">
                   <a onClick={onRemove} href="javascript:void(0)" className="text-reset btn-remove text-capitalize"> <img src={IconDelete.src} alt="Remove" /> Remove {title === 'collection' ? t('portfolio.text') : title } </a>
                 </div>
-              </div>
+              </div>}
             </>}
           </div>
         </form>
       </Modal.Body>
-      <Modal.Footer>
+      {isCheckGroupRef() && <Modal.Footer>
         <button className="btn btn-outline btn-close-modal m-0" onClick={() => props?.onClose && props.onClose()}>Cancel</button>
-        <button  onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}  
-         
+        <button  onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}
          { isLoading &&
           <span
-              className="spinner-grow spinner-grow-sm"
-              role="status"
-              aria-hidden="true"
+            className="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
           />
          } 
         </button>
-      </Modal.Footer>
+      </Modal.Footer>}
     </Modal>);
 }
 

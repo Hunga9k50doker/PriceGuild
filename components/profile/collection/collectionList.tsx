@@ -24,6 +24,7 @@ import HeaderUser from "components/user/headerUser"
 import { TabType } from "../friends/friendDetail";
 import { UserInfoType } from "interfaces"
 import IconFolder from "assets/images/folder.svg"
+import { emptyString } from "react-select/src/utils";
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
@@ -444,9 +445,9 @@ const CollectionList = ({
                           </>
                         )}
                         {/* <li><hr className="dropdown-divider m-0" /></li> */}
-                        <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
+                        {item.group_ref !== 0 && <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
                           <span className="dropdown-item text-capitalize"> Remove {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
-                        </li>
+                        </li>}
                       </ul>
                     </div>
                   </div>
