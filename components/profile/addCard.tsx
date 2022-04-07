@@ -835,7 +835,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <Link
-              href={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
+              href={`/profile/collections/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
             >
               <a className="container-collection-profile-head">
                 <img
