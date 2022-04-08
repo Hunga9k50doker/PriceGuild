@@ -27,7 +27,7 @@ import $ from "jquery";
 import CapchaHandler from "components/capchaHandler";
 import {pageView}  from 'libs/ga'
 import { useRouter } from 'next/router'
-
+import {  isFirefox } from "utils/helper";
 // const firebaseConfig = {
 //   apiKey: "AIzaSyAEhlnNzWpoOow4sgMYvdrFNxu2dYjB70A",
 //   authDomain: "sports-card-price-guide.firebaseapp.com",
@@ -40,7 +40,14 @@ import { useRouter } from 'next/router'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  useEffect(() => {
+    if(router.isReady) {
+      if(isFirefox)  $('html, body').animate({scrollTop: 0});
+    }
+  
+  }, [router])
   React.useEffect(() => {
+
     typeof document !== undefined ? require("bootstrap/dist/js/bootstrap.bundle.min") : null;
     
     // UtilsColorGrade.loadDataColors();
