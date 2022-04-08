@@ -147,7 +147,7 @@ const CardList = (props: PropTypes) => {
       dispatch(SearchFilterAction.updatePageSelected(1))
     }
     setPagesSelected(Boolean(isFilterStore) ? [pageSelected] : [1]);
-    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false)
+    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false, {}, true)
     // pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1]
   }
 
@@ -237,7 +237,7 @@ const CardList = (props: PropTypes) => {
     return params
   }
 
-  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}) => {
+  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}, isResetSearchBox: boolean = false) => {
     
     if (page[page.length-1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
@@ -273,15 +273,18 @@ const CardList = (props: PropTypes) => {
       if (query.q ) {
         params.search_term = query.q;
       }
+      if (!Boolean(isResetSearchBox)) {
+        if (!isEmpty(playerNameRef.current?.getValue())) {
+          params.player_name = playerNameRef.current?.getValue();
+        }
 
-      if (!isEmpty(playerNameRef.current?.getValue())) {
-        params.player_name = playerNameRef.current?.getValue();
+        if (!isEmpty(cardNumberRef.current?.getValue())) {
+          params.card_number = cardNumberRef.current?.getValue();
+        }
+      } else {
+        playerNameRef.current?.reset();
+        cardNumberRef.current?.reset();
       }
-
-      if (!isEmpty(cardNumberRef.current?.getValue())) {
-        params.card_number = cardNumberRef.current?.getValue();
-      }
-
 
       if (Boolean(isFilterStore) && isFilter) {
          params.filter = getFilterSearch();
@@ -688,7 +691,7 @@ const CardList = (props: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
+    if (isChangeRouter && filters.years.length && filters.publishers.length) {
       const params: any = {};
       let prioritizeState: any = [];
       const sportState = filters?.sports?.find(item => item.id === +query?.sport_criteria);
