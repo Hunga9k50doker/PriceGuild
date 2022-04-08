@@ -41,7 +41,10 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
   }));
 
 
-
+  const onClearSearch = () => {
+    setKeySearch("")
+    props.onChange && props.onChange(props.name, '')
+  }
 
   const onSearch = (event: any) => {
     setKeySearch(event.target.value);
@@ -67,7 +70,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
             <div className="checkbox-select__search-wrapp">
               {props.isSearch !== false && <div className="position-relative checkbox-select__search-wrapp-input">
                 <input value={keySearch} onChange={onSearch} name={props.name} type="text" placeholder="Search"/>
-                <img className="position-absolute icon-close-input-filter curson-poiter" src={IconSearch.src} alt="IconSearch" />
+                {Boolean(keySearch) ? <i onClick={onClearSearch} className="fa fa-times position-absolute icon-close-input-filter" aria-hidden="true"></i> : <img className="position-absolute icon-close-input-filter curson-poiter" src={IconSearch.src} alt="IconSearch" />}
               </div>}
             </div>
           </div>

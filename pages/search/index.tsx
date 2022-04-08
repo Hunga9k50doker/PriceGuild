@@ -275,7 +275,7 @@ const CardList = (props: PropTypes) => {
       }
 
       if (!isEmpty(playerNameRef.current?.getValue())) {
-        params.card_number = playerNameRef.current?.getValue();
+        params.player_name = playerNameRef.current?.getValue();
       }
 
       if (!isEmpty(cardNumberRef.current?.getValue())) {
