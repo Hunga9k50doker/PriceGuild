@@ -34,7 +34,6 @@ type CollectionForm = {
 };
 
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
-  console.log(collectionDetail, 'collectionDetail');
   const inputNameRef = useRef<HTMLInputElement>(null);
 
   const CSVRef = React.useRef<HTMLLinkElement>(null)
@@ -74,7 +73,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       if (result.success) {
         props.onSuccess && props.onSuccess({
           name: data.collectionName,
-          type: Number(data.type)
+          type: Number(data.type),
+          isEdit: true
         });
         return ToastSystem.success("Update successfully");
       }
@@ -95,7 +95,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       if (result.success) {
         props.onSuccess && props.onSuccess({
           name: data.collectionName,
-          type: Number(data.type)
+          type: Number(data.type),
+          isEdit: false
         });
         resetForm(); console.log(pathname[1], 'pathname[0]')
         setIsLoading(false);

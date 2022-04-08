@@ -167,9 +167,16 @@ const CollectionList = ({
     }
   };
 
-  const onCreateSuccess = async () => {
+  const onCreateSuccess = async (e:any) => {
     await onHandleModal(false);
-    await getData();
+    if(!e.isEdit) {
+      await getData();
+    } else {
+      setData(paginate(
+        collections?.data?.map(item => item.group_ref ===  collectionDetail?.group_ref ? {...item,group_name: e.name } : item), rowsPerPage, pagesSelected));
+    }
+    
+  
   };
 
   const editCollection = (item: ManageCollectionType) => {
