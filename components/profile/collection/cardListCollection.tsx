@@ -51,6 +51,7 @@ import $ from "jquery"
 import HeaderUser from "components/user/headerUser"
 import { UserInfoType, PgAppProfileType } from "interfaces"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { emptyString } from "react-select/src/utils";
 
 type PropTypes = {
   collection?: string,
@@ -70,7 +71,7 @@ type DataLoadType = {
   isLoading: boolean,
   rows?: number,
   group_name?: string,
-  group_type?: number
+  group_type?: number | string
 }
 
 const defaultSort: SelectDefultType = {
@@ -985,7 +986,11 @@ const CardListCollection = ({
   }
 
   const onAnalytics = () => {
-    router.push(`/profile/portfolio/${collection}/analytics`)
+    if ( +(collection?? 0) !== 0 ) {
+      router.push(`/profile/portfolio/${collection}/analytics`);
+    } else {
+      router.push(`/profile/portfolio/analytics`);
+    }
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
@@ -2170,6 +2175,7 @@ const CardListCollection = ({
               isInline={isInline}
               sortCards={sortCards}
               onSortTable={onSortTable}
+              isPortfolioAll={data?.group_type === 'all'}
               cardElement={
                 (item: CardModel) => {
                   return (
@@ -2189,6 +2195,7 @@ const CardListCollection = ({
                       onRemoveWishlist={onRemoveWishlist}
                       isWishlist={table !== 'portfolio' && !isFriend}
                       onAddNewEntry={onAddNewEntry}
+                      isPortfolioAll={data?.group_type === 'all'}
                     />
                   );
                 }

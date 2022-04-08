@@ -37,7 +37,6 @@ import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 
-
 const ungraded = "ungraded";
 const NotSpecified = "1";
 
@@ -466,7 +465,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           // @ts-ignore
           // localStorage.setItem('saveChangePortfolio', true);
           dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-          router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+
+          //@ts-ignore
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name : 'All Cards'}`);
         } else {
           router.back();
         }
@@ -646,7 +647,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // router.push("/profile/collections");
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-      router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name : 'All Cards'}`);
     } else {
       if (Boolean(isFilterState)) {
         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
@@ -1292,16 +1293,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <ol className="breadcrumb breadcrumb-edit-card mt-1">
                     <li className="breadcrumb-item">
                       <Link href="/profile/portfolio">
-                        {t('portfolio.text')}
+                        <a title={t('portfolio.text')}>
+                          {t('portfolio.text')}
+                        </a>
                       </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
-                        <Link
-                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name}`}
-                        >
-                          {groupRef?.name}
-                        </Link>
+                        <>
+                          {+router?.query?.collection !== 0 ? <Link
+                            href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name}`}
+                          >
+                            <a title={groupRef?.name}>
+                            {groupRef?.name}
+                            </a>
+                          </Link> :
+                          <Link href={`/profile/portfolio/0/All Cards`}>
+                            <a title="All Cards"> All Cards </a>
+                          </Link>
+                          }
+                        </>
                       ) : (
                         "Add Card"
                       )}

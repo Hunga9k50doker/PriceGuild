@@ -46,9 +46,10 @@ type PropTypes = {
   gotoCard?: (item: any) => void,
   imageUrl?: string,
   priceTooltip?: string,
+  isPortfolioAll?: boolean
 }
 
-const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWishlist = false, ...props }: PropTypes) => {  
+const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWishlist = false, isPortfolioAll = false, ...props }: PropTypes) => {  
   const dispatch = useDispatch();
   const { cards } = useSelector(Selectors.compare);
   const { loggingIn } = useSelector(Selectors.auth);
@@ -77,7 +78,10 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     e.stopPropagation();
     
     dispatch(SearchFilterAction.updateCardSelectedProfile(props.item));
-    
+
+    if(isPortfolioAll){
+     return router.push(`/profile/collections/edit-card?collection=0&code=${props.item.code}`)
+    }
     !props.isSelect && router.push(`/profile/collections/edit-card?collection=${props.item.group_ref}&code=${props.item.code}`)
   }
 
@@ -195,7 +199,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if (isTable) {
       return <tr >
         <td className="position-relative align-middle">
-         <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" />
+         <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" /> 
         </td>
         <td>
           <div className="d-flex ">
@@ -229,6 +233,13 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
           }}> {props.item.grade_company.name === "ungraded" && props.item.grade_value === 1 ?  "ungraded" : `${props.item.grade_display_value}`} </div>
           }
         </td>
+        {isPortfolioAll && <td>
+          <Link href={`/profile/portfolio/${props?.item?.group_ref}/${props?.item?.group_name}`}>
+            <a title={props?.item?.group_name} className="text-decoration-none c-blue">
+              {props?.item?.group_name}
+            </a>
+          </Link>
+        </td>}
         <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice])} </td>
         <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice)} </td>
         <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice)} </td>

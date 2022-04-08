@@ -398,34 +398,29 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
 
   return (
     <div className="profile-collections-analytics">
-      { Boolean(isAll) ? <nav aria-label="breadcrumb" className="breadcrumb-nav">
+      <nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
             <Link href={`/profile/portfolio`}>
               <a title={t('portfolio.text')}> {t('portfolio.text')} </a>
             </Link>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">Analytics </li>
-        </ol>
-      </nav> :
-        isEmpty(collectionDetail)  ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
-          <ol className="breadcrumb">
           <li className="breadcrumb-item">
-              <Link href={`/profile/portfolio`}>
-                <a title={t('portfolio.text')}> {t('portfolio.text')} </a>
-              </Link>
-            </li>
-            <li className="breadcrumb-item">
-              <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
-                <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
-                  {collectionDetail?.[0]?.name ?? collectionDetail?.name}
-                </a>
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page"> Analytics </li>
-          </ol>
-        </nav>
-      }
+            { Boolean(isAll) ?
+              <Link href={`/profile/portfolio/0/All Cards`}>
+                <a title="All Cards"> All Cards </a>
+              </Link> :
+              isEmpty(collectionDetail)  ? <Skeleton style={{ width: 50 }} /> :
+                <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+                  <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
+                    {collectionDetail?.[0]?.name ?? collectionDetail?.name}
+                  </a>
+                </Link>
+            }
+          </li>
+          <li className="breadcrumb-item active" aria-current="page"> Analytics </li>
+        </ol>
+      </nav>
       {
         Boolean(isAll)  ? <></> :isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
         <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >

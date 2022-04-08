@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from "react";
 import SkeletonCard from "components/Skeleton/cardItem"
 import { isEmpty } from "lodash";
-import { formatCurrency } from "utils/helper"
 import Skeleton from 'react-loading-skeleton';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
@@ -30,10 +29,11 @@ interface PropTypes<T> {
   onSelectAll?: () => void
   onSortTable?: (value: string) => void,
   sortCards?: any,
-  nameSearch?: string
+  nameSearch?: string,
+  isPortfolioAll?: boolean;
 }
 
-const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, nameSearch = "",...props }: PropTypes<T>) => {
+const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline = false, sortCards, onSortTable, nameSearch = "", isPortfolioAll = false,...props }: PropTypes<T>) => {
   const router = useRouter();
   const [isProfile, setIsProfile] = useState<boolean>(false);
   const { dataFilterStore } = useSelector(Selectors.searchFilter);
@@ -60,12 +60,11 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
         <table className="table table-striped table-hover table-sort">
           <thead>
             <tr>
-              <th scope="col" style={{width: "4%"}}>
+              <th scope="col" style={{width: "2%"}}>
                 <div className="w-100 h-100">
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-             
               <th scope="col" style={{width: "30%"}}>
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
@@ -80,6 +79,9 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
               <th scope="col" style={{width: "10%"}}>
                 <div className="d-flex cursor-pointer"> Grade </div>
               </th>
+              {isPortfolioAll && <th scope="col" style={{width: "20%"}}>
+                <div className="d-flex cursor-pointer"> Portfolio </div>
+              </th>}
               <th scope="col" style={{width: "10%"}}>
                 <div onClick={() => onSortTable && onSortTable("latest_price")} className="d-flex cursor-pointer align-items-center"> Latest
                   <OverlayTrigger overlay={<Tooltip>Latest prices are calculated from the 28 day moving average</Tooltip>}>
@@ -121,7 +123,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "9%"}}> </th>
+              <th scope="col" style={{width: "10%"}}> </th>
             </tr>
           </thead>
           <tbody>
@@ -131,6 +133,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
              <td> <Skeleton height={30} /> </td>
              <td className="text-capitalize"> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
+             {isPortfolioAll && <td> <Skeleton height={30} /> </td>}
              <td> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
@@ -152,11 +155,8 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
               <div className="no-results">No results found</div>
             }
           </>
-    
-        }
-        
+        } 
       </div>
-  
       <div className="col-lg-12 text-center">
         <div className="pagination__option">
           {props.isLoadMore && (<button onClick={props.onLoadMore} className="btn  btn-load-more" type="button" disabled={props.isLoading}>
