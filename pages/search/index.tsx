@@ -817,7 +817,6 @@ const CardList = (props: PropTypes) => {
         <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
           <button type="button" onClick={() => {
             playerNameRef.current?.clearSearch();
-            console.log('playerNameRef');
         }} className="btn--hidden">
           <img src={ButtonClear} alt="" />
         </button>

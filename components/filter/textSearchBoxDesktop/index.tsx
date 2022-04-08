@@ -50,11 +50,14 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
     props.onChange && props.onChange(props.name, '')
   }
 
-  const onSearch = (event: any) => {
-    setKeySearch(event.target.value);
-    props.onChange && props.onChange(props.name, event.target.value)
+  const onSearch = () => {
+    props.onChange && props.onChange(props.name, keySearch)
   }
-
+  const _handleKeyPress = (e: any) => {
+    if (e.key === 'Enter') {
+        props.onChange && props.onChange(props.name, keySearch)
+    }
+  }
   return (
 
     <div className="accordion-item">
@@ -73,8 +76,8 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
           <div id="dropdown" className="checkbox-select__dropdown activeSearch" >
             <div className="checkbox-select__search-wrapp">
               {props.isSearch !== false && <div className="position-relative checkbox-select__search-wrapp-input">
-                <input value={keySearch} onChange={onSearch} name={props.name} type="text" placeholder="Search"/>
-                {Boolean(keySearch) ? <i onClick={onClearSearch} className="fa fa-times position-absolute icon-close-input-filter" aria-hidden="true"></i> : <img className="position-absolute icon-close-input-filter curson-poiter" src={IconSearch.src} alt="IconSearch" />}
+                <input value={keySearch} onChange={(e) => setKeySearch(e.target.value)} onKeyPress={_handleKeyPress} name={props.name} type="text" placeholder="Search"/>
+                <img onClick={onSearch} className="position-absolute icon-close-input-filter cursor-pointer" src={IconSearch.src} alt="IconSearch" />
               </div>}
             </div>
           </div>
