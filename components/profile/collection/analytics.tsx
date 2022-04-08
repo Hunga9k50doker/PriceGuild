@@ -405,7 +405,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               <a title={t('portfolio.text')}> {t('portfolio.text')} </a>
             </Link>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">Analytics </li>
+          <li className="breadcrumb-item active" aria-current="page"> Analytics </li>
         </ol>
       </nav> :
         isEmpty(collectionDetail)  ? <Skeleton style={{ width: 100 }} /> :<nav aria-label="breadcrumb" className="breadcrumb-nav">
@@ -416,7 +416,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
               </Link>
             </li>
             <li className="breadcrumb-item">
-              <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+              <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name.replaceAll("/", "-") ?? collectionDetail?.name.replaceAll("/", "-")}`} >
                 <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
                   {collectionDetail?.[0]?.name ?? collectionDetail?.name}
                 </a>
@@ -428,7 +428,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
       }
       {
         Boolean(isAll)  ? <></> :isEmpty(collectionDetail) ? <Skeleton style={{ width: 100 }} /> : <div className="only-mobile">
-        <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+        <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name.replaceAll("/", "-") ?? collectionDetail?.name.replaceAll("/", "-")}`} >
           <a className="profile-collections-analytics-head" title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
             <img  src={ArrowProfile} alt="" />
             {collectionDetail?.[0]?.name ?? collectionDetail?.name}

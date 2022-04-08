@@ -937,7 +937,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <Link
-              href={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
+              href={`/profile/collections/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
             >
               <a className="container-collection-profile-head">
                 <img
@@ -1298,7 +1298,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
                         <Link
-                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name}`}
+                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name.replaceAll("/", "-")}`}
                         >
                           {groupRef?.name}
                         </Link>
