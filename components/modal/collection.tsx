@@ -147,7 +147,6 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   }
 
   const setForm = () => {
-    let m = 
     setValue('collectionName', collectionDetail?.group_name ?? "")
     setValue('type', collectionDetail?.type?.toString() ?? "1")
   }
