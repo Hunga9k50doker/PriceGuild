@@ -226,6 +226,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const onChange = (e:any) => {
     const {value} = e.target;
     if(value) {
+      setValue('collectionName', value); 
       clearErrors("collectionName")
     }
   }
