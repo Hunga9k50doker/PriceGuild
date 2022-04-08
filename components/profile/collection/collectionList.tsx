@@ -113,7 +113,7 @@ const CollectionList = ({
   
   React.useEffect(() => {
     if (collections.data.length) {
-      setData(paginate(collections.data, rowsPerPage, [1]));
+      setData(paginate(collections.data, rowsPerPage, pagesSelected));
       if (dataSearch.length !== collections.data.length && !Boolean(searchKey) ) {
         setDataSearch([...collections.data]);
       }       
