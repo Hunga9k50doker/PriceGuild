@@ -37,6 +37,9 @@ import { useTranslation } from "react-i18next";
 import Head from 'next/head';
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { ToastSystem } from "helper/toast_system";
+import TextSearchBoxDesktop from "components/filter/textSearchBoxDesktop";
+import { useDebouncedCallback } from "utils/useDebouncedEffect";
+import { FilterHandleTextSearch } from "components/filter/textSearchBoxDesktop";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -117,6 +120,8 @@ const CardList = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const { filterSearch, isFilterStore, pageSelected, isModeSearchTableStore } = useSelector(Selectors.searchFilter);
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
+  const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
+  const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -268,6 +273,16 @@ const CardList = (props: PropTypes) => {
       if (query.q ) {
         params.search_term = query.q;
       }
+
+      if (!isEmpty(playerNameRef.current?.getValue())) {
+        params.card_number = playerNameRef.current?.getValue();
+      }
+
+      if (!isEmpty(cardNumberRef.current?.getValue())) {
+        params.card_number = cardNumberRef.current?.getValue();
+      }
+
+
       if (Boolean(isFilterStore) && isFilter) {
          params.filter = getFilterSearch();
       } else {
@@ -469,6 +484,12 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
+  const onChangeSearch = (e: any, key: string) => {
+    loadSuggestions([1]);
+  }
+
+  const loadSuggestions = useDebouncedCallback(getListCard, 550);
+  
   const removeFilter = (item: FilterType, key: string) => {
     if (key === "set") {
       typeRef?.current?.reset();
@@ -1213,6 +1234,22 @@ const CardList = (props: PropTypes) => {
                         onChange={onChangeFilter}
                         name="printRun"
                         options={optionsPrintRun} />
+                    </div>
+                    <div className="accordion" id="PlayerNameFilter">
+                      <TextSearchBoxDesktop
+                        title="Player Name"
+                        ref={playerNameRef}
+                        onChange={onChangeSearch}
+                        name="playerName"
+                      />
+                    </div>
+                    <div className="accordion" id="CardNumberFilter">
+                      <TextSearchBoxDesktop
+                        title="Card Number"
+                        ref={cardNumberRef}
+                        onChange={onChangeSearch}
+                        name="cardNumber"
+                      />
                     </div>
                   </div>
                 </div>
