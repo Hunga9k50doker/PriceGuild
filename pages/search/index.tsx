@@ -478,6 +478,9 @@ const CardList = (props: PropTypes) => {
     }
     if (key === "type") {
       colorRef?.current?.reset();
+       // @ts-ignore
+       buttonRef?.current && buttonRef?.current.click();
+      // btnSoftByRef?.current && btnSoftByRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, color: [], isLoad: true });
     }
@@ -785,7 +788,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <div
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <div
         onClick={() => resetPage(false)}
         className="mb-2 cursor-pointer d-flex ms-2 ps-2 pe-2 cus btn-reset-collection">
         <div> Reset Filters </div>
@@ -800,6 +803,25 @@ const CardList = (props: PropTypes) => {
             </button>
           </div>)}</React.Fragment>
       })}
+      {!isEmpty(cardNumberRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{cardNumberRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            cardNumberRef.current?.clearSearch();
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
+      {!isEmpty(playerNameRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            playerNameRef.current?.clearSearch();
+            console.log('playerNameRef');
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
     </>
   }
 

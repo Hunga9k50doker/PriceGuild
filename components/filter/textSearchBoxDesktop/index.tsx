@@ -14,10 +14,11 @@ type PropsType = {
 }
 
 export type FilterHandleTextSearch = {
-  reset: (value?: any) => void;
-  getLengthOption?: () => number;
-  getOptionData?: () => Array<FilterType>;
-  getValue: () => string;
+    reset: (value?: any) => void;
+    getLengthOption?: () => number;
+    getOptionData?: () => Array<FilterType>;
+    getValue: () => string;
+    clearSearch: () => void;
 };
 
 type PrioritizeType = {
@@ -34,10 +35,13 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
   React.useImperativeHandle(ref, () => ({
     reset(value) {
       setKeySearch(value ?? '')
-      },
-      getValue() {
-          return keySearch;
-      }
+    },
+    getValue() {
+        return keySearch;
+    },
+    clearSearch() {
+        return onClearSearch();
+    }
   }));
 
 
