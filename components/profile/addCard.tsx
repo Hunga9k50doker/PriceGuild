@@ -466,7 +466,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           // @ts-ignore
           // localStorage.setItem('saveChangePortfolio', true);
           dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-          router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name}`);
+          router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name?.replaceAll("/","-")}`);
         } else {
           router.back();
         }
