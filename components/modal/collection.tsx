@@ -147,6 +147,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   }
 
   const setForm = () => {
+    let m = 
     setValue('collectionName', collectionDetail?.group_name ?? "")
     setValue('type', collectionDetail?.type?.toString() ?? "1")
   }
@@ -189,7 +190,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       timerid = setTimeout(() => {
         // console.log(inputNameRef.current?.focus)
         // inputNameRef.current?.focus();
-        resetField("collectionName");
+        isEmpty(collectionDetail) && resetField("collectionName");
         setFocus("collectionName");
       }, 350);
      
