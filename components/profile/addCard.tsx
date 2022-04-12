@@ -361,48 +361,56 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [watchGradeValue]);
 
   React.useEffect(() => {
-    let newData = { ...cards };
-
-    if (newData?.cards?.length) {
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].image_upload.front = imageFront.url;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].front_image = imageFront.path;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].image_upload.back = imageBack.url;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].back_image = imageBack.path;
-      setCards(newData);
-    }
-
-    // @ts-ignore
-    const dataOld = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
-    // @ts-ignore
-    const datanew = newData.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
-    // @ts-ignore
-    if (!isEmpty(datanew)) {
-      // @ts-ignore
-      // delete datanew.back_image;
-      // @ts-ignore
-      // delete datanew.front_image;
-    }
-
-    let dataCompare = {...datanew};
-    delete dataCompare.back_image;
-    delete dataCompare.front_image;
-    
-    if (!isEqual(dataOld, dataCompare)) {
-      return setUndoChangeStatus(true);
-    } else {
-      if (!isEmpty(imageFront.path) || !isEmpty(imageBack.path)) {
-        return setUndoChangeStatus(true);
+    if (!isEmpty(cards?.cards)) {
+      let newData = { ...cards };
+      if (newData?.cards?.length) {
+        if (!isEmpty(imageFront.url)) {
+          newData.cards[activeEntry.cardIndex].data[
+            activeEntry.entryIndex
+          ].image_upload.front = imageFront.url;
+        }
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[
+          activeEntry.entryIndex
+        ]?.front_image = imageFront.path;
+        if (!isEmpty(imageBack.url)) {
+          newData.cards[activeEntry.cardIndex].data[
+            activeEntry.entryIndex
+          ].image_upload.back = imageBack.url;
+        }
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[
+          activeEntry.entryIndex
+        ]?.back_image = imageBack.path;
+        setCards(newData);
       }
-      return setUndoChangeStatus(false);
+
+      // @ts-ignore
+      const dataOld = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
+      // @ts-ignore
+      const datanew = newData.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
+      // @ts-ignore
+      if (!isEmpty(datanew)) {
+        // @ts-ignore
+        // delete datanew.back_image;
+        // @ts-ignore
+        // delete datanew.front_image;
+      }
+
+      let dataCompare = {...datanew};
+      delete dataCompare.back_image;
+      delete dataCompare.front_image;
+      
+      if (!isEqual(dataOld, dataCompare)) {
+        return setUndoChangeStatus(true);
+      } else {
+        if (!isEmpty(imageFront.path) || !isEmpty(imageBack.path)) {
+          return setUndoChangeStatus(true);
+        }
+        return setUndoChangeStatus(false);
+      }
     }
+    
   }, [imageFront, imageBack]);
 
   React.useEffect(() => {
@@ -496,10 +504,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     let newData = { ...cards };
     if (newData?.cards?.length) {
       if (key === 'date_acq') {
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
         moment(e?.value ?? e).format("YYYY-MM-DD");
       } else {
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
         e?.value ?? e;
       }
      
@@ -1327,7 +1337,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}{" "}
               </h2>
               { // @ts-ignore
-                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && undoChangeStatus && (
+                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex]?.data[activeEntry?.entryIndex]?.port_id) && undoChangeStatus && (
                 <button type="button" onClick={onUndo} className="btn btn-undo m-0">
                   <img src={rotateLeft} alt="Undo Changes" title="Undo Changes"/> Undo Changes
                 </button>
