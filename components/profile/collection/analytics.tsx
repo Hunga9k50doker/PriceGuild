@@ -21,6 +21,7 @@ import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import classes from './styles.module.scss';
+import ModalDeleteCollection from "components/modal/delete/collection/index";
 
 type PropTypes = {
   collection?: string
@@ -49,6 +50,8 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   const [chartDetail, setChartDetail] = useState<WidgetSettings | undefined>();
   const [collectionDetail, setCollectionDetail] = useState<any>();
   const [isAll, setIsAll] = useState<boolean>(false);
+  const [idRemove, setIdRemove] = useState<number>(-1);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const router = useRouter();
   const [t, i18n] = useTranslation("common")
   const { register, control, handleSubmit, reset, setValue, formState: { errors } } = useForm<ChartForm>();
@@ -157,19 +160,30 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
   }
 
   const onConfirmRemove = (id: number) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        onRemove(id)
-      }
-    })
+    setIdRemove(id);
+    setIsOpen(false);
+    setIsOpenModal(true);
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: "You won't be able to revert this!",
+    //   icon: 'warning',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#3085d6',
+    //   cancelButtonColor: '#d33',
+    //   confirmButtonText: 'Yes, delete it!'
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     onRemove(id)
+    //   }
+    // })
+  }
+  const onRemoveCard = () =>{
+    if(idRemove !== -1) {
+      setIdRemove(-1);
+      onRemove(idRemove)
+      setIsOpenModal(false);
+    }
+   
   }
 
   const onRemove = async (id: number) => {
@@ -458,6 +472,12 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
         collection={collection}
         isOpen={isOpen}
         setIsOpen={setIsOpen} />
+      <ModalDeleteCollection 
+          isOpen={isOpenModal}
+          title={`Are you sure you want to remove this widget?`}
+          onClose={() => setIsOpenModal(false)}
+          onSuccess={()=> onRemoveCard()}
+      />
     </div>
   );
 }
