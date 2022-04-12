@@ -602,13 +602,13 @@ const CollectionDetail = (props: PropTypes) => {
         <title>
           {
             //@ts-ignore
-            props?.data?.title ?? ''} | PriceGuide.Cards</title>
+            props?.titlePage ?? ''} | PriceGuide.Cards</title>
         <meta name="description" content={`${
           //@ts-ignore
-          props?.data?.title ?? ''} Collection Overview. Browse set and check out the top sales from the collection.`} />
+          props?.titlePage ?? ''} Collection Overview. Browse set and check out the top sales from the collection.`} />
         <link rel="canonical" href={
           //@ts-ignore
-          `${process.env.DOMAIN}/${props?.data?.url}`} />
+          `${process.env.DOMAIN}/${props?.urlPage}`} />
       </Head>
       <CaptCha
         isOpen={isCaptCha}
@@ -822,12 +822,34 @@ const CollectionDetail = (props: PropTypes) => {
 export const getServerSideProps = async (context: any) => {
   try {
 
-    const res = await api.v1.collection.getDetail({ setID: Number(context.query.id) }, {});
-    return {
-      props: {
-        data: res?.data
-      },
+    let data: any = {};
+    let titlePage = "";
+    let urlPage = "";
+
+    const params = {
+      setID: +context?.query?.id
     };
+
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      //@ts-ignore
+      body: JSON.stringify(params)
+    }
+
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/collection/page-title`, config);
+    data = await res.json();
+
+    titlePage = data?.collection_title ?? '';
+    urlPage = data?.collection_url ?? '';
+
+    return {props:{
+      titlePage,
+      urlPage,
+    }}
   } catch (e) {
     console.error(e);
   }
