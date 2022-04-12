@@ -204,6 +204,7 @@
   table {
     border-collapse: collapse;
     border-radius: 0;
+    min-width: 1500px;
   }
   thead {
     border-radius: 6px !important;
@@ -235,7 +236,7 @@
     tr {
       td {
         vertical-align: middle;
-        padding: 12px;
+        padding: 12px 6px;
         .collection-card-title {
           color: #6d7588;
         }

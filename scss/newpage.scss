@@ -2929,3 +2929,9 @@ button, .btn {
 .c-blue {
     color: #124de3 !important;
 }
+
+.width-20 {
+    &.true {
+        width: 20% !important;
+    }
+}
