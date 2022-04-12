@@ -64,6 +64,8 @@ import * as _ from 'lodash'
 import { useTranslation } from "react-i18next";
 import CaptCha from "components/modal/captcha";
 import { api } from "configs/axios";
+import EditIconBlack from "assets/images/edit-icon-black.svg";
+import IconUnion from "assets/images/union_wishlist.svg";
 
 type PropTypes = {
   code?: string;
@@ -124,6 +126,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [checkLoadImageBack, setCheckLoadImageBack] = useState<boolean>(false);
   const [keepCardCode ,setKeepCardCode] = useState('');
   const [isReportImage, setIsReportImage] = useState<boolean>(true);
+  const [onMenu, setOnMenu] = useState<boolean>(false);
+  const [onIcon, setOnIcon] = useState<boolean>(false);
+  const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
       let cardCode = router?.query?.cardCodeDetail ?? props.code;
@@ -381,20 +386,33 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
 
   const onAddCollection = (status: boolean, item: any) => {
 
-
     setCardData(undefined);
+    
     //@ts-ignore
     if (!loggingIn) {
       return setIsOpenLogin(true)
     }
 
     if (status) {
-      return router.push(
-        `/profile/collections`
-      );
+      setCardData(item);
+      return setOpenMnCardPortfolio(!openMnCardPortfolio)
+    }
+    
+    setIsOpen(true)
+  }
+  const addNewEntry = (e: any) => {
+    e.stopPropagation();
+    if (!loggingIn) {
+      return setIsOpenLogin(true)
     }
     setIsOpen(true)
   }
+
+  const onEdit = (e: any) => {
+    e.stopPropagation();
+    router.push(`/profile/collections/edit-card?collection=${cardData?.group_ref ?? 0}&code=${router?.query?.cardCodeDetail}`)
+  }
+
 
   const goToPricingGrid = () => {
     window.scrollTo({ behavior: 'smooth', top: pricingGridRef.current.offsetTop - 93 })
@@ -759,6 +777,27 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     setIsReportImage(e);
     loadCardDetail()
   }
+
+  const onLeave = () => {
+    setTimeout(() => {
+      if (!onIcon && !onMenu) {
+        setOpenMnCardPortfolio(false)
+      }
+    },1000)
+  }
+  const onLeaveIcon = () => {
+    setTimeout(() => {
+      if (!onMenu && !onIcon) {
+        setOpenMnCardPortfolio(false)
+      }
+    },1000)
+  }
+  useEffect(() => {
+    if (!onIcon && !onMenu) {
+      onLeave();
+    }
+  }, [onIcon, onMenu])
+
   return (
     <CardDetailProvider ref={refProvider}>
       <ChartFlow onUpdateCard={(item) => {
@@ -801,7 +840,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                 {({ state: { cardData, } }) => {
                   return (
                     <div className="card-detail-header-btn">
-                      <div className="d-flex btn-group-action">
+                      <div className="d-flex btn-group-action position-relative">
                         <button
                           onClick={() => onAddCollection(Boolean(cardData?.portfolio), cardData)}
                           type="button"
@@ -809,6 +848,13 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         >
                           {" "}<img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "}
                           {cardData?.portfolio ? "Added" : "Add"} to {t('portfolio.text')}
+
+                          {  openMnCardPortfolio && Boolean(cardData?.portfolio) && <div className="position-absolute menu-portfolio-static-scroll" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                            <ul className="box-menu">
+                              <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                              <li className="d-flex align-items-center" onClick={(e) => addNewEntry(e)}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                            </ul>
+                          </div>}
                         </button>
                         <button
                           onClick={() => onAddWishList(Boolean(cardData?.wishlist), cardData)}
@@ -1000,14 +1046,22 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                             </>}
                           </>}
                         </div>
-                        <div className="mt-5 btn-group-action d-flex">
+                        <div className="mt-5 btn-group-action d-flex ">
                           {Boolean(cardData?.id) ? <>
                             <button
                               onClick={() => onAddCollection(Boolean(cardData?.portfolio), cardData)}
                               type="button"
-                              className="btn btn-add"
+                              className="btn btn-add position-relative"
                               title=""
-                            > <img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "} {cardData?.portfolio ? "Added" : "Add"} to {t('portfolio.text')} </button>
+                            >
+                              <img alt="" src={Boolean(cardData?.portfolio) ? IconFolderTim : IconFolder} />{" "} {cardData?.portfolio ? "Added" : "Add"} to {t('portfolio.text')}
+                              { openMnCardPortfolio && Boolean(cardData?.portfolio) && <div className="position-absolute menu-portfolio" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                                <ul className="box-menu">
+                                  <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                                  <li className="d-flex align-items-center" onClick={(e) => addNewEntry(e)}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                                </ul>
+                              </div>}
+                            </button>
                             <div className="d-flex">
                               <button
                                 onClick={() => onAddWishList(Boolean(cardData?.wishlist), cardData)}

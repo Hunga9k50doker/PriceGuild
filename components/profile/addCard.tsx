@@ -111,7 +111,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore } = useSelector(Selectors.searchFilter);
+  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore, dataFilterStore } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -462,14 +462,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
+        
         if (isEdit) {
-          // @ts-ignore
-          // localStorage.setItem('saveChangePortfolio', true);
-          dispatch(SearchFilterAction.updateIsEditSaveCard(true));
+          if (!isEmpty(dataFilterStore)) {
+            dispatch(SearchFilterAction.updateIsEditSaveCard(true));
+          }
+         
           router.push(`${'/profile/portfolio/'}${groupRef?.id}/${groupRef?.name?.replaceAll("/","-")}`);
         } else {
           router.back();
         }
+       
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
@@ -1298,7 +1301,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
                         <Link
-                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name.replaceAll("/", "-")}`}
+                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
                         >
                           {groupRef?.name}
                         </Link>

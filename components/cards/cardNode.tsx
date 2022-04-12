@@ -21,6 +21,7 @@ import IconUnion from "assets/images/union_wishlist.svg";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import IconDot3 from "assets/images/dot-3.svg";
+import EditIconBlack from "assets/images/edit-icon-black.svg";
 // @ts-ignore
 import $ from "jquery"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
@@ -57,7 +58,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
   const [onMenu, setOnMenu] = useState<boolean>(false);
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [isShowTooltip, setIsShowTooltip] = useState<boolean>(false);
-
+  const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
   const gotoCard = (code: string) => {
     if (!props.isSelect) {
       if (!props.gotoCard) {
@@ -143,10 +144,15 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
 
   const onAddCollection = (e?: any) => {
     e.stopPropagation();
-    if(props.isSelect) return;
     if (props.item.portfolio) {
-      return router.push(`/profile/portfolio`)
+      return setOpenMnCardPortfolio(!openMnCardPortfolio)
     }
+    if(props.isSelect) return;
+    
+    props.onAddCollection && props.onAddCollection();
+  }
+  const addNewEntriesPortfolio = (e?: any) => {
+    e.stopPropagation();
     props.onAddCollection && props.onAddCollection();
   }
 
@@ -359,6 +365,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     setTimeout(() => {
       if (!onIcon && !onMenu) {
         setOpenMnWlist(false);
+        setOpenMnCardPortfolio(false)
       }
     },1000)
   }
@@ -366,6 +373,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     setTimeout(() => {
       if (!onMenu && !onIcon) {
         setOpenMnWlist(false);
+        setOpenMnCardPortfolio(false)
       }
     },1000)
   }
@@ -469,6 +477,14 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                       <ul className="box-menu">
                         <li className="d-flex align-items-center" onClick={(e) => {removeWishlist(e)}}> <img src={IconDelete} alt="IconDelete" /> <span> Remove from Wishlist </span> </li>
                         <li className="d-flex align-items-center" onClick={(e) => {addNewEntry(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                      </ul>
+                    </div>
+                  }
+                  {openMnCardPortfolio && Boolean(props.item?.portfolio) &&
+                    <div className="position-absolute menu-wishlist" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                      <ul className="box-menu">
+                        <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                        <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
                       </ul>
                     </div>
                   }
