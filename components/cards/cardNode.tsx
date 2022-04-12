@@ -282,7 +282,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
           {props.isSelect && !props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) && <div className="selected active">
             <div className="select-none"> </div>
           </div>}
-          <div className={`content-product row ${props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) ? "selected-item" : ""} `}>
+          <div className={`content-product row ${props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) ? "selected-item" : ""} position-relative`}>
             <div className="col-md-4 col-5 image-product image-product-left">
               <div className="mb-1 position-relative img image-product__img" >
                 <img
@@ -332,6 +332,15 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                     <img style={{ height: 20 }} src={`${Boolean(props.item.wishlist) ? IconHeartFull : IconHeart}`} alt="" />
                   </div>
                 </>}
+                { 
+                    openMnCardPortfolio && Boolean(props.item?.portfolio) &&
+                    <div className="position-absolute menu-portfolio-static-scroll" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                      <ul className="box-menu">
+                        <li className="d-flex align-items-center cursor-pointer" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                        <li className="d-flex align-items-center cursor-pointer" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                      </ul>
+                    </div>
+                  }
               </div>
             </div>
             <div className="col-7 col-md-8 content-product-detail">
