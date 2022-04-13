@@ -19,6 +19,7 @@ function Footer() {
     const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
   }
+  const year = new Date().getFullYear();
 
   return (
     <div className={`footer-content container-fluid pt-5`}>
@@ -141,7 +142,7 @@ function Footer() {
         <div className="row socials-section" style={{ fontSize: '14px', borderTop: '1px', borderColor: 'rgba(255, 255, 255, 0.2)', borderTopStyle: 'solid' }} >
           <div className="col-md-6 col-sm-6 col-xs-6 socials-text">
             <div className="pull-left">
-              <p className="mt-3 color-gray"><i className="fa fa-copyright" /> 2021 Price Guide Limited. All Rights Reserved. </p>
+              <p className="mt-3 color-gray"><i className="fa fa-copyright" /> { year }  Price Guide Limited. All Rights Reserved. </p>
             </div>
           </div>
           <div className="col-md-6 col-sm-6 col-xs-6 socials-icon">
@@ -160,7 +161,7 @@ function Footer() {
             </div>
             <div className="only-mobile">
               <div className="text-center pull-right-copy-right">
-                &#169; 2021 Price Guide Limited. All Rights <br/>Reserved.
+                &#169; { year } Price Guide Limited. All Rights <br/>Reserved.
               </div>
             </div>
           </div>

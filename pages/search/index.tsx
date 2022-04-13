@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import queryString from 'query-string';
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { api } from 'configs/axios';
 import { FilterType, SelectDefultType, FilyerCollection, ManageCollectionType, QueryResponse } from "interfaces"
 import Cards from "components/cards"
@@ -36,7 +35,11 @@ import IconCloseMobile from "assets/images/close_mobile.svg";
 import CaptCha from "components/modal/captcha";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
-import mockup_search_data from 'utils/mockup_search_data.json';
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { ToastSystem } from "helper/toast_system";
+import TextSearchBoxDesktop from "components/filter/textSearchBoxDesktop";
+import { useDebouncedCallback } from "utils/useDebouncedEffect";
+import { FilterHandleTextSearch } from "components/filter/textSearchBoxDesktop";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -115,6 +118,10 @@ const CardList = (props: PropTypes) => {
   const [isScroll, setIsScroll] = useState<boolean>(false);
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common")
+  const { filterSearch, isFilterStore, pageSelected, isModeSearchTableStore } = useSelector(Selectors.searchFilter);
+  const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
+  const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
+  const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -125,22 +132,40 @@ const CardList = (props: PropTypes) => {
   }, [router.query])
 
   const resetPage = (isChange: boolean = false) => {
-
-    if (!(isEmpty(filterData) || filterData === undefined)) {
-      // @ts-ignore
-      setFilterData({ isLoad: false })
+    if (Boolean(isModeSearchTableStore)) {
+      setIsInline(true);
     }
-    setPagesSelected([1])
-    getListCard([1], isChange, false)
-    resetFilter();
+    if (Boolean(isFilterStore)) {
+      setFilterData(filterSearch);
+      setDataFilterState(filterSearch);
+    } else {
+      if (!(isEmpty(filterData) || filterData === undefined)) {
+        // @ts-ignore
+        setFilterData({ isLoad: false })
+      }
+      resetFilter();
+      dispatch(SearchFilterAction.updatePageSelected(1))
+    }
+    setPagesSelected(Boolean(isFilterStore) ? [pageSelected] : [1]);
+    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false, {}, true)
+    // pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1]
   }
 
   const getFilterSearch = () => {
     let params: any = {}
-    const filterOld = { ...filterData };
-    if (filterOld.isLoad !== undefined) {
-      delete filterOld.isLoad
+    let filterOld = {};
+    if (Boolean(isFilterStore)) {
+      filterOld = {...filterSearch}
+    } else {
+      filterOld = {...filterData}
     }
+    
+    // @ts-ignore
+    if (filterOld?.isLoad !== undefined) {
+      // @ts-ignore
+      delete filterOld?.isLoad
+    }
+  
     for (const [key, value] of Object.entries(filterOld ?? {})) {
       // @ts-ignore
       const arrayValue = value.map(item => {
@@ -151,6 +176,7 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
       }).sort((a, b) => a - b);
       if (key === "printRun") {
+         // @ts-ignore
         if (value.length) {
           params.printRun = [
             [
@@ -211,7 +237,8 @@ const CardList = (props: PropTypes) => {
     return params
   }
 
-  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}) => {
+  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}, isResetSearchBox: boolean = false) => {
+    
     if (page[page.length-1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
       //   collections: [],
@@ -223,9 +250,11 @@ const CardList = (props: PropTypes) => {
       //   grades: [],
       // }));
     }
+
     if (!isFirst) {
       setIsFirst(true)
     }
+
     try {
       setData(prevState => {
         return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards] };
@@ -244,9 +273,27 @@ const CardList = (props: PropTypes) => {
       if (query.q ) {
         params.search_term = query.q;
       }
-      if (!isEmpty(filterData) && isFilter) {
-        params.filter = getFilterSearch();
+      if (!Boolean(isResetSearchBox)) {
+        if (!isEmpty(playerNameRef.current?.getValue())) {
+          params.player_name = playerNameRef.current?.getValue();
+        }
+
+        if (!isEmpty(cardNumberRef.current?.getValue())) {
+          params.card_number = cardNumberRef.current?.getValue();
+        }
+      } else {
+        playerNameRef.current?.reset();
+        cardNumberRef.current?.reset();
       }
+
+      if (Boolean(isFilterStore) && isFilter) {
+         params.filter = getFilterSearch();
+      } else {
+        if (!isEmpty(filterData) && isFilter) {
+          params.filter = getFilterSearch();
+        }
+      }
+     
       if (params.filter?.sport?.length) {
         params.sport = params.filter?.sport[0]
         delete params.filter?.sport
@@ -274,13 +321,21 @@ const CardList = (props: PropTypes) => {
 
       const result = await api.v1.elasticSearch.searchCard(params, headers);
       //@ts-ignore
-      // const result: QueryResponse<CardModel[]> = mockup_search_data
       if (page[page.length - 1] === 1) {
-        // @ts-ignore
-        dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
+        if(!Boolean(isFilterStore)){
+          // @ts-ignore
+          dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
+        }
         if (isChange) {
           setIsChangeRouter(isChange)
         }
+      } else {
+        if (Boolean(isFilterStore)) { 
+          setIsChangeRouter(isChange)
+        }
+      }
+      if (Boolean(isFilterStore)) {
+        dispatch(SearchFilterAction.updateIsFilter(false))
       }
       if (result.success) {
         if (page.length === 1) {
@@ -300,13 +355,15 @@ const CardList = (props: PropTypes) => {
             null_price_tooltip: result.null_price_tooltip,
           };
         });
+      } else {
+        if(result?.error)
+          ToastSystem.error(result?.error)
       }
      
       setData(prevState => {
         return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
       });
-    }
-    catch (err) {
+    } catch (err) {
       //@ts-ignore
       if (err?.response?.status === 409) {
         //@ts-ignore
@@ -322,7 +379,7 @@ const CardList = (props: PropTypes) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-     getListCard([1], false, true, headers)
+    getListCard([1], false, true, headers)
   }
 
   const onLoadMore = () => {
@@ -351,12 +408,15 @@ const CardList = (props: PropTypes) => {
   }
 
   useEffect(() => {
+    if (!isEmpty(filterData)) {
+      dispatch(SearchFilterAction.updateSearchFilter(filterData))
+    }
     if (!isEmpty(filters.years) && isFirst) {
       if (filterData?.set) {
         getFilterCollection()
       }
       // @ts-ignore
-      if (filterData?.isLoad !== false) {
+      if (filterData?.isLoad !== false && !Boolean(isFilterStore)) {
         setPagesSelected([1])
         getListCard()
       }
@@ -372,7 +432,7 @@ const CardList = (props: PropTypes) => {
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
-    
+    setPrintRunsState(filters.printRuns)
     let dataSave = [...prioritize];
     if (!prioritize.find(item => item.name === key)) {
       setPrioritize(prevState => [...prevState.map(item => ({ ...item, isChange: false })), { name: key, isChange: true }])
@@ -387,8 +447,7 @@ const CardList = (props: PropTypes) => {
           }
         }
         setPrioritize(dataSave)
-      }
-      else {
+      } else {
         dataSave = [...prioritize];
         dataSave = dataSave.map(item => item.name === key ? { ...item, isChange: true } : { ...item, isChange: false });
         setPrioritize(dataSave)
@@ -419,6 +478,9 @@ const CardList = (props: PropTypes) => {
     }
     if (key === "type") {
       colorRef?.current?.reset();
+       // @ts-ignore
+       buttonRef?.current && buttonRef?.current.click();
+      // btnSoftByRef?.current && btnSoftByRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, color: [], isLoad: true });
     }
@@ -428,6 +490,12 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
+  const onChangeSearch = (e: any, key: string) => {
+    loadSuggestions([1]);
+  }
+
+  const loadSuggestions = useDebouncedCallback(getListCard, 550);
+  
   const removeFilter = (item: FilterType, key: string) => {
     if (key === "set") {
       typeRef?.current?.reset();
@@ -485,10 +553,11 @@ const CardList = (props: PropTypes) => {
       }
     })
   }
-
+  
   const handleOptionsPrintRun = () => {
-    const maxValue = Math.max(...filters.printRuns);
-    const minValue = Math.min(...filters.printRuns);
+    const maxValue = filters.printRuns ? Math.max(...filters.printRuns): NaN;
+    const minValue = filters.printRuns ? Math.min(...filters.printRuns): NaN;
+    
     const data = MetaData.printRun.filter((e) => {
       if (e.id === 1) {
         return maxValue > 0
@@ -497,7 +566,7 @@ const CardList = (props: PropTypes) => {
         return minValue === 0;
       }
       if (e.id === 3) {
-        return filters.printRuns.find((num) => num === 1)
+        return filters.printRuns?.find((num) => num === 1)
       }
       if (e.id === 4) {
         return maxValue >= 2
@@ -512,7 +581,7 @@ const CardList = (props: PropTypes) => {
         return maxValue > 299
       }
     })
-
+    
     return data;
   }
 
@@ -533,7 +602,7 @@ const CardList = (props: PropTypes) => {
   const optionsParallel = React.useMemo(() => handleOptionsParallel(), [filterData?.type]);
 
   const resetFilter = () => {
-    publisherRef?.current?.reset();
+    setPrioritize([])
     yearRef?.current?.reset();
     setRef?.current?.reset();
     automemoRef?.current?.reset();
@@ -541,6 +610,7 @@ const CardList = (props: PropTypes) => {
     colorRef?.current?.reset();
     printRunRef?.current?.reset();
     sportRef?.current?.reset()
+    publisherRef?.current?.reset();
   }
 
   const onSelectItem = (code: any) => {
@@ -584,10 +654,34 @@ const CardList = (props: PropTypes) => {
   }
 
   const selectCollection = (item: ManageCollectionType) => {
+    dispatch(SearchFilterAction.updateIsFilter(true))
+    getDataOptionInput();
+
     router.push(
       `/collections-add-card?collection=${item.group_ref}&code=${cardSelected.toString()}`
     );
   };
+
+  const getDataOptionInput = () => {
+    let publisher = publisherRef?.current?.getOptionData() ?? [];
+    let year = yearRef?.current?.getOptionData() ?? [];
+    let set = setRef?.current?.getOptionData() ?? [];
+    let auto = automemoRef?.current?.getOptionData() ?? [];
+    // let print = printRunRef?.current?.getOptionData() ?? [];
+    let sport = sportRef?.current?.getOptionData() ?? [];
+      
+    dispatch(FilterAction.updateFiltersCardDetail({
+      //@ts-ignore
+      publishers: publisher,
+      //@ts-ignore
+      collections: set,
+      //@ts-ignore
+      printRuns: printRunsState,
+      years: year,
+      auto_memo: auto,
+      sports: sport,
+    }));
+  }
 
   const renderSportName = () => {
     const sportName = sports.find(item => item.id === +(query?.sport ?? query.sport_criteria));
@@ -609,15 +703,22 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
         prioritizeState.push({ name: 'sport', isChange: true })
-      }
+      } 
       // @ts-ignore
       let publisherState = dataFilterState?.publishers?.find(publisher => publisher?.name === query?.publisherName);
       if (publisherState) {
         params.publisher = [publisherState];
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
-        prioritizeState.push({ name: 'publisher', isChange: true })
+        prioritizeState.push({ name: 'publisher', isChange: true }); 
         publisherRef?.current?.reset([publisherState]);
+      } else {
+        if (Boolean(isFilterStore)) {
+          if (!isEmpty(dataFilterState?.publisher)) {
+            prioritizeState.push({ name: 'publisher', isChange: true }); 
+          }
+          publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
+        }
       }
       const yearState = filters?.years?.find(item => item?.name === query?.year);
       if (yearState) {
@@ -627,6 +728,13 @@ const CardList = (props: PropTypes) => {
         }
         yearRef?.current?.reset([yearState]);
         prioritizeState.push({ name: 'year', isChange: true })
+      } else {
+        if (Boolean(isFilterStore)) {
+          if (!isEmpty(dataFilterState?.year)) {
+            prioritizeState.push({ name: 'year', isChange: true })
+          }
+          yearRef?.current?.reset(dataFilterState?.year ?? []);
+        }
       }
 
       // @ts-ignore
@@ -637,35 +745,57 @@ const CardList = (props: PropTypes) => {
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
         prioritizeState.push({ name: 'set', isChange: true })
         setRef?.current?.reset([collectionState]);
+      } else {
+        if (Boolean(isFilterStore)) {
+          if (!isEmpty(dataFilterState?.set)) {
+            prioritizeState.push({ name: 'set', isChange: true })
+          }
+          setRef?.current?.reset(dataFilterState?.set ?? []);
+        }
       }
+      if (Boolean(isFilterStore)) { 
+          if (!isEmpty(dataFilterState?.printRun)) {
+            prioritizeState.push({ name: 'printRun', isChange: true })
+          }
+          printRunRef?.current?.reset(dataFilterState?.printRun ?? []);
+        
+          if (!isEmpty(dataFilterState?.auto_memo)) {
+            prioritizeState.push({ name: 'auto_memo', isChange: true })
+          }
+          automemoRef?.current?.reset(dataFilterState?.auto_memo ?? []);
+      }
+
       if (isEmpty(query)) {
         const sportDeafult = filters?.sports?.find(item => item.id === (userInfo?.userDefaultSport ?? 1));
         params.sport = [sportDeafult];
         prioritizeState.push({ name: 'sport', isChange: true })
       }
+
       params.isLoad = false;
       setIsChangeRouter(false)
       setPrioritize(prioritizeState)
-      setFilterData(params)
 
+      if (!Boolean(isFilterStore)) {
+        setFilterData(params)
+      }
     }
 
   }, [filters.years, filters.publishers, isChangeRouter, filters.collections, filters.sports])
-
+  
   const resetFilterUI = () => {
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <div
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <div
         onClick={() => resetPage(false)}
         className="mb-2 cursor-pointer d-flex ms-2 ps-2 pe-2 cus btn-reset-collection">
-        <div>Reset Filters</div>
+        <div> Reset Filters </div>
       </div>}
       {Object.keys(filterOld ?? {}).map((key, index) => {
         if (key === "sport") return null;
-        return <React.Fragment key={index}>{filterOld?.[key].map((item, i) =>
+        return <React.Fragment key={index}>{filterOld?.[key]?.map((item, i) =>
           <div key={item.id} className="d-flex align-items-center ms-2 mb-2 btn-clear">
             <div className="btn-text-clear">{item.name}</div>
             <button type="button" onClick={() => removeFilter(item, key)} className="btn--hidden">
@@ -673,6 +803,24 @@ const CardList = (props: PropTypes) => {
             </button>
           </div>)}</React.Fragment>
       })}
+      {!isEmpty(cardNumberRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{cardNumberRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            cardNumberRef.current?.clearSearch();
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
+      {!isEmpty(playerNameRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            playerNameRef.current?.clearSearch();
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
     </>
   }
 
@@ -683,11 +831,8 @@ const CardList = (props: PropTypes) => {
     }
     return <>
       {Boolean(!checkFilter(filterOld ?? {})) && <button
-          onClick={() => resetPage(false)}
-          className="btn btn-primary clear-select">
-          Reset Filters
-      </button>}
-     
+        onClick={() => resetPage(false)}
+        className="btn btn-primary clear-select"> Reset Filters </button>}
     </>
    }
   
@@ -700,12 +845,16 @@ const CardList = (props: PropTypes) => {
     if (timerid) {
       clearTimeout(timerid);
     }
+
+    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+
     timerid = setTimeout(() => {
       setPagesSelected(event)
       getListCard(event, false)
     }, 550);
   }
 
+  const [scrollY, setScrollY] = useState<number>(0);
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();
     const stickyData = $(".p-sticky-header").offset();
@@ -718,8 +867,9 @@ const CardList = (props: PropTypes) => {
         $(".action-list").removeClass("d-none");
       }
     }
+    setScrollY(window.pageYOffset)
   };
-
+  
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -760,7 +910,6 @@ const CardList = (props: PropTypes) => {
         return setTimeout(() => {
           setLengthFilter(publisherRef?.current?.getLengthOption() ?? 0) ;
         },350);
-        
       case "year":
         return setTimeout(() => {
           setLengthFilter(yearRef?.current?.getLengthOption() ?? 0) ;
@@ -810,7 +959,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.publisher?.length})</button> : ""
+          > Clear Selected ({filterData?.publisher?.length}) </button> : ""
       case "year":
         return Boolean(filterData?.year?.length) ?
           <button
@@ -827,7 +976,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.year?.length})</button> : ""
+           >Clear Selected ({filterData?.year?.length}) </button> : ""
       case "set":
         return Boolean(filterData?.set?.length) ?
           <button
@@ -848,7 +997,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.set?.length})</button> : ""
+          > Clear Selected ({filterData?.set?.length}) </button> : ""
       case "auto_memo":
         return Boolean(filterData?.auto_memo?.length) ?
           <button
@@ -865,7 +1014,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.auto_memo?.length})</button> : ""
+          > Clear Selected ({filterData?.auto_memo?.length}) </button> : ""
       case "type":
         return Boolean(filterData?.type?.length) ?
           <button
@@ -883,7 +1032,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.type?.length})</button> : ""
+          > Clear Selected ({filterData?.type?.length}) </button> : ""
       case "color":
         return Boolean(filterData?.color?.length) ?
           <button
@@ -900,7 +1049,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.color?.length})</button> : ""
+          > Clear Selected ({filterData?.color?.length}) </button> : ""
       case "printRun":
         return Boolean(filterData?.printRun?.length) ?
           <button
@@ -917,7 +1066,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-          >Clear Selected ({filterData?.printRun?.length})</button> : ""
+          > Clear Selected ({filterData?.printRun?.length}) </button> : ""
       default:
         return ""
     }
@@ -933,9 +1082,8 @@ const CardList = (props: PropTypes) => {
       {Boolean(!checkFilter(filterOld ?? {})) && <div
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select">
-        <div>Reset Filters</div>
+        <div> Reset Filters </div>
       </div>}
-
     </>
   }
 
@@ -975,12 +1123,16 @@ const CardList = (props: PropTypes) => {
     }
   }
 
-  const defaultValueSport = () => {
+  const defaultValueSport = useMemo(() => {
+    if (Boolean(isFilterStore)) {
+      return filterSearch?.sport?.[0]?.id ?? 1
+    }
     if (isEmpty(query)) {
       return userInfo?.userDefaultSport ?? 1
     }
+    
   return +(query?.sport ?? query?.sport_criteria)
-  }
+  },[query])
 
   const onUpdateWishList = (code: string) => {
     // @ts-ignore
@@ -988,7 +1140,7 @@ const CardList = (props: PropTypes) => {
       return { ...prevState, cards: prevState.cards?.map(item=> item.code === code ? ({...item,wishlist: 1}): item )};
     });
   }
-
+  
   return (
     <div className="container-fluid container-search-page">
       <Head>
@@ -1029,7 +1181,7 @@ const CardList = (props: PropTypes) => {
                               isSearch={false}
                               name="sport"
                               isCount={Boolean(query.q)}
-                              defaultValue={defaultValueSport()}
+                              defaultValue={defaultValueSport}
                               options={filters.sports} />
                           </div>
                         </div>
@@ -1107,6 +1259,22 @@ const CardList = (props: PropTypes) => {
                         name="printRun"
                         options={optionsPrintRun} />
                     </div>
+                    <div className="accordion" id="PlayerNameFilter">
+                      <TextSearchBoxDesktop
+                        title="Player Name"
+                        ref={playerNameRef}
+                        onChange={onChangeSearch}
+                        name="playerName"
+                      />
+                    </div>
+                    <div className="accordion" id="CardNumberFilter">
+                      <TextSearchBoxDesktop
+                        title="Card Number"
+                        ref={cardNumberRef}
+                        onChange={onChangeSearch}
+                        name="cardNumber"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1114,7 +1282,7 @@ const CardList = (props: PropTypes) => {
           </>
         }
         <div className="col-lg-10 col-md-10 pt-5 pb-5 col-search-page">
-        {
+          {
             //@ts-ignore
             width < 768 && <>
             <div className={`filter-mobile position-relative filter-mobile--search ${!data.cards.length && !data.isLoading ? "d-none": ""}`}>
@@ -1163,16 +1331,6 @@ const CardList = (props: PropTypes) => {
                               <div className="sidebar__categories">
                                 <div className="section-title">
                                    <SortMobile className="section-title-item" onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} />
-                                  {/* <FilterSport
-                                    isAll={Boolean(query.search_term)}
-                                    isDefault={(Boolean(query.search_term) && !Boolean(query?.sport))}
-                                    ref={sportRef}
-                                    onChange={onChangeFilter}
-                                    isSearch={false}
-                                    name="sport"
-                                    isCount={Boolean(query.search_term)}
-                                    defaultValue={+(query?.sport ?? query?.sport_criteria)}
-                                    options={filters.sports} /> */}
                                 </div>
                               </div>
                             </div>
@@ -1196,7 +1354,7 @@ const CardList = (props: PropTypes) => {
                         <div className="d-none">{renderLengthFilterMobile()}</div>
                         <h5 className="modal-title" id="filterModalLabel">{renderTitleFilterMobile()} 
                         <span>{(filterValue ==="sport" || filterValue=== "all" )? renderLengthFilterMobile(): lengthFilter}</span></h5>
-                        <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close" >  Close </button>
+                        <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close"> Close </button>
                       </div>
                       <div className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""}`}>
                         <div className="position-relative">
@@ -1229,7 +1387,7 @@ const CardList = (props: PropTypes) => {
                                             isSearch={false}
                                             name="sport"
                                             isCount={Boolean(query.q)}
-                                            defaultValue={defaultValueSport()}
+                                            defaultValue={defaultValueSport}
                                             options={filters.sports} />
                                         </div>
                                       </div>
@@ -1371,23 +1529,21 @@ const CardList = (props: PropTypes) => {
           </>}
           <h1 className="filter-title"> {renderTitle()} </h1>
           <div className={`d-flex justify-content-between align-items-start p-head-search p-head-search--mobile ${isSelect ? 'p-sticky-header p-sticky-header--full' : ''}`}>
-            {isSelect ? <div className="d-flex align-items-center ml-1 btn-group-head-search hai">
+            {isSelect ? <div className={`d-flex align-items-center ml-1 btn-group-head-search ${scrollY > 400 ? 'sticky-zero' : ''}`}>
               <div className="me-2 fz-14">
                 <span className="fw-bold">{cardSelected.length}</span> cards selected
               </div>
-              {Boolean(cardSelected.length) &&
-               <button
-               type="button"
-               onClick={() => {
-                 setCardData(undefined);
-                 if (loggingIn) {
-                   setIsOpen(true)
-                 }
-                 else {
-                   setIsOpenLogin(true);
-                 }
-               }}
-               className="me-2 btn  btn-portfolio"
+              {Boolean(cardSelected.length) && <button
+                type="button"
+                onClick={() => {
+                  setCardData(undefined);
+                  if (loggingIn) {
+                    setIsOpen(true)
+                  } else {
+                    setIsOpenLogin(true);
+                  }
+                }}
+                className="me-2 btn  btn-portfolio"
                 > Add to { t('portfolio.text')} </button>
               }
               {/* {cardSelected.length < 2 &&
@@ -1430,7 +1586,7 @@ const CardList = (props: PropTypes) => {
                               }
                             }}
                             className="me-2 btn  btn-portfolio"
-                          >Add to { t('portfolio.text')} </button>
+                          > Add to { t('portfolio.text')} </button>
                           {/* <button type="button" className="me-2 btn btn-wishlist">Add to Wishlist</button> */}
                         </div>
                       }
@@ -1444,10 +1600,16 @@ const CardList = (props: PropTypes) => {
                 <Select onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} className="react-select-smart" classNamePrefix="react-select-smart" />
               </div>
               <div className="d-flex btn-group-card">
-                <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
+                <button type="button" onClick={() => {
+                  setIsInline(prevState => !prevState)
+                  dispatch(SearchFilterAction.updateModeSearch(false))
+                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                   <i className="fa fa-th" aria-hidden="true"></i>
                 </button>
-                <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
+                <button type="button" onClick={() => {
+                  setIsInline(prevState => !prevState)
+                  dispatch(SearchFilterAction.updateModeSearch(true))
+                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
                   {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                   <img src={IconList.src} alt="" title="" />
                 </button>

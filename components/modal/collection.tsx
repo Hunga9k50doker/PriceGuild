@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
 import { ManageCollectionType } from "interfaces"
 import { isEmpty } from "lodash"
-import closeImge from "assets/images/close.png"
-import IconExport from "assets/images/export.png"
 import IconDelete from "assets/images/delete.png"
 import SheetIcon from "assets/images/sheet.svg"
 import * as Yup from 'yup';
@@ -19,7 +17,6 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { MyStorage } from 'helper/local_storage';
-
 
 type PropTypes = {
   isOpen: boolean,
@@ -36,8 +33,9 @@ type CollectionForm = {
   type: string;
 };
 
-
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
+  const inputNameRef = useRef<HTMLInputElement>(null);
+
   const CSVRef = React.useRef<HTMLLinkElement>(null)
   const validationSchema = Yup.object().shape({
     collectionName: Yup.string()
@@ -45,6 +43,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       .required('This field is required').min(1, 'This field is required'),
 
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataJson, setDataJson] = useState<any>({
     head: [],
     body: [],
@@ -53,7 +52,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   const [t, i18n] = useTranslation("common")
   const pathname = router.pathname.split("/")
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<CollectionForm>({
+  const { register, handleSubmit, reset, setValue, formState: { errors }, setFocus,clearErrors, resetField  } = useForm<CollectionForm>({
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
@@ -74,7 +73,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       if (result.success) {
         props.onSuccess && props.onSuccess({
           name: data.collectionName,
-          type: Number(data.type)
+          type: Number(data.type),
+          isEdit: true
         });
         return ToastSystem.success("Update successfully");
       }
@@ -90,16 +90,19 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         name: data.collectionName,
         type: Number(data.type)
       }
+      await setIsLoading(true);
       const result = await api.v1.collection.createCollection(params);
       if (result.success) {
         props.onSuccess && props.onSuccess({
           name: data.collectionName,
-          type: Number(data.type)
+          type: Number(data.type),
+          isEdit: false
         });
         resetForm(); console.log(pathname[1], 'pathname[0]')
+        setIsLoading(false);
         return pathname[1] !== 'search' ? ToastSystem.success(<div className="toast-grade-content">
-          Create new { title } successfully {" "}
-          <Link href={`/profile/${title}s/${result?.data?.id}/${result?.data?.group_name?.replaceAll("/", "-")}`}>
+          Create new { title === 'collection' ? 'portfolio' : title } successfully {" "}
+          <Link href={`/profile/${title === 'collection' ? 'portfolio' : title+'s'}/${result?.data?.id}/${result?.data?.group_name?.replaceAll("/", "-")}}`}>
             <a className="text-decoration-none">
               {result?.data?.group_name} {" "} { Boolean(result?.data?.type === 2) && <i className="fa fa-lock" aria-hidden="true"></i>}{" "}
             </a>
@@ -129,12 +132,11 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   },[dataJson])
 
   const getDataJson = async () => {
-
     try {
-         const result = await api.v1.portfolio.pg_app_portfolio_export_generate({
-          "collection": `${collectionDetail?.group_ref}`,
-          "list_name":table
-         })
+      const result = await api.v1.portfolio.pg_app_portfolio_export_generate({
+        "collection": `${collectionDetail?.group_ref}`,
+        "list_name":table
+      })
       setDataJson(result)
     }
     catch (err) {
@@ -177,6 +179,18 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       head: [],
       body: [],
     })
+    if ( isOpen === true ) {
+      let timerid = null;
+      if (timerid) {
+        clearTimeout(timerid);
+      }
+      timerid = setTimeout(() => {
+        // console.log(inputNameRef.current?.focus)
+        // inputNameRef.current?.focus();
+        isEmpty(collectionDetail) && resetField("collectionName");
+        isCheckGroupRef() &&  setFocus("collectionName");
+      }, 350);
+    }
   }, [isOpen])
   
   const renderLinkShareFB = () => {
@@ -205,7 +219,18 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/','-').replaceAll(' ', '')}`);
 
     return data_url;
-}
+  }
+  const onChange = (e:any) => {
+    const {value} = e.target;
+    if(value) {
+      setValue('collectionName', value); 
+      clearErrors("collectionName")
+    }
+  }
+
+  const isCheckGroupRef = ()=> {
+    return isEmpty(collectionDetail) || (!isEmpty(collectionDetail) && collectionDetail?.group_ref !== 0)
+  }
 
   return (
     <Modal
@@ -231,16 +256,19 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       <Modal.Body className="customScroll">
         <form className="form-collection" onSubmit={handleSubmit(onClickSubmit)}>
           <div className="col-mar-10">
-            <div className="form-check-edit-collection mb-3">
-              <label htmlFor="" className="form-label text-capitalize">{title === 'collection' ? t('portfolio.text') : title } Name</label>
+            {isCheckGroupRef() && <div className="form-check-edit-collection mb-3">
+              <label className="form-label text-capitalize">{title === 'collection' ? t('portfolio.text') : title } Name</label>
               <input {...register("collectionName", { required: true })} 
                 placeholder={`Enter ${renderTextLower(title)} Name`}
                 maxLength={50}
+                autoFocus
+                // ref={inputNameRef}
+                onChange={onChange}
                 type="text" className="form-control" />
               {errors.collectionName && <span className="invalid-feedback d-inline">{ errors.collectionName?.message}</span>}
-            </div>
-            <div className={`mb-3 form-check-radio ${isEmpty(collectionDetail) ? 'pb-0' : '' }`}>
-              <label htmlFor="" className="form-label">Who can see this {title === 'collection' ? t('portfolio.text_normal') : title }</label>
+            </div>}
+            {isCheckGroupRef() && <div className={`mb-3 form-check-radio ${isEmpty(collectionDetail) ? 'pb-0' : '' }`}>
+              <label className="form-label">Who can see this {title === 'collection' ? t('portfolio.text_normal') : title }</label>
               <div className={`row pe-10 form-collection--checked ${!isEmpty(collectionDetail)? 'edit' : ''}`}>
                 <div className="form-check ms-3 col form-check-inline ">
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="onlyme" value="2" />
@@ -251,7 +279,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                   <label className="form-check-label cursor-pointer" htmlFor="everyone">Everyone</label>
                 </div>
               </div>
-            </div>
+            </div>}
             {/* {!isEmpty(collectionDetail) && Boolean(collectionDetail?.claim) && <>
               <div className="mb-3 form-collection-claim">
                 <div className="d-flex justify-content-center">
@@ -265,14 +293,14 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
               </div>
               <hr className="hr--color" />
             </>} */}
-            {!isEmpty(collectionDetail) && <> <div className="mb-3 form-collection-social">
-              <label htmlFor="" className="form-label text-capitalize form-label-check-box">Share {title === 'collection' ? t('portfolio.text') : title }</label>
+            {!isEmpty(collectionDetail) && <> <div className="form-collection-social">
+            {isCheckGroupRef() && <label className="form-label text-capitalize form-label-check-box">Share {title === 'collection' ? t('portfolio.text') : title }</label>}
               <div className="d-flex justify-content-between btn-social">
-                <div className="d-flex btn-social-content">
+                {isCheckGroupRef() && <div className="d-flex btn-social-content">
                   <div className="text-center col cursor-pointer">
                     <Link href={renderLinkShareTwitter()}>
                       <a className="py-2 btn btn-social-twitter" target='_blank'>
-                         <i className="fa fa-twitter fa-2" aria-hidden="true" />
+                        <i className="fa fa-twitter fa-2" aria-hidden="true" />
                       </a>
                     </Link>
                   </div>
@@ -283,8 +311,8 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                       </a>
                     </Link>
                   </div>
-                </div>
-                <div className="text-right col cursor-pointer">
+                </div>}
+                <div className="text-center col cursor-pointer">
                 <button
                     type="button"
                     className="shadow-none btn btn-outline-secondary btn-export"
@@ -300,19 +328,27 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                 </div>
               </div>
             </div>
-              <div className="btn-group-remove--mobile">
+              {isCheckGroupRef() && <div className="btn-group-remove--mobile">
                 <div className="text-center d-flex justify-content-center mt-3">
                   <a onClick={onRemove} href="javascript:void(0)" className="text-reset btn-remove text-capitalize"> <img src={IconDelete.src} alt="Remove" /> Remove {title === 'collection' ? t('portfolio.text') : title } </a>
                 </div>
-              </div>
+              </div>}
             </>}
           </div>
         </form>
       </Modal.Body>
-      <Modal.Footer>
+      {isCheckGroupRef() && <Modal.Footer>
         <button className="btn btn-outline btn-close-modal m-0" onClick={() => props?.onClose && props.onClose()}>Cancel</button>
-        <button onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}</button>
-      </Modal.Footer>
+        <button  onClick={handleSubmit(onClickSubmit)} type="button" className="btn btn-primary btn-wishlist text-truncate bg-124DE3 m-0 ml-24">{isEmpty(collectionDetail) ? `Create ${renderTextLower(title)}` : "Save Changes"}
+         { isLoading &&
+          <span
+            className="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          />
+         } 
+        </button>
+      </Modal.Footer>}
     </Modal>);
 }
 

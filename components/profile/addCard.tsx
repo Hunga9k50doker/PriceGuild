@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Selectors from "redux/selectors";
 import { api } from "configs/axios";
@@ -35,6 +35,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
 
 const ungraded = "ungraded";
 const NotSpecified = "1";
@@ -109,6 +110,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
+  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore, dataFilterStore } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
@@ -162,7 +164,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   // @ts-ignore
   const [oldValueActive, setOldValueActive] = useState<Datum>();
   const [undoChangeStatus, setUndoChangeStatus] = useState<Boolean>(false);
-  
+  const [isFilterState, setIsFilterState] = useState<boolean>(false);
+  const [isFilterTop100State, setIsFilterTop100State] = useState<boolean>(false);
+  const [isSaveCardCheckList, setIsSaveCardCheckList] = useState<boolean>(false);
+  const [isSaveCardProfile, setIsSaveCardProfile] = useState<boolean>(false);
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -171,7 +176,50 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   //   }
   //   return () => window.removeEventListener("resize", resizeWindow);
   // }, [windowWidth]);
+  React.useEffect(() => {
+    if(!Boolean(isFilterState))
+    setIsFilterState(isFilterStore);
+  }, [isFilterStore])
+  
+  React.useEffect(() => {
+    if (Boolean(isFilterState) && Boolean(isFilterStore)) {
+      dispatch(SearchFilterAction.updateIsFilter(false))
+    }
+  }, [isFilterState])
 
+  React.useEffect(() => {
+    if ((Boolean(isFilterTop100State) && Boolean(isFilterStoreTop100))) {
+      dispatch(SearchFilterAction.updateIsFilterTop100(false))
+    }
+  }, [isFilterTop100State])
+
+  React.useEffect(() => {
+     if ((Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList))) {
+       dispatch(SearchFilterAction.updateIsAddCardCheckList(false))
+     }
+  }, [isSaveCardCheckList])
+  
+  React.useEffect(() => {
+     if ((Boolean(isSaveCardProfile) && Boolean(isAddCardProfile))) {
+       dispatch(SearchFilterAction.updateIsAddCardProfile(false))
+     }
+  }, [isSaveCardProfile])
+  
+  React.useEffect(() => {
+     if(!Boolean(isFilterState))
+      setIsFilterState(isFilterStoreTop100);
+  },[isFilterStoreTop100])
+  
+  React.useEffect(() => {
+    if(!Boolean(isSaveCardCheckList))
+      setIsSaveCardCheckList(isSaveCardCheckList);
+  }, [isAddCardCheckList])
+
+  React.useEffect(() => {
+    if(!Boolean(isSaveCardProfile))
+      setIsSaveCardProfile(isSaveCardProfile);
+  }, [isAddCardProfile])
+  
   const getDataCards = async () => {
     try {
       const params = {
@@ -202,7 +250,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             name: selecedData?.group_name,
           });
           setValue("group_ref", selecedData);
-          setFromValue(dataEntry);
+          if (isEmpty(cardSelectedStore)) {
+             setFromValue(dataEntry);
+          }
+         
         } else {
           const selecedData = data?.groups?.find(
             (item) => item.id === +(dataQueries?.collection ?? 0)
@@ -309,48 +360,56 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [watchGradeValue]);
 
   React.useEffect(() => {
-    let newData = { ...cards };
-
-    if (newData?.cards?.length) {
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].image_upload.front = imageFront.url;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].front_image = imageFront.path;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].image_upload.back = imageBack.url;
-      newData.cards[activeEntry.cardIndex].data[
-        activeEntry.entryIndex
-      ].back_image = imageBack.path;
-      setCards(newData);
-    }
-
-    // @ts-ignore
-    const dataOld = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
-    // @ts-ignore
-    const datanew = newData.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
-    // @ts-ignore
-    if (!isEmpty(datanew)) {
-      // @ts-ignore
-      // delete datanew.back_image;
-      // @ts-ignore
-      // delete datanew.front_image;
-    }
-
-    let dataCompare = {...datanew};
-    delete dataCompare.back_image;
-    delete dataCompare.front_image;
-    
-    if (!isEqual(dataOld, dataCompare)) {
-      return setUndoChangeStatus(true);
-    } else {
-      if (!isEmpty(imageFront.path) || !isEmpty(imageBack.path)) {
-        return setUndoChangeStatus(true);
+    if (!isEmpty(cards?.cards)) {
+      let newData = { ...cards };
+      if (newData?.cards?.length) {
+        if (!isEmpty(imageFront.url)) {
+          newData.cards[activeEntry.cardIndex].data[
+            activeEntry.entryIndex
+          ].image_upload.front = imageFront.url;
+        }
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[
+          activeEntry.entryIndex
+        ]?.front_image = imageFront.path;
+        if (!isEmpty(imageBack.url)) {
+          newData.cards[activeEntry.cardIndex].data[
+            activeEntry.entryIndex
+          ].image_upload.back = imageBack.url;
+        }
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[
+          activeEntry.entryIndex
+        ]?.back_image = imageBack.path;
+        setCards(newData);
       }
-      return setUndoChangeStatus(false);
+
+      // @ts-ignore
+      const dataOld = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
+      // @ts-ignore
+      const datanew = newData.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
+      // @ts-ignore
+      if (!isEmpty(datanew)) {
+        // @ts-ignore
+        // delete datanew.back_image;
+        // @ts-ignore
+        // delete datanew.front_image;
+      }
+
+      let dataCompare = {...datanew};
+      delete dataCompare.back_image;
+      delete dataCompare.front_image;
+      
+      if (!isEqual(dataOld, dataCompare)) {
+        return setUndoChangeStatus(true);
+      } else {
+        if (!isEmpty(imageFront.path) || !isEmpty(imageBack.path)) {
+          return setUndoChangeStatus(true);
+        }
+        return setUndoChangeStatus(false);
+      }
     }
+    
   }, [imageFront, imageBack]);
 
   React.useEffect(() => {
@@ -372,8 +431,14 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   // }, [watchAgreeShare]);
 
   React.useEffect(() => {
-    if (isEmpty(activeEntryData)) {
-      setActiveEntryData(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex])
+    if (!isEmpty(cards.cards) && !isEmpty(cardSelectedStore)) {
+      if (cards.cards?.[activeEntry.cardIndex]?.data.length) {
+        let cardData = cloneDeep(cards.cards);
+        let index = cardData?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
+       
+        return onActiveEntry(activeEntry.cardIndex,  index ?? 0 , cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]);
+        
+      }
     }
   }, [cards?.cards])
 
@@ -386,18 +451,38 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const onCreate = async (params: any) => {
     try {
+      if (!isEdit) {
+        if (Boolean(isFilterState)) {
+          dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+        }
+        if (Boolean(isFilterStoreTop100)) {
+          dispatch(SearchFilterAction.updateIsFilterTop100(isFilterStoreTop100));
+        }
+        if (Boolean(isAddCardCheckList)) {
+          dispatch(SearchFilterAction.updateIsAddCardCheckList(isAddCardCheckList));
+        }
+        if (Boolean(isAddCardProfile)) {
+          dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
+        }
+      }
       setIsLoading(true);
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
+        
         if (isEdit) {
           // @ts-ignore
           // localStorage.setItem('saveChangePortfolio', true);
-          // ${+params?.data[0]?.group_ref}/${params?.data[0]?.sport}
-          router.push(`${'/profile/portfolio/'}`);
+          if (!isEmpty(dataFilterStore)) {
+            dispatch(SearchFilterAction.updateIsEditSaveCard(true));
+          }
+          
+          //@ts-ignore
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`);
         } else {
           router.back();
         }
+       
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
@@ -421,10 +506,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     let newData = { ...cards };
     if (newData?.cards?.length) {
       if (key === 'date_acq') {
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
         moment(e?.value ?? e).format("YYYY-MM-DD");
       } else {
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex][key] =
+        //@ts-ignore
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
         e?.value ?? e;
       }
      
@@ -511,7 +598,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   };
 
   const onActiveEntry = (cardIndex: number, entryIndex: number, data: any) => {
-    
     let old = { ...data };
     // @ts-ignore
     const dataEntry = cardsOld.cards?.[cardIndex]?.data[entryIndex];
@@ -539,7 +625,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const setFromValue = (dataEntry: Datum) => {
     setValue("grade_value", dataEntry.grade_value);
-    setValue("grade_company", dataEntry.grade_company);
+    setValue("grade_company", dataEntry?.grade_company);
     setValue("user_currency", {
       value: dataEntry.user_currency,
       label: dataEntry.user_currency,
@@ -572,7 +658,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // setValue("agree_share", dataEntry.agree_share);
   };
   const onCancle = () => {
-    router.push("/profile/collections");
+    // router.push("/profile/collections");
+    if (isEdit) {
+      dispatch(SearchFilterAction.updateIsEditSaveCard(true));
+      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name : 'All Cards'}`);
+    } else {
+      if (Boolean(isFilterState)) {
+        dispatch(SearchFilterAction.updateIsFilter(isFilterState));
+      }
+      if (Boolean(isFilterStoreTop100)) {
+        dispatch(SearchFilterAction.updateIsFilterTop100(isFilterStoreTop100));
+      }
+      if (Boolean(isAddCardCheckList)) {
+        dispatch(SearchFilterAction.updateIsAddCardCheckList(isAddCardCheckList));
+      }
+      if (Boolean(isAddCardProfile)) {
+        dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
+      }
+
+      router.back();
+    }
   };
 
   const onSubmitForm = () => {
@@ -590,12 +695,30 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
         card.date_acq = moment(card.date_acq).format("YYYY-MM-DD");
         card.group_ref = card.group_ref?.id ?? card.group_ref;
-        card.grade_company = card.grade_company.name;
+        card.grade_company = card?.grade_company.name;
         card.grade_value = +card.grade_value;
         delete card.front_image;
         delete card.back_image;
         delete card.cardid;
         delete card.portid;
+        if (card?.port_id === cardSelectedStore?.portid) {
+          let flag = false;
+          if (card?.grade_company !== cardSelectedStore?.grade_company?.name) {
+            flag = true;
+          }
+
+          if (card?.grade_value !== cardSelectedStore?.grade_value) {
+            flag = true
+          }
+          
+          if (flag) {
+            dispatch(SearchFilterAction.updateChangedGradeValue(true));
+            dispatch(SearchFilterAction.updateNewGradeValue({
+              company: card?.grade_company,
+              value: card?.grade_value
+            }))
+          }
+        }
       });
     });
     const params = {
@@ -659,8 +782,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [width]);
 
   const onSaveEntry = () => {
-    // setCardsMobile(cloneDeep(cards));
-    // SetShowContentAddCollection(false);
     dispatch(ConfigAction.updateShowMenuCollection(false))
   };
 
@@ -793,7 +914,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       (item: any) => item?.value == entry?.grade_value
     );
     const grade_value_name =
-      entry.grade_company?.name === ungraded && entry.grade_value == NotSpecified
+      entry?.grade_company?.name === ungraded && entry.grade_value == NotSpecified
         ? ""
         : gradeCompanyShow?.display_value ?? entry.grade_value;
     return (
@@ -823,10 +944,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       fn(ConfigAction.updateShowMenuCollection(true));
     },550)
     
-  }
-  const onGetTimeCurrent = () => {
-    var date = new Date();
-    return date.valueOf()
   }
 
   return (
@@ -887,169 +1004,171 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               <Skeleton style={{ height: 75, marginBottom: 15 }} />
             </div>
           )}
-          <div className="card-scroll clear-scroll mt-14">
-            {cards?.cards?.map((item, key) => (
-              <div key={key} className="card-add">
-                <div className="card-add-info d-flex align-items-center">
-                  {item?.sport}{" "}
-                  <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
-                  {item?.year}{" "}
-                  <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
-                  {item?.publisher}
-                </div>
-                <div className="mb-3 fs-5 card-add-description mt-2">
-                  {item?.web_name}
-                </div>
-                {(Boolean(item.auto) || Boolean(item.memo)) && <div className="card-add-group mb-3">
-                  <div className="btn-group">
-                    {Boolean(item.auto) && (
-                      <button
-                        type="button"
-                        className="btn btn-au--custom cursor-default"
-                      > AU </button>
-                    )}
-                    {Boolean(item.memo) && (
-                      <button
-                        type="button"
-                        className="btn btn-mem--custom cursor-default"
-                      > MEM </button>
-                    )}
-                  </div>
-                </div>}
-             
-                {item?.data?.map((entry, k) => (
-                  <div
-                    key={k}
-                    onClick={(e) => {
-                      //@ts-ignore
-                      if (width >= 768) {
-                        onActiveEntry(key, k, entry);
-                      }
-                    }}
-                    className="mb-3 card-add-detail entry"
-                  >
-                    <div
-                      className={`d-flex justify-content-between ${
-                        activeEntry.cardIndex === key &&
-                        activeEntry.entryIndex === k
-                          ? "active"
-                          : ""
-                      }  rounded border border-1 p-2`}
-                      onClick={() => {
-                        //@ts-ignore
-                        if (width < 768) {
-                          onActiveEntry(key, k, entry);
-                          // setCards(cloneDeep(cardsMobile));
-                          scrollTopAsync(0, dispatch)
-                            // dispatch(ConfigAction.updateShowMenuCollection(true))
-                          setFromValue(entry);
-                          // SetShowContentAddCollection(true);
-                        }
-                      }}
-                    >
-                      <div className="box-left">
-                        <div className="d-block justify-content-between align-items-center card-add-detail__txt">
-                          <div
-                            className={`me-1 ${
-                              entry.grade_company &&
-                              entry.grade_company?.name == ungraded &&
-                              `${entry.grade_value}` == NotSpecified
-                                ? ""
-                                : "card-add-detail-grade text-nowrap"
-                            }`}
-                            style={{
-                              backgroundColor:
-                                entry.grade_company &&
-                                entry.grade_company?.name === ungraded &&
-                                `${entry.grade_value}` == NotSpecified
-                                  ? "transparent"
-                                  : entry.grade_company?.color_2 ??
-                                    entry.grade_company?.grade_color_2,
-                              color:
-                                entry.grade_company?.name === ungraded &&
-                                `${entry.grade_value}` == NotSpecified
-                                  ? "#18213A"
-                                  : entry.grade_company?.color_1 ??
-                                    entry.grade_company?.grade_color_1,
-                            }}
-                          >
-                            {renderGradeValue(entry)}
-                          </div>
-                          <strong className="text-ellipsis">
-                            {Boolean(+entry.user_price) && formatCurrencyCustom(
-                              entry.user_price,
-                              entry.user_currency
-                            )}
-                          </strong>{" "}
-                        </div>
-                        <div className="card-add-detail__name">
-                          {cards?.groups?.find(
-                            (item) =>
-                              item.id ===
-                              (entry?.group_ref?.id ?? entry?.group_ref)
-                          )?.group_name ?? ""}
-                        </div>
-                      </div>
-                      <div className="d-flex images justify-content-center align-items-center">
-                        <div className="hide-tablet aspect-sm">
-                          <img
-                            className="rounded"
-                            src={
-                              entry?.image_upload?.front
-                                ? entry?.image_upload?.front
-                                : backgroundImage.src
-                            }
-                            alt=""
-                          />
-                        </div>
-                        <div className="ms-2 hide-tablet aspect-sm">
-                          <img
-                            className="rounded"
-                            src={
-                              entry?.image_upload?.back
-                                ? entry?.image_upload?.back
-                                : backgroundImage.src
-                            }
-                            alt=""
-                          />
-                        </div>
-                        <span>
-                          <img src={IconArrow.src} alt="" />
-                        </span>
-                      </div>
+          <div className="box">
+            <div className="sticky-collection">
+              <div className="card-scroll clear-scroll mt-14">
+                {cards?.cards?.map((item, key) => (
+                  <div key={key} className="card-add">
+                    <div className="card-add-info d-flex align-items-center">
+                      {item?.sport}{" "}
+                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      {item?.year}{" "}
+                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      {item?.publisher}
                     </div>
+                    <div className="mb-3 fs-5 card-add-description mt-2">
+                      {item?.web_name}
+                    </div>
+                    {(Boolean(item.auto) || Boolean(item.memo)) && <div className="card-add-group mb-3">
+                      <div className="btn-group">
+                        {Boolean(item.auto) && (
+                          <button
+                            type="button"
+                            className="btn btn-au--custom cursor-default"
+                          > AU </button>
+                        )}
+                        {Boolean(item.memo) && (
+                          <button
+                            type="button"
+                            className="btn btn-mem--custom cursor-default"
+                          > MEM </button>
+                        )}
+                      </div>
+                    </div>}
+                
+                    {item?.data?.map((entry, k) => (
+                      <div
+                        key={k}
+                        onClick={(e) => {
+                          //@ts-ignore
+                          if (width >= 768) {
+                            onActiveEntry(key, k, entry);
+                          }
+                        }}
+                        className="mb-3 card-add-detail entry"
+                      >
+                        <div
+                          className={`d-flex justify-content-between ${
+                            activeEntry.cardIndex === key &&
+                            activeEntry.entryIndex === k
+                              ? "active"
+                              : ""
+                          }  rounded border border-1 p-2`}
+                          onClick={() => {
+                            //@ts-ignore
+                            if (width < 768) {
+                              onActiveEntry(key, k, entry);
+                              // setCards(cloneDeep(cardsMobile));
+                              scrollTopAsync(0, dispatch)
+                                // dispatch(ConfigAction.updateShowMenuCollection(true))
+                              setFromValue(entry);
+                              // SetShowContentAddCollection(true);
+                            }
+                          }}
+                        >
+                          <div className="box-left">
+                            <div className="d-block justify-content-between align-items-center card-add-detail__txt">
+                              <div
+                                className={`me-1 ${
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name == ungraded &&
+                                  `${entry.grade_value}` == NotSpecified
+                                    ? ""
+                                    : "card-add-detail-grade text-nowrap"
+                                }`}
+                                style={{
+                                  backgroundColor:
+                                    entry?.grade_company &&
+                                    entry?.grade_company?.name === ungraded &&
+                                    `${entry.grade_value}` == NotSpecified
+                                      ? "transparent"
+                                      : entry?.grade_company?.color_2 ??
+                                        entry?.grade_company?.grade_color_2,
+                                  color:
+                                    entry?.grade_company?.name === ungraded &&
+                                    `${entry.grade_value}` == NotSpecified
+                                      ? "#18213A"
+                                      : entry?.grade_company?.color_1 ??
+                                        entry?.grade_company?.grade_color_1,
+                                }}
+                              >
+                                {renderGradeValue(entry)}
+                              </div>
+                              <strong className="text-ellipsis">
+                                {Boolean(+entry.user_price) && formatCurrencyCustom(
+                                  entry.user_price,
+                                  entry.user_currency
+                                )}
+                              </strong>{" "}
+                            </div>
+                            <div className="card-add-detail__name">
+                              {cards?.groups?.find(
+                                (item) =>
+                                  item.id ===
+                                  (entry?.group_ref?.id ?? entry?.group_ref)
+                              )?.group_name ?? ""}
+                            </div>
+                          </div>
+                          <div className="d-flex images justify-content-center align-items-center">
+                            <div className="hide-tablet aspect-sm">
+                              <img
+                                src={
+                                  entry?.image_upload?.front
+                                    ? entry?.image_upload?.front
+                                    : backgroundImage.src
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <div className="ms-2 hide-tablet aspect-sm">
+                              <img
+                                src={
+                                  entry?.image_upload?.back
+                                    ? entry?.image_upload?.back
+                                    : backgroundImage.src
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <span>
+                              <img src={IconArrow.src} alt="" />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
-          <hr className="hr--color mt-4 mb-3" />
-          {Boolean(cards.cards?.length) && (
-            <div className="mt-2 d-flex justify-content-between align-items-center card-add-group-button">
-              <button
-                onClick={onCancle}
-                type="button"
-                className="btn-lg btn btn-cancel mb-2"
-              > Cancel </button>
-              <button
-                onClick={onSubmitForm}
-                disabled={isLoading}
-                type="button"
-                className="btn-lg btn btn-add mb-2"
-              >
-                {isEdit
-                  ? "Save Changes"
-                  : `Add Card${renderTextButton()} to ${t('portfolio.text')}`}
-                {isLoading && (
-                  <span
-                    className="spinner-grow spinner-grow-sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
+              <hr className="hr--color mt-4 mb-3" />
+              {Boolean(cards.cards?.length) && (
+                <div className="mt-2 d-flex justify-content-between align-items-center card-add-group-button">
+                  <button
+                    onClick={onCancle}
+                    type="button"
+                    className="btn-lg btn btn-cancel mb-2"
+                  > Cancel </button>
+                  <button
+                    onClick={onSubmitForm}
+                    disabled={isLoading}
+                    type="button"
+                    className="btn-lg btn btn-add mb-2"
+                  >
+                    {isEdit
+                      ? "Save Changes"
+                      : `Add Card${renderTextButton()} to ${t('portfolio.text')}`}
+                    {isLoading && (
+                      <span
+                        className="spinner-grow spinner-grow-sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
         <div
           className={`col-md-8 col-12 add-collection-right ${
@@ -1108,26 +1227,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             <div className="d-block align-items-center">
                               <div
                                 className={`me-1 ${
-                                  entry.grade_company &&
-                                  entry.grade_company?.name == ungraded &&
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name == ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? ""
                                     : "card-add-detail-grade text-nowrap"
                                 }`}
                                 style={{
                                   backgroundColor:
-                                  entry.grade_company &&
-                                  entry.grade_company?.name === ungraded &&
+                                  entry?.grade_company &&
+                                  entry?.grade_company?.name === ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? "transparent"
-                                    : entry.grade_company?.color_2 ??
-                                      entry.grade_company?.grade_color_2,
+                                    : entry?.grade_company?.color_2 ??
+                                      entry?.grade_company?.grade_color_2,
                                 color:
-                                  entry.grade_company?.name === ungraded &&
+                                  entry?.grade_company?.name === ungraded &&
                                   `${entry.grade_value}` == NotSpecified
                                     ? "#18213A"
-                                    : entry.grade_company?.color_1 ??
-                                      entry.grade_company?.grade_color_1,
+                                    : entry?.grade_company?.color_1 ??
+                                      entry?.grade_company?.grade_color_1,
                                 }}
                               >
                                 {renderGradeValue(entry)}
@@ -1149,9 +1268,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           </div>
                         </div>
                         <div className="d-flex images justify-content-center align-items-center">
-                          <div>
+                          <div className="aspect-sm">
                             <img
-                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.front
                                   ? entry?.image_upload?.front
@@ -1160,9 +1278,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               alt=""
                             />
                           </div>
-                          <div className="ms-2">
+                          <div className="ms-2 aspect-sm">
                             <img
-                              className="rounded rounded-collection"
                               src={
                                 entry?.image_upload?.back
                                   ? entry?.image_upload?.back
@@ -1189,15 +1306,27 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb breadcrumb-edit-card mt-1">
                     <li className="breadcrumb-item">
-                        <Link href="/profile/portfolio">{ t('portfolio.text') }</Link>
+                      <Link href="/profile/portfolio">
+                        <a title={t('portfolio.text')}>
+                          {t('portfolio.text')}
+                        </a>
+                      </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {isEdit ? (
-                        <Link
-                          href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name.replaceAll("/", "-")}`}
-                        >
-                          {groupRef?.name}
-                        </Link>
+                        <>
+                          {+router?.query?.collection !== 0 ? <Link
+                            href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
+                          >
+                            <a title={groupRef?.name}>
+                            {groupRef?.name}
+                            </a>
+                          </Link> :
+                          <Link href={`/profile/portfolio/0/All Cards`}>
+                            <a title="All Cards"> All Cards </a>
+                          </Link>
+                          }
+                        </>
                       ) : (
                         "Add Card"
                       )}
@@ -1220,13 +1349,13 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}{" "}
               </h2>
               { // @ts-ignore
-                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && undoChangeStatus && (
+                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex]?.data[activeEntry?.entryIndex]?.port_id) && undoChangeStatus && (
                 <button type="button" onClick={onUndo} className="btn btn-undo m-0">
                   <img src={rotateLeft} alt="Undo Changes" title="Undo Changes"/> Undo Changes
                 </button>
               )}
               {// @ts-ignore
-                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) && renderTextButton() === "s" && (
+                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.port_id) && renderTextButton() === "s" && (
                 <button
                   type="button"
                   onClick={onRemoveEntry}

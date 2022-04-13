@@ -67,8 +67,9 @@ export class MetaData {
   ];
 
   static sort_list = [
-    { value: true, label: "Newest" },
-    { value: false, label: "Latest" },
+    { value: 'newest', label: "Newest" },
+    { value: 'oldest', label: "Oldest" },
+    { value: 'az', label: "A-Z" },
   ];
   static sort_card_in_profile = [
     {

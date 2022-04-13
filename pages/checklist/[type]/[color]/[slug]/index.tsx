@@ -43,8 +43,9 @@ import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import CaptCha from "components/modal/captcha";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
 
-const rowsPerPage = 20;
+const rowsPerPage = 100;
 
 type ParamTypes = {
   id: string;
@@ -101,11 +102,13 @@ const CollectionBase = ({ ...props}) => {
   });
   const checkListRef = useRef<any>(null);
   const [isSelect, setIsSelect] = useState<boolean>(false);
-  const [isInline, setIsInline] = useState<boolean>(false);
+  const [isInline, setIsInline] = useState<boolean>(true);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
+  const { isAddCardCheckList, pageSelected } = useSelector(Selectors.searchFilter);
   React.useEffect(() => {
     if (!isEmpty(router.query)) {
-      getDetail();
+      setPagesSelected(Boolean(isAddCardCheckList) ? [pageSelected] : [1]);
+      getDetail(Boolean(isAddCardCheckList) && pageSelected ? [pageSelected] : [1]);
     }
   }, [router.query]);
   const [t, i18n] = useTranslation("common")
@@ -267,6 +270,9 @@ const CollectionBase = ({ ...props}) => {
   };
 
   const selectCollection = (item: ManageCollectionType) => {
+
+    dispatch(SearchFilterAction.updateIsAddCardCheckList(true))
+
     router.push(
       `/collections-add-card?collection=${
         item.group_ref
@@ -414,6 +420,9 @@ const CollectionBase = ({ ...props}) => {
     if (timerid) {
       clearTimeout(timerid);
     }
+
+    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+    
     timerid = setTimeout(() => {
       setPagesSelected(event);
       getDetail(event);

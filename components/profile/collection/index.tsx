@@ -5,6 +5,8 @@ import { ManageCollectionType } from "interfaces"
 import {  PgAppProfileType } from "interfaces"
 import { useRouter } from 'next/router'
 import { isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import Selectors from 'redux/selectors';
 
 type PropTypes = {
   isButtonRight?: boolean,
@@ -26,7 +28,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
   });
   const [profileDataFriend, setProfileDataFriend] = useState<PgAppProfileType | undefined>();
   const router = useRouter();
-
+  const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const getData = async () => {
     try {
       if(isProfileFriend) {
@@ -57,13 +59,36 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
       } else {
         const params = {
           table: table,
-          user_id: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId
+          user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
         }
         const result = await api.v1.collection.getManageCollections(params);
+        let dataCollections: Array<ManageCollectionType> = []; 
+        //@ts-ignore
+        if (result?.show_all_cards_folder) {
+           
+          let itemAllCard = {
+            group_ref: 0,
+            group_name: "All Cards",
+            type: 0,
+            //@ts-ignore
+            unique_card: result?.all_cards_count.unique_card,
+            //@ts-ignore
+            total_card: result?.all_cards_count.total_card,
+            claim: 0
+          }
+          dataCollections.push(itemAllCard);
+        }
+        
+        dataCollections = [...dataCollections, ...result.data];
+
         if (result.success) {
           setCollections({
-            data: result.data,
+            data: dataCollections,
             isLoading: false,
+            //@ts-ignore
+            showAllCardsFolder: result?.show_all_cards_folder,
+            //@ts-ignore
+            allCardsCount: result?.all_cards_count
           })
         }
         if (!result.success) {

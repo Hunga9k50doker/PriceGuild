@@ -15,7 +15,7 @@ import { CardModel } from "model/data_sport/card_sport";
 import { useDispatch, useSelector } from "react-redux";
 import { FilterAction } from "redux/actions/filter_action";
 import Selectors from "redux/selectors";
-import { isEmpty, pull, isEqual, findIndex } from "lodash";
+import { isEmpty, pull, isEqual, findIndex, find, cloneDeep } from "lodash";
 import { MetaData } from "utils/constant";
 import { convertListDataToGrouped, formatNumber, isFirefox } from "utils/helper";
 import EditNote from "components/modal/editNote"
@@ -50,6 +50,8 @@ import ModalDeletePortfolio from "components/modal/delete/portfolio";
 import $ from "jquery"
 import HeaderUser from "components/user/headerUser"
 import { UserInfoType, PgAppProfileType } from "interfaces"
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { emptyString } from "react-select/src/utils";
 
 type PropTypes = {
   collection?: string,
@@ -69,7 +71,7 @@ type DataLoadType = {
   isLoading: boolean,
   rows?: number,
   group_name?: string,
-  group_type?: number
+  group_type?: number | string
 }
 
 const defaultSort: SelectDefultType = {
@@ -147,6 +149,8 @@ const CardListCollection = ({
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
+  const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
+  const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
 
   useEffect(() => {
     if (inputSearchRef) {
@@ -169,6 +173,19 @@ const CardListCollection = ({
     }
   }, [router.query])
   
+  useEffect(() => {
+    if (!isEmpty(newGradeChangedState)) {
+      let filterTemp = cloneDeep(filterData); 
+      
+      filterTemp?.grades?.push(newGradeChangedState);
+    
+      setFilterData(filterTemp);
+      
+      gradeRef?.current?.reset(filterTemp?.grades);
+      
+    }
+  }, [newGradeChangedState])
+  
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
@@ -176,39 +193,41 @@ const CardListCollection = ({
     setTrackFilter([])
     resetFilter();
     if (isRefresh) {
-      setPagesSelected([1])
       localStorage.removeItem('filterCollection')
-       //@ts-ignore
-      // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
-      let isCheckBackToSave = false;
-      if (isCheckBackToSave) {
-        //@ts-ignore
-        let dataFilterCustom = JSON.parse(localStorage.getItem('lastestFilterEditCard') ?? '{}') ?? {};
-        //@ts-ignore
-        let dataFilter = JSON.parse(localStorage.getItem('setDataFilter') ?? "{}") ?? {};
-
+      
+      if (Boolean(isModeProfileTableStore)) {
+        setIsInline(true)
+      }
+      if (isEditCardData || isAddCardProfile) {
         let data: Array<TrackData> = [];
-        if (!isEmpty(dataFilter)) {
-          for (let val of Object.keys(dataFilter)) { 
+        if (!isEmpty(dataFilterStore)) {
+          for (let val of Object.keys(dataFilterStore)) { 
             let obj: TrackData = {
               name: val,
               isUpdate: false,
             }
             data.push(obj);
           }
+
+          setFilterData(dataFilterStore);
+          
+          updateDataFilter(lastestFilterEditCardStore);
         }
-       
-        setTrackFilter(data);
-        setFilterData(dataFilter);
-        updateDataFilter(dataFilterCustom);
         
+        setTrackFilter(data);
+        
+      } else {
+        if (!isEmpty(dataFilterStore)) {
+          dispatch(SearchFilterAction.updateSetDataFilter({}));
+        }
+        dispatch(SearchFilterAction.updatePageSelected(1))
       }
+
+      setPagesSelected(Boolean(isEditCardData) || Boolean(isAddCardProfile) ? [pageSelected] : [1]);
       //@ts-ignore
-      getListCard([1], isCheckBackToSave);
-     
+      getListCard(pageSelected && (Boolean(isEditCardData) || Boolean(isAddCardProfile)) ? [pageSelected] : [1], (isEditCardData || isAddCardProfile));
     }
   }
-
   
  const [t, i18n] = useTranslation("common")
   const getFilterSearch = () => {
@@ -259,17 +278,24 @@ const CardListCollection = ({
       if (!isEmpty(filterData)) {
         dataFilter = getFilterSearch();
       }
-      //@ts-ignore
-      let prmsSearchSaveData = JSON.parse(localStorage.getItem('key_search_profile'));
 
       if (inputSearchRef && isSaveChange) {
+        if (!isEmpty(paramsSearchFilterProfile?.search_term)) {
           // @ts-ignore 
-          inputSearchRef.current?.value = prmsSearchSaveData?.search_term;
+          inputSearchRef.current?.value = paramsSearchFilterProfile?.search_term;
+        }
+          
       }
       
+      if (Boolean(changeGradeCardEdit)) {
+        if (!isEmpty(paramsSearchFilterProfile?.filter_dict?.grades)) {
+          paramsSearchFilterProfile?.filter_dict?.grades.push(newGradeChanged);
+        }
+      }
+
       const params: any = {
         portid_only: false,
-        port_userid: !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
+        port_userid: loggingIn ? Number(userId ?? userInfo?.userid) :  !isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : Number(userId ?? userInfo?.userid),
         table: table,
         view_mode: "grouped",
         group_ref: Number(collection),
@@ -283,19 +309,29 @@ const CardListCollection = ({
           sort_by: sortCards?.sort_by
         }
       }
+
+      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange && !isEmpty(dataFilterStore) ? paramsSearchFilterProfile : params);
       
-      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? prmsSearchSaveData : params);
       
-      localStorage.setItem('key_search_profile', JSON.stringify(params));
       
       if (isSaveChange) {
+        dispatch(SearchFilterAction.updateIsEditSaveCard(false));
+
+        dispatch(SearchFilterAction.updateIsAddCardProfile(false));
+        
         //@ts-ignore
-        localStorage.setItem('saveChangePortfolio', false);
-        //@ts-ignore
-        setDataUpdate(JSON.parse(localStorage.getItem('lastestFilterEditCard')));
+        setDataUpdate(lastestFilterEditCardStore);
       }
      
       if (result.success) {
+
+        if (Boolean(changeGradeCardEdit)) {
+          compareDataGradeFilter(result.data?.filter?.grades);
+
+          dispatch(SearchFilterAction.updateChangedGradeValue(false));
+        }
+
+        
         let checkUpdateFilter = JSON.parse(localStorage.getItem("filterCollection") ?? "[]") ?? [];
         if (page.length === 1) {
           // @ts-ignore 
@@ -364,7 +400,10 @@ const CardListCollection = ({
 
           if (!isSaveChange) {
             setDataUpdate(updateFilter);
-            localStorage.setItem('lastestFilterEditCard', JSON.stringify(updateFilter))
+
+            dispatch(SearchFilterAction.updateLastestFilterEditCard(updateFilter));
+
+            dispatch(SearchFilterAction.updateParamsSearchFilterProfile(params))
           }
 
           const grades = updateFilter?.grades;
@@ -428,6 +467,26 @@ const CardListCollection = ({
           };
         });
       }
+      if (!result.success && isEmpty(dataFilterStore)) {
+        dispatch(SearchFilterAction.updateSetDataFilter({}));
+        dispatch(FilterAction.updateFiltersCardDetail({
+          publishers: [],
+          collections: [],
+          printRuns: [],
+          years: [],
+          auto_memo: [],
+          sports: [],
+          grades: [],
+        }));
+      }
+      if (!result.success && isEmpty(result.data?.card_data) && Boolean(isSaveChange)) {
+        ToastSystem.error('No matching results for previous filters, re-setting filters.');
+        setFilterData({});
+        resetFilter();
+        dispatch(SearchFilterAction.updateSetDataFilter({}));
+        getListCard([1]);
+        
+      }
       // ToastSystem.error(result.message);
       setCollectionDetail({
         group_ref: Number(collection),
@@ -458,6 +517,142 @@ const CardListCollection = ({
         return { ...prevState, isLoading: false, isLoadMore: false };
       });
     }
+  }
+  
+  const compareDataGradeFilter = async (data: any) => {
+
+    let gradeItem = data.find((item: any) => item?.grade_company === cardSelectedStore?.grade_company?.name);
+    //check changed old grade_value in company
+    if (!isEmpty(gradeItem)) {
+      let isCheckGradeValue = gradeItem.data.find((grade: any) => +grade?.display_value_short === cardSelectedStore?.grade_value);
+
+      if (isCheckGradeValue === undefined) {
+        filters.grades?.forEach((grade,index) => {
+          if (grade.name === cardSelectedStore?.grade_company?.name) {
+            let indexGrade = grade.options.findIndex((item: any) => item.grade_value === cardSelectedStore?.grade_value);
+            
+            if (indexGrade !== -1) {
+              grade.options.splice(indexGrade, 1); 
+            }
+            updateFilterOptionStore(cardSelectedStore?.grade_company?.name, cardSelectedStore?.grade_value);
+            removeLastestFilterApi(cardSelectedStore?.grade_company?.name, cardSelectedStore?.grade_value, true)
+          }
+        }); 
+      } else {
+      //  console.log(isCheckGradeValue, 'isCheckGradeValue');
+      }
+    } else {
+      let indexFilter = filters.grades?.findIndex((itemGrade: any) => itemGrade.name === cardSelectedStore?.grade_company?.name);
+
+      if (indexFilter !== -1) {
+        //@ts-ignore
+        filters.grades?.splice(indexFilter, 1);
+      }
+      updateFilterOptionStore(cardSelectedStore?.grade_company?.name, cardSelectedStore?.grade_value)
+      removeLastestFilterApi(cardSelectedStore?.grade_company?.name)
+    }
+
+
+    let gradeNewItem = data.find((item: any) => item?.grade_company === newGradeChanged?.company);
+    //check changed new grade_value in company
+    if (!isEmpty(gradeNewItem)) {
+      
+      let checkFilterData = filters.grades?.find((filterItem: any) => filterItem.name === gradeNewItem?.grade_company)
+      if (checkFilterData !== undefined) {
+        let isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        if (isCheckNewGradeValue !== undefined) {
+          filters.grades?.forEach((grade,index) => { 
+            if (grade.name === newGradeChanged?.company) {
+              let indexGrade = grade.options.findIndex((item: any) => item.grade_value === newGradeChanged?.value);
+              if (indexGrade === -1) {
+                //@ts-ignore
+                let newItem = { id: isCheckNewGradeValue?.grade_company + '-' + isCheckNewGradeValue?.grade_value, name: isCheckNewGradeValue?.display_value, grade_company: isCheckNewGradeValue?.grade_company, grade_value: isCheckNewGradeValue?.grade_value };
+                setNewGradeChangedstate(newItem);
+                grade.options.push(newItem);
+                updateLastestFilterApi(gradeNewItem, isCheckNewGradeValue);
+              }
+            }
+          });
+        }
+      } else {
+        let gradeFilter: any = {
+            id: gradeNewItem.grade_company,
+            name: gradeNewItem.grade_company,
+            options: gradeNewItem.data?.map((grade: { grade_value: any; display_value: any; grade_company: any; }) => ({
+              id: `${gradeNewItem.grade_company}-${grade.grade_value}`,
+              name: grade.display_value,
+              grade_company: grade.grade_company,
+              grade_value: grade.grade_value
+            }))
+        }
+        updateLastestFilterApi(gradeNewItem);
+        filters?.grades?.push(gradeFilter);
+        filters?.grades?.sort((a, b) => a.name.localeCompare(b.name));
+
+        let isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        if (isCheckNewParentGrade !== undefined) {
+          filters.grades?.forEach((grade, index) => {
+            if (grade.name === gradeFilter?.name) {
+              let indexGrade = grade.options.findIndex((item: any) => item.grade_value === gradeFilter?.options?.grade_value);
+              if (indexGrade === -1) {
+                //@ts-ignore
+                let newItem = { id: isCheckNewParentGrade?.grade_company + '-' + isCheckNewParentGrade?.grade_value, name: isCheckNewParentGrade?.display_value, grade_company: isCheckNewParentGrade?.grade_company, grade_value: isCheckNewParentGrade?.grade_value };
+                setNewGradeChangedstate(newItem);
+              }
+            }
+          });
+        }
+      }
+     
+    }
+    await dispatch(FilterAction.updateFiltersCardDetail(filters));
+  } 
+  const updateFilterOptionStore = (company: string, value: number) => {
+    let data = cloneDeep(dataFilterStore)
+    let index = data?.grades?.findIndex((item: any) => item.grade_company === company && item.grade_value === value);
+    
+    if (index !== -1) {
+      data?.grades?.splice(index, 1);
+    }
+    
+    setFilterData(data);
+    dispatch(SearchFilterAction.updateSetDataFilter(data));
+  }
+
+  const updateLastestFilterApi = (data: any, option: any = undefined) => {
+    let dataLastest = { ...lastestFilterEditCardStore };
+    if (isEmpty(option)) {
+      dataLastest?.grades?.push(data)
+    } else {
+      let index = dataLastest?.grades?.findIndex((item: any) => item.grade_company === data.grade_company);
+
+      if (index !== -1) {
+        dataLastest?.grades?.[index].data.push(option);
+        //@ts-ignore
+        dataLastest?.grades?.[index].data.sort((a,b) => a.display_value.localeCompare(a.display_value))
+      }
+    }
+    //@ts-ignore
+    dataLastest?.grades?.sort((a, b) => a.grade_company.localeCompare(b.grade_company));
+    dispatch(SearchFilterAction.updateLastestFilterEditCard(dataLastest));
+  }
+
+  const removeLastestFilterApi = (company: string, option: any = undefined, isDel: boolean = false) => {
+    let dataLastest = { ...lastestFilterEditCardStore };
+    let index = dataLastest?.grades?.findIndex((item: any) => item.grade_company === company);
+    if (!isDel) {
+      if (index !== -1) {
+        dataLastest?.grades?.splice(index, 1);
+      }
+    } else {
+      if (index !== -1) {
+        let idx = dataLastest?.grades?.[index]?.data?.findIndex((itemIxd: any) => itemIxd.grade_value === option);
+        dataLastest?.grades?.[index]?.data.splice(idx, 1);
+      }
+    }
+    
+    
+    dispatch(SearchFilterAction.updateLastestFilterEditCard(dataLastest));
   }
 
   const updateDataFilter = (data: any) => {
@@ -527,18 +722,13 @@ const CardListCollection = ({
     return trackFilter[index].isUpdate;
   }
   useEffect(() => {
-    // @ts-ignore
-    let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
-    // @ts-ignore
-    // let isCheckBackToSave = JSON.parse(localStorage.getItem('saveChangePortfolio')) ?? false;
-    let isCheckBackToSave = false;
     
-    if (isCheckBackToSave) {
-      setSelectDataFilter(dataFilter)
+    if (isEditCardData || isAddCardProfile) {
+      setSelectDataFilter(dataFilterStore)
     }
 
     if (!isEmpty(filterData)) {
-      localStorage.setItem('setDataFilter', JSON.stringify(filterData));
+      dispatch(SearchFilterAction.updateSetDataFilter(filterData))
     }
     
     if (!isEmpty(filters.years) && !data.isLoading) {
@@ -745,10 +935,11 @@ const CardListCollection = ({
   const selectCollection = async (item: ManageCollectionType) => {
     setIsShow(false)
     if (table === "wishlist" || isFriend) {
-    const cardCode = data.cards?.filter(item=> cardSelected.includes(item.portid))?.map(item=> item.code)
-    return  router.push(
-        `/collections-add-card?collection=${item.group_ref}&code=${cardCode.toString()}`
-      );
+      const cardCode = data.cards?.filter(item => cardSelected.includes(item.portid))?.map(item => item.code)
+      dispatch(SearchFilterAction.updateIsAddCardProfile(true))
+      return  router.push(
+          `/collections-add-card?collection=${item.group_ref}&code=${cardCode.toString()}`
+        );
     }
     try {
       const params = {
@@ -796,18 +987,16 @@ const CardListCollection = ({
   }
 
   const onAnalytics = () => {
-    router.push(`/profile/portfolio/${collection}/analytics`)
+    if ( +(collection?? 0) !== 0 ) {
+      router.push(`/profile/portfolio/${collection}/analytics`);
+    } else {
+      router.push(`/profile/portfolio/analytics`);
+    }
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
   const handleChange = (event: any) => {
-    // @ts-ignore
-    // let dataFilter = JSON.parse(localStorage.getItem('setDataFilter'));
-    
-    // if (!isEmpty(dataFilter)) {
-    //   setSelectDataFilter(dataFilter)
-    // }
     setPagesSelected([1])
     loadSuggestions([1])
   }
@@ -1042,6 +1231,9 @@ const CardListCollection = ({
     if (timerid) {
       clearTimeout(timerid);
     }
+
+    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+
     timerid = setTimeout(() => {
       setPagesSelected(event)
       getListCard(event)
@@ -1398,10 +1590,14 @@ const CardListCollection = ({
                     </div>
                   }
                   <div className="d-flex btn-group-card">
-                    <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
+                    <button type="button" onClick={() => {
+                      setIsInline(prevState => !prevState)
+                      dispatch(SearchFilterAction.updateModeProfile(false))
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState);
-                      setIsSelect(false)
+                      setIsSelect(false);
+                      dispatch(SearchFilterAction.updateModeProfile(true))
                     }} className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                       {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine/>
@@ -1442,7 +1638,7 @@ const CardListCollection = ({
                     <div className={renderClassButtonFilter("grades")}>
                       <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuGrade" data-bs-toggle="dropdown" aria-expanded="false"> Grade {
                         // @ts-ignore
-                        Boolean(filterData?.grades?.length) && <span className="filter-number">{filterData?.grades?.length}</span>}
+                        Boolean(filterData?.grades?.length) && <span className="filter-number">{gradeRef?.current ? gradeRef?.current?.getLengthChecked() : filterData?.grades?.length}</span>}
                       </button>
                       <div className="dropdown-menu" aria-labelledby="dropdownMenuGrade">
                         <CheckBoxFilter
@@ -1556,7 +1752,7 @@ const CardListCollection = ({
                     }`}
                     data-bs-toggle="modal"
                     data-bs-target="#filterModal"
-                  > Grade {Boolean(filterData?.grades?.length) &&  <span className="filter-number">{filterData?.grades?.length}</span>} </button>
+                  > Grade {Boolean(filterData?.grades?.length) &&  <span className="filter-number">{gradeRef?.current ? gradeRef?.current?.getLengthChecked() : filterData?.grades?.length}</span>} </button>
                   <button
                     onClick={() => setFilterValue("publishers")}
                     type="button"
@@ -1946,12 +2142,16 @@ const CardListCollection = ({
               <div className="only-mobile">
                 <div className="d-flex justify-content-end container-collection-profile-info__group">
                   <div className="d-flex btn-group-card">
-                    <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0 btn-mul-dot`}>
+                    <button type="button" onClick={() => {
+                      setIsInline(prevState => !prevState)
+                      dispatch(SearchFilterAction.updateModeProfile(false))
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0 btn-mul-dot`}>
                       <IconDotMoBile isActive={!isInline ? true : false} />
                     </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState)
                       setIsSelect(false)
+                      dispatch(SearchFilterAction.updateModeProfile(true))
                     } } className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
                       {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine />
@@ -1976,6 +2176,7 @@ const CardListCollection = ({
               isInline={isInline}
               sortCards={sortCards}
               onSortTable={onSortTable}
+              isPortfolioAll={data?.group_type === 'all'}
               cardElement={
                 (item: CardModel) => {
                   return (
@@ -1995,6 +2196,7 @@ const CardListCollection = ({
                       onRemoveWishlist={onRemoveWishlist}
                       isWishlist={table !== 'portfolio' && !isFriend}
                       onAddNewEntry={onAddNewEntry}
+                      isPortfolioAll={data?.group_type === 'all'}
                     />
                   );
                 }

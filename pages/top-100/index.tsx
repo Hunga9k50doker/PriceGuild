@@ -33,6 +33,8 @@ import $ from "jquery";
 import { CardModel } from "model/data_sport/card_sport";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+import filterSport from "components/filter/filterSport";
 
 const rowsPerPage = 20;
 
@@ -98,6 +100,9 @@ const Top100 = (props: PropTypes) => {
     timePeriod: 365,
   });
   const [t, i18n] = useTranslation("common")
+  const { filterSearchTop100, isFilterStoreTop100 } = useSelector(Selectors.searchFilter);
+  const [filterState, setFilterState] = useState<Boolean>(false);
+
   useEffect(() => {
     if (sports.length) {
       setSportsState(
@@ -108,14 +113,31 @@ const Top100 = (props: PropTypes) => {
       );
     }
   }, [sports]);
-
+  
   useEffect(() => {
+    if (!isEmpty(filterData)) {
+      dispatch(SearchFilterAction.updateSeachFilterTop100(filterData))
+    }
     if (pagesSelected.length > 1 || pagesSelected[0] !== 1) {
       setPagesSelected([1])
     }
+
     getListCard();
+    console.log(filterData, 'filterData');
   }, [filterData, sortData]);
 
+  useEffect(() => {
+    if (Boolean(isFilterStoreTop100)) { 
+      setFilterData(filterSearchTop100);
+    }
+  }, [isFilterStoreTop100])
+  
+  useEffect(() => {
+    if (Boolean(isFilterStoreTop100) && Boolean(filterState) && automemoRef.current) {
+      automemoRef.current.reset(filterSearchTop100?.a_filter);
+    }
+  }, [filterState])
+  
   const getListCard = async () => {
     try {
       setData((prevState) => {
@@ -139,10 +161,17 @@ const Top100 = (props: PropTypes) => {
         result.data = result.data.map(item => ({ ...item, sport: filterData?.sport[0].name}));
 
         setDataTable(paginate(result.data, rowsPerPage, [1]));
+
+        if (Boolean(isFilterStoreTop100)) {
+          setFilterState(true)
+        }
         return setData({
           cards: result.data,
           isLoading: false,
         });
+      }
+      if (Boolean(isFilterStoreTop100)) {
+        dispatch(SearchFilterAction.updateIsFilterTop100(false))
       }
       setDataTable([]);
       setData((prevState) => {
@@ -313,6 +342,8 @@ const Top100 = (props: PropTypes) => {
   };
 
   const selectCollection = (item: ManageCollectionType) => {
+    dispatch(SearchFilterAction.updateIsFilterTop100(true))
+    
     router.push(
       `/collections-add-card?collection=${
         item.group_ref
@@ -501,7 +532,8 @@ const Top100 = (props: PropTypes) => {
                               isSearch={false}
                               onChange={onChangeFilter}
                               name="sport"
-                              defaultValue={2}
+                              //@ts-ignore
+                              defaultValue={+filterData?.sport?.[0]?.id ?? 2}
                               isDefault={false}
                               options={sportsState}
                             />

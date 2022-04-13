@@ -23,11 +23,15 @@ import { isEmpty } from "lodash";
 import HeaderUser from "components/user/headerUser"
 import { TabType } from "../friends/friendDetail";
 import { UserInfoType } from "interfaces"
+import IconFolder from "assets/images/folder.svg"
+import { emptyString } from "react-select/src/utils";
 
 const rowsPerPage = 20;
 export type DataCollectionType = {
   data: Array<ManageCollectionType>;
   isLoading: boolean;
+  showAllCardsFolder?: boolean;
+  allCardsCount?: any;
 };
 
 type CollectionListType = {
@@ -109,7 +113,7 @@ const CollectionList = ({
   
   React.useEffect(() => {
     if (collections.data.length) {
-      setData(paginate(collections.data, rowsPerPage, [1]));
+      setData(paginate(collections.data, rowsPerPage, pagesSelected));
       if (dataSearch.length !== collections.data.length && !Boolean(searchKey) ) {
         setDataSearch([...collections.data]);
       }       
@@ -163,9 +167,16 @@ const CollectionList = ({
     }
   };
 
-  const onCreateSuccess = async () => {
+  const onCreateSuccess = async (e:any) => {
     await onHandleModal(false);
-    await getData();
+    if(!e.isEdit) {
+      await getData();
+    } else {
+      setData(paginate(
+        collections?.data?.map(item => item.group_ref ===  collectionDetail?.group_ref ? {...item,group_name: e.name } : item), rowsPerPage, pagesSelected));
+    }
+    
+  
   };
 
   const editCollection = (item: ManageCollectionType) => {
@@ -181,6 +192,9 @@ const CollectionList = ({
   };
 
   const gotoAnalytics = (item: ManageCollectionType) => {
+    if (item.group_ref === 0) {
+      return router.push(`/profile/portfolio/analytics`);
+    }
     router.push(`/profile/portfolio/${item.group_ref}/analytics`);
   };
 
@@ -384,7 +398,11 @@ const CollectionList = ({
                   {item.group_name}{" "}
                   {Boolean(item.type === 2) && (
                     <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
-                  )}{" "}
+                  )}
+                  {Boolean(item.type === 0) && item.group_ref === 0 && (
+                    <img src={IconFolder} alt="icon-folder" />
+                  )}
+                  {" "}
                 </div>
                 {isEdit && (
                   <div className="menu col-2 text-right">
@@ -434,9 +452,9 @@ const CollectionList = ({
                           </>
                         )}
                         {/* <li><hr className="dropdown-divider m-0" /></li> */}
-                        <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
+                        {item.group_ref !== 0 && <li onClick={(e) => { e.stopPropagation(); onConfirmRemove(item?.group_ref ?? 0); setDataSelect(item?.group_name ?? '') }} >
                           <span className="dropdown-item text-capitalize"> Remove {`${title === 'collection' ? t('portfolio.text') : title}`} </span>
-                        </li>
+                        </li>}
                       </ul>
                     </div>
                   </div>

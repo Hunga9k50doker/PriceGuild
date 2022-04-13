@@ -22,7 +22,8 @@ import compareReducer from "./compare";
 import friendReducer from "./friend";
 import apiDocumentReducer from "./api_document";
 import claimPhotoReducer from "./claimPhoto";
-import maintenanceReducer from "./maintenance"
+import maintenanceReducer from "./maintenance";
+import searchfilterReducer from './search_filter';
 export interface ReducerType {
   auth: AuthReducerType;
   category: IChooseCategory;
@@ -35,6 +36,7 @@ export interface ReducerType {
   apiDocumentReducer: ApiDocumentReducerType;
   claimPhoto: ClaimPhotoReducerType;
   maintenance: MaintenanceReducerType;
+  searchFilter: any;
 }
 
 const reducers = combineReducers<ReducerType>({
@@ -48,7 +50,8 @@ const reducers = combineReducers<ReducerType>({
   friend: friendReducer,
   apiDocumentReducer: apiDocumentReducer,
   claimPhoto: claimPhotoReducer,
-  maintenance: maintenanceReducer
+  maintenance: maintenanceReducer,
+  searchFilter: searchfilterReducer,
 });
 
 const createRootReducer = (state: any, action: any) => {

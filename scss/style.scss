@@ -1180,8 +1180,13 @@ input {
       width: 7.375rem;
       height: 46px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
+      padding-left: 0;
+      padding-right: 0;
       color: #124de3 !important;
+      @media (min-width: 1025px) {
+        font-size: 16px;
+      }
     }
     .btn-add {
       background: #124de3 !important;
@@ -1189,14 +1194,28 @@ input {
       width: 14.625rem;
       height: 46px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
+      padding-left: 0;
+      padding-right: 0;
       color: #ffffff !important;
-      @media (min-width: 1201px) {
+      @media (min-width: 768px) {
         margin-left: 15px;
+      }
+      @media (min-width: 1025px) {
+        font-size: 16px;
       }
     }
   }
   &-right {
+    @media screen and (min-width: 768px) {
+      width: calc(100% - 415px) !important;
+      &.section-garding{
+        width: 100%  !important;
+      }
+      &.modal{
+        width: 100%  !important;
+      }
+    }
     .mt-56 {
       margin-top: 56px;
     }
@@ -1491,7 +1510,7 @@ input {
         }
       }
       .box-left {
-        max-width: calc(100% - 30px);
+        max-width: calc(100% - 110px);
         @media (min-width: 1050px) {
           max-width: calc(100% - 140px);
         }
@@ -2226,6 +2245,23 @@ input[type="number"] {
     color: #124de3;
     border: none !important;
     background-color: transparent !important;
+  }
+  &.sticky-zero {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 999;
+    -webkit-transition: all .1s ease-out;
+    -moz-transition: all .1s ease-out;
+    -o-transition: all .1s ease-out;
+    transition: all .1s ease-out;
+    padding: 16px 0 16px 20px;
+    margin-left: -10px;
+    @media (min-width: 1200px) {
+      padding: 16px 0 16px 30px;
+      margin-left: -30px;
+    }
   }
 }
 
@@ -4401,7 +4437,7 @@ input[type="number"] {
     }
     .modal-body {
       overflow-y: auto;
-      margin: 16px;
+      margin: 0;
       @media (min-width: 768px) {
         margin: 32px;
       }

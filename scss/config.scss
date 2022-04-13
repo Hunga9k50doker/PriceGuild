@@ -204,6 +204,7 @@
   table {
     border-collapse: collapse;
     border-radius: 0;
+    min-width: 1500px;
   }
   thead {
     border-radius: 6px !important;
@@ -235,7 +236,7 @@
     tr {
       td {
         vertical-align: middle;
-        padding: 12px;
+        padding: 12px 6px;
         .collection-card-title {
           color: #6d7588;
         }
@@ -898,6 +899,12 @@
           background-image: url("../assets/images/card_default.png");
           background-repeat: no-repeat;
           background-size: cover;
+        }
+        &.cursor-pointer {
+          cursor: default !important;
+        }
+        &.cursor-pointer:not(.no-img) {
+          cursor: pointer !important;
         }
         img {
           max-width: 100%;
@@ -2349,7 +2356,7 @@ th .form-check-input.form-check-input-head {
         }
         .card-add-detail {
           img.rounded {
-            display: none !important;
+            display: block !important;
           }
         }
       }
@@ -3903,7 +3910,6 @@ th .form-check-input.form-check-input-head {
           }
         }
         .card-add-detail {
-          max-height: 68px;
           .rounded {
             background: #fff !important;
             padding: 8px 12px !important;
@@ -3920,7 +3926,6 @@ th .form-check-input.form-check-input-head {
           padding: 0 !important;
           top: 0 !important;
           .rounded {
-            max-height: 68px;
             background: rgba(109, 117, 136, 0.05);
             border: 1px solid #CCCFD6;
             box-sizing: border-box;
@@ -4243,7 +4248,7 @@ th .form-check-input.form-check-input-head {
             max-height: calc(100vh - 148px) !important;
             margin: 0px 6px 0 12px;
             li {
-              padding: 6px 12px;
+              padding: 6px 0;
               .form-check {
                 padding-left: 10px !important;
               }
@@ -4355,9 +4360,9 @@ th .form-check-input.form-check-input-head {
             padding: 0;
           }
           .checkbox-select__filters-wrapp {
-            margin: 12px 6px 12px 12px !important;
+            margin: 0 6px !important;
             li {
-              padding: 12px;
+              padding: 9px;
             }
           }
         }
@@ -4387,9 +4392,9 @@ th .form-check-input.form-check-input-head {
           .checkbox-select__filters-wrapp {
             max-height: 168px !important;
             height: auto;
-            margin: 12px 6px 12px 12px !important;
+            margin: 0 6px !important;
             li {
-              padding: 12px;
+              padding: 9px;
             }
           }
         }
@@ -4617,7 +4622,7 @@ th .form-check-input.form-check-input-head {
       .p-head-search-collection-profile {
         position: fixed;
         top: unset;
-        bottom: 0;
+        bottom: 55px;
         transform: unset;
         left: 0;
         z-index: 8012000;
@@ -5307,6 +5312,18 @@ th .form-check-input.form-check-input-head {
     .modal-body {
       padding: 32px;
       margin: 0 !important;
+      &.hide-scroll {
+        padding: 17px;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .customScroll {
+          padding: 0 15px;
+          max-height: calc(100vh - 270px);
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+      }
       .add-collection-right {
         padding-left: 12px !important;
         .form-check {

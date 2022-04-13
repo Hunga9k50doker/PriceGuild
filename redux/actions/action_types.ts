@@ -80,7 +80,24 @@ class _MaintenanceTypeSagas {
 class  _MaintenanceTypeReducer {
   readonly updateListMaintenance = "update-list-maintenance";
 }
-
+class  _SearchFilterTypeReducer {
+  readonly updateSearchFilter = "update-search-filter";
+  readonly isFilter = "is-filter";
+  readonly updateSearchFilterTop100 = "update-search-filter-100";
+  readonly isFilter100 = "is-filter-100";
+  readonly isEdit = "is-edit";
+  readonly pageSelected = "page-selected";
+  readonly isAddCardCheckList = "is-add-card-check-list";
+  readonly isAddCardProfile = "is-add-card-profile";
+  readonly cardSelected = "card-selected";
+  readonly paramsSearchFilterProfile = "params-search-filter-profile";
+  readonly changeGradeCardValue = "change-grade-card-value";
+  readonly newGradeChangedValue = "new-grade-change-value";
+  readonly setDataFilter = "set-data-filter";
+  readonly lastestFilterEditCard = "lastest-filter-edit-card";
+  readonly setModeProfile = "set-mode-profile";
+  readonly setModeSearch = "set-mode-search";
+}
 
 class _FriendTypeReducer {
   readonly updateListFriend = "update-list-friend";
@@ -115,7 +132,8 @@ class _Reducer {
   readonly compare = new _CompareTypeReducer();
   readonly friend = new _FriendTypeReducer();
   readonly claim = new _ClaimPhotopeReducer();
-  readonly maintenance = new  _MaintenanceTypeReducer();
+  readonly maintenance = new _MaintenanceTypeReducer();
+  readonly search_filter = new  _SearchFilterTypeReducer();
 }
 
 export class ActionTypes {

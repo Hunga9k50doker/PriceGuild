@@ -21,6 +21,7 @@ type PropsType = {
 export type FilterHandle = {
   reset: (value?: any) => void;
   getLengthOption: () => number;
+  getOptionData: () => Array<FilterType>;
 };
 
 type PrioritizeType = {
@@ -57,7 +58,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
     }
 
   }, [props.options])
-
+  
   React.useImperativeHandle(ref, () => ({
     reset(value) {
       setCheckedState(value ?? [])
@@ -65,8 +66,11 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
     getLengthOption() {
       return renderLength()
     },
+    getOptionData() {
+      return options ?? [];
+    }
   }));
-
+  // console.log(options, props?.name, 'optionn');
   const renderLength = () => {
     return sumBy( (optionsSearch ?? options)  , function (o) { return o.options?.length ?? 1; })
   }

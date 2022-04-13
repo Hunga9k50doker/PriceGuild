@@ -288,66 +288,68 @@ const Profile: React.FC = ({...props}) => {
       <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
         <div className="row ">
           <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}` }>
-            <div className="profile-menu">
-              <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
-                <span className="icon">
-                  <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+            <div className="menu-sticky">
+              <div className="profile-menu">
+                <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
+                  <span className="icon">
+                    <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+                  </span>
+                  <span className="profile-menu-text" ref={profileRef}> Profile </span>
+                </div>
+                <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
+                  <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
                 </span>
-                <span className="profile-menu-text" ref={profileRef}> Profile </span>
-              </div>
-              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
-                <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
-              </span>
-                <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
-              </div>
-              <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
-                <span className="icon">
-                  <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
-                </span>
-                <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
-              </div>
-              <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
-                <span className="icon">
-                  <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
-                </span>
-                <span className="profile-menu-text" ref={friendtRef}> Friends </span>
-              </div>
-              <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
-                <span className="icon">
-                  <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
-                </span>
-                <span className="profile-menu-text" ref={messageRef}> Messages </span>
-              </div>
-              {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
-                <span className="icon">
-                  <img src={IconMessageProfile} alt="Market" title="" />
-                </span>
-                <span className="profile-menu-text"> Market </span>
-              </div> */}
-              <hr className="hr-color-profile" />
-              <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
-                <span className="icon">
-                  <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={settingRef}
-                > Settings </span>
-              </div>
-              <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
-                <span className="icon">
-                  <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={findCardRef}
-                > Can't find a card? </span>
-              </div>
-              <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
-                <span className="icon">
-                  <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
-                </span>
-                <span className="profile-menu-text"
-                  ref={apiRef}
-                > API </span>
+                  <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
+                </div>
+                <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
+                  <span className="icon">
+                    <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
+                  </span>
+                  <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
+                </div>
+                <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
+                  <span className="icon">
+                    <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
+                  </span>
+                  <span className="profile-menu-text" ref={friendtRef}> Friends </span>
+                </div>
+                <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
+                  <span className="icon">
+                    <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
+                  </span>
+                  <span className="profile-menu-text" ref={messageRef}> Messages </span>
+                </div>
+                {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
+                  <span className="icon">
+                    <img src={IconMessageProfile} alt="Market" title="" />
+                  </span>
+                  <span className="profile-menu-text"> Market </span>
+                </div> */}
+                <hr className="hr-color-profile" />
+                <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
+                  <span className="icon">
+                    <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
+                  </span>
+                  <span className="profile-menu-text"
+                    ref={settingRef}
+                  > Settings </span>
+                </div>
+                <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
+                  <span className="icon">
+                    <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
+                  </span>
+                  <span className="profile-menu-text"
+                    ref={findCardRef}
+                  > Can't find a card? </span>
+                </div>
+                <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
+                  <span className="icon">
+                    <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
+                  </span>
+                  <span className="profile-menu-text"
+                    ref={apiRef}
+                  > API </span>
+                </div>
               </div>
             </div>
           </div>
@@ -426,9 +428,7 @@ export const getServerSideProps = async (context:any) => {
       let token = cookies(context).TOKEN_KEY;
     
       const params = {
-          cardcode: typeof context.query?.code === "string" ? context.query?.code.split(",") : "",
           table: "portfolio",
-          all_data: true,
           group_ref: Number(context?.query?.collection ?? 0),
       };
 
@@ -443,17 +443,13 @@ export const getServerSideProps = async (context:any) => {
         body: JSON.stringify(params)
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/pg_app_get_existing_saved_cards`, config);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/group-name-from-group-ref`, config);
       data = await res.json();
 
       if (data.success) {
-        const dataEntry = data?.data?.cards[0].data[0];
-      
-        const selecedData = data?.data?.groups?.find(
-            (item: any) => item.id === dataEntry.group_ref
-        );
-
-        titlePage = `Edit Card - ${selecedData.group_name} - Personal Collections`
+        titlePage = `Edit Card - ${data?.group_name} - Personal Collections`;
+      } else {
+        titlePage = `Edit Card - Personal Collections`
       }
     }
 

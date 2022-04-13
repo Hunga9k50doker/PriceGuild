@@ -7,7 +7,7 @@ import Error404 from './404';
 function SportLandingPage({...props}) {
   
   if (props.statusCode === 404) {
-   return <Error404/>
+    return <Error404/>
   }
 
   return (
@@ -55,6 +55,7 @@ export const getServerSideProps = async (context: any) => {
         
       })
     }
+    
     let textEditor = titlePage.slice(0, -2);
 
     titlePage = `${textEditor} ${check_more ? '& more' : ''}| PriceGuide.Cards`;
@@ -62,10 +63,7 @@ export const getServerSideProps = async (context: any) => {
     let statusCode = 200;
 
     const prms = {
-        limit: 10,
-        sport_name: context?.query?.sportName,
-        is_newest: true,
-        page: 1,
+      sport: context?.query?.sportName,
     };
 
     const config = {
@@ -75,22 +73,18 @@ export const getServerSideProps = async (context: any) => {
         'Content-Type': 'application/json',
       },
       //@ts-ignore
-      body: JSON.stringify(params)
+      body: JSON.stringify(prms)
     }
     
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/list`, config);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/cards/check-sport-exists`, config);
     const data = await res.json();
 
-    if (!data.success) {
+    if (!data.exists) {
       statusCode = 404;
     }
 
     if (statusCode === 404) {
         return {
-          // redirect: {
-          //   destination: `/404`,
-          //   permanent: true
-          // }
           notFound: true,
       };
     }

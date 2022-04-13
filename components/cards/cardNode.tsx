@@ -21,8 +21,10 @@ import IconUnion from "assets/images/union_wishlist.svg";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import IconDot3 from "assets/images/dot-3.svg";
+import EditIconBlack from "assets/images/edit-icon-black.svg";
 // @ts-ignore
 import $ from "jquery"
+import { SearchFilterAction } from "redux/actions/search_filter_action";
 
 type PropTypes = {
   item: CardModel & { [key: string]: any },
@@ -45,9 +47,10 @@ type PropTypes = {
   gotoCard?: (item: any) => void,
   imageUrl?: string,
   priceTooltip?: string,
+  isPortfolioAll?: boolean
 }
 
-const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWishlist = false, ...props }: PropTypes) => {  
+const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWishlist = false, isPortfolioAll = false, ...props }: PropTypes) => {  
   const dispatch = useDispatch();
   const { cards } = useSelector(Selectors.compare);
   const { loggingIn } = useSelector(Selectors.auth);
@@ -56,7 +59,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
   const [onMenu, setOnMenu] = useState<boolean>(false);
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [isShowTooltip, setIsShowTooltip] = useState<boolean>(false);
-
+  const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
   const gotoCard = (code: string) => {
     if (!props.isSelect) {
       if (!props.gotoCard) {
@@ -74,7 +77,13 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
 
   const onEdit = (e?: any) => {
     e.stopPropagation();
-    !props.isSelect && router.push(`/profile/collections/edit-card?collection=${props.item.group_ref}&code=${props.item.code}`)
+    
+    dispatch(SearchFilterAction.updateCardSelectedProfile(props.item));
+
+    if(isPortfolioAll){
+     return router.push(`/profile/collections/edit-card?collection=0&code=${props.item.code}`)
+    }
+    !props.isSelect && router.push(`/profile/collections/edit-card?collection=${props.item.group_ref ?? 0}&code=${props.item.code}`)
   }
 
   const onSelectItem = () => {
@@ -139,10 +148,15 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
 
   const onAddCollection = (e?: any) => {
     e.stopPropagation();
-    if(props.isSelect) return;
     if (props.item.portfolio) {
-      return router.push(`/profile/collections`)
+      return setOpenMnCardPortfolio(!openMnCardPortfolio)
     }
+    if(props.isSelect) return;
+    
+    props.onAddCollection && props.onAddCollection();
+  }
+  const addNewEntriesPortfolio = (e?: any) => {
+    e.stopPropagation();
     props.onAddCollection && props.onAddCollection();
   }
 
@@ -191,7 +205,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if (isTable) {
       return <tr >
         <td className="position-relative align-middle">
-         <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" />
+         <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" /> 
         </td>
         <td>
           <div className="d-flex ">
@@ -225,6 +239,13 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
           }}> {props.item.grade_company.name === "ungraded" && props.item.grade_value === 1 ?  "ungraded" : `${props.item.grade_display_value}`} </div>
           }
         </td>
+        {isPortfolioAll && <td>
+          <Link href={`/profile/portfolio/${props?.item?.group_ref}/${props?.item?.group_name}`}>
+            <a title={props?.item?.group_name} className="text-decoration-none c-blue">
+              {props?.item?.group_name}
+            </a>
+          </Link>
+        </td>}
         <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice])} </td>
         <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice)} </td>
         <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice)} </td>
@@ -272,7 +293,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
           {props.isSelect && !props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) && <div className="selected active">
             <div className="select-none"> </div>
           </div>}
-          <div className={`content-product row ${props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) ? "selected-item" : ""} `}>
+          <div className={`content-product row ${props.cardSelected?.includes(props.item[props?.valueName ?? "code"]) ? "selected-item" : ""} position-relative`}>
             <div className="col-md-4 col-5 image-product image-product-left">
               <div className="mb-1 position-relative img image-product__img" >
                 <img
@@ -322,6 +343,15 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                     <img style={{ height: 20 }} src={`${Boolean(props.item.wishlist) ? IconHeartFull : IconHeart}`} alt="" />
                   </div>
                 </>}
+                { 
+                    openMnCardPortfolio && Boolean(props.item?.portfolio) &&
+                    <div className="position-absolute menu-portfolio-static-scroll" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                      <ul className="box-menu">
+                        <li className="d-flex align-items-center cursor-pointer" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                        <li className="d-flex align-items-center cursor-pointer" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                      </ul>
+                    </div>
+                  }
               </div>
             </div>
             <div className="col-7 col-md-8 content-product-detail">
@@ -355,6 +385,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     setTimeout(() => {
       if (!onIcon && !onMenu) {
         setOpenMnWlist(false);
+        setOpenMnCardPortfolio(false)
       }
     },1000)
   }
@@ -362,6 +393,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     setTimeout(() => {
       if (!onMenu && !onIcon) {
         setOpenMnWlist(false);
+        setOpenMnCardPortfolio(false)
       }
     },1000)
   }
@@ -465,6 +497,14 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                       <ul className="box-menu">
                         <li className="d-flex align-items-center" onClick={(e) => {removeWishlist(e)}}> <img src={IconDelete} alt="IconDelete" /> <span> Remove from Wishlist </span> </li>
                         <li className="d-flex align-items-center" onClick={(e) => {addNewEntry(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                      </ul>
+                    </div>
+                  }
+                  {openMnCardPortfolio && Boolean(props.item?.portfolio) &&
+                    <div className="position-absolute menu-wishlist" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
+                      <ul className="box-menu">
+                        <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                        <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
                       </ul>
                     </div>
                   }
