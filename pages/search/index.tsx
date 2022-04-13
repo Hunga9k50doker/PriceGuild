@@ -490,8 +490,9 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
-  const onChangeSearch = (e: any, key: string) => {
+  const onChangeSearch = (e: any, key: string) => {    
     loadSuggestions([1]);
+    buttonRef?.current && buttonRef?.current.click();
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 550);
