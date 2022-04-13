@@ -184,7 +184,8 @@ const CardListCollection = ({
       gradeRef?.current?.reset(filterTemp?.grades);
       
     }
-  },[newGradeChangedState])
+  }, [newGradeChangedState])
+  
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true) => {
     setFilterData({})
@@ -198,7 +199,6 @@ const CardListCollection = ({
         setIsInline(true)
       }
       if (isEditCardData || isAddCardProfile) {
-
         let data: Array<TrackData> = [];
         if (!isEmpty(dataFilterStore)) {
           for (let val of Object.keys(dataFilterStore)) { 
@@ -208,15 +208,14 @@ const CardListCollection = ({
             }
             data.push(obj);
           }
+
+          setFilterData(dataFilterStore);
+          
+          updateDataFilter(lastestFilterEditCardStore);
         }
         
         setTrackFilter(data);
-        if (!isEmpty(dataFilterStore)) {
-          setFilterData(dataFilterStore);
-        }
-        updateDataFilter(lastestFilterEditCardStore);
         
-       
       } else {
         if (!isEmpty(dataFilterStore)) {
           dispatch(SearchFilterAction.updateSetDataFilter({}));
@@ -225,7 +224,6 @@ const CardListCollection = ({
       }
 
       setPagesSelected(Boolean(isEditCardData) || Boolean(isAddCardProfile) ? [pageSelected] : [1]);
-
       //@ts-ignore
       getListCard(pageSelected && (Boolean(isEditCardData) || Boolean(isAddCardProfile)) ? [pageSelected] : [1], (isEditCardData || isAddCardProfile));
     }
@@ -282,8 +280,11 @@ const CardListCollection = ({
       }
 
       if (inputSearchRef && isSaveChange) {
+        if (!isEmpty(paramsSearchFilterProfile?.search_term)) {
           // @ts-ignore 
           inputSearchRef.current?.value = paramsSearchFilterProfile?.search_term;
+        }
+          
       }
       
       if (Boolean(changeGradeCardEdit)) {
@@ -309,7 +310,7 @@ const CardListCollection = ({
         }
       }
 
-      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange ? paramsSearchFilterProfile : params);
+      const result = await api.v1.portfolio.getUserPortfolio(isSaveChange && !isEmpty(dataFilterStore) ? paramsSearchFilterProfile : params);
       
       
       
