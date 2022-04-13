@@ -333,7 +333,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
                   )</div>
               </div>
             }
-            {readMore && !optionData.isOption && optionData.count > LIMIT &&
+            {readMore && !optionData.isOption && optionData.count > (LIMIT+1) &&
               <div className={`btn-see-more-checklist`}>
                 <div className="text-see-more" onClick={() => {hideReadMore()}}>See more (
                   {optionData.count - (LIMIT + 1)}
