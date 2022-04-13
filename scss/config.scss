@@ -1633,6 +1633,9 @@
                 left:0;
                 z-index:5;
                 padding-left: 0;
+                @media screen and (max-width:767.98px) {
+                  width: 5%;
+                }
               }
             }
           }
