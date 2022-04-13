@@ -140,15 +140,16 @@ class PricingGridData {
   }
 
   static dataOption(data:{[key:string]:string}[]): {value:string, label:string, index: number}[] {
-    return Object.keys(data).sort((a,b)=>{ 
-      if ( a === 'All') {
-        return -1;
-      } else if ( b === 'All') {
-        return -1;
-      }
+    // return Object.keys(data).sort((a,b)=>{ 
+    //   // if ( a === 'All') {
+    //   //   return -1;
+    //   // } else if ( b === 'All') {
+    //   //   return -1;
+    //   // }
 
-      return a.localeCompare(b);
-     }).map((key, i) => ({ label: key, value: key, index: i }));
+    //   return a.localeCompare(b);
+    //  })
+    return Object.keys(data).map((key, i) => ({ label: key, value: key, index: i }));
   }
 
   static dataOptionByYear(data: any) {
@@ -161,15 +162,16 @@ class PricingGridData {
       
       if (!isEmpty(value)) {
         //@ts-ignore
-        valueOption = Object.keys(value).sort((a,b)=>{ 
-          if ( a === 'All') {
-            return -1;
-          } else if ( b === 'All') {
-            return -1;
-          }
+        valueOption = Object.keys(value).map((key, i) => ({ label: key, value: key, index: i }));
+        // .sort((a,b)=>{ 
+        //   if ( a === 'All') {
+        //     return -1;
+        //   } else if ( b === 'All') {
+        //     return -1;
+        //   }
 
-          return a.localeCompare(b);
-        }).map((key, i) => ({ label: key, value: key, index: i }));
+        //   return a.localeCompare(b);
+        // })
 
         dataOption[key] = valueOption;
       } else {

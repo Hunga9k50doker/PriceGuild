@@ -469,7 +469,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           );
         }}
       </CardDetailConsumer>
-      <div className="pricing-grid-content">
+      <div className="pricing-grid-content mr--16">
         {lengthTablePrice !== 0 ?
           <>
             <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
@@ -494,7 +494,6 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         let name = item.labelGrade;
                         return { label: name, value: name, index };
                       });
-
                       return (
                         <Select
                           value={!isEmpty(dropDownOptions[pricingGridData.cardGradeSelected]) ?
@@ -516,9 +515,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                 </div>
               </div>
             </div>
-            <div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive">
-              <div onScroll={onScroll} className="content-pricing-grid-custom-table" id="table_grade">
-                <table className="table">
+            <div className="content-pricing-grid content-pricing-grid-custom customScroll table-responsive mr-16">
+              <div onScroll={onScroll} className="content-pricing-grid-custom-table " id="table_grade">
+                <table className="table min-w-mobile">
                   <thead>
                     <tr>
                       <th scope="col"> Grade </th>
@@ -551,6 +550,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                   key={index}
                                 >
                                   <td
+                                    className="has-border"
                                     style={{
                                       color: UtilsColorGrade.colorTextTable(
                                         item.gradeCompany,
