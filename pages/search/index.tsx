@@ -37,6 +37,9 @@ import { useTranslation } from "react-i18next";
 import Head from 'next/head';
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { ToastSystem } from "helper/toast_system";
+import TextSearchBoxDesktop from "components/filter/textSearchBoxDesktop";
+import { useDebouncedCallback } from "utils/useDebouncedEffect";
+import { FilterHandleTextSearch } from "components/filter/textSearchBoxDesktop";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -117,6 +120,8 @@ const CardList = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const { filterSearch, isFilterStore, pageSelected, isModeSearchTableStore } = useSelector(Selectors.searchFilter);
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
+  const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
+  const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -142,7 +147,7 @@ const CardList = (props: PropTypes) => {
       dispatch(SearchFilterAction.updatePageSelected(1))
     }
     setPagesSelected(Boolean(isFilterStore) ? [pageSelected] : [1]);
-    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false)
+    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], isChange, isFilterStore ? true : false, {}, true)
     // pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1]
   }
 
@@ -232,7 +237,7 @@ const CardList = (props: PropTypes) => {
     return params
   }
 
-  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}) => {
+  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}, isResetSearchBox: boolean = false) => {
     
     if (page[page.length-1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
@@ -268,6 +273,19 @@ const CardList = (props: PropTypes) => {
       if (query.q ) {
         params.search_term = query.q;
       }
+      if (!Boolean(isResetSearchBox)) {
+        if (!isEmpty(playerNameRef.current?.getValue())) {
+          params.player_name = playerNameRef.current?.getValue();
+        }
+
+        if (!isEmpty(cardNumberRef.current?.getValue())) {
+          params.card_number = cardNumberRef.current?.getValue();
+        }
+      } else {
+        playerNameRef.current?.reset();
+        cardNumberRef.current?.reset();
+      }
+
       if (Boolean(isFilterStore) && isFilter) {
          params.filter = getFilterSearch();
       } else {
@@ -460,6 +478,9 @@ const CardList = (props: PropTypes) => {
     }
     if (key === "type") {
       colorRef?.current?.reset();
+       // @ts-ignore
+       buttonRef?.current && buttonRef?.current.click();
+      // btnSoftByRef?.current && btnSoftByRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, color: [], isLoad: true });
     }
@@ -469,6 +490,12 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
+  const onChangeSearch = (e: any, key: string) => {
+    loadSuggestions([1]);
+  }
+
+  const loadSuggestions = useDebouncedCallback(getListCard, 550);
+  
   const removeFilter = (item: FilterType, key: string) => {
     if (key === "set") {
       typeRef?.current?.reset();
@@ -667,7 +694,7 @@ const CardList = (props: PropTypes) => {
   }
 
   React.useEffect(() => {
-    if (isChangeRouter && filters.years.length && filters.publishers.length) { console.log(dataFilterState, 'dataFilterState');
+    if (isChangeRouter && filters.years.length && filters.publishers.length) {
       const params: any = {};
       let prioritizeState: any = [];
       const sportState = filters?.sports?.find(item => item.id === +query?.sport_criteria);
@@ -761,7 +788,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <div
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <div
         onClick={() => resetPage(false)}
         className="mb-2 cursor-pointer d-flex ms-2 ps-2 pe-2 cus btn-reset-collection">
         <div> Reset Filters </div>
@@ -776,6 +803,24 @@ const CardList = (props: PropTypes) => {
             </button>
           </div>)}</React.Fragment>
       })}
+      {!isEmpty(cardNumberRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{cardNumberRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            cardNumberRef.current?.clearSearch();
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
+      {!isEmpty(playerNameRef.current?.getValue()) && 
+      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+        <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
+          <button type="button" onClick={() => {
+            playerNameRef.current?.clearSearch();
+        }} className="btn--hidden">
+          <img src={ButtonClear} alt="" />
+        </button>
+      </div>}
     </>
   }
 
@@ -1213,6 +1258,22 @@ const CardList = (props: PropTypes) => {
                         onChange={onChangeFilter}
                         name="printRun"
                         options={optionsPrintRun} />
+                    </div>
+                    <div className="accordion" id="PlayerNameFilter">
+                      <TextSearchBoxDesktop
+                        title="Player Name"
+                        ref={playerNameRef}
+                        onChange={onChangeSearch}
+                        name="playerName"
+                      />
+                    </div>
+                    <div className="accordion" id="CardNumberFilter">
+                      <TextSearchBoxDesktop
+                        title="Card Number"
+                        ref={cardNumberRef}
+                        onChange={onChangeSearch}
+                        name="cardNumber"
+                      />
                     </div>
                   </div>
                 </div>

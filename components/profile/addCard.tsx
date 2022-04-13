@@ -465,9 +465,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           // @ts-ignore
           // localStorage.setItem('saveChangePortfolio', true);
           dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-
+          
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name : 'All Cards'}`);
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`);
         } else {
           router.back();
         }
@@ -938,7 +938,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <Link
-              href={`/profile/collections/${groupRef?.id}/${groupRef?.name}`}
+              href={`/profile/collections/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
             >
               <a className="container-collection-profile-head">
                 <img
@@ -1302,7 +1302,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       {isEdit ? (
                         <>
                           {+router?.query?.collection !== 0 ? <Link
-                            href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name}`}
+                            href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
                           >
                             <a title={groupRef?.name}>
                             {groupRef?.name}

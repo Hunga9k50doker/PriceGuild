@@ -2935,3 +2935,34 @@ button, .btn {
         width: 20% !important;
     }
 }
+
+.header-container {
+    &.p-relative {
+        position: relative;
+    }
+    .search-mobile {
+        @media (min-width: 768px) {
+            display: none;
+        }
+    }
+    .search-form-collections {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+        background-color: #fff;
+        height: 100%;
+        width: calc(100% + 2rem);
+        .input-group {
+            margin-right: 10px;
+        }
+        .text-close {
+            font-family: Manrope;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 130%;
+            text-align: right;
+            letter-spacing: 0.005em;
+            color: #124DE3;
+        }
+    }
+}

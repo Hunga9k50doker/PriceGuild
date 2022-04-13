@@ -24,7 +24,6 @@ export const getServerSideProps = async (context: any) => {
 
     let prms = {
       card_code: context.query.cardCodeDetail,
-      currency: "USD"
     }
 
     const config = {
@@ -36,16 +35,16 @@ export const getServerSideProps = async (context: any) => {
       body: JSON.stringify(prms)
     }
     
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/card_details/pg_app_card_detail`, config);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/card_details/card-details/page-title`, config);
 
     const data = await res.json();
-    let titlePage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} | PriceGuide.Cards`;
-    let descriptionPage = `${data?.data?.card_detail?.webName} ${data?.data?.card_detail?.OnCardCode ? '- #' + data?.data?.card_detail?.OnCardCode : ''} Card Details`;
+    let titlePage = `${data?.webName} ${data?.OnCardCode ? '- #' + data?.OnCardCode : ''} | PriceGuide.Cards`;
+    let descriptionPage = `${data?.webName} ${data?.OnCardCode ? '- #' + data.OnCardCode : ''} Card Details`;
     
     return {props:{
-     titlePage,
+      titlePage,
       descriptionPage,
-     data
+      data
     }}
 
   } catch (error) {

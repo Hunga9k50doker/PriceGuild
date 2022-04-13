@@ -417,7 +417,7 @@ export const getServerSideProps = async (context:any) => {
       let token = cookies(context).TOKEN_KEY;
     
       const params = {
-          profileid: Number(pageCurr)
+        profileid: +Number(pageCurr)
       };
 
       const config = {
@@ -431,11 +431,13 @@ export const getServerSideProps = async (context:any) => {
         body: JSON.stringify(params)
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/profile/pg_app_profile`, config);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/profile/profile-username-from-id`, config);
       data = await res.json();
 
       if (data.success) {
-        titlePage = data?.data?.user_info?.username + " Personal Profile"
+        titlePage = data?.username + " Personal Profile"
+      } else {
+        titlePage = "Unknown Personal Profile"
       }
     }
 

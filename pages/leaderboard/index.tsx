@@ -449,7 +449,7 @@ const Leaderboard = () => {
                         <tr key={key}>
                           <td className="text-center"> {item.rank} </td>
                           <td>
-                            <Link href={userInfo.userid === item.userid ? `/profile/personal` : `/friends/${item.userid}`}>
+                            <Link href={userInfo.userid === item.userid ? `/profile/personal` : `/profile/${item.userid}`}>
                                 <a className="text-reset text-decoration-none">
                                     {item.username === "Unknown"  ? `Unknown #${item.userid}` : item.username}
                                 </a> 

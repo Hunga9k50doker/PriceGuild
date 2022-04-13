@@ -428,9 +428,7 @@ export const getServerSideProps = async (context:any) => {
       let token = cookies(context).TOKEN_KEY;
     
       const params = {
-          cardcode: typeof context.query?.code === "string" ? context.query?.code.split(",") : "",
           table: "portfolio",
-          all_data: true,
           group_ref: Number(context?.query?.collection ?? 0),
       };
 
@@ -445,17 +443,13 @@ export const getServerSideProps = async (context:any) => {
         body: JSON.stringify(params)
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/pg_app_get_existing_saved_cards`, config);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/group-name-from-group-ref`, config);
       data = await res.json();
 
       if (data.success) {
-        const dataEntry = data?.data?.cards[0].data[0];
-      
-        const selecedData = data?.data?.groups?.find(
-            (item: any) => item.id === dataEntry.group_ref
-        );
-
-        titlePage = `Edit Card - ${selecedData.group_name} - Personal Collections`
+        titlePage = `Edit Card - ${data?.group_name} - Personal Collections`;
+      } else {
+        titlePage = `Edit Card - Personal Collections`
       }
     }
 
