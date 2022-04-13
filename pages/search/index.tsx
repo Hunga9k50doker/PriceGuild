@@ -1512,6 +1512,22 @@ const CardList = (props: PropTypes) => {
                                       />
                                     </div>
                                   </div>
+                                  <div className={`accordion ${filterValue === "all" ? "": "d-none"}`} id="PlayerNameFilter">
+                                    <TextSearchBoxDesktop
+                                      title="Player Name"
+                                      ref={playerNameRef}
+                                      onChange={onChangeSearch}
+                                      name="playerName"
+                                    />
+                                  </div>
+                                  <div className={`accordion ${filterValue === "all" ? "": "d-none"} mb-3`} id="CardNumberFilter">
+                                    <TextSearchBoxDesktop
+                                      title="Card Number"
+                                      ref={cardNumberRef}
+                                      onChange={onChangeSearch}
+                                      name="cardNumber"
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             </div>
