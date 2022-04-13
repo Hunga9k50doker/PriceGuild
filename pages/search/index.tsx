@@ -492,6 +492,7 @@ const CardList = (props: PropTypes) => {
 
   const onChangeSearch = (e: any, key: string) => {    
     loadSuggestions([1]);
+    window.scrollTo(0, 0);
     buttonRef?.current && buttonRef?.current.click();
   }
 
