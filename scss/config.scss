@@ -1392,6 +1392,9 @@
 }
 
 @media (max-width: 767.98px) {
+  .mr--16 {
+    margin-right: -16px;
+  }
   .slick-next, .slick-prev {
     display: none;
   }
@@ -1510,6 +1513,7 @@
         margin-bottom: 12px;
         overflow-x: scroll;
         display: flex;
+        max-width: calc(100% + 16px);
         .btn {
           white-space: nowrap;
           background: rgba(109, 117, 136, 0.05);
@@ -1610,7 +1614,18 @@
   }
   .content-pricing-grid-custom {
     .content-pricing-grid-custom-table {
+      &.custom-scroll-sticky-card {
+        table .grade-content .custom-grade {
+          white-space: normal!important;
+          &.custom-grade-bold {
+            white-space: nowrap!important;
+          }
+        }
+      }
       max-height: unset;
+      .min-w-mobile {
+        min-width: 100vw;
+      }
       &::-webkit-scrollbar {
         display: none;
       }
@@ -1651,8 +1666,9 @@
           th {
             vertical-align: middle;
             max-height: 42px;
-            padding-top: 0;
-            padding-bottom: 0;
+            // padding-top: 0;
+            // padding-bottom: 0;
+            white-space: nowrap;
             font-size: 14px;
           }
         }
