@@ -2671,6 +2671,8 @@
         .rounded {
           background: #ffffff;
           border: 1px solid #E9EAED !important;
+          border-radius: 6px!important;
+          box-shadow: none;
         }
       }
       .card-add-group-button {
@@ -2690,6 +2692,8 @@
       .rounded {
         background: rgba(109, 117, 136, 0.05);
         border: 1px solid #CCCFD6 !important;
+        border-radius: 6px!important;
+        box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.15);
         .arrowBack {
           margin-right: 16px;
           margin-left: 8px;
@@ -2755,6 +2759,13 @@
             justify-content: center;
           }
         }
+      }
+    }
+  }
+  .clear-padding-add {
+    .prf-template.add-collection  {
+      .d-block-add-collection.add-collection-right {
+        padding: 0!important;
       }
     }
   }
