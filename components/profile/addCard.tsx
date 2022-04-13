@@ -661,7 +661,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // router.push("/profile/collections");
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name : 'All Cards'}`);
+      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/','-') : 'All Cards'}`);
     } else {
       if (Boolean(isFilterState)) {
         dispatch(SearchFilterAction.updateIsFilter(isFilterState));

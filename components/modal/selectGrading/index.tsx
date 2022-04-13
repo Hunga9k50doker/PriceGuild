@@ -254,7 +254,7 @@ const SelectGrading = ({
     ToastSystem.success(
       <div className="toast-grade-content">
         Card saved to wishlist{" "}
-        <Link href={`/profile/wishlists/${wishList?.group_ref}/${wishList?.group_name}`}>
+        <Link href={`/profile/wishlists/${wishList?.group_ref}/${wishList?.group_name?.replaceAll("/", "-")}`}>
           <a className="text-decoration-none">
             {wishList?.group_name} { Boolean(wishList?.type === 2) && <i className="fa fa-lock" aria-hidden="true"></i>}{" "}
           </a>

@@ -428,7 +428,7 @@ const CollectionAnalytics = ({ collection }: PropTypes) => {
                 <a title="All Cards"> All Cards </a>
               </Link> :
               isEmpty(collectionDetail)  ? <Skeleton style={{ width: 50 }} /> :
-                <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name ?? collectionDetail?.name}`} >
+                <Link href={`/profile/portfolio/${collectionDetail?.[0]?.id ?? collectionDetail?.id}/${collectionDetail?.[0]?.name?.replaceAll('/','-') ?? collectionDetail?.name?.replaceAll('/','-')}`} >
                   <a title={collectionDetail?.[0]?.name ?? collectionDetail?.name}>
                     {collectionDetail?.[0]?.name ?? collectionDetail?.name}
                   </a>
