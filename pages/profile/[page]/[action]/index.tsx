@@ -113,7 +113,7 @@ const Profile: React.FC = ({...props}) => {
           return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
         }
         if (action === "edit-card") {
-          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"><AddCard isEdit={true} /></div>
+          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding clear-padding-add"><AddCard isEdit={true} /></div>
         }
         // if(action ==="analytics") {
         //   return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>

@@ -7,7 +7,10 @@ type PropTypes = {
 
 const CollectionAddCard = (props: PropTypes) => {
   return (
-    <AddCard />
+    <div className="clear-padding-add">
+        <AddCard />
+    </div>
+  
   );
 };
 
