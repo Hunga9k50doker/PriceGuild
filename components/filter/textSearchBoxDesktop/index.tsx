@@ -11,6 +11,7 @@ type PropsType = {
   isRefresh?: boolean,
   defaultValue?: string | number,
   title?: string,
+  isButton?: boolean,
 }
 
 export type FilterHandleTextSearch = {
@@ -61,7 +62,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
   return (
 
     <div className="accordion-item">
-      <h2 className="accordion-header">
+      {Boolean(props.isButton) && <h2 className="accordion-header">
         <button
           type="button"
           className="accordion-button"
@@ -70,7 +71,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
         >
           {props.title}
         </button>
-      </h2>
+      </h2>}
       <div id={`collapse${props.name}`} className="accordion-collapse collapse show" data-bs-parent={`#${props.name}Filter`}>
         <div className="checkbox-select">
           <div id="dropdown" className="checkbox-select__dropdown activeSearch" >
