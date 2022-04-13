@@ -832,7 +832,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <button
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <button
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select"> Reset Filters </button>}
     </>
@@ -1089,7 +1089,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <div
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <div
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select">
         <div> Reset Filters </div>
@@ -1308,9 +1308,9 @@ const CardList = (props: PropTypes) => {
                   <button onClick={() => setFilterValue("type")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.type?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Base/Insert {Boolean(filterData?.type?.length) && <span>{filterData?.type?.length}</span>}</button>
                   {Boolean(filterData?.type?.length) && <button onClick={() => setFilterValue("color")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.color?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Parallel {Boolean(filterData?.color?.length) && <span>{filterData?.color?.length}</span>}</button>}
                 </>}
-                  <button onClick={() => setFilterValue("printRun")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.printRun?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Print Run {Boolean(filterData?.printRun?.length) && <span>{filterData?.printRun?.length}</span>}</button>
-                  <button onClick={() => setFilterValue("playerName")} type="button" className={`btn btn-primary btn-sm`} data-bs-toggle="modal" data-bs-target="#filterModal"> Player Name </button>
-                  <button onClick={() => setFilterValue("cardNumber")} type="button" className={`btn btn-primary btn-sm `} data-bs-toggle="modal" data-bs-target="#filterModal"> Card Number </button>
+                <button onClick={() => setFilterValue("printRun")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.printRun?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Print Run {Boolean(filterData?.printRun?.length) && <span>{filterData?.printRun?.length}</span>}</button>
+                <button onClick={() => setFilterValue("playerName")} type="button" className={`btn btn-primary btn-sm ${playerNameRef.current && playerNameRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Player Name </button>
+                <button onClick={() => setFilterValue("cardNumber")} type="button" className={`btn btn-primary btn-sm ${cardNumberRef.current && cardNumberRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Card Number </button>
                 {resetFilterUIMobile()}
                 <div className="btn btn-filter btn-primary btn-sm" >
                   <button onClick={() => setFilterValue("all")} type="button" data-bs-toggle="modal" data-bs-target="#filterModal" className="btn btn-link p-0">
