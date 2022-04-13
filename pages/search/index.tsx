@@ -490,8 +490,10 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
-  const onChangeSearch = (e: any, key: string) => {
+  const onChangeSearch = (e: any, key: string) => {    
     loadSuggestions([1]);
+    window.scrollTo(0, 0);
+    buttonRef?.current && buttonRef?.current.click();
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 550);
@@ -830,7 +832,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <button
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <button
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select"> Reset Filters </button>}
     </>
@@ -899,6 +901,10 @@ const CardList = (props: PropTypes) => {
         return "Print Run"
       case "sport":
         return "Sport"
+      case "playerName":
+        return "Player Name"
+      case "cardNumber":
+        return "Card Number"
       default:
         return "Filters"
     }
@@ -936,6 +942,10 @@ const CardList = (props: PropTypes) => {
         },350);
       case "sport":
         return Boolean(query.q) ? "" : sumBy(filters.sports, function (o) { return o.options?.length ?? 1; })
+      case "playerName":
+        return '';
+      case "cardNumber":
+        return '';
       default:
         return !filterData?.set?.length ? 6 : (filterData?.set?.length && filterData?.type?.length) ? 8 : 7
     }
@@ -1079,7 +1089,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.isLoad
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) && <div
+      {(Boolean(!checkFilter(filterOld ?? {})) || !isEmpty(cardNumberRef.current?.getValue()) || !isEmpty(playerNameRef.current?.getValue())) && <div
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select">
         <div> Reset Filters </div>
@@ -1299,6 +1309,8 @@ const CardList = (props: PropTypes) => {
                   {Boolean(filterData?.type?.length) && <button onClick={() => setFilterValue("color")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.color?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Parallel {Boolean(filterData?.color?.length) && <span>{filterData?.color?.length}</span>}</button>}
                 </>}
                 <button onClick={() => setFilterValue("printRun")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.printRun?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Print Run {Boolean(filterData?.printRun?.length) && <span>{filterData?.printRun?.length}</span>}</button>
+                <button onClick={() => setFilterValue("playerName")} type="button" className={`btn btn-primary btn-sm ${playerNameRef.current && playerNameRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Player Name </button>
+                <button onClick={() => setFilterValue("cardNumber")} type="button" className={`btn btn-primary btn-sm ${cardNumberRef.current && cardNumberRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Card Number </button>
                 {resetFilterUIMobile()}
                 <div className="btn btn-filter btn-primary btn-sm" >
                   <button onClick={() => setFilterValue("all")} type="button" data-bs-toggle="modal" data-bs-target="#filterModal" className="btn btn-link p-0">
@@ -1347,13 +1359,15 @@ const CardList = (props: PropTypes) => {
                     ${filterValue ==="set" ? 'modal-collection' : ''} 
                     ${filterValue ==="auto_memo" ? 'modal-auto_memo' : ''} 
                     ${filterValue ==="printRun" ? 'modal-print_run' : ''} 
-                    ${filterValue ==="all" ? 'modal-all' : ''}`
+                    ${filterValue === "all" ? 'modal-all' : ''}
+                    ${filterValue === "playerName" ? 'modal-player_name' : ''}
+                    ${filterValue ==="cardNumber" ? 'modal-card_number' : ''}`
                   }>
                     <div className="modal-content">
                       <div className="modal-header">
                         <div className="d-none">{renderLengthFilterMobile()}</div>
                         <h5 className="modal-title" id="filterModalLabel">{renderTitleFilterMobile()} 
-                        <span>{(filterValue ==="sport" || filterValue=== "all" )? renderLengthFilterMobile(): lengthFilter}</span></h5>
+                        <span>{(filterValue ==="sport" || filterValue=== "all" || filterValue=== "playerName" || filterValue=== "cardNumber" ) ? renderLengthFilterMobile() : lengthFilter}</span></h5>
                         <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close"> Close </button>
                       </div>
                       <div className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""}`}>
@@ -1511,6 +1525,28 @@ const CardList = (props: PropTypes) => {
                                         filterValue={filterValue}
                                       />
                                     </div>
+                                  </div>
+                                    <div className={`accordion ${filterValue === "playerName" || filterValue === "all" ? "" : "d-none"} 
+                                    ${
+                                      //@ts-ignore
+                                      width < 768 && filterValue !== "all" ? "mb-3" : ''
+                                    }`} id="PlayerNameFilter">
+                                    <TextSearchBoxDesktop
+                                      isButton={filterValue === "all"}
+                                      title="Player Name"
+                                      ref={playerNameRef}
+                                      onChange={onChangeSearch}
+                                      name="playerName"
+                                    />
+                                  </div>
+                                  <div className={`accordion ${filterValue === "cardNumber" || filterValue === "all" ? "": "d-none"} mb-3`} id="CardNumberFilter">
+                                    <TextSearchBoxDesktop
+                                      isButton={filterValue === "all"}
+                                      title="Card Number"
+                                      ref={cardNumberRef}
+                                      onChange={onChangeSearch}
+                                      name="cardNumber"
+                                    />
                                   </div>
                                 </div>
                               </div>
