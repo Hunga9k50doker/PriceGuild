@@ -189,7 +189,7 @@ const CardListCollection = ({
   }, [newGradeChangedState])
   
   const [friend, setFriend] = useState<PgAppProfileType>()
-  const resetPage = async (isRefresh: boolean = true, isReset: boolean = true) => {
+  const resetPage = (isRefresh: boolean = true, isReset: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
     setTrackFilter([])
@@ -875,7 +875,6 @@ const CardListCollection = ({
   }
 
   const resetFilter = () => {
-    dispatch(SearchFilterAction.updateSetDataFilter({}));
     sportRef?.current?.reset();
     publisherRef?.current?.reset();
     yearRef?.current?.reset();
@@ -1792,16 +1791,15 @@ const CardListCollection = ({
                     </div>
                   : <>  
               <div className="filter-mobile filter-mobile-profile position-relative w-100">
-                  <div className="button-filter ">
-                    <button
+                <div className="button-filter ">
+                  {router.query?.page === 'portfolio' && router.query?.action === '0' && <button
                     onClick={() => setFilterValue("group_refs")}
                     type="button"
-                    className={`btn btn-primary btn-sm ${
-                      Boolean(filterData?.group_refs?.length) ? "group_refs-button" : ""
-                    }`}
+                    className={`btn btn-primary btn-sm ${Boolean(filterData?.group_refs?.length) ? "group_refs-button" : ""
+                      }`}
                     data-bs-toggle="modal"
                     data-bs-target="#filterModal"
-                  > Portfolio {Boolean(filterData?.group_refs?.length) && <span className="filter-number">{filterData?.group_refs?.length}</span>} </button>
+                  > Portfolio {Boolean(filterData?.group_refs?.length) && <span className="filter-number">{filterData?.group_refs?.length}</span>} </button>}
                   <button
                     onClick={() => setFilterValue("sports")}
                     type="button"
