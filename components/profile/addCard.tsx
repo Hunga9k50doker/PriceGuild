@@ -943,8 +943,14 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     setTimeout(() => {
       fn(ConfigAction.updateShowMenuCollection(true));
     },550)
-    
   }
+
+  const formatOptionPortfolio = ({id, group_name, type}: any) => (
+   <>
+    {group_name}
+    {type == 2 && <i className="ms-1 fa fa-lock" aria-hidden="true"></i>}
+   </>
+  );
 
   return (
     <div className="add-collection prf-template pl-3 position-relative">
@@ -1607,6 +1613,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     getOptionValue={(item: any) => item.id}
                     // classNamePrefix="w-100 input-collection-prefix"
                     options={cards.groups}
+                    formatOptionLabel={formatOptionPortfolio}
                     styles={{
                       // @ts-ignore
                       dropdownIndicator: (provided, state) => ({
