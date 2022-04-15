@@ -202,9 +202,9 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
       <div id="app" className="checkbox-select">
         <div id="dropdown" className="checkbox-select__dropdown activeSearch" >
           <div className="checkbox-select__search-wrapp">
-            {props.isSearch !== false && <div className="d-flex">
+            {props.isSearch !== false && <div className="d-flex checkbox-select__search-wrapp-input">
               <input value={keySearch} onChange={onSearch} name={props.name} type="text" placeholder="Search" />
-              {Boolean(keySearch) && <i onClick={onClearSearch} className="fa fa-times" aria-hidden="true"></i>}
+              {Boolean(keySearch) && <i onClick={onClearSearch} className="fa fa-times input-close" aria-hidden="true"></i>}
             </div>}
           </div>
           <ul className={`customScroll ${props.isSearch === false ? "mt-0" : ""}  checkbox-select__filters-wrapp mb-0`}>
