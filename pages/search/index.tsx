@@ -40,6 +40,7 @@ import { ToastSystem } from "helper/toast_system";
 import TextSearchBoxDesktop from "components/filter/textSearchBoxDesktop";
 import { useDebouncedCallback } from "utils/useDebouncedEffect";
 import { FilterHandleTextSearch } from "components/filter/textSearchBoxDesktop";
+import { ConfigAction } from "redux/actions/config_action";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -130,6 +131,16 @@ const CardList = (props: PropTypes) => {
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
+  useEffect(() => {
+      //@ts-ignore
+    if(width < 767.98) {
+      if(isSelect) {
+        dispatch(ConfigAction.updateShowTabBar(false));
+      } else {
+        dispatch(ConfigAction.updateShowTabBar(true));
+      }
+    }
+  }, [isSelect])
 
   const resetPage = (isChange: boolean = false) => {
     if (Boolean(isModeSearchTableStore)) {
@@ -1601,7 +1612,7 @@ const CardList = (props: PropTypes) => {
                   <div className="d-flex align-items-center ml-1 btn-group-head-search  btn-group-head-search--mobile">
                       <div className="group-head-search-info">
                         <div className="group-head-search-info-text d-flex">
-                          <div> Select All </div>
+                          <div onClick={onSelectAll}> Select All </div>
                           <div> <span className="fw-bold">{cardSelected.length}</span> cards selected</div>
                         </div>
                         <img onClick={onHandleMode} src={IconCloseMobile} alt="" title="" />
