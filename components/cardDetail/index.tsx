@@ -66,6 +66,7 @@ import CaptCha from "components/modal/captcha";
 import { api } from "configs/axios";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
+import { ConfigAction } from "redux/actions/config_action";
 
 type PropTypes = {
   code?: string;
@@ -95,6 +96,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const pricingGridRef = useRef<any>(null);
   const salesOverviewRef = useRef<any>(null);
   const salesChartdRef = useRef<any>(null);
+  const treeRef = useRef<any>(null);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isLoadingSalesChart, setIsLoadingSalesChart] = useState<boolean>(false);
   const [cardData, setCardData] = useState<CardModel | undefined>()
@@ -1296,6 +1298,8 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       treeCheckable
                                       treeDefaultExpandAll
                                       value={saleChartState.gradeTreeSelected}
+                                      showSearch={false}
+                                      ref={treeRef}
                                       onChange={(e: string[]) => {
                                         let dataSelect = e || []
                                         const hasAll = !!e.find(it => it === 'ALL')
@@ -1343,7 +1347,15 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       }}
                                       onDropdownVisibleChange={() => {
                                         const dropdown = document.querySelector('.grade-tree-selected-custom')
+                                       
+                                        if(Boolean(treeRef?.current?.state?.open)) {
+                                          dispatch(ConfigAction.updateShowTabBar(true));
+                                        } else {
+                                          dispatch(ConfigAction.updateShowTabBar(false));
+                                        }
+                                        
                                         if (dropdown) {
+                                        
                                           if (saleChartState.gradeTreeSelected?.length >= 5) {
                                             const warning = dropdown.querySelector('.warning-selected')
                                             if (warning) return
