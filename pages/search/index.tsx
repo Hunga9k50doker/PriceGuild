@@ -1275,6 +1275,7 @@ const CardList = (props: PropTypes) => {
                         ref={playerNameRef}
                         onChange={onChangeSearch}
                         name="playerName"
+                        isButton={true}
                       />
                     </div>
                     <div className="accordion" id="CardNumberFilter">
@@ -1283,6 +1284,7 @@ const CardList = (props: PropTypes) => {
                         ref={cardNumberRef}
                         onChange={onChangeSearch}
                         name="cardNumber"
+                        isButton={true}
                       />
                     </div>
                   </div>
