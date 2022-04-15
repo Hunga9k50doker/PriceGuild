@@ -52,6 +52,7 @@ import HeaderUser from "components/user/headerUser"
 import { UserInfoType, PgAppProfileType } from "interfaces"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { emptyString } from "react-select/src/utils";
+import { route } from "next/dist/server/router";
 
 type PropTypes = {
   collection?: string,
@@ -151,7 +152,8 @@ const CardListCollection = ({
   const [cardData, setCardData] = useState<CardModel | undefined>();
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
-
+  const collectionRef = React.useRef<FilterHandle>(null);
+  
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -333,6 +335,7 @@ const CardListCollection = ({
 
         
         let checkUpdateFilter = JSON.parse(localStorage.getItem("filterCollection") ?? "[]") ?? [];
+       
         if (page.length === 1) {
           // @ts-ignore 
           setFirstTimeFilterData(result.data.filter);
@@ -396,8 +399,18 @@ const CardListCollection = ({
               updateFilter.grades.length = 0;
               updateFilter.grades = result.data.filter.grades;
             }
+            console.log(dataUpdate, 'dataUpdate');
+            console.log(!checkIsUpdate('group_refs'), '!checkIsUpdate("group_refs")');
+            //group_refs
+            if (!checkIsUpdate('group_refs')) {
+              updateFilter.group_refs.length = 0;
+              updateFilter.group_refs = dataUpdate?.group_refs;
+            } else {
+              updateFilter.group_refs.length = 0;
+              updateFilter.group_refs = result.data.filter.group_refs;
+            }
           }
-
+          
           if (!isSaveChange) {
             setDataUpdate(updateFilter);
 
@@ -440,7 +453,11 @@ const CardListCollection = ({
               })),
               auto_memo: updateFilter?.auto_memo,
               sports: updateFilter?.sports,
-              grades: gradeFilter
+              grades: gradeFilter,
+              group_refs: (!isEmpty(updateFilter?.group_refs) ? updateFilter?.group_refs : []).map((item: any) => ({
+                name: item.group_name,
+                id: item.id.toString(),
+              }))
             }));
           }
           
@@ -467,17 +484,20 @@ const CardListCollection = ({
           };
         });
       }
-      if (!result.success && isEmpty(dataFilterStore)) {
-        dispatch(SearchFilterAction.updateSetDataFilter({}));
-        dispatch(FilterAction.updateFiltersCardDetail({
-          publishers: [],
-          collections: [],
-          printRuns: [],
-          years: [],
-          auto_memo: [],
-          sports: [],
-          grades: [],
-        }));
+      
+      if (!result.success) {
+        if (router.query?.page === 'portfolio' && router.query?.action !== '0' ) {
+          dispatch(SearchFilterAction.updateSetDataFilter({}));
+          dispatch(FilterAction.updateFiltersCardDetail({
+            publishers: [],
+            collections: [],
+            printRuns: [],
+            years: [],
+            auto_memo: [],
+            sports: [],
+            grades: [],
+          }));
+        }
       }
       if (!result.success && isEmpty(result.data?.card_data) && Boolean(isSaveChange)) {
         ToastSystem.error('No matching results for previous filters, re-setting filters.');
@@ -556,10 +576,15 @@ const CardListCollection = ({
     let gradeNewItem = data.find((item: any) => item?.grade_company === newGradeChanged?.company);
     //check changed new grade_value in company
     if (!isEmpty(gradeNewItem)) {
-      
       let checkFilterData = filters.grades?.find((filterItem: any) => filterItem.name === gradeNewItem?.grade_company)
       if (checkFilterData !== undefined) {
-        let isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        let isCheckNewGradeValue: any = undefined;
+        if (gradeNewItem?.grade_company === 'ungraded' && newGradeChanged?.company === 'ungraded') {
+          isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.grade_value === newGradeChanged?.value);
+        } else {
+          isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        }
+        
         if (isCheckNewGradeValue !== undefined) {
           filters.grades?.forEach((grade,index) => { 
             if (grade.name === newGradeChanged?.company) {
@@ -589,7 +614,13 @@ const CardListCollection = ({
         filters?.grades?.push(gradeFilter);
         filters?.grades?.sort((a, b) => a.name.localeCompare(b.name));
 
-        let isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        let isCheckNewParentGrade: any = undefined;
+        if (gradeNewItem?.grade_company === 'ungraded' && newGradeChanged?.company === 'ungraded') {
+          isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.grade_value === newGradeChanged?.value);
+        } else {
+          isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        }
+        
         if (isCheckNewParentGrade !== undefined) {
           filters.grades?.forEach((grade, index) => {
             if (grade.name === gradeFilter?.name) {
@@ -597,6 +628,7 @@ const CardListCollection = ({
               if (indexGrade === -1) {
                 //@ts-ignore
                 let newItem = { id: isCheckNewParentGrade?.grade_company + '-' + isCheckNewParentGrade?.grade_value, name: isCheckNewParentGrade?.display_value, grade_company: isCheckNewParentGrade?.grade_company, grade_value: isCheckNewParentGrade?.grade_value };
+                
                 setNewGradeChangedstate(newItem);
               }
             }
@@ -690,7 +722,11 @@ const CardListCollection = ({
       })),
       auto_memo: data?.auto_memo,
       sports: data?.sports,
-      grades: gradeFilter
+      grades: gradeFilter,
+      group_refs: (!isEmpty(data?.group_refs) ? data?.group_refs : []).map((item: any) => ({
+        name: item.group_name,
+        id: item.id.toString(),
+      }))
     }));
   }
 
@@ -712,6 +748,9 @@ const CardListCollection = ({
     } 
     if (!isEmpty(data?.auto_memo)) {
       automemoRef?.current?.reset(data?.auto_memo);
+    }
+    if (!isEmpty(data?.group_refs)) {
+      collectionRef?.current?.reset(data?.group_refs);
     }
   }
   const checkIsUpdate = (key: string) => {
@@ -739,7 +778,7 @@ const CardListCollection = ({
   
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {
-    
+
     let dataSave = [...trackFilter];
     
     if (trackFilter.length === 0) {
@@ -809,7 +848,8 @@ const CardListCollection = ({
     let gradeFilter = !data.includes('grades');
     let publisherFilter = !data.includes('publishers');
     let collectionFilter = !data.includes('collections');
-    
+    let groupRefFilter = !data.includes('group_refs');
+
     if (yearFilter) {
       yearRef?.current?.reset();
     }
@@ -833,6 +873,10 @@ const CardListCollection = ({
     if (collectionFilter) {
       setRef?.current?.reset();
     }
+
+    if (groupRefFilter && router.query?.page === 'portfolio' && router.query?.action === '0') {
+      collectionRef?.current?.reset();
+    }
   }
 
   const resetFilter = () => {
@@ -843,6 +887,7 @@ const CardListCollection = ({
     automemoRef?.current?.reset();
     typeRef?.current?.reset();
     gradeRef?.current?.reset();
+    collectionRef?.current?.reset();
   }
 
   const renderClassButtonFilter = (key: string) => {
@@ -1621,6 +1666,20 @@ const CardListCollection = ({
                   //@ts-ignore
                   width >= 768 ?
                     <div className="filter-top mb-2 filter-list">
+                      { router.query?.page === 'portfolio' && router.query?.action === '0' && <div className={renderClassButtonFilter("group_refs")}>
+                      <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenupublisher" data-bs-toggle="dropdown" aria-expanded="false"> Collection {
+                        // @ts-ignore
+                        Boolean(filterData?.group_refs?.length) && <span className="filter-number"> {filterData?.group_refs?.length} </span>}
+                      </button>
+                      <div className="dropdown-menu" aria-labelledby="dropdownMenusport">
+                        <CheckBoxFilter
+                          ref={collectionRef}
+                          isChangeValue={false}
+                          onChange={onChangeFilter}
+                          isSearch={sumBy(filters.group_refs, function (o: any) { return o.options?.length ?? 1; }) > 15}
+                          name="group_refs" options={filters.group_refs} />
+                      </div>
+                    </div>}
                     <div className={renderClassButtonFilter("sports")}>
                       <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenupublisher" data-bs-toggle="dropdown" aria-expanded="false"> Sport {
                         // @ts-ignore
