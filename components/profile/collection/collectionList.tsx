@@ -173,7 +173,7 @@ const CollectionList = ({
       await getData();
     } else {
       setData(paginate(
-        collections?.data?.map(item => item.group_ref ===  collectionDetail?.group_ref ? {...item,group_name: e.name } : item), rowsPerPage, pagesSelected));
+        collections?.data?.map(item => item.group_ref ===  collectionDetail?.group_ref ? {...item,group_name: e.name,type: e.type } : item), rowsPerPage, pagesSelected));
     }
     
   
