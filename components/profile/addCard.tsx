@@ -1267,7 +1267,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             )?.group_name ?? ""}
                           </div>
                         </div>
-                        <div className="d-flex images justify-content-center align-items-center">
+                        {/*<div className="d-flex images justify-content-center align-items-center">
                           <div className="aspect-sm">
                             <img
                               src={
@@ -1288,7 +1288,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               alt=""
                             />
                           </div>
-                        </div>
+                        </div>*/}
                       </div>
                     </div>
                   ))}
