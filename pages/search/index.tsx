@@ -398,7 +398,24 @@ const CardList = (props: PropTypes) => {
 
   const getFilterCollection = async () => {
     try {
-      const result = await api.v1.getFilterCollection({ set_id: filterData?.set.map(item => item.id) });
+      let prms: any = {
+        set_id: filterData?.set.map(item => item.id),
+      }
+      if (query.sport || query?.sport_criteria) {
+        prms.sport = +(query?.sport ?? query?.sport_criteria);
+      }
+
+      if (isEmpty(query)) {
+        prms.sport = +(userInfo?.userDefaultSport ?? 1)
+      }
+
+      if (query.q ) {
+        prms.search_term = query.q;
+      }
+      if (filterData?.sport?.length) {
+        prms.sport = filterData?.sport[0]?.id;
+      }
+      const result = await api.v1.getFilterCollection(prms);
       result.data.type = convertListDataToGrouped(result.data.type, FilterType.firstLetter, (item1, item2) => {
         return item1.name.localeCompare(item2.name);
       })
