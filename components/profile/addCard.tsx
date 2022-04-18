@@ -957,25 +957,35 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       <div>
         <div className="only-mobile">
           {isEdit ? (
-            <Link
-              href={`/profile/collections/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
+            <>
+            {+router?.query?.collection !== 0 ? <Link
+              href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
             >
-              <a className="container-collection-profile-head">
+              <a className="container-collection-profile-head" title={groupRef?.name}>
                 <img
-                  // onClick={() => history.push("profile/collections")}
                   src={ArrowProfile}
                   alt=""
                 />
                 {groupRef?.name}
               </a>
+            </Link> :
+            <Link href={`/profile/portfolio/0/All Cards`}>
+              <a className="container-collection-profile-head" title="All Cards"> 
+                <img
+                  src={ArrowProfile}
+                  alt=""
+                />
+                All Cards
+              </a>
             </Link>
+            }
+          </>
           ) : (
             <Link
               href={`/profile/collections`}
             >
             <a className="container-collection-profile-head">
               <img
-                // onClick={() => history.push("profile/collections")}
                 src={ArrowProfile}
                 alt=""
               />
@@ -983,10 +993,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
              </a>
             </Link>
           )}
-          {/* <Link to="/profile/collections" className="container-collection-profile-head">
-              <img onClick={() => history.push("profile/collections")}  src={ArrowProfile} />
-              {groupRef?.name}
-            </Link> */}
         </div>
       </div>
       <div className="only-mobile add-collection-title" >
