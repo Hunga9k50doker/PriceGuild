@@ -80,7 +80,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                 <div className="d-flex cursor-pointer"> Grade </div>
               </th>
               {isPortfolioAll && <th scope="col" style={{ width: "10%" }}>
-                <div className="d-flex cursor-pointer align-items-center">Portfolio
+                <div onClick={() => onSortTable && onSortTable("group_name")} className="d-flex cursor-pointer align-items-center">Portfolio
                 {/* <div className="d-flex cursor-pointer">  </div> */}
                   <div className="ms-1 sort-table d-flex flex-column-reverse" onClick={() => onSortTable && onSortTable("group_name")}>
                     <i className={`sort-asc ${renderSortTable("group_name", true)}`} aria-hidden="true"></i>
