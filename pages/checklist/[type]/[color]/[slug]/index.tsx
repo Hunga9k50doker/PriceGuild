@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
 import {
@@ -44,6 +44,7 @@ import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import CaptCha from "components/modal/captcha";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 const rowsPerPage = 100;
 
@@ -428,7 +429,6 @@ const CollectionBase = ({ ...props}) => {
       getDetail(event);
     }, 550);
   };
-
   return (
     <>
       <Head>
@@ -656,7 +656,8 @@ const CollectionBase = ({ ...props}) => {
                       key={item.id}
                       cardSelected={cardSelected}
                       onSelectItem={onSelectItem}
-                      imageUrl={item?.image
+                      // imageUrl={ `https://picsum.photos/200/300?random=${key}`}
+                      imageUrl={ item?.image
                         ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
                         : undefined}
                       isSelect={isSelect}
@@ -889,18 +890,30 @@ const CollectionBase = ({ ...props}) => {
                                     onClick={() => onGoToCard(item)}
                                     className="cursor-pointer image-box-table mr-2"
                                   >
-                                    <img
+                                    <LazyLoadImg 
+                                    className="w-100"
+                                    imgError={CardPhotoBase}
+                                     url={item?.image
+                                      ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
+                                        ? "ns"
+                                        : "sp"}/${item?.image}.jpg`
+                                      : CardPhotoBase} 
+                                    />
+                                    {/* <img
                                       alt=""
                                       className="w-100"
                                       onError={({ currentTarget }) => {
-                                        currentTarget.onerror = null; // prevents looping
+                                        currentTarget.onerror = null; 
                                         currentTarget.src = CardPhotoBase;
                                       } }
+                                      data-src={`https://picsum.photos/200/300?random=${index}`}
+                                      src={ `https://picsum.photos/200/300?random=${index}`}
                                       src={item?.image
                                         ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
                                           ? "ns"
                                           : "sp"}/${item?.image}.jpg`
-                                        : CardPhotoBase} />
+                                        : CardPhotoBase} 
+                                      /> */}
                                   </div>
                                   <div
                                     onClick={() => onGoToCard(item)}

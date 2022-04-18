@@ -25,6 +25,7 @@ import EditIconBlack from "assets/images/edit-icon-black.svg";
 // @ts-ignore
 import $ from "jquery"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 type PropTypes = {
   item: CardModel & { [key: string]: any },
@@ -462,14 +463,15 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                     gotoCard(props.item?.code)
                   }}
                   className="image-product cursor-pointer position-relative box-card-element">
-                  <img
+                  <LazyLoadImg imgError={ImageCardSearch.src} url={ props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name  || `${props?.imageUrl}` } className="img-product-element"/>
+                  {/* <img
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null; // prevents looping
                       if (ImageCardSearch) {
                         currentTarget.src=ImageCardSearch.src;
                       }
                     }}
-                    className="img-product-element" src={props?.item?.url_image || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name  || `${props?.imageUrl}` } alt="" title="" />
+                    className="" alt="" title="" /> */}
                   {props.item.grade_display_value && props.item.grade_display_value != "Not Specified" && <div className={`grade-card  ${props.item.grade_company === "ungraded" ? '' : 'custom-grade-bold'}`}
                     style={{
                       backgroundColor: props.item.grade_company?.color_2,
