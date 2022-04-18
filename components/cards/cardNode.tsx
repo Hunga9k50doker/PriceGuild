@@ -486,6 +486,14 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                   </div> : <>
                     <div onClick={onAddCollection} className="collecion-check cursor-pointer">
                       <img src={`${Boolean(props.item.portfolio) ? IconFolderFull : IconFolder}`} alt="" title="" />
+                      {Boolean(props.item?.portfolio) &&
+                        <div className="position-absolute menu-wishlist">
+                          <ul className="box-menu">
+                            <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                            <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                          </ul>
+                        </div>
+                      }
                     </div>
                       <div onClick={onAddWishList} className="edit-note cursor-pointer" onMouseEnter={() => { setOnIcon(true); setOnMenu(true) }} onMouseLeave={() => { setOnIcon(false); onLeaveIcon();  }}>
                       <img src={`${Boolean(props.item.wishlist) ? IconHeartFull : IconHeart}`} alt="" title="" />
@@ -497,14 +505,6 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                       <ul className="box-menu">
                         <li className="d-flex align-items-center" onClick={(e) => {removeWishlist(e)}}> <img src={IconDelete} alt="IconDelete" /> <span> Remove from Wishlist </span> </li>
                         <li className="d-flex align-items-center" onClick={(e) => {addNewEntry(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
-                      </ul>
-                    </div>
-                  }
-                  {openMnCardPortfolio && Boolean(props.item?.portfolio) &&
-                    <div className="position-absolute menu-wishlist" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
-                      <ul className="box-menu">
-                        <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
-                        <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
                       </ul>
                     </div>
                   }

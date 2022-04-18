@@ -2071,6 +2071,34 @@ input[type="number"] {
             }
           }
         }
+        .menu-wishlist {
+          right: -60px;
+          display: none;
+          background-color: transparent;
+          box-shadow: none;
+          .box-menu {
+            background-color: #fff;
+            box-shadow: 0px 12px 48px rgb(109 117 136 / 12%);
+            border-radius: 6px;
+            li {
+              margin: 0;
+              &:first-child {
+                padding-top: 6px;
+              }
+              &:last-child {
+                padding-bottom: 6px;
+              }
+              span {
+                white-space: nowrap;
+              }
+            }
+          }
+        }
+        &:hover {
+          .menu-wishlist {
+            display: block;
+          }
+        }
       }
     }
   }
