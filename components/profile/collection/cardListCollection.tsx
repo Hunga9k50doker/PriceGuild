@@ -52,6 +52,7 @@ import HeaderUser from "components/user/headerUser"
 import { UserInfoType, PgAppProfileType } from "interfaces"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import { emptyString } from "react-select/src/utils";
+import { route } from "next/dist/server/router";
 
 type PropTypes = {
   collection?: string,
@@ -151,7 +152,8 @@ const CardListCollection = ({
   const [cardData, setCardData] = useState<CardModel | undefined>();
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
-
+  const collectionRef = React.useRef<FilterHandle>(null);
+  
   useEffect(() => {
     if (inputSearchRef) {
       // @ts-ignore 
@@ -187,7 +189,7 @@ const CardListCollection = ({
   }, [newGradeChangedState])
   
   const [friend, setFriend] = useState<PgAppProfileType>()
-  const resetPage = (isRefresh: boolean = true) => {
+  const resetPage = (isRefresh: boolean = true, isReset: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
     setTrackFilter([])
@@ -201,7 +203,7 @@ const CardListCollection = ({
       if (isEditCardData || isAddCardProfile) {
         let data: Array<TrackData> = [];
         if (!isEmpty(dataFilterStore)) {
-          for (let val of Object.keys(dataFilterStore)) { 
+          for (let val of Object.keys(dataFilterStore)) {
             let obj: TrackData = {
               name: val,
               isUpdate: false,
@@ -225,7 +227,7 @@ const CardListCollection = ({
 
       setPagesSelected(Boolean(isEditCardData) || Boolean(isAddCardProfile) ? [pageSelected] : [1]);
       //@ts-ignore
-      getListCard(pageSelected && (Boolean(isEditCardData) || Boolean(isAddCardProfile)) ? [pageSelected] : [1], (isEditCardData || isAddCardProfile));
+      getListCard(pageSelected && (Boolean(isEditCardData) || Boolean(isAddCardProfile)) ? [pageSelected] : [1], (isEditCardData || isAddCardProfile), isReset );
     }
   }
   
@@ -268,14 +270,14 @@ const CardListCollection = ({
     return params
   }
   
-  const getListCard = async (page = [1], isSaveChange: boolean = false) => {
+  const getListCard = async (page = [1], isSaveChange: boolean = false, isFilter = true) => {
     try {
         setData(prevState => {
           return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards], };
         });
       
       let dataFilter = {};
-      if (!isEmpty(filterData)) {
+      if (isFilter) {
         dataFilter = getFilterSearch();
       }
 
@@ -284,7 +286,6 @@ const CardListCollection = ({
           // @ts-ignore 
           inputSearchRef.current?.value = paramsSearchFilterProfile?.search_term;
         }
-          
       }
       
       if (Boolean(changeGradeCardEdit)) {
@@ -311,9 +312,7 @@ const CardListCollection = ({
       }
 
       const result = await api.v1.portfolio.getUserPortfolio(isSaveChange && !isEmpty(dataFilterStore) ? paramsSearchFilterProfile : params);
-      
-      
-      
+
       if (isSaveChange) {
         dispatch(SearchFilterAction.updateIsEditSaveCard(false));
 
@@ -333,6 +332,7 @@ const CardListCollection = ({
 
         
         let checkUpdateFilter = JSON.parse(localStorage.getItem("filterCollection") ?? "[]") ?? [];
+       
         if (page.length === 1) {
           // @ts-ignore 
           setFirstTimeFilterData(result.data.filter);
@@ -396,8 +396,16 @@ const CardListCollection = ({
               updateFilter.grades.length = 0;
               updateFilter.grades = result.data.filter.grades;
             }
+            //group_refs
+            if (!checkIsUpdate('group_refs')) {
+              updateFilter.group_refs.length = 0;
+              updateFilter.group_refs = dataUpdate?.group_refs;
+            } else {
+              updateFilter.group_refs.length = 0;
+              updateFilter.group_refs = result.data.filter.group_refs;
+            }
           }
-
+          
           if (!isSaveChange) {
             setDataUpdate(updateFilter);
 
@@ -440,7 +448,11 @@ const CardListCollection = ({
               })),
               auto_memo: updateFilter?.auto_memo,
               sports: updateFilter?.sports,
-              grades: gradeFilter
+              grades: gradeFilter,
+              group_refs: (!isEmpty(updateFilter?.group_refs) ? updateFilter?.group_refs : []).map((item: any) => ({
+                name: item.group_name,
+                id: item.id.toString(),
+              }))
             }));
           }
           
@@ -467,17 +479,20 @@ const CardListCollection = ({
           };
         });
       }
-      if (!result.success && isEmpty(dataFilterStore)) {
-        dispatch(SearchFilterAction.updateSetDataFilter({}));
-        dispatch(FilterAction.updateFiltersCardDetail({
-          publishers: [],
-          collections: [],
-          printRuns: [],
-          years: [],
-          auto_memo: [],
-          sports: [],
-          grades: [],
-        }));
+      
+      if (!result.success) {
+        if (router.query?.page === 'portfolio' && router.query?.action !== '0' ) {
+          dispatch(SearchFilterAction.updateSetDataFilter({}));
+          dispatch(FilterAction.updateFiltersCardDetail({
+            publishers: [],
+            collections: [],
+            printRuns: [],
+            years: [],
+            auto_memo: [],
+            sports: [],
+            grades: [],
+          }));
+        }
       }
       if (!result.success && isEmpty(result.data?.card_data) && Boolean(isSaveChange)) {
         ToastSystem.error('No matching results for previous filters, re-setting filters.');
@@ -556,10 +571,15 @@ const CardListCollection = ({
     let gradeNewItem = data.find((item: any) => item?.grade_company === newGradeChanged?.company);
     //check changed new grade_value in company
     if (!isEmpty(gradeNewItem)) {
-      
       let checkFilterData = filters.grades?.find((filterItem: any) => filterItem.name === gradeNewItem?.grade_company)
       if (checkFilterData !== undefined) {
-        let isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        let isCheckNewGradeValue: any = undefined;
+        if (gradeNewItem?.grade_company === 'ungraded' && newGradeChanged?.company === 'ungraded') {
+          isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.grade_value === newGradeChanged?.value);
+        } else {
+          isCheckNewGradeValue = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        }
+        
         if (isCheckNewGradeValue !== undefined) {
           filters.grades?.forEach((grade,index) => { 
             if (grade.name === newGradeChanged?.company) {
@@ -589,7 +609,13 @@ const CardListCollection = ({
         filters?.grades?.push(gradeFilter);
         filters?.grades?.sort((a, b) => a.name.localeCompare(b.name));
 
-        let isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        let isCheckNewParentGrade: any = undefined;
+        if (gradeNewItem?.grade_company === 'ungraded' && newGradeChanged?.company === 'ungraded') {
+          isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.grade_value === newGradeChanged?.value);
+        } else {
+          isCheckNewParentGrade = gradeNewItem.data.find((grade: any) => +grade?.display_value_short === newGradeChanged?.value);
+        }
+        
         if (isCheckNewParentGrade !== undefined) {
           filters.grades?.forEach((grade, index) => {
             if (grade.name === gradeFilter?.name) {
@@ -597,6 +623,7 @@ const CardListCollection = ({
               if (indexGrade === -1) {
                 //@ts-ignore
                 let newItem = { id: isCheckNewParentGrade?.grade_company + '-' + isCheckNewParentGrade?.grade_value, name: isCheckNewParentGrade?.display_value, grade_company: isCheckNewParentGrade?.grade_company, grade_value: isCheckNewParentGrade?.grade_value };
+                
                 setNewGradeChangedstate(newItem);
               }
             }
@@ -690,7 +717,11 @@ const CardListCollection = ({
       })),
       auto_memo: data?.auto_memo,
       sports: data?.sports,
-      grades: gradeFilter
+      grades: gradeFilter,
+      group_refs: (!isEmpty(data?.group_refs) ? data?.group_refs : []).map((item: any) => ({
+        name: item.group_name,
+        id: item.id.toString(),
+      }))
     }));
   }
 
@@ -712,6 +743,9 @@ const CardListCollection = ({
     } 
     if (!isEmpty(data?.auto_memo)) {
       automemoRef?.current?.reset(data?.auto_memo);
+    }
+    if (!isEmpty(data?.group_refs)) {
+      collectionRef?.current?.reset(data?.group_refs);
     }
   }
   const checkIsUpdate = (key: string) => {
@@ -739,7 +773,7 @@ const CardListCollection = ({
   
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {
-    
+
     let dataSave = [...trackFilter];
     
     if (trackFilter.length === 0) {
@@ -809,7 +843,8 @@ const CardListCollection = ({
     let gradeFilter = !data.includes('grades');
     let publisherFilter = !data.includes('publishers');
     let collectionFilter = !data.includes('collections');
-    
+    let groupRefFilter = !data.includes('group_refs');
+
     if (yearFilter) {
       yearRef?.current?.reset();
     }
@@ -833,6 +868,10 @@ const CardListCollection = ({
     if (collectionFilter) {
       setRef?.current?.reset();
     }
+
+    if (groupRefFilter && router.query?.page === 'portfolio' && router.query?.action === '0') {
+      collectionRef?.current?.reset();
+    }
   }
 
   const resetFilter = () => {
@@ -843,6 +882,7 @@ const CardListCollection = ({
     automemoRef?.current?.reset();
     typeRef?.current?.reset();
     gradeRef?.current?.reset();
+    collectionRef?.current?.reset();
   }
 
   const renderClassButtonFilter = (key: string) => {
@@ -1043,12 +1083,14 @@ const CardListCollection = ({
         return "Publisher";
       case "years":
         return "Year";
-        case "collections":
+      case "collections":
         return "Collection";
-        case "grades":
+      case "grades":
         return "Grade";
-        case "auto_memo":
-          return "Autograph/Memorabilia";
+      case "auto_memo":
+        return "Autograph/Memorabilia";
+      case "group_refs":
+        return "Portfolio";
       default:
         return "Filters";
     }
@@ -1206,7 +1248,7 @@ const CardListCollection = ({
       <>
         {Boolean(!checkFilter(filterOld ?? {})) && (
           <div
-            onClick={() => resetPage()}
+            onClick={() => resetPage(true, false)}
             className="btn btn-primary clear-select"
           >
             <div>Reset Filters</div>
@@ -1621,6 +1663,21 @@ const CardListCollection = ({
                   //@ts-ignore
                   width >= 768 ?
                     <div className="filter-top mb-2 filter-list">
+                      {router.query?.page === 'portfolio' && router.query?.action === '0' &&
+                        <div className={renderClassButtonFilter("group_refs")}>
+                      <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenupublisher" data-bs-toggle="dropdown" aria-expanded="false"> Portfolio {
+                        // @ts-ignore
+                        Boolean(filterData?.group_refs?.length) && <span className="filter-number"> {filterData?.group_refs?.length} </span>}
+                      </button>
+                      <div className="dropdown-menu" aria-labelledby="dropdownMenusport">
+                        <CheckBoxFilter
+                          ref={collectionRef}
+                          isChangeValue={false}
+                          onChange={onChangeFilter}
+                          isSearch={sumBy(filters.group_refs, function (o: any) { return o.options?.length ?? 1; }) > 15}
+                          name="group_refs" options={filters.group_refs ?? []} />
+                      </div>
+                    </div>}
                     <div className={renderClassButtonFilter("sports")}>
                       <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenupublisher" data-bs-toggle="dropdown" aria-expanded="false"> Sport {
                         // @ts-ignore
@@ -1735,6 +1792,14 @@ const CardListCollection = ({
                   : <>  
               <div className="filter-mobile filter-mobile-profile position-relative w-100">
                 <div className="button-filter ">
+                  {router.query?.page === 'portfolio' && router.query?.action === '0' && <button
+                    onClick={() => setFilterValue("group_refs")}
+                    type="button"
+                    className={`btn btn-primary btn-sm ${Boolean(filterData?.group_refs?.length) ? "group_refs-button" : ""
+                      }`}
+                    data-bs-toggle="modal"
+                    data-bs-target="#filterModal"
+                  > Portfolio {Boolean(filterData?.group_refs?.length) && <span className="filter-number">{filterData?.group_refs?.length}</span>} </button>}
                   <button
                     onClick={() => setFilterValue("sports")}
                     type="button"
@@ -1953,7 +2018,34 @@ const CardListCollection = ({
                               <div className="shop__sidebar mt-3">
                                 <div className="sidebar__categories">
                                   <div className="section-title">
-                                  <div
+                                    <div
+                                      className={`accordion ${
+                                        filterValue === "group_refs" ||
+                                        filterValue === "all"
+                                          ? ""
+                                          : "d-none"
+                                      }`}
+                                      id="groupRefsFilter"
+                                    > 
+                                      <div className="accordion-item">
+                                        <CheckBoxMobile
+                                          ref={collectionRef}
+                                          isChangeValue={false}
+                                          onChange={onChangeFilter}
+                                          isSearch={sumBy(filters.sports, function (o: any) { return o.options?.length ?? 1; }) > 15}
+                                          name="group_refs"
+                                          options={filters.group_refs ?? []}
+                                          title="Portfolio"
+                                          isButton={filterValue === "all"}
+                                          numberFilter={
+                                            filterData?.group_refs?.length
+                                          }
+                                          setIsScroll={setIsScroll}
+                                          filterValue={filterValue}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div
                                       className={`accordion ${
                                         filterValue === "sports" ||
                                         filterValue === "all"

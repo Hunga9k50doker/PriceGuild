@@ -221,6 +221,7 @@ export type FilterReducerType = {
   auto_memo: Array<FilterType>;
   sports: Array<FilterType>;
   grades?: DataGroupedSearch<FilterType>[];
+  group_refs?: Array<FilterType>;
 };
 
 export type FriendReducerType = {
@@ -290,6 +291,7 @@ export type FilterResponseType = {
   years: Array<number> | Array<any>;
   sports: Array<FilterType>;
   grades?: Array<GradeType>;
+  group_refs?: Array<FilterType>;
 };
 
 export type GradeType = {

@@ -476,9 +476,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           if (!isEmpty(dataFilterStore)) {
             dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           }
-          
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`);
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0 }/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`); 
         } else {
           router.back();
         }

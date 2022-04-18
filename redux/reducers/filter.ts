@@ -9,6 +9,7 @@ let initialState: FilterReducerType = {
   years: [],
   sports: [],
   grades: [],
+  group_refs:[],
 };
 
 const filterReducer = (

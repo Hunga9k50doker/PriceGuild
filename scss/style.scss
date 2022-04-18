@@ -1787,6 +1787,13 @@ input[type="number"] {
         border: none;
         .checkbox-select__search-wrapp {
           padding: 0 12px;
+          position: relative;
+          height: auto;
+          .input-close {
+            position: absolute;
+            right: 25px;
+            top: 9px;
+          }
         }
         .checkbox-select__filters-wrapp {
           margin: 12px 6px 0 12px;
