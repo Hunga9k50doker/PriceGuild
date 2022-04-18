@@ -4,6 +4,8 @@ import { DataGroupedSearch } from "interfaces";
 import { sortBy } from "lodash";
 const ISSERVER = typeof window === "undefined";
 
+const ISSERVER = typeof window === "undefined";
+
 export const getCookie = (c_name: string) => {
   var c_value: string | null = " " + document.cookie;
   var c_start: number = c_value.indexOf(" " + c_name + "=");
