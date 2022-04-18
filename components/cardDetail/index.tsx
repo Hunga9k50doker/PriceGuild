@@ -471,7 +471,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           );
         }}
       </CardDetailConsumer>
-      <div className="pricing-grid-content mr--16">
+      <div className="pricing-grid-content mr--16" id="pricing-grid-content">
         {lengthTablePrice !== 0 ?
           <>
             <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
@@ -686,11 +686,24 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     );
   };
 
-  const onScroll = () => {
-    if (!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
-      $("#table_grade").addClass('custom-scroll-sticky-card');
+  const onScroll = (e:any) => {
+    if(!$("#pricing-grid-content").hasClass("pricing-grid-content--scroll")) {
+      if ($("#table_grade table").offset().left < 33) {
+        $("#pricing-grid-content").addClass("pricing-grid-content--scroll");
+      }
     } else {
-      if ($("#table_grade table").offset().left == 33) {
+      if ($("#table_grade table").offset().left == 1) {
+        $("#pricing-grid-content").removeClass("pricing-grid-content--scroll");
+      }
+    }
+    if (!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
+   
+      if ($("#table_grade table").offset().left < 33) {
+        // $("#pricing-grid-content").addClass("pricing-grid-content--scroll");
+        $("#table_grade").addClass('custom-scroll-sticky-card');
+      }
+    } else {
+      if ($("#table_grade table").offset().left === 33) {
         $("#table_grade").removeClass('custom-scroll-sticky-card');
       }
     }

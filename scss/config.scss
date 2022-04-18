@@ -1538,6 +1538,20 @@
         box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.15);
         border-radius: 6px;
         max-height: 542px;
+        transition: all ease-in-out 0.5;
+        &.pricing-grid-content--scroll {
+          transition: all ease-in-out 0.5;
+          margin-left: -16px;
+          .content-pricing-grid {
+            padding-left: 0;
+            table tr td {
+              padding-left: 12px;
+              // .custom-grade {
+              //   padding-left: 0;
+              // }
+            }
+          }
+        }
       }
       .btn-price-full-table {
         width: 100%;
@@ -1789,8 +1803,10 @@
                     white-space: nowrap;
                     &:not(.custom-grade-bold) {
                       padding-left: 0;
+                      white-space: normal;
                     }
                   }
+                 
                 }
               }
             }
