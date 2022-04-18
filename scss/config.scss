@@ -1801,8 +1801,10 @@
                     white-space: nowrap;
                     &:not(.custom-grade-bold) {
                       padding-left: 0;
+                      white-space: normal;
                     }
                   }
+                 
                 }
               }
             }
