@@ -1298,6 +1298,10 @@ input {
       border: 2px solid #cccfd6;
       box-sizing: border-box;
       border-radius: 6px;
+      box-shadow: none !important;
+      &--is-focused {
+        border: 2px solid #124de3 !important;
+      }
       .react-select-grading__indicator {
         svg {
           transition: transform 0.2s linear;
@@ -1336,6 +1340,7 @@ input {
       .css-yk16xz-control {
         height: 56px;
         border: 2px solid #cccfd6;
+        box-shadow: none !important;
       }
       .input-collection__control {
         height: 56px;
@@ -1370,14 +1375,24 @@ input {
       height: 56px;
       border: 2px solid #cccfd6;
     }
+    .purchase-price {
+      .input-height-56 {
+        border: none;
+      }
+    }
     .select-price {
       border-radius: 6px 0px 0px 6px;
+      .select-price__control {
+        border: 2px solid #cccfd6;
+      }
       .css-1pahdxg-control {
-        border-color: #124de3;
+        border: 2px solid #124de3;
+        box-shadow: none !important;
       }
     }
     .input-price {
       border-radius: 0px 6px 6px 0px;
+      border: 2px solid #cccfd6 !important;
     }
     .item-value {
       label {
@@ -6619,4 +6634,11 @@ input[type="number"] {
 
 .text-color-blue {
   color: #124DE3;
+}
+
+.input-collection__control {
+  box-shadow: none !important;
+  &--is-focused{
+    border: 2px solid #124de3 !important;
+  }
 }
