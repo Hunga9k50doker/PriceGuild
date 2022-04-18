@@ -209,16 +209,29 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
         </td>
         <td>
           <div className="d-flex ">
-            <div className="box-image-picture" style={{ width: 51, minWidth: 51 }}> 
-            <img
-              onError={({ currentTarget }) => {
-                currentTarget.onerror = null; // prevents looping
-                if (ImageCardSearch) {
-                  currentTarget.src=ImageCardSearch.src;
-                }
-              }}
-              className="box-image-picture__img w-100" src={props?.item?.url_image  || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name || `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+            <div className="d-flex">
+              <div className="box-image-picture box-image-picture-mr" style={{ width: 51, minWidth: 51 }}> 
+                <img
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  if (ImageCardSearch) {
+                    currentTarget.src=ImageCardSearch.src;
+                  }
+                }}
+                className="box-image-picture__img w-100" src={props?.item?.url_image  || props?.item?.image_front?.file_name  ||  `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+              </div>
+              <div className="box-image-picture" style={{ width: 51, minWidth: 51 }}> 
+                <img
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  if (ImageCardSearch) {
+                    currentTarget.src=ImageCardSearch.src;
+                  }
+                }}
+                className="box-image-picture__img w-100" src={props?.item?.url_image  ||   props?.item?.image_back?.file_name || `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+              </div>
             </div>
+            
             <div className="ps-3 collection-card-table-detail">
               <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{props.item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.publisher} </h1>
               <div onClick={()=>  gotoCard(props.item?.code)} className="mb-1  collection-card-desc fw-500 cursor-pointer" > {`${props.item.webName}${isEmpty(props.item?.onCardCode) ? '' : ' - #' + props.item.onCardCode}`} </div>
