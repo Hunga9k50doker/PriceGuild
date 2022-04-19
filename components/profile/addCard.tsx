@@ -303,8 +303,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
-  
     var file = e.target.files[0];
+    if(file?.type !== "image/jpeg" &&  file?.type !== "image/png"  &&  file?.type !== "image/jpg") {
+      return ToastSystem.error("File type not supported, please upload jpg or png files.");
+    }
     if(file?.size >= 10485760) {
       return ToastSystem.error("Please upload a file smaller than 10 MB");
     }
@@ -312,7 +314,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       var url = URL.createObjectURL(file);
       let current_path: string =
         name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
-      EditImageRef?.current?.action(url, name, current_path);
+      EditImageRef?.current?.action(url, name, current_path, file?.type);
     }
   };
 
