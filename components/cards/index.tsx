@@ -65,10 +65,10 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-              <th scope="col" className={`width-20 ${isPortfolioAll}`} style={{width: "30%"}}>
+              <th scope="col" className={`width-24 ${isPortfolioAll}`} style={{width: "34%"}}>
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
-              <th scope="col" style={{width: "13%"}}>
+              <th scope="col" style={{width: "9%"}}>
                 <div className="d-flex cursor-pointer align-items-center" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
