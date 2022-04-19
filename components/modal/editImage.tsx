@@ -63,10 +63,10 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   const [currentPath, setCurrentPath] = React.useState<string | undefined>(null);
   const [link, setLink] = React.useState<any>("");
 
-  const [fileType, setFileType] = useState<string>("image/jpeg");
+  const [fileType, setFileType] = useState<string>();
   React.useImperativeHandle(ref, () => ({
-    action(src: string, name: string, current_path?: string, file_type?: string) {
-      setFileType(file_type || "image/jpeg");
+    action(src: string, name: string, file_type: string, current_path?: string) {
+      setFileType(file_type);
       setIsOpen(true);
       setImageSrc(src);
       setNameImage(name)
