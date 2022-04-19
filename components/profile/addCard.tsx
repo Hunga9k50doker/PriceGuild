@@ -1526,6 +1526,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           classNamePrefix="select-price"
                           className="select-price customScroll input-height-56"
                           options={currencies}
+                          isSearchable={ false }
                           styles={{
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
@@ -1611,6 +1612,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 render={({ field: { onChange, value } }) => (
                   <Select
                     value={value}
+                    isSearchable={ false }
                     onChange={(e) => {
                       onChange(e);
                       onUpdateValue(e, "group_ref");
