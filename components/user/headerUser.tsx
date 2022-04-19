@@ -125,14 +125,14 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
               props.onTabDetail && props.onTabDetail("collection")
               // @ts-ignore
             }} className={`${["collection", "card-collection"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-              { profile?.portfolio_count ? <span>{profile?.portfolio_count ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span> }
+              <span>{profile?.portfolio_count ?? 0} </span>
               {t('portfolio.text')}
             </li>
             <li onClick={() => {
                 props.onTabDetail && props.onTabDetail("wishlist")
                 // @ts-ignore
               }} className={`${["wishlist", "card-wishlist"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-               { profile?.wishlist_count ? <span>{profile?.wishlist_count ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
+              <span>{profile?.wishlist_count ?? 0} </span>
               Wishlists
             </li>
             {/* {
