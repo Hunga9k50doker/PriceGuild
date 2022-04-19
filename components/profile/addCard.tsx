@@ -1581,6 +1581,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
+                        disabledKeyboardNavigation
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
