@@ -31,74 +31,46 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
   const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const getData = async () => {
     try {
-      if(isProfileFriend) {
-        const params = {
-          profileid: userId
+      const params = {
+        table: table,
+        user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
+      }
+      const result = await api.v1.collection.getManageCollections(params); console.log(result, 'result');
+      let dataCollections: Array<ManageCollectionType> = []; 
+      //@ts-ignore
+      if (result?.show_all_cards_folder) {
+          
+        let itemAllCard = {
+          group_ref: 0,
+          group_name: "All Cards",
+          type: 0,
+          //@ts-ignore
+          unique_card: result?.all_cards_count.unique_card,
+          //@ts-ignore
+          total_card: result?.all_cards_count.total_card,
+          claim: 0
         }
-        const res = await api.v1.authorization.getUserInfo(params);
-        if (res.success) {
-          setProfileDataFriend(res.data);
-          if(title === "collection") {
-            setCollections({
-              data: res.data.portfolio_data,
-              isLoading: false,
-            })
-          } else {
-            setCollections({
-              data: res.data.wishlist_data,
-              isLoading: false,
-            })
-          }
-        }
-        if (!res.success) {
-          // @ts-ignore
-          if (res.data?.verify_redirect) {
-            router.push('/verify-email')
-          }
-        }
-      } else {
-        const params = {
-          table: table,
-          user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
-        }
-        const result = await api.v1.collection.getManageCollections(params);
-        let dataCollections: Array<ManageCollectionType> = []; 
-        //@ts-ignore
-        if (result?.show_all_cards_folder) {
-           
-          let itemAllCard = {
-            group_ref: 0,
-            group_name: "All Cards",
-            type: 0,
-            //@ts-ignore
-            unique_card: result?.all_cards_count.unique_card,
-            //@ts-ignore
-            total_card: result?.all_cards_count.total_card,
-            claim: 0
-          }
-          dataCollections.push(itemAllCard);
-        }
-        
-        dataCollections = [...dataCollections, ...result.data];
+        dataCollections.push(itemAllCard);
+      }
+      
+      dataCollections = [...dataCollections, ...result.data];
 
-        if (result.success) {
-          setCollections({
-            data: dataCollections,
-            isLoading: false,
-            //@ts-ignore
-            showAllCardsFolder: result?.show_all_cards_folder,
-            //@ts-ignore
-            allCardsCount: result?.all_cards_count
-          })
-        }
-        if (!result.success) {
-          // @ts-ignore
-          if (result.data?.verify_redirect) {
-            return router.push('/verify-email')
-          }
+      if (result.success) {
+        setCollections({
+          data: dataCollections,
+          isLoading: false,
+          //@ts-ignore
+          showAllCardsFolder: result?.show_all_cards_folder,
+          //@ts-ignore
+          allCardsCount: result?.all_cards_count
+        })
+      }
+      if (!result.success) {
+        // @ts-ignore
+        if (result.data?.verify_redirect) {
+          return router.push('/verify-email')
         }
       }
-     
     }
     catch (err: any) {
       setCollections({
@@ -115,6 +87,9 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
     getData();
   }, [])
 
+  React.useEffect(() => {
+    console.log(collections, 'collections');
+  }, [collections])
   return (
     <div>
       <CollectionList

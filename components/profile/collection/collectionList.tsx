@@ -313,25 +313,6 @@ const CollectionList = ({
     if (tab === 'friend') return;
     return router.push(`/${tab === 'collection' ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab+'s'}`}`)
   }
-
-  const getUserDetail = async () => {
-    try {
-      const params = {
-        profileid: Number(router.query.page)
-      }
-      const res = await api.v1.authorization.getUserInfo(params);
-      if (res.success) {
-        //@ts-ignore
-        setFriend(res.data?.user_info)
-      }
-      if (!res.success) {
-        // @ts-ignore
-        /**/
-      }
-    } catch (error) {
-      console.log("error........", error);
-    }
-  }
   
   return (
     <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={profileFriend} />}

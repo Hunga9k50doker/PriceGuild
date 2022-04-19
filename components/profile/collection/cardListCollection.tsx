@@ -167,11 +167,12 @@ const CardListCollection = ({
       if (userInfo.userid === +router.query.page) {
         //@ts-ignore
         setFriend(userInfo);
-      } else {
-        if (Boolean(Number(router.query.page))) {
-          getUserDetail();
-        }
       }
+      // else {
+      //   if (Boolean(Number(router.query.page))) {
+      //     getUserDetail();
+      //   }
+      // }
     }
   }, [router.query])
   
