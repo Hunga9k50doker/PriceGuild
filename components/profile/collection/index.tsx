@@ -35,7 +35,7 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
         table: table,
         user_id: loggingIn ? userId : (!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? +router.query.page : userId)
       }
-      const result = await api.v1.collection.getManageCollections(params); console.log(result, 'result');
+      const result = await api.v1.collection.getManageCollections(params);
       let dataCollections: Array<ManageCollectionType> = []; 
       //@ts-ignore
       if (result?.show_all_cards_folder) {
@@ -87,9 +87,6 @@ const ProfileCollection = ({ title = "collection", isAnalytics = true, table = "
     getData();
   }, [])
 
-  React.useEffect(() => {
-    console.log(collections, 'collections');
-  }, [collections])
   return (
     <div>
       <CollectionList

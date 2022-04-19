@@ -143,7 +143,6 @@ const CardListCollection = ({
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
-  const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
   const [trackFilter, setTrackFilter] = useState<Array<TrackData>>([]);
   const [dataUpdate, setDataUpdate] = useState<any>({});
   const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
@@ -168,11 +167,6 @@ const CardListCollection = ({
         //@ts-ignore
         setFriend(userInfo);
       }
-      // else {
-      //   if (Boolean(Number(router.query.page))) {
-      //     getUserDetail();
-      //   }
-      // }
     }
   }, [router.query])
   
@@ -189,7 +183,7 @@ const CardListCollection = ({
     }
   }, [newGradeChangedState])
   
-  const [friend, setFriend] = useState<PgAppProfileType>()
+  const [friend, setFriend] = useState<UserInfoType>()
   const resetPage = (isRefresh: boolean = true, isReset: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
@@ -1432,15 +1426,15 @@ const CardListCollection = ({
 
   const goToFriend = (e:any) => {
     if(isFriend) {
-      props.setGotoFriend &&   props.setGotoFriend(title)
       e.preventDefault();
+      goToCollection();
     }
   }
   const backToCollection = () => {
     if(isFriend) {
       props.setGotoFriend &&   props.setGotoFriend(title)
     } else {
-      router.push("profile/collections")
+      goToCollection();
     }
   }
   const removeCollection = async () => {
@@ -1488,16 +1482,16 @@ const CardListCollection = ({
 
 
     const goToProfile = () => {
-    router.push(`/profile/${Number(router.query.page)}`)
+      router.push(`/profile/${Number(router.query.page)}`)
     }
     const goToCollection = () => {
-    
+      router.push(`/profile/${Number(router.query.page)}/portfolio`)
     }
     const renderTab = () => {
       return <>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.user_info?.full_name}</a></li>
+            <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.username}</a></li>
             <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
             <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
           </ol>
@@ -1509,7 +1503,7 @@ const CardListCollection = ({
     <>
       {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) &&
         <>
-        <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />
+        <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} getFriendInfo={setFriend} />
         {
           //@ts-ignore
           width >= 768 ? renderTab() : null}

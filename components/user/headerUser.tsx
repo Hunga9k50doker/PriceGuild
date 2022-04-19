@@ -20,6 +20,7 @@ type PropTypes = {
   tabDetail?: TabType,
   userId?: number,
   isCollectionCard?: boolean
+  getFriendInfo?: (e: any) => void,
 }
 
 type TabType = {
@@ -44,6 +45,7 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
       }
       const res = await api.v1.authorization.getUserInfoBanner(params);
       if (res.success) {
+        props.getFriendInfo?.(res.data.user_info);
         return setProfile(res.data)
       }
       if (!res.success) {
@@ -105,7 +107,6 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
     }
   }
   
-  console.log(friend, 'friend');
   return (
     <div className="info-user mt-2">
       <div className="d-lg-flex justify-content-between align-items-center">
