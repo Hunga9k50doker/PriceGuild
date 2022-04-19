@@ -1581,7 +1581,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
-                        disabledKeyboardNavigation
+                        onFocus={e => e.target.blur()}
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
