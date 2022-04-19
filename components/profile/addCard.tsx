@@ -1436,6 +1436,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"
@@ -1527,6 +1528,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           classNamePrefix="select-price"
                           className="select-price customScroll input-height-56"
                           options={currencies}
+                          isSearchable={ false }
                           styles={{
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
@@ -1583,6 +1585,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
+                        onFocus={e => e.target.blur()}
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
@@ -1611,6 +1614,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 render={({ field: { onChange, value } }) => (
                   <Select
                     value={value}
+                    isSearchable={ false }
                     onChange={(e) => {
                       onChange(e);
                       onUpdateValue(e, "group_ref");

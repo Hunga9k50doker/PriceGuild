@@ -257,6 +257,7 @@ const Index = ({
                           // onUpdateValue(e, "group_ref")
                           setValue("report_grade_value", e.values[0].value);
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"

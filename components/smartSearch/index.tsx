@@ -79,6 +79,7 @@ function SmartSearch(props: PropsType) {
             transform: state.selectProps.menuIsOpen && "rotate(180deg)"
           })
         }}
+        isSearchable={ false }
       /></div>
       <div className="smart-search-card-input" style={{ flex: 4 }}><InputSearch defaultSearch={props.defaultSearch} sport={sport} /></div>
     </div>

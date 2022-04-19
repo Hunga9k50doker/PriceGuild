@@ -320,6 +320,7 @@ const SelectGrading = ({
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"
