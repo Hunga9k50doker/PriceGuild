@@ -102,6 +102,7 @@ const Top100 = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const { filterSearchTop100, isFilterStoreTop100 } = useSelector(Selectors.searchFilter);
   const [filterState, setFilterState] = useState<Boolean>(false);
+  const { currency } = useSelector(Selectors.config);
 
   useEffect(() => {
     if (sports.length) {
@@ -123,8 +124,7 @@ const Top100 = (props: PropTypes) => {
     }
 
     getListCard();
-    console.log(filterData, 'filterData');
-  }, [filterData, sortData]);
+  }, [filterData, sortData, currency]);
 
   useEffect(() => {
     if (Boolean(isFilterStoreTop100)) { 
@@ -146,7 +146,7 @@ const Top100 = (props: PropTypes) => {
       setDataTable([]);
       let params = {
         timePeriod: filterData?.timePeriod,
-        currency: "USD",
+        currency: currency,
         sport: filterData?.sport[0].id,
         ...sortData,
         auto_memo: isEmpty(filterData?.a_filter)
@@ -993,7 +993,7 @@ const Top100 = (props: PropTypes) => {
                           </div>
                         </div>
                       </td>
-                      <td>{formatCurrency(item.maxSales)}</td>
+                      <td>{formatCurrency(item.maxSales, currency)}</td>
                       <td>{item.tradeVol}</td>
                       <td>
                         <div className="dropdown dropdown--top">

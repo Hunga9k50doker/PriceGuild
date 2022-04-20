@@ -131,6 +131,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [onMenu, setOnMenu] = useState<boolean>(false);
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
       let cardCode = router?.query?.cardCodeDetail ?? props.code;
@@ -1055,9 +1056,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         <div className="fs-3 fw-bold mt-4 card-detail-content-right__price">
                           {!Boolean(cardData.fullWebName) ? <Skeleton width={200} /> : <>
                             {!cardData.minPrice && !cardData.maxPrice ? "N/A" : <>
-                              {formatCurrency(cardData.minPrice) +
+                              {formatCurrency(cardData.minPrice, currency) +
                                 " - " +
-                                formatCurrency(cardData.maxPrice)}
+                                formatCurrency(cardData.maxPrice, currency)}
                             </>}
                           </>}
                         </div>

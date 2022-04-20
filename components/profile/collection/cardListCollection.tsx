@@ -153,6 +153,7 @@ const CardListCollection = ({
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
   const collectionRef = React.useRef<FilterHandle>(null);
+  const { currency } = useSelector(Selectors.config);
   
   useEffect(() => {
     if (inputSearchRef) {
@@ -303,7 +304,7 @@ const CardListCollection = ({
         page: page[page.length-1],
         search_term: inputSearchRef?.current?.value,
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         filter_dict: dataFilter,
         sort_dict: {
           sort_value: sortCards?.sort_value,

@@ -29,9 +29,9 @@ export const setCookie = (cname: string, cvalue: string, exdays: number) => {
   }
 };
 
-export const formatCurrency = (value?: number) => {
+export const formatCurrency = (value?: number, currency?: string) => {
   return new Intl.NumberFormat(`en-US`, {
-    currency: `USD`,
+    currency: `${currency || "USD"}`,
     style: "currency",
     // @ts-ignore
   }).format(value);

@@ -99,6 +99,7 @@ const CardList = (props: PropTypes) => {
     // page: 1,
     rows: 0
   })
+  const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
     ManageCollectionType | undefined
   >();
@@ -323,7 +324,7 @@ const CardList = (props: PropTypes) => {
         ...params,
         page: page[page.length-1],
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         sort_dict: {
           sort_value: sortCards?.sort_value,
           sort_by: sortCards?.sort_by
@@ -456,7 +457,7 @@ const CardList = (props: PropTypes) => {
       setPagesSelected([1])
       getListCard()
     }
-  }, [sortCards])
+  }, [sortCards, currency])
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
@@ -883,7 +884,6 @@ const CardList = (props: PropTypes) => {
       getListCard(event, false)
     }, 550);
   }
-
   const [scrollY, setScrollY] = useState<number>(0);
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();

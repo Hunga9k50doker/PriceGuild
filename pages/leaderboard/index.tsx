@@ -50,6 +50,7 @@ const Leaderboard = () => {
   const [filterData, setFilterData] = useState<FilterDataType>({});
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
   const [isError202, setIsError202] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   useEffect(() => {
     if (sports.length) {
       setSportsState(
@@ -63,7 +64,7 @@ const Leaderboard = () => {
 
   useEffect(() => {
     getListCard();
-  }, [filterData]);
+  }, [filterData, currency]);
 
   const getListCard = async () => {
     try {
@@ -72,6 +73,7 @@ const Leaderboard = () => {
       });
       let params = {
         ...filterData,
+        currency: currency
       };
       const result = await api.v1.portfolio.portfolioLeaderboard(params);
       if (result.success) {
@@ -456,7 +458,7 @@ const Leaderboard = () => {
                             </Link>
                           </td>
                           <td> {getLevelUser(item.total_upload)} </td>
-                          <td> {formatCurrency(item.total_value)} </td>
+                          <td> {formatCurrency(item.total_value, currency)} </td>
                           <td> {formatNumber(item.total_upload)} </td>
                         </tr>
                       ))}

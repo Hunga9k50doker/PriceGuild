@@ -275,6 +275,7 @@ export type ConfigReducerType = {
   is_email_verify: Boolean;
   is_show_card_detail_collection: Boolean;
   is_show_tab_bar: Boolean;
+  currency: string
 };
 
 export type PublisherType = {

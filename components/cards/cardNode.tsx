@@ -61,6 +61,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [isShowTooltip, setIsShowTooltip] = useState<boolean>(false);
   const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   const gotoCard = (code: string) => {
     if (!props.isSelect) {
       if (!props.gotoCard) {
@@ -184,7 +185,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if (!props.item.minPrice && !props.item.maxPrice) {
       return "N/A"
     }
-    return `${formatCurrency(props.item.minPrice)} - ${formatCurrency(props.item.maxPrice)}`
+    return `${formatCurrency(props.item.minPrice, currency)} - ${formatCurrency(props.item.maxPrice, currency)}`
   }
 
   const renderCompareIcon = () => {
@@ -527,7 +528,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                 </div>
                 {Boolean(props.item.auto) && <button type="button" className="cursor-default btn btn-primary btn-sm me-1 btn-au mb-3"> AU </button>}
                 {Boolean(props.item.memo) && <button type="button" className="cursor-default btn btn-secondary btn-sm btn-mem mb-3"> MEM </button>}
-                <div className="range-price-card"> {props.item[namePrice] ? formatCurrency(props.item[namePrice]) : renderPrice()} </div>
+                <div className="range-price-card"> {props.item[namePrice] ? formatCurrency(props.item[namePrice], currency) : renderPrice()} </div>
               </div>
             </div>
           </div>

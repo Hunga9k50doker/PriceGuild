@@ -41,10 +41,12 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
   const [isUser, setIsUser] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common");
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   const getUserDetail = async () => {
     try {
       const params = {
-        profileid: userId
+        profileid: userId,
+        currency: currency
       }
       const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
@@ -84,7 +86,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
     if (userId) {
       getUserDetail()
     }
-  }, [userId])
+  }, [userId, currency])
   
   const goToTab = (name: string) => {
     if (Boolean(Number(router.query.page))) {
@@ -156,7 +158,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
                         )}
                   </OverlayTrigger>
     }
-    return profile?.total_value !== 0 ? formatCurrency(profile?.total_value) : formatCurrency(0)
+    return profile?.total_value !== 0 ? formatCurrency(profile?.total_value, currency) : formatCurrency(0)
   }
   
   return (
