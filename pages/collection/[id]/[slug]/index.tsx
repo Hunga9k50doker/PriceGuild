@@ -35,6 +35,7 @@ import ChosseCollection from "components/modal/chosseCollection";
 import { ToastSystem } from "helper/toast_system";
 import { CompareAction } from "redux/actions/compare_action";
 import SelectGrading from "components/modal/selectGrading";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 type PropTypes = {
   location: any;
@@ -408,7 +409,7 @@ const CollectionDetail = (props: PropTypes) => {
                         <td>
                           <div className="d-flex">
                             <div onClick={() => onGoToCard(item)} className="box-picture-table cursor-pointer">
-                              <img alt="" onError={({ currentTarget }) => {
+                              {/* <img alt="" onError={({ currentTarget }) => {
                                 currentTarget.onerror = null;
                                 currentTarget.src = CardPhotoBase;
                               }}
@@ -420,7 +421,8 @@ const CollectionDetail = (props: PropTypes) => {
                                     }/${item?.image}.jpg`
                                     : CardPhotoBase
                                 }
-                              />
+                              /> */}
+                              <LazyLoadImg imgError={CardPhotoBase} url={  item?.image ? `https://img.priceguide.cards/${item.sportName === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`: CardPhotoBase }/>
                             </div>
                             <div className="ps-3">
                               <div className="d-flex align-items-center card-info">
