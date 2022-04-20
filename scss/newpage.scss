@@ -2981,3 +2981,12 @@ button, .btn {
         }
     }
 }
+
+
+.react-datepicker__input-container {
+    .form-control {
+        &.react-datepicker-ignore-onclickoutside {
+            border-color: #124de3 !important;
+        }
+    }
+}

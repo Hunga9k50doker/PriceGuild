@@ -277,6 +277,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
+                isSearchable={ false }
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
@@ -484,6 +485,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
+                isSearchable={ false }
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
