@@ -39,6 +39,7 @@ import imgInfo from "assets/images/alert-info.svg";
 import imgClose from "assets/images/cross-gray.svg";
 import { isEmpty } from "lodash";
 import { api } from "configs/axios";
+import { getCookie, setCookie } from "utils/helper";
 
 const Header = (props: any) => {
 
@@ -146,6 +147,8 @@ const Header = (props: any) => {
 
   React.useEffect(() => {
     dispatch(ConfigAction.getCurrencies());
+    setNameCurrency(  getCookie('currency_name') || "USD")
+    dispatch(ConfigAction.updateNameCurrency( getCookie('currency_name') || "USD"))
 
   }, [])
 
@@ -230,6 +233,7 @@ const Header = (props: any) => {
   const updateCurrency = (name: string) => {
     setNameCurrency(name)
     dispatch(ConfigAction.updateNameCurrency(name))
+    setCookie("currency_name", name , 36000)
   }
 
   React.useEffect(() => {
