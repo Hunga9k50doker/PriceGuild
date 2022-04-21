@@ -1773,9 +1773,9 @@ const CardList = (props: PropTypes) => {
             (
               <>
                 <div className="pricing-grid mt-3">
-                    <div className="content-pricing-grid p-0 customScroll custom-scroll-sticky">
+                    <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll">
                       <table
-                        className="table table-hover"
+                        className="table table-striped table-hover"
                         style={{ minWidth: "1140px" }}
                       >
                         <thead
@@ -1786,13 +1786,13 @@ const CardList = (props: PropTypes) => {
                         >
                           <tr>
                             <th
-                              style={{ width: "4%" }}
+                              style={{ width: "5%" }}
                               scope="col"
                               className="text-center"
                             >
                              
                             </th>
-                            <th style={{ width: "36%" }} scope="col">
+                            <th style={{ width: "45%" }} scope="col">
                               {" "} Card
                             </th>
                             {/* <th style={{ width: "13%" }} scope="col">
@@ -1844,7 +1844,7 @@ const CardList = (props: PropTypes) => {
                                 </div>
                               </div>
                             </th> */}
-                            <th style={{ width: "8%" }} scope="col">
+                            <th style={{ width: "15%" }} scope="col">
                               <div
                                 onClick={() => onSortTable("minPrice")}
                                 className="d-flex cursor-pointer align-items-center"
@@ -1869,7 +1869,7 @@ const CardList = (props: PropTypes) => {
                                 </div>
                               </div>
                             </th>
-                            <th style={{ width: "8%" }} scope="col">
+                            <th style={{ width: "15%" }} scope="col">
                               <div
                                 onClick={() => onSortTable("maxPrice")}
                                 className="d-flex cursor-pointer align-items-center"
@@ -1944,7 +1944,7 @@ const CardList = (props: PropTypes) => {
                                 </div>
                               </div>
                             </th> */}
-                            <th style={{ width: "6%" }} scope="col"></th>
+                            <th style={{ width: "5%" }} scope="col"></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -2094,18 +2094,6 @@ const CardList = (props: PropTypes) => {
                                   <Skeleton />{" "}
                                 </td>
                                 <td className="cursor-pointer">
-                                  {" "}
-                                  <Skeleton />{" "}
-                                </td>
-                                <td>
-                                  {" "}
-                                  <Skeleton />{" "}
-                                </td>
-                                <td>
-                                  {" "}
-                                  <Skeleton />{" "}
-                                </td>
-                                <td>
                                   {" "}
                                   <Skeleton />{" "}
                                 </td>
