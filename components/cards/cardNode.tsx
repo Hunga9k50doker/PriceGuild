@@ -248,7 +248,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </a>
           </Link>
         </td>}
-        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice])} </td>
+        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice], currency)} </td>
         <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice, currency)} </td>
         <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice, currency)} </td>
         <td> {!props.item.avgPrice ? "N/A" : formatCurrency(props.item.avgPrice, currency)} </td>
