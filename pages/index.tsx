@@ -172,20 +172,23 @@ function HomePage() {
   const getMClineData = async () => {
     try {
       let card_code = cardData?.code; 
-      let prms = {
-        card_code,
-        grade_company: 'all',
-        grade_value: 'all',
-        time_period: 365,
-        currency: currency,
-        resample: "D"
+      if(card_code) {
+        let prms = {
+          card_code: card_code,
+          grade_company: 'all',
+          grade_value: 'all',
+          time_period: 365,
+          currency: currency,
+          resample: "D"
+        }
+        // pg_app_calc_ma_line_featured
+        const res = await api.v1.mc_line_home_fuature.getCalcMaLineFuature(prms);
+        if (res.success) {
+          setPriceChart(res.data.price);
+          setCardPrice(res.data.stats)
+        }
       }
-      // pg_app_calc_ma_line_featured
-      const res = await api.v1.mc_line_home_fuature.getCalcMaLineFuature(prms);
-      if (res.success) {
-        setPriceChart(res.data.price);
-        setCardPrice(res.data.stats)
-      }
+     
     } catch (error) {
       
     }

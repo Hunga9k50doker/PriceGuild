@@ -181,7 +181,7 @@ function SportLandingPage({...props}) {
       //@ts-ignore
       let card_code = cardData?.code; 
       let prms = {
-        card_code,
+        card_code: card_code,
         grade_company: 'all',
         grade_value: 'all',
         time_period: 365,
