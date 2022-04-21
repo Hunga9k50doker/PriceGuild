@@ -284,7 +284,7 @@ const Messages = ({ ...props }: PropTypes) => {
         <div className="col-3 mt-2 pe-0">
           <div className="ps-2 d-flex justify-content-between align-items-center">
             <div className="search">
-              <i className="fa fa-search" />
+              <i className="ic-search-input" />
               <input
                 id="input-search"
                 onBlur={onCloseSearch}
@@ -388,7 +388,7 @@ const Messages = ({ ...props }: PropTypes) => {
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="search">
-                    <i className="fa fa-search" />
+                    <i className="ic-search-input" />
                     <input
                       type="text"
                       className="form-control"
@@ -407,7 +407,7 @@ const Messages = ({ ...props }: PropTypes) => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        <i className="fa fa-ellipsis-h" aria-hidden="true" />
+                        <i className="ic-ellipsis" aria-hidden="true" />
                       </button>
                       <ul
                         className="dropdown-menu"

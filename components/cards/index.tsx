@@ -44,14 +44,14 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
       if (sortCards?.sort_value === name && sortCards?.sort_by !== "asc" && props.cards.length) {
-        return "fa fa-caret-down active"
+        return "ic-caret-down active"
       }
-      return "fa fa-caret-down"
+      return "ic-caret-down"
     }
     if (sortCards?.sort_value === name && sortCards?.sort_by === "asc" && props.cards.length) {
-      return "fa fa-caret-up active"
+      return "ic-caret-down revert active"
     }
-    return "fa fa-caret-up"
+    return "ic-caret-down revert"
   }
   
   return (

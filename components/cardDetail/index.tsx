@@ -1029,7 +1029,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                       <div className="col-12 col-sm-5 com-md-5  card-detail-content-right mt-1 px-0">
                         <div className="card-detail-content-right__title d-flex align-items-center">
                           {!Boolean(cardData.sport.name) ? <Skeleton width={150} /> : <>
-                            {cardData.sport.name} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {cardData.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                            {cardData.sport.name} <i className="dot-margin" /> {cardData.year} <i className="dot-margin" />{" "}
                             {cardData?.publisher?.name}
                           </>}
                         </div>

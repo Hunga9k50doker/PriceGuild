@@ -10,7 +10,7 @@ import logoHeader from "assets/images/logo-header.svg";
 import logoHeader1024 from "assets/images/logo-header-1024.svg";
 import { HomeActions } from "redux/actions/home_action";
 import IconArrow from 'assets/images/arrow_nav.png'
-import IconUserProfile from "assets/images/header_user.png"
+import IconUserProfile from "assets/images/icon-user.svg"
 import IconCollectionProfile from "assets/images/profile_collection.png"
 import IconHeartProfile from "assets/images/profile_heart.png"
 import IconFriendProfile from "assets/images/profile_user_group.png"
@@ -29,6 +29,7 @@ import IconArrowBackMenu from "assets/images/arrow-back-black.svg";
 import IconAccount from "assets/images/account.svg";
 import IconInfo from "assets/images/info.svg";
 import IconBowse from "assets/images/bowse.svg";
+import UserPicture from "assets/images/user-picture.svg";
 import IconArrowLanguage from "./componennts/iconArrowLanguage";
 import InputSearch, { FilterModalHandle } from "components/smartSearchMobile/inputSearch";
 // @ts-ignore
@@ -116,7 +117,6 @@ const Header = (props: any) => {
     }
   }, [isShow])
 
-
   const logout = () => {
     dispatch(AuthActions.logout());
   };
@@ -124,6 +124,7 @@ const Header = (props: any) => {
   const goToCollections = (sportName: string) => {
     router.push(`/collections/${sportName}`);
   }
+
   const goToCollectionsLink = (sportName: string) => {
     return `/collections/${sportName}`
   }
@@ -453,7 +454,7 @@ const Header = (props: any) => {
                   </li>
                   {loginState ? <>
                     <li className="nav-item dropdown user">
-                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <i style={{ fontSize: 40 }} className="fa fa-user-circle-o" aria-hidden="true" /> </a>
+                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <img className="w-38" src={UserPicture} alt="" title="" /> </a>
                       <ul className="dropdown-menu dropdown-user-login" aria-labelledby="navbarDropdown">
                         <li >
                           <Link href="/profile/personal">
@@ -464,7 +465,7 @@ const Header = (props: any) => {
                         <li>
                           <Link href="/profile/personal">
                             <a className="dropdown-item" title="Profile">
-                              <span><img alt="Profile" src={IconUserProfile.src} /></span> Profile
+                              <span><img alt="Profile" src={IconUserProfile} /></span> Profile
                             </a>
                           </Link>
                         </li>
@@ -551,26 +552,6 @@ const Header = (props: any) => {
           </nav>
         </div>
       </div >
-      {/*  */}
-      {/* {showSearchData &&
-        <div className="section-search-content">
-          <span className="recent-search">Recent Search</span>
-          <ul>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-          </ul>
-        </div>
-      } */}
       <div className={`${showMenuContent ? 'active' : ''} section-menu-content`}>
         <div className="section-logo-nav">
           <div className="d-flex justify-content-between section-logo">

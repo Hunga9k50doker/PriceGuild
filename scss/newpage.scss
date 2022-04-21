@@ -1906,9 +1906,6 @@
         .form-control {
             padding: 9px 12px;
         }
-        .fa-search {
-            top: 14px;
-        }
     }
     .p-11{
         padding: 11px !important;
@@ -2249,7 +2246,13 @@ nav {
     .dropdown-toggle {
         &::after {
             position: absolute;
-            top: 30px;
+            top: 25px;
+            border: none;
+            width: 10px;
+            height: 10px;
+            background-image: url("../assets/images/arrow-tiny-white.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
         }
     }
 }
@@ -2988,5 +2991,156 @@ button, .btn {
         &.react-datepicker-ignore-onclickoutside {
             border-color: #124de3 !important;
         }
+    }
+}
+
+.w-38 {
+    width: 38px;
+}
+
+.chevron {
+    &-left {
+        display: block;
+        width: 24px;
+        height: 24px;
+        background-image: url("../assets/images/arrow-regular-01.svg");
+    }
+    &-right {
+        display: block;
+        width: 24px;
+        height: 24px;
+        transform: rotate(180deg);
+        background-image: url("../assets/images/arrow-regular-01.svg");
+    }
+}
+
+.dot-margin {
+    width: 20px;
+    position: relative;
+    &::after {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: rgba(109, 117, 136, 0.35);
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+.clear-padding {
+    padding: 0 !important;
+}
+
+.ic {
+    &-caret-down {
+        display: block;
+        width: 9px;
+        height: 5px;
+        background-image: url("../assets/images/caret-down.svg");
+        &.revert {
+            transform: rotate(180deg);
+            margin-left: 1px;
+        }
+        &.active {
+            background-image: url("../assets/images/caret-down-active.svg");
+        }
+    }
+    &-search-input {
+        width: 24px;
+        height: 24px;
+        background-image: url("../assets/images/search.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: block;
+        position: absolute;
+        top: 11px;
+        left: 15px;
+        cursor: pointer;
+    }
+    &-padlock {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        background-image: url("../assets/images/lock.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        &.fz-10 {
+            width: 10px;
+            height: 10px;
+        }
+        &.fz-70 {
+            width: 22px;
+            height: 22px;
+        }
+    }
+    &-close-input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/cross.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    &-arrow-tiny-blue {
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/arrow-tiny-blue.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    &-grid-view {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/icon-grid-view-blue.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        &.active {
+            background-image: url("../assets/images/icon-grid-view-white.svg");
+        }
+    }
+    &-line-view {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/icon-line-view-blue.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        &.active {
+            background-image: url("../assets/images/icon-line-view-white.svg");
+        }
+    }
+    &-apple {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/apple.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    &-share-facebook {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/share-facebook.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    &-share-twitter {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: inline-block;
+        background-image: url("../assets/images/share-twitter.svg");
+        background-size: cover;
+        background-repeat: no-repeat;
     }
 }

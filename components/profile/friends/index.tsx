@@ -211,7 +211,7 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
       </ul>
         <div className="d-flex align-items-center justify-content-center">
           <div className="search">
-            <i className="fa fa-search" />
+            <i className="ic-search-input" />
             <input onBlur={onCloseSearch} onChange={onSearchUser} id="input-search" type="text" className="form-control" placeholder="Search" />
           </div>
           <Link className="ms-2 btn btn-secondary" to={"/profile/settings"}>Edit Profile</Link>
@@ -235,7 +235,7 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
                   {isEdit && <div className="menu-button">
                     <div className="dropdown">
                       <button onClick={(e) => { e.stopPropagation() }} className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i className="fa fa-ellipsis-h" aria-hidden="true" />
+                        <i className="ic-ellipsis" aria-hidden="true" />
                       </button>
                       <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                         <li><span onClick={(e) => {
@@ -306,7 +306,7 @@ const Friends = ({ isEdit = true, ...props }: PropTypes) => {
                   <div className="menu-button">
                     <div className="dropdown">
                       <button onClick={(e) => { e.stopPropagation() }} className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i className="fa fa-ellipsis-h" aria-hidden="true" />
+                        <i className="ic-ellipsis" aria-hidden="true" />
                       </button>
                       <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                         <li><span onClick={() => actionFriend(MetaData.friend_actions.unblock_user, friend)} className="dropdown-item cursor-pointer">Unblock</span></li>

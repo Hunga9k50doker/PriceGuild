@@ -378,7 +378,7 @@ const CollectionList = ({
                 <div title={item.group_name} className="col-10 text-truncate title fw-bold">
                   {item.group_name}{" "}
                   {Boolean(item.type === 2) && (
-                    <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
+                    <i className="ms-1 ic-padlock" aria-hidden="true"></i>
                   )}
                   {Boolean(item.type === 0) && item.group_ref === 0 && (
                     <img src={IconFolder} alt="icon-folder" />
