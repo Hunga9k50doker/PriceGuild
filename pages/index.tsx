@@ -46,7 +46,7 @@ export type Inputs = {
 function HomePage() {
   const [t, i18n] = useTranslation("common");
   const router = useRouter();
-  const { is_browse } = useSelector(Selectors.config);
+  const { is_browse, currency } = useSelector(Selectors.config);
   const { popularPublishers, latestCollections, cardBreakDown } = useSelector(Selectors.home);
   const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const dispatch = useDispatch();
@@ -108,10 +108,16 @@ function HomePage() {
   }, [cardSelected])
 
   useEffect(() => {
+    let isCardData = false;
+
     if (!isEmpty(cardData)) {
+      isCardData = true;
       getMClineData();
     }
-  },[cardData])
+    if(!isCardData) {
+      getMClineData();
+    }
+  },[cardData, currency])
   const getOptionCardBreakDown = async (sportId: number) => {
 
     try {
@@ -171,7 +177,7 @@ function HomePage() {
         grade_company: 'all',
         grade_value: 'all',
         time_period: 365,
-        currency: userInfo.userDefaultCurrency,
+        currency: currency,
         resample: "D"
       }
       // pg_app_calc_ma_line_featured
@@ -422,7 +428,7 @@ function HomePage() {
                     type="text"
                     readOnly
                     className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.latest)}
+                    value={formatCurrency(cardPrice?.latest, currency)}
                   /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -434,7 +440,7 @@ function HomePage() {
                       type="text"
                       readOnly
                       className="form-control-plaintext"
-                      value={formatCurrency(cardPrice?.min)}
+                      value={formatCurrency(cardPrice?.min, currency)}
                   /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
@@ -446,7 +452,7 @@ function HomePage() {
                     type="text"
                     readOnly
                     className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.max)}
+                    value={formatCurrency(cardPrice?.max, currency)}
                   /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>

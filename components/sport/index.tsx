@@ -336,7 +336,7 @@ function SportLandingPage({...props}) {
               <CardBreakdown price_data={priceChart} />
               <div className="data-chart-info">
                 <div className="row bold-chart-text">
-                  <label className="col-8  col-sm-6 col-form-label">Change (% from first data):</label>
+                  <label className="col-8  col-sm-6 col-form-label">Change (% from first data1):</label>
                   <div className="col-4 col-sm-6 value-input">
                     {cardPrice?.change ?
                       <input

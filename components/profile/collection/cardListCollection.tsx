@@ -140,6 +140,7 @@ const CardListCollection = ({
   >(undefined);   
   const dispatch = useDispatch();
   const filters = useSelector(Selectors.filter);
+  
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
@@ -757,7 +758,7 @@ const CardListCollection = ({
     return trackFilter[index].isUpdate;
   }
   useEffect(() => {
-    
+    let isCheckCurrency = true;
     if (isEditCardData || isAddCardProfile) {
       setSelectDataFilter(dataFilterStore)
     }
@@ -766,11 +767,17 @@ const CardListCollection = ({
       dispatch(SearchFilterAction.updateSetDataFilter(filterData))
     }
     
+
     if (!isEmpty(filters.years) && !data.isLoading) {
+      isCheckCurrency =false;
       setPagesSelected([1])
       getListCard([1])
     }
-  }, [filterData, sortCards])
+    if(isCheckCurrency) {
+      setPagesSelected([1])
+      getListCard([1])
+    }
+  }, [filterData, sortCards, currency])
   
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {

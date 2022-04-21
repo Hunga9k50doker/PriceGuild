@@ -106,6 +106,7 @@ const CollectionBase = ({ ...props}) => {
   const [isInline, setIsInline] = useState<boolean>(true);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const { isAddCardCheckList, pageSelected } = useSelector(Selectors.searchFilter);
+  const { currency } = useSelector(Selectors.config);
   React.useEffect(() => {
     if (!isEmpty(router.query)) {
       setPagesSelected(Boolean(isAddCardCheckList) ? [pageSelected] : [1]);
@@ -131,6 +132,7 @@ const CollectionBase = ({ ...props}) => {
           sort_value: filterData?.sort?.by,
           sort_by: filterData?.sort?.asc ? "asc" : "desc",
         },
+        currency: currency
       };
 
       const result = await api.v1.collection.checkList({ ...params }, headers);
@@ -175,7 +177,7 @@ const CollectionBase = ({ ...props}) => {
       getDetail([1]);
       setPagesSelected([1]);
     }
-  }, [filterData]);
+  }, [filterData, currency]);
 
   const renderButtonFilter = (day: number) => {
     switch (day) {
@@ -949,13 +951,13 @@ const CollectionBase = ({ ...props}) => {
                               <td>
                                 {" "}
                                 {item.minPrice
-                                  ? formatCurrency(item.minPrice)
+                                  ? formatCurrency(item.minPrice, currency)
                                   : "N/A"}{" "}
                               </td>
                               <td>
                                 {" "}
                                 {item.maxPrice
-                                  ? formatCurrency(item.maxPrice)
+                                  ? formatCurrency(item.maxPrice, currency)
                                   : "N/A"}{" "}
                               </td>
                               <td> {item.count} </td>
