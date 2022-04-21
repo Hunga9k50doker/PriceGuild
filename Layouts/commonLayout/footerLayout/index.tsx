@@ -148,7 +148,7 @@ function Footer() {
             </div>
           </div>
           <div className="col-md-6 col-sm-6 col-xs-6 socials-icon">
-            <div className="pull-right mr-4 d-flex policy">
+            <div className="d-flex policy mr-4 justify-content-end">
               <div className="social mt-3 mb-3">
                 <Link href={{ pathname: "https://www.facebook.com/PriceGuideCards" }}>
                   <a target={"_blank"} style={{color: "transparent"}} title="Facebook"> <img className="pr-3" src={facebookIcon} alt="Facebook" title="Facebook" /> </a> 
