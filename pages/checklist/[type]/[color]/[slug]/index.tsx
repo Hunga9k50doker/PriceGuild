@@ -216,18 +216,18 @@ const CollectionBase = ({ ...props}) => {
         !filterData?.sort?.asc &&
         collection.rows
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down-down";
     }
     if (
       filterData?.sort?.by === name &&
       filterData?.sort?.asc &&
       collection.rows
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -474,9 +474,9 @@ const CollectionBase = ({ ...props}) => {
               <div className="col-md-6 col-12 ps-4 col-detail-base">
                 <div className="collection-title-topic d-flex align-items-center">
                   <div>{collection?.sport?.name}</div>{" "}
-                  <div className="circle-gray"></div>{" "}
+                  <i className="dot-margin" />{" "}
                   <div>{collection?.year}</div>{" "}
-                  <div className="circle-gray"></div>{" "}
+                  <i className="dot-margin" />{" "}
                   <div>{collection?.publisher?.name}</div>
                 </div>
                 <h1 className=" collection-title mb-3">
@@ -535,10 +535,10 @@ const CollectionBase = ({ ...props}) => {
                     <button
                       type="button"
                       onClick={() => setIsInline((prevState) => !prevState)}
-                      className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}
+                      className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}
                     >
                       {" "}
-                      <i className="fa fa-th" aria-hidden="true"></i>{" "}
+                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>{" "}
                     </button>
                     <button
                       type="button"
@@ -548,8 +548,6 @@ const CollectionBase = ({ ...props}) => {
                       } }
                       className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}
                     >
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
-                      {/* <img src={IconList} /> */}
                       <ListLine />
                     </button>
                   </div>

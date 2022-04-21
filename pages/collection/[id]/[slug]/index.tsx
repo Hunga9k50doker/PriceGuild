@@ -176,18 +176,18 @@ const CollectionDetail = (props: PropTypes) => {
         !filterData?.sort?.asc &&
         dataTable.length
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if (
       filterData?.sort?.by === name &&
       filterData?.sort?.asc &&
       dataTable.length
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -427,9 +427,9 @@ const CollectionDetail = (props: PropTypes) => {
                             <div className="ps-3">
                               <div className="d-flex align-items-center card-info">
                                 <div> {item.sportName} </div>
-                                <div className="circle-gray"></div>
+                                <i className="dot-margin" />
                                 <div> {item.year} </div>
-                                <div className="circle-gray"></div>
+                                <i className="dot-margin" />
                                 <div> {item.publisherName} </div>
                               </div>
                               <div onClick={() => onGoToCard(item)} className="card-title cursor-pointer">
@@ -651,9 +651,9 @@ const CollectionDetail = (props: PropTypes) => {
             <div className="col-md-6 col-12 ps-4 collection-detail">
               <div className="collection-title-topic d-flex align-items-center">
                 <div>{collection?.sport?.name}</div>{" "}
-                <div className="circle-gray"></div>{" "}
+                <i className="dot-margin" />{" "}
                 <div>{collection?.year}</div>{" "}
-                <div className="circle-gray"></div>{" "}
+                <i className="dot-margin" />{" "}
                 <div>{collection?.publisher?.name}</div>
               </div>
               <h1 className="mb-3 collection-title"> {collection?.title} </h1>

@@ -211,18 +211,18 @@ const Top100 = (props: PropTypes) => {
         !sortData?.sort?.asc &&
         data?.cards.length
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if (
       sortData?.sort?.by === name &&
       sortData?.sort?.asc &&
       data?.cards.length
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -973,8 +973,8 @@ const Top100 = (props: PropTypes) => {
                           </div>
                           <div className="th-content">
                             <div className="d-flex align-items-center th-title">
-                              {item.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
-                              {item.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+                              {item.sport} <i className="dot-margin" />
+                              {item.year} <i className="dot-margin" />
                               {item.publisher}
                             </div>
                             <div className="fw-500 cursor-pointer" onClick={() => gotoCard(item)}>

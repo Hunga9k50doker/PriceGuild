@@ -294,9 +294,9 @@ const Comparison: React.FC = ({ ...props}) => {
                 <div onClick={()=> gotoCardDetail(item)} className="comparison-content-box-detail cursor-pointer">
                   <div className="mb-2 d-flex align-items-center comparison-content-box-detail__title">
                     {item?.sport?.name ?? <Skeleton style={{ width: 50 }} />}
-                    <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+                    <i className="dot-margin" />
                     <span> {item.year ?? <Skeleton style={{ width: 50 }} />} </span>
-                    <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+                    <i className="dot-margin" />
                     {item?.publisher?.name ?? <Skeleton style={{ width: 50 }} />}
                   </div>
                   <div className="comparison-content-box-detail__description">

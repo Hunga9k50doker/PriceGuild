@@ -599,15 +599,9 @@
                 .sort-table {
                   display: flex;
                   flex-direction: column-reverse;
+                  justify-content: space-evenly;
                   margin-left: 10px !important;
-                  .sort-desc {
-                    position: relative;
-                    top: 3px;
-                  }
-                  .sort-asc {
-                    position: relative;
-                    top: -5px;
-                  }
+                  min-height: 20px;
                 }
                 padding-left: 12px;
                 border: none;

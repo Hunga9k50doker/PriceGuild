@@ -950,7 +950,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const formatOptionPortfolio = ({id, group_name, type}: any) => (
    <>
     {group_name}
-    {type == 2 && <i className="ms-1 fa fa-lock" aria-hidden="true"></i>}
+    {type == 2 && <i className="ms-1 ic-padlock" aria-hidden="true"></i>}
    </>
   );
 
@@ -1025,9 +1025,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <div key={key} className="card-add">
                     <div className="card-add-info d-flex align-items-center">
                       {item?.sport}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.year}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.publisher}
                     </div>
                     <div className="mb-3 fs-5 card-add-description mt-2">

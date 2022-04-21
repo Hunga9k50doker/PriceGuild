@@ -104,7 +104,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
           Create new { title === 'collection' ? 'portfolio' : title } successfully {" "}
           <Link href={`/profile/${title === 'collection' ? 'portfolio' : title+'s'}/${result?.data?.id}/${result?.data?.group_name?.replaceAll("/", "-")}}`}>
             <a className="text-decoration-none">
-              {result?.data?.group_name} {" "} { Boolean(result?.data?.type === 2) && <i className="fa fa-lock" aria-hidden="true"></i>}{" "}
+              {result?.data?.group_name} {" "} { Boolean(result?.data?.type === 2) && <i className="ic-padlock fz-10" aria-hidden="true"></i>}{" "}
             </a>
           </Link>
       </div>) : '';
@@ -300,14 +300,14 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                   <div className="text-center col cursor-pointer">
                     <Link href={renderLinkShareTwitter()}>
                       <a className="py-2 btn btn-social-twitter" target='_blank'>
-                        <i className="fa fa-twitter fa-2" aria-hidden="true" />
+                        <i className="ic-share-twitter" />
                       </a>
                     </Link>
                   </div>
                   <div className="text-center col cursor-pointer">
                     <Link href={renderLinkShareFB()} >
                       <a className="py-2 btn btn-social-facebook" target='_blank'>
-                        <i className="fa fa-facebook fa-2" aria-hidden="true" />
+                        <i className="ic-share-facebook" />
                       </a>
                     </Link>
                   </div>
