@@ -9,6 +9,8 @@ import { formatCurrency, formatNumber } from "utils/helper"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import _ from 'lodash';
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 interface Props {
   onHideChart: (status: boolean, cardId: Array<string>) => void;
   onChangeGrade: (cardGrade: PricingGridModel, cardId: string) => void;
@@ -30,7 +32,7 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
   useImperativeHandle(ref, () => ({
     updateChartData: _addDataToChart,
   }));
-
+  const { currency } = useSelector(Selectors.config);
   // @ts-ignore
   const DropdownIndicator = props => {
     return (
@@ -151,10 +153,10 @@ const ListStatastic = React.forwardRef<RefType, Props>((props, ref) => {
                     components={{ DropdownIndicator }}
                   />
                 </td>
-                <td>{isNoData ? 'N/A' : formatCurrency(stats.latest)}</td>
-                <td>{isNoData ? 'N/A' : formatCurrency(stats.min)}</td>
-                <td>{isNoData ? 'N/A' : formatCurrency(stats.max)}</td>
-                <td>{isNoData ? 'N/A' : formatCurrency(stats.average)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.latest, currency)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.min, currency)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.max, currency)}</td>
+                <td>{isNoData ? 'N/A' : formatCurrency(stats.average, currency)}</td>
                 <td>{isNoData ? 'N/A' : formatNumber(stats.total_trades)}</td>
                 <td>{isNoData ? 'N/A' : (<>{formatNumber(stats.change)}%</>)}</td>
               </tr>

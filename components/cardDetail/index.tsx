@@ -143,7 +143,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
         controller.loadCardDetail({
           // @ts-ignore
           card_code: cardCode,
-          currency: userInfo.userDefaultCurrency,
+          currency: currency,
         }).catch(error => {
           props.errorCard && props.errorCard(props?.code ?? '')
         });
@@ -152,7 +152,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           controller.loadSaleData({
             // @ts-ignore
             card_code: cardCode,
-            currency: userInfo.userDefaultCurrency,
+            currency: currency,
           }).catch(err => {
             //@ts-ignore
             if (err?.status === 403) {
@@ -178,7 +178,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
         controller.loadPricingGrid({
           // @ts-ignore
           cardcode: cardCode,
-          currency: userInfo.userDefaultCurrency,
+          currency: currency,
           userid: userInfo.userid,
         }).catch((err: any) => {
           props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
@@ -186,7 +186,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
       }
     }
     
-  }, [props.code, loggingIn, router.query]);
+  }, [props.code, loggingIn, router.query, currency]);
   
   useImperativeHandle(ref, () => ({
     loadSalaData: _loadSaleDataCapCha,
@@ -198,7 +198,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     controller.loadSaleData({
       // @ts-ignore
       card_code: keepCardCode,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
     }, headers);
   }
 
@@ -210,7 +210,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     controller.loadCardDetail({
       // @ts-ignore
       card_code: cardCode,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
       onUpdateCard: undefined,
     });
   }
@@ -581,21 +581,21 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       </div>
                                     </div>
                                   </td>
-                                  <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
+                                  <td> {item.min ? formatCurrency(item.min, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
                                       <span ref={ref} {...triggerHandler}>$###</span>
                                     )}
                                   </OverlayTrigger>}</td>
-                                  <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
+                                  <td> {item.max ? formatCurrency(item.max, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
                                       <span ref={ref} {...triggerHandler}>$###</span>
                                     )}
                                   </OverlayTrigger>} </td>
-                                  <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
+                                  <td> {item.avg ? formatCurrency(item.avg, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
@@ -626,7 +626,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                               if (loggingIn) {
                                                 sagaController.requestCalcMaxLineV1({
                                                   cardId: +cardData.id,
-                                                  currency: userInfo.userDefaultCurrency,
+                                                  currency: currency,
                                                   cardGrades: cardGrades,
                                                   period: saleChartState.periodSelected.id,
                                                   oldData: saleChartState.calcMaLine
@@ -760,7 +760,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
             controller.loadSaleData({
               // @ts-ignore
               card_code: cardCode,
-              currency: userInfo.userDefaultCurrency,
+              currency: currency,
             },headers).catch(err => {
               //@ts-ignore
               if (err?.status === 403) {
@@ -1337,7 +1337,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                         if (loggingIn) {
                                           sagaController.requestCalcMaxLineV1({
                                             cardId: +cardData.id,
-                                            currency: userInfo.userDefaultCurrency,
+                                            currency: currency,
                                             cardGrades: dataSelect,
                                             period: saleChartState.periodSelected.id,
                                             oldData: saleChartState.calcMaLine
@@ -1472,7 +1472,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       if (loggingIn) {
                                         sagaController.requestCalcMaxLineV1({
                                           cardId: +cardData.id,
-                                          currency: userInfo.userDefaultCurrency,
+                                          currency: currency,
                                           cardGrades: saleChartState.gradeTreeSelected,
                                           period: saleChartState.listTimePeriod[index].id,
                                         });
@@ -1528,7 +1528,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                               calcMaxLineRequest={async () => {
                                 await sagaController.requestCalcMaxLineV1({
                                   cardId: +cardData.id,
-                                  currency: userInfo.userDefaultCurrency,
+                                  currency: currency,
                                   cardGrades: saleChartState.gradeTreeSelected,
                                   period: saleChartState.periodSelected.id
                                 });
@@ -1537,7 +1537,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                 return sagaController.reloadPricingGrid({
                                   // @ts-ignore
                                   cardcode: cardData.code,
-                                  currency: userInfo.userDefaultCurrency,
+                                  currency: currency,
                                   userid: userInfo.userid,
                                 }).catch((err: any) => {
                                   props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');

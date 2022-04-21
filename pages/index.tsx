@@ -467,7 +467,7 @@ function HomePage() {
                     type="text"
                     readOnly
                     className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.average)}
+                    value={formatCurrency(cardPrice?.average, currency)}
                   /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
