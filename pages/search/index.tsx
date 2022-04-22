@@ -136,7 +136,7 @@ const CardList = (props: PropTypes) => {
   const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
   const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
-  
+
   useEffect(() => {
     if ( router.isReady ) {
       setPrioritize([])
@@ -1255,6 +1255,15 @@ const CardList = (props: PropTypes) => {
       ? IconCanFull
       : IconDot3;
   };
+
+  React.useEffect(() => {
+    if (isInline && cardSelected.length) {
+      setIsSelect(true);
+    }
+    if (isInline && !cardSelected.length) {
+      setIsSelect(false);
+    }
+  }, [cardSelected]);
   return (
     <div className="container-fluid container-search-page">
       <Head>
@@ -1909,7 +1918,6 @@ const CardList = (props: PropTypes) => {
                         <tbody>
                           {data?.cards.map((item, index) => (
                             <tr key={index} >
-                              {console.log(item, 'item')}
                               <td className="text-center">
                                 {" "}
                                 <input
