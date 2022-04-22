@@ -69,7 +69,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
               <th scope="col" style={{width: "8%"}}>
-                <div className="d-flex cursor-pointer align-items-center" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
+                <div className="d-flex cursor-pointer align-items-center white-space-nowrap" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
                     <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
