@@ -218,7 +218,7 @@ const CollectionBase = ({ ...props}) => {
       ) {
         return "ic-caret-down active";
       }
-      return "ic-caret-down-down";
+      return "ic-caret-down";
     }
     if (
       filterData?.sort?.by === name &&

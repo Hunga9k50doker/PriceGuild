@@ -319,15 +319,6 @@
                   .sort-table {
                     display: flex;
                     flex-direction: column-reverse;
-                    margin-left: 10px;
-                    .sort-desc {
-                      position: relative;
-                      top: 3px;
-                    }
-                    .sort-asc {
-                      position: relative;
-                      top: -3px;
-                    }
                   }
                   border: none;
                   &:first-child {
