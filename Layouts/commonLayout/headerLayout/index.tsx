@@ -607,20 +607,21 @@ const Header = (props: any) => {
           </div>
           <div className="section-select">
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              value={{ value: currency, label: currency }}
               classNamePrefix="select-currency"
               className="select-price select-currency customScroll"
-              options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
-              ]} />
+              onChange={(e: any) => {
+                updateCurrency(e?.value || "USD")
+              }}
+              options={currencies} />
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              // defaultValue={{ value: 'usd', label: 'USD' }}
               classNamePrefix="select-language"
               className="select-price select-language customScroll"
+              value={{ value: "EN", label: "EN" }}
               options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
+                { value: 'EN', label: 'EN' },
+                // { value: 'th', label: 'TH' },
               ]} />
           </div>
         </div>
