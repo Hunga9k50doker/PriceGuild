@@ -189,7 +189,6 @@ const CardListCollection = ({
       
     }
   }, [newGradeChangedState])
-  
   const [friend, setFriend] = useState<PgAppProfileType>()
   const resetPage = (isRefresh: boolean = true, isReset: boolean = true) => {
     setFilterData({})
@@ -760,10 +759,12 @@ const CardListCollection = ({
   useEffect(() => {
     let isCheckCurrency = true;
     if (isEditCardData || isAddCardProfile) {
+      isCheckCurrency =false;
       setSelectDataFilter(dataFilterStore)
     }
 
     if (!isEmpty(filterData)) {
+      isCheckCurrency =false;
       dispatch(SearchFilterAction.updateSetDataFilter(filterData))
     }
     
@@ -773,7 +774,7 @@ const CardListCollection = ({
       setPagesSelected([1])
       getListCard([1])
     }
-    if(isCheckCurrency) {
+    if(isCheckCurrency  && !data.isLoading ) {
       setPagesSelected([1])
       getListCard([1])
     }

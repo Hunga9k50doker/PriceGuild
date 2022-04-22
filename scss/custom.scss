@@ -1998,14 +1998,16 @@
               color: #FFFFFF;
               border: none;
               .select-currency__value-container {
-                padding: 0px 8px !important;
+                padding: 0px 2px 0px 6px !important;
                 .select-currency__single-value {
                   color: #FFFFFF;
                   font-family: 'Manrope', sans-serif;
                   font-style: normal;
                   font-weight: 500;
-                  font-size: 14px;
+                  font-size: 14px!important;
                   line-height: 130%;
+                  margin: 0!important;
+                  max-width: calc(100% - 4px);
                 }
               }
               .select-currency__indicators {
@@ -2033,13 +2035,13 @@
               color: #FFFFFF;
               border: none;
               .select-language__value-container {
-                padding: 0px 8px !important;
+                padding: 0px 2px 0px 6px !important;
                 .select-language__single-value {
                   color: #FFFFFF;
                   font-family: 'Manrope', sans-serif;
                   font-style: normal;
                   font-weight: 500;
-                  font-size: 14px;
+                  font-size: 14px!important;
                   line-height: 130%;
                 }
               }
