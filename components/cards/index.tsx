@@ -65,7 +65,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-              <th scope="col" className={`width-24 ${isPortfolioAll}`} style={{width: "34%"}}>
+              <th scope="col" className={`width-24 ${isPortfolioAll}`} style={{width: "40%"}}>
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
               <th scope="col" style={{width: "8%"}}>
@@ -123,7 +123,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "9%"}}> </th>
+              <th scope="col" style={{width: "4%"}}> </th>
             </tr>
           </thead>
           <tbody>
