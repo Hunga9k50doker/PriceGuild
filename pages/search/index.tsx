@@ -1974,10 +1974,10 @@ const CardList = (props: PropTypes) => {
                                   : "N/A"}{" "}
                               </td>
                               <td>
-                                {
+                                {" "}{
                                   //@ts-ignore
-                                  item.avgPrice
-                                }
+                                  item.avgPrice ? formatCurrency(item.maxPrice): "N/A"
+                                }{" "}
                               </td>
                               <td>
                                 <div className="dropdown dropdown--top">
