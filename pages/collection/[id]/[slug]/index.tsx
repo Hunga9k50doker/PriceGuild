@@ -222,17 +222,17 @@ const CollectionDetail = (props: PropTypes) => {
             <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`}>
               <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage"> 
                 <span property="name"> {collection?.sport?.name} Card Collections </span>
-                <meta property="position" content="1"></meta>
               </a>
             </Link>
+            <meta property="position" content="1"></meta>
           </li>
           <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
             <Link href={`/${collection?.url}`}>
               <a title={collection?.title} property="item" typeof="WebPage">
                 <span property="name"> {collection?.title} </span>
-                <meta property="position" content="2"></meta>
               </a>
             </Link>
+            <meta property="position" content="2"></meta>
           </li>
         </ol>
       </nav>

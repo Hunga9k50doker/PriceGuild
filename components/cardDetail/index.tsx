@@ -223,33 +223,33 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
               <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
                 <a title={`${cardData.sport.name} Card Collections`} property="item" typeof="WebPage">
                   <span property="name"> {cardData.sport.name} Card Collections </span>
-                  <meta property="position" content="1"></meta>
                 </a>
               </Link>
+              <meta property="position" content="1"></meta>
             </li>
             <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/${cardData.set.url}`}>
                 <a title={cardData.set.title} property="item" typeof="WebPage">
                   <span property="name"> {cardData.set.title} </span>
-                  <meta property="position" content="2"></meta>
                 </a>
               </Link>
+              <meta property="position" content="2"></meta>
             </li>
             <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/checklist/${cardData.type.id}/${cardData.color.code}/${cardData.color.url}`}>
                 <a title={`${cardData.type.name} - ${cardData.color.name}`} property="item" typeof="WebPage">
                   <span property="name"> {cardData.type.name} - {cardData.color.name} </span>
-                  <meta property="position" content="3"></meta>
                 </a>
               </Link>
+              <meta property="position" content="3"></meta>
             </li>
             <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
               <Link href={`/card-details/${cardData?.code}/${gen_card_url(cardData?.webName, cardData?.cardNumber)}`}>
                 <a title={`${cardData.firstname} ${cardData?.lastname ?? ""}`} property="item" typeof="WebPage">
                   <span property="name"> {cardData.firstname} {cardData?.lastname ?? ""} </span>
-                  <meta property="position" content="4"></meta>
                 </a>
               </Link>
+              <meta property="position" content="4"></meta>
             </li>
           </ol>
         </nav>

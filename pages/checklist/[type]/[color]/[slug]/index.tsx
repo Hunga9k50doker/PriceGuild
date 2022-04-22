@@ -216,25 +216,25 @@ const CollectionBase = ({ ...props}) => {
             >
               <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage">
                 <span property="name"> {collection?.sport?.name} Card Collections </span>
-                <meta property="position" content="1"></meta>
               </a>
             </Link>
+            <meta property="position" content="1"></meta>
           </li>
           <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
             <Link href={`/${collection.url}`}>
               <a title={collection?.title} property="item" typeof="WebPage">
                 <span property="name"> {collection?.title} </span>
-                <meta property="position" content="2"></meta>
               </a>
             </Link>
+            <meta property="position" content="2"></meta>
           </li>
           <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
             <Link href={`/checklist/${router?.query?.type}/${router?.query?.color}/${router?.query?.slug}`}>
               <a title={collection?.title} property="item" typeof="WebPage">
                 <span property="name"> {`${collection?.type} - ${collection?.color}`} </span>
-                <meta property="position" content="3"></meta>
               </a>
             </Link>
+            <meta property="position" content="3"></meta>
           </li>
         </ol>
       </nav>
