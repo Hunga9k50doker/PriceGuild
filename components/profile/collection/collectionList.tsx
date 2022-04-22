@@ -313,25 +313,6 @@ const CollectionList = ({
     if (tab === 'friend') return;
     return router.push(`/${tab === 'collection' ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab+'s'}`}`)
   }
-
-  const getUserDetail = async () => {
-    try {
-      const params = {
-        profileid: Number(router.query.page)
-      }
-      const res = await api.v1.authorization.getUserInfo(params);
-      if (res.success) {
-        //@ts-ignore
-        setFriend(res.data?.user_info)
-      }
-      if (!res.success) {
-        // @ts-ignore
-        /**/
-      }
-    } catch (error) {
-      console.log("error........", error);
-    }
-  }
   
   return (
     <> {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) && <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={profileFriend} />}
@@ -397,7 +378,7 @@ const CollectionList = ({
                 <div title={item.group_name} className="col-10 text-truncate title fw-bold">
                   {item.group_name}{" "}
                   {Boolean(item.type === 2) && (
-                    <i className="ms-1 fa fa-lock" aria-hidden="true"></i>
+                    <i className="ms-1 ic-padlock" aria-hidden="true"></i>
                   )}
                   {Boolean(item.type === 0) && item.group_ref === 0 && (
                     <img src={IconFolder} alt="icon-folder" />

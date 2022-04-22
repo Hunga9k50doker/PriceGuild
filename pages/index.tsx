@@ -286,6 +286,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
+                isSearchable={ false }
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
@@ -493,6 +494,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
+                isSearchable={ false }
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
@@ -590,7 +592,6 @@ function HomePage() {
               {item.sports?.map((sport, key) =>
                 <li key={key} className="list-group-item d-flex justify-content-between align-items-center">
                   {sport.sportName}
-                  <i className="fa fa-chevron-right" aria-hidden="true"></i>
                 </li>
               )}
             </ul>

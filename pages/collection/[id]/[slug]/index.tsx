@@ -35,6 +35,7 @@ import ChosseCollection from "components/modal/chosseCollection";
 import { ToastSystem } from "helper/toast_system";
 import { CompareAction } from "redux/actions/compare_action";
 import SelectGrading from "components/modal/selectGrading";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 type PropTypes = {
   location: any;
@@ -182,18 +183,18 @@ const CollectionDetail = (props: PropTypes) => {
         !filterData?.sort?.asc &&
         dataTable.length
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if (
       filterData?.sort?.by === name &&
       filterData?.sort?.asc &&
       dataTable.length
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -223,16 +224,22 @@ const CollectionDetail = (props: PropTypes) => {
   const renderBreadcrumbs = () => {
     return (
       <nav aria-label="breadcrumb" className="breadcrumb-nav">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
+        <ol className="breadcrumb" vocab="https://schema.org/" typeof="BreadcrumbList">
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
             <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`}>
-              <a title={`${collection?.sport?.name} Card Collections`}> {collection?.sport?.name} Card Collections </a>
+              <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage"> 
+                <span property="name"> {collection?.sport?.name} Card Collections </span>
+              </a>
             </Link>
+            <meta property="position" content="1"></meta>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
-              <a title={collection?.title}> {collection?.title} </a>
+          <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
+            <Link href={`/${collection?.url}`}>
+              <a title={collection?.title} property="item" typeof="WebPage">
+                <span property="name"> {collection?.title} </span>
+              </a>
             </Link>
+            <meta property="position" content="2"></meta>
           </li>
         </ol>
       </nav>
@@ -415,7 +422,7 @@ const CollectionDetail = (props: PropTypes) => {
                         <td>
                           <div className="d-flex">
                             <div onClick={() => onGoToCard(item)} className="box-picture-table cursor-pointer">
-                              <img alt="" onError={({ currentTarget }) => {
+                              {/* <img alt="" onError={({ currentTarget }) => {
                                 currentTarget.onerror = null;
                                 currentTarget.src = CardPhotoBase;
                               }}
@@ -427,14 +434,15 @@ const CollectionDetail = (props: PropTypes) => {
                                     }/${item?.image}.jpg`
                                     : CardPhotoBase
                                 }
-                              />
+                              /> */}
+                              <LazyLoadImg imgError={CardPhotoBase} url={  item?.image ? `https://img.priceguide.cards/${item.sportName === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`: CardPhotoBase }/>
                             </div>
                             <div className="ps-3">
                               <div className="d-flex align-items-center card-info">
                                 <div> {item.sportName} </div>
-                                <div className="circle-gray"></div>
+                                <i className="dot-margin" />
                                 <div> {item.year} </div>
-                                <div className="circle-gray"></div>
+                                <i className="dot-margin" />
                                 <div> {item.publisherName} </div>
                               </div>
                               <div onClick={() => onGoToCard(item)} className="card-title cursor-pointer">
@@ -656,9 +664,9 @@ const CollectionDetail = (props: PropTypes) => {
             <div className="col-md-6 col-12 ps-4 collection-detail">
               <div className="collection-title-topic d-flex align-items-center">
                 <div>{collection?.sport?.name}</div>{" "}
-                <div className="circle-gray"></div>{" "}
+                <i className="dot-margin" />{" "}
                 <div>{collection?.year}</div>{" "}
-                <div className="circle-gray"></div>{" "}
+                <i className="dot-margin" />{" "}
                 <div>{collection?.publisher?.name}</div>
               </div>
               <h1 className="mb-3 collection-title"> {collection?.title} </h1>

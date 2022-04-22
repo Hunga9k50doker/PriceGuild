@@ -150,7 +150,7 @@ const RookieCards = () => {
           <div className="my-3 d-flex justify-content-between align-item-center">
             <h3>{sports?.find(sport => sport.id === Number(id))?.sportName ?? "All Sports"} Rookie Cards</h3>
             <div className="search">
-              <i className="fa fa-search" />
+              <i className="ic-search-input" />
               <input
                 onChange={handleChange}
                 type="text"

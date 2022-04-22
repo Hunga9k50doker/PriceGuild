@@ -182,7 +182,7 @@ const RequestAPI = () => {
                 <div className=" h-100 position-relative col-auto">
                   <i
                     style={{ padding: "4rem" }}
-                    className="fa fa-lock border"
+                    className="ic-padlock border"
                     aria-hidden="true"
                   ></i>
                 </div>
@@ -250,7 +250,7 @@ const RequestAPI = () => {
                 </div>
                 <div className="col-8">
                   <button onClick={() => addWebsite(apiKey, indexApi)} className="btn btn-primary mb-3">
-                    <i className="fa fa-fw fa-plus" aria-hidden="true" /> Add
+                    <i className="ic-plus" aria-hidden="true" /> Add
                   </button>
                 </div>
               </div>
@@ -260,7 +260,7 @@ const RequestAPI = () => {
               <div key={webSite.id} className="d-flex align-items-center ms-2">
                 <i
                   onClick={() => deleteWebsite(webSite, indexApi, indexWeb)}
-                  className="cursor-pointer text-danger fa fa-times me-2"
+                  className="cursor-pointer text-danger ic-times me-2"
                   aria-hidden="true"
                 ></i>
                 <span>{webSite.allowed_website}</span>

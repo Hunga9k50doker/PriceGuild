@@ -262,6 +262,7 @@ function SportLandingPage({...props}) {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
                   } }
+                  isSearchable={ false }
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}
@@ -416,6 +417,7 @@ function SportLandingPage({...props}) {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
                   } }
+                  isSearchable={ false }
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}

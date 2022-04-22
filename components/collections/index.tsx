@@ -1017,7 +1017,7 @@ const CollectionList = () => {
               </div>
             }
             <div className="search">
-              <i className="fa fa-search" />
+              <i className="ic-search-input" />
               <input
                 type="text"
                 className="form-control"

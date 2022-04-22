@@ -211,7 +211,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
           </div>
           {profile?.user_info ?
             <div className="d-flex justify-content-center align-items-center mt-1 fz-14 pt-1 content-user-profile-info">
-              {profile?.user_info.location}<i style={{ color: 'rgba(109, 117, 136, 0.35)' }} className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> Member since {moment(profile?.user_info.member_since, "YYYY-MM-DD").format("MMM D, YYYY")}
+              {profile?.user_info.location} <i className="dot-margin" /> Member since {moment(profile?.user_info.member_since, "YYYY-MM-DD").format("MMM D, YYYY")}
             </div> : <Skeleton style={{ width: 250 }} />}
         </div>
         <div className="row mt-5 content-user-profile-card">

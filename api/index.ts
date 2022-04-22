@@ -30,6 +30,7 @@ import {
   UserMessageType,
   FriendType,
   GlossaryResponseType,
+  ProfileBanner,
 } from "interfaces";
 import { CardModel } from "model/data_sport/card_sport";
 import { BaseResponse } from "model/base";
@@ -282,7 +283,15 @@ export class Api<
           body,
         });
         return result.data;
-      }
+      },
+      getUserInfoBanner: async (body: any) => {
+        const result = await this.request<ProfileBanner>({
+          path: "profile/pg_app_profile_banner",
+          method: "POST",
+          body,
+        });
+        return result.data;
+      },
     },
     account: {
       deleteAccount: async (body: any) => {

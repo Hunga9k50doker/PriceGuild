@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserInfoType, PgAppProfileType } from "interfaces"
+import { UserInfoType, PgAppProfileType, ProfileBanner } from "interfaces"
 import { MetaData } from "utils/constant";
 import { ToastSystem } from "helper/toast_system";
 import { api } from 'configs/axios';
@@ -10,6 +10,7 @@ import {userClass} from "utils/constant"
 import userPicture from "assets/images/user-picture.svg";
 import Skeleton from 'react-loading-skeleton'
 import { useTranslation } from "react-i18next";
+import { isEmpty } from 'lodash';
 
 type PropTypes = {
   friend?: PgAppProfileType,
@@ -19,6 +20,7 @@ type PropTypes = {
   tabDetail?: TabType,
   userId?: number,
   isCollectionCard?: boolean
+  getFriendInfo?: (e: any) => void,
 }
 
 type TabType = {
@@ -34,15 +36,16 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
   const router = useRouter();
   const { loggingIn } = useSelector(Selectors.auth);
   const {friendId, page} = router.query;
-  const [profile, setProfile] = useState<PgAppProfileType | undefined>();
+  const [profile, setProfile] = useState<ProfileBanner | undefined>();
   const [t, i18n] = useTranslation("common");
   const getUserDetail = async () => {
     try {
       const params = {
         profileid: Number(friendId ?? page)
       }
-      const res = await api.v1.authorization.getUserInfo(params);
+      const res = await api.v1.authorization.getUserInfoBanner(params);
       if (res.success) {
+        props.getFriendInfo?.(res.data.user_info);
         return setProfile(res.data)
       }
       if (!res.success) {
@@ -63,6 +66,13 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
       getUserDetail()
     }
   }, [friendId, page])
+
+  // React.useEffect(() => {
+  //   if (!isEmpty(friend)) {
+  //     //@ts-ignore
+  //     setProfile(friend)
+  //   }
+  // },[friend])
 
   const sendMessage = () => {
     props.sendMessage && props.sendMessage()
@@ -96,19 +106,18 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
       console.log(err)
     }
   }
-  const { userInfo } = useSelector(Selectors.auth);
-  // console.log(friend, 'friend');/
+  
   return (
     <div className="info-user mt-2">
       <div className="d-lg-flex justify-content-between align-items-center">
         <div className="d-sm-flex justify-content-between align-items-center">
           <div className="avatar-user">
             <div style={{ height: 42, width: 42 }} className="rounded-circle">
-            <img className="w-100" src={ friend?.user_info?.avatar ? `${process.env.REACT_APP_IMAGE_URL}${friend?.user_info?.avatar}` : userPicture}  data-src="holder.js/171x180" alt={friend?.user_info?.username} data-holder-rendered="true" />
+            <img className="w-100" src={ profile?.user_info.avatar ? `${process.env.REACT_APP_IMAGE_URL}${profile?.user_info.avatar}` : userPicture}  data-src="holder.js/171x180" alt={profile?.user_info.username} data-holder-rendered="true" />
             </div>
             <div>
               <div className="fw-bold">{friend?.user_info?.full_name}</div>
-              <div>@{friend?.user_info?.username}</div>
+              <div>@{profile?.user_info.username}</div>
             </div>
           </div>
           <ul className="tab">
@@ -116,14 +125,14 @@ const HeaderUser = ({ friend, isFriend, ...props }: PropTypes) => {
               props.onTabDetail && props.onTabDetail("collection")
               // @ts-ignore
             }} className={`${["collection", "card-collection"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-              { friend?.portfolio_data ? <span>{friend?.portfolio_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span> }
+              <span>{profile?.portfolio_count ?? 0} </span>
               {t('portfolio.text')}
             </li>
             <li onClick={() => {
                 props.onTabDetail && props.onTabDetail("wishlist")
                 // @ts-ignore
               }} className={`${["wishlist", "card-wishlist"].includes(props?.tabDetail?.name) ? "active" : ""} cursor-pointer`}>
-               { friend?.wishlist_data ? <span>{friend?.wishlist_data.length ?? 0} </span> : <span><Skeleton style={{ width: 10 }} /></span>}
+              <span>{profile?.wishlist_count ?? 0} </span>
               Wishlists
             </li>
             {/* {

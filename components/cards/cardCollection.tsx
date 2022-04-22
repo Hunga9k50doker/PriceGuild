@@ -27,9 +27,9 @@ const CardCollection = (props: PropTypes) => {
         />
       </div>
       <div className="d-flex align-items-center mt-3 mb-1 product__item__title" style={{ fontSize: 14, color: "#6D7588" }}>{props.item.sportName}
-        <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+        <i className="dot-margin" />
         {props.item.setYear}
-        <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+        <i className="dot-margin" />
         {props.item.publisherName}
       </div>
       <div className="fw-500 product__item__description" onClick={() => onPressCollection(props.item.id)} style={{ fontSize: 18, cursor: 'pointer' }}>{`${props.item.title}`}</div>

@@ -20,7 +20,7 @@ function SampleNextArrow(props: any) {
       style={{ ...style, display: "block", fontSize: 20, color: "black" }}
       onClick={onClick}
     >
-      <i className="fa fa-chevron-right"></i>
+      <i className="chevron-right"></i>
     </div>
   );
 }
@@ -33,7 +33,7 @@ function SamplePrevArrow(props: any) {
       style={{ ...style, display: "block", fontSize: 20, color: "black" }}
       onClick={onClick}
     >
-      <i className="fa fa-chevron-left"></i>
+      <i className="chevron-left"></i>
     </div>
   );
 }
@@ -107,8 +107,7 @@ const SlickSport: FC<PropTypes> = ({
           <ul className="list-group publishers-item-sport">
             {item.sports?.map((sport, key) =>
               <li key={key} className="list-group-item d-flex justify-content-between align-items-center cursor-pointer" onClick={() => gotoSport(item, sport)}>
-                {sport.sportName}
-                <i className="fa fa-chevron-right" aria-hidden="true"></i>
+                {sport.sportName} <i className="ic-arrow-tiny-blue"></i>
               </li>
             )}
           </ul>

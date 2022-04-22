@@ -271,9 +271,6 @@ div.header {
       border-radius: 6px;
       margin-bottom: 6px;
       box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.05);
-      .fa-chevron-right {
-        color: #124de3;
-      }
     }
   }
   .sub-content {
@@ -932,21 +929,6 @@ input {
       height: 10px;
       background: #f6dbff;
       border-radius: 10px 10px 0px 0px;
-    }
-  }
-}
-
-.table {
-  .fa-caret-up {
-    color: rgba(0, 0, 0, 0.2);
-    &.active {
-      color: #000;
-    }
-  }
-  .fa-caret-down {
-    color: rgba(0, 0, 0, 0.2);
-    &.active {
-      color: #000;
     }
   }
 }
@@ -1671,22 +1653,14 @@ input {
 
 .search {
   position: relative;
-}
-
-.search input {
-  text-indent: 25px;
-  border: 2px solid #d6d4d4;
-}
-
-.search input:focus {
-  box-shadow: none;
-  border: 2px solid blue;
-}
-
-.search .fa-search {
-  position: absolute;
-  top: 11px;
-  left: 16px;
+  input {
+    text-indent: 40px;
+    border: 2px solid #d6d4d4;
+    &:focus {
+      box-shadow: none;
+      border: 2px solid blue;
+    }
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -1894,10 +1868,6 @@ input[type="number"] {
       top: 6%;
       left: 9%;
       transform: translate(-50%, -50%);
-      .fa-check-square {
-        font-size: 30px;
-        color: #124de3;
-      }
       .select-none {
         width: 26px;
         height: 26px;
@@ -4645,9 +4615,6 @@ input[type="number"] {
         color: #0b0e61;
       }
       .search {
-        .fa-search {
-          top: 14px;
-        }
         input {
           width: 286px;
           height: 46px;
@@ -6128,13 +6095,6 @@ input[type="number"] {
   padding-left: 48px !important;
   padding-right: 48px !important;
 }
-.circle-gray {
-  width: 4px;
-  height: 4px;
-  background: rgba(109, 117, 136, 0.35);
-  margin: 0px 6px;
-  border-radius: 25px;
-}
 
 @media screen and (max-width: 1360px) {
   .content-home {
@@ -6381,7 +6341,7 @@ input[type="number"] {
   }
 }
 .icon-close-input-filter {
-  top: 8px;
+  top: 7px;
   right: 10px;
 }
 .progessBg {

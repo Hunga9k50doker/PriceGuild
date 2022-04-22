@@ -115,14 +115,14 @@ const TableChart = (props: PropTypes) => {
   const renderSortTable = (name: string, desc: boolean) => {
     if (desc) {
       if(name === statusSort.name && statusSort.desc === desc) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if(name === statusSort.name && statusSort.desc === desc) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {

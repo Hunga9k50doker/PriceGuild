@@ -182,6 +182,7 @@ const ProfileSetting = ({ profileData }: PropsType) => {
                   }) => (
                     <Select
                       value={value}
+                      isSearchable={ false }
                       onChange={(e) => {
                         onChange(e);
                       }}

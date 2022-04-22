@@ -721,3 +721,10 @@ export interface BlogData {
   ordering: string;
   sport: string;
 }
+
+export type ProfileBanner = {
+  is_friend: boolean;
+  portfolio_count: number;
+  wishlist_count: string;
+  user_info: UserInfoType;
+};

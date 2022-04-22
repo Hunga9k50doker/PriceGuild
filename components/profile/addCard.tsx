@@ -303,8 +303,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
-  
     var file = e.target.files[0];
+    if(file?.type !== "image/jpeg" &&  file?.type !== "image/png"  &&  file?.type !== "image/jpg") {
+      return ToastSystem.error("File type not supported, please upload jpg or png files.");
+    }
     if(file?.size >= 10485760) {
       return ToastSystem.error("Please upload a file smaller than 10 MB");
     }
@@ -312,7 +314,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       var url = URL.createObjectURL(file);
       let current_path: string =
         name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
-      EditImageRef?.current?.action(url, name, current_path);
+      EditImageRef?.current?.action(url, name, current_path, file?.type);
     }
   };
 
@@ -948,7 +950,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const formatOptionPortfolio = ({id, group_name, type}: any) => (
    <>
     {group_name}
-    {type == 2 && <i className="ms-1 fa fa-lock" aria-hidden="true"></i>}
+    {type == 2 && <i className="ms-1 ic-padlock" aria-hidden="true"></i>}
    </>
   );
 
@@ -1023,9 +1025,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <div key={key} className="card-add">
                     <div className="card-add-info d-flex align-items-center">
                       {item?.sport}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.year}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.publisher}
                     </div>
                     <div className="mb-3 fs-5 card-add-description mt-2">
@@ -1434,6 +1436,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"
@@ -1525,6 +1528,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           classNamePrefix="select-price"
                           className="select-price customScroll input-height-56"
                           options={currencies}
+                          isSearchable={ false }
                           styles={{
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
@@ -1581,6 +1585,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
+                        onFocus={e => e.target.blur()}
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
@@ -1609,6 +1614,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 render={({ field: { onChange, value } }) => (
                   <Select
                     value={value}
+                    isSearchable={ false }
                     onChange={(e) => {
                       onChange(e);
                       onUpdateValue(e, "group_ref");

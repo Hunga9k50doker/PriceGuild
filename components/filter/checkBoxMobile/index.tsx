@@ -315,7 +315,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
                   <path d="M13.2405 12.4776L10.0672 9.17711C10.8831 8.20718 11.3301 6.9868 11.3301 5.71634C11.3301 2.74802 8.91512 0.333008 5.9468 0.333008C2.97848 0.333008 0.563477 2.74802 0.563477 5.71634C0.563477 8.68466 2.97848 11.0997 5.9468 11.0997C7.06115 11.0997 8.12307 10.7636 9.03098 10.1255L12.2284 13.451C12.3621 13.5898 12.5418 13.6663 12.7345 13.6663C12.9168 13.6663 13.0898 13.5968 13.2211 13.4704C13.5001 13.202 13.509 12.7568 13.2405 12.4776ZM5.9468 1.73735C8.14086 1.73735 9.92579 3.52228 9.92579 5.71634C9.92579 7.91039 8.14086 9.69532 5.9468 9.69532C3.75275 9.69532 1.96782 7.91039 1.96782 5.71634C1.96782 3.52228 3.75275 1.73735 5.9468 1.73735Z" fill="#6D7588"/>
                 </svg>
                 <input value={keySearch} onChange={onSearch} name={props.name} type="text" placeholder="Search" />
-                {Boolean(keySearch) && <i onClick={onClearSearch} className="fa fa-times input-close" aria-hidden="true"></i>}
+                {Boolean(keySearch) && <i onClick={onClearSearch} className="ic-close-input input-close" aria-hidden="true"></i>}
               </div>
             </div>}
             <ul

@@ -144,7 +144,6 @@ const CardListCollection = ({
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
-  const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
   const [trackFilter, setTrackFilter] = useState<Array<TrackData>>([]);
   const [dataUpdate, setDataUpdate] = useState<any>({});
   const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
@@ -169,10 +168,6 @@ const CardListCollection = ({
       if (userInfo.userid === +router.query.page) {
         //@ts-ignore
         setFriend(userInfo);
-      } else {
-        if (Boolean(Number(router.query.page))) {
-          getUserDetail();
-        }
       }
     }
   }, [router.query])
@@ -189,7 +184,8 @@ const CardListCollection = ({
       
     }
   }, [newGradeChangedState])
-  const [friend, setFriend] = useState<PgAppProfileType>()
+  
+  const [friend, setFriend] = useState<UserInfoType>()
   const resetPage = (isRefresh: boolean = true, isReset: boolean = true) => {
     setFilterData({})
     setFilterAr([]);
@@ -1440,15 +1436,15 @@ const CardListCollection = ({
 
   const goToFriend = (e:any) => {
     if(isFriend) {
-      props.setGotoFriend &&   props.setGotoFriend(title)
       e.preventDefault();
+      goToCollection();
     }
   }
   const backToCollection = () => {
     if(isFriend) {
       props.setGotoFriend &&   props.setGotoFriend(title)
     } else {
-      router.push("profile/collections")
+      goToCollection();
     }
   }
   const removeCollection = async () => {
@@ -1496,16 +1492,16 @@ const CardListCollection = ({
 
 
     const goToProfile = () => {
-    router.push(`/profile/${Number(router.query.page)}`)
+      router.push(`/profile/${Number(router.query.page)}`)
     }
     const goToCollection = () => {
-    
+      router.push(`/profile/${Number(router.query.page)}/portfolio`)
     }
     const renderTab = () => {
       return <>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.user_info?.full_name}</a></li>
+            <li className="breadcrumb-item"><a onClick={goToProfile} href="javascript:void(0)">{friend?.username}</a></li>
             <li className="breadcrumb-item"><a onClick={goToCollection} href="javascript:void(0)">{ t('portfolio.text')}</a></li>
             <li className="breadcrumb-item active" aria-current="page">{data.group_name && data.group_name}</li>
           </ol>
@@ -1517,7 +1513,7 @@ const CardListCollection = ({
     <>
       {!isEmpty(router.query.page) && Boolean(Number(router.query.page)) &&
         <>
-        <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} friend={friend} />
+        <HeaderUser userId={Number(router.query.page)} onTabDetail={onTabDetail} sendMessage={() => { }} isFriend={true} getFriendInfo={setFriend} />
         {
           //@ts-ignore
           width >= 768 ? renderTab() : null}
@@ -1538,7 +1534,7 @@ const CardListCollection = ({
           { !isSearchMobile &&
             <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
               <h2 className="col-8 title">{data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />} {Boolean(data?.group_type === 2) && (
-                <i className="ms-1 fa fa-lock fz-70" aria-hidden="true"></i>
+                <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>
               )}{" "}</h2>
               <div className="col-4 d-flex justify-content-end align-items-center" >
                 <div className="search-form d-none d-md-block">
@@ -1625,7 +1621,7 @@ const CardListCollection = ({
                     !isSearchMobile &&
                     <div className="d-flex align-items-center fz-14 fz-12-mob">
                       <span className="fw-bold me-1">{count?.count_cards}</span> {t('portfolio.card_in_portfolio')}
-                      <span className="icon-circle clear-padding margin-10"> <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" style={{ color: 'rgba(109, 117, 136, 0.35)' }} /> </span>
+                      <span className="icon-circle clear-padding margin-10">  <i className="dot-margin" /> </span>
                       <span className="fw-bold me-1">{count?.count_non_duplicate_cards}</span> Non-duplicate Cards
                   </div>
                 }
@@ -1644,26 +1640,23 @@ const CardListCollection = ({
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState)
                       dispatch(SearchFilterAction.updateModeProfile(false))
-                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}> 
+                    <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i> </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState);
                       setIsSelect(false);
                       dispatch(SearchFilterAction.updateModeProfile(true))
                     }} className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine/>
                     </button>
                   </div>
                   {isSelectCard && <div>
-                    {/* <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary btn-search-plus d-flex justify-content-center align-items-center btn-not-shadow ${isSelect ? 'active' : ''}`}>
+                    <button type="button"
+                      onClick={onHandleMode}
+                      disabled={isInline && !cardSelected.length}
+                      className={`ms-2  ${isInline && !cardSelected.length ? "opacity-50" : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}>
                       {isSelect ? <IconMinis /> : <IconPlus />}
-                    </button> */}
-                          <button type="button"
-                  onClick={onHandleMode}
-                  disabled={isInline && !cardSelected.length}
-                  className={`ms-2  ${isInline && !cardSelected.length ? "opacity-50" : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}>
-                  {isSelect ? <IconMinis /> : <IconPlus />}
-                </button>
+                    </button>
                   </div>}
                 </div>
               </div>
@@ -2254,7 +2247,6 @@ const CardListCollection = ({
                       setIsSelect(false)
                       dispatch(SearchFilterAction.updateModeProfile(true))
                     } } className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine />
                     </button>
                   </div>
