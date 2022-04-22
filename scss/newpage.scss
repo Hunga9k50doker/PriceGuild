@@ -3032,6 +3032,10 @@ button, .btn {
     padding: 0 !important;
 }
 
+.sort-table {
+    min-width: 15px;
+}
+
 .ic {
     &-caret-down {
         display: block;
@@ -3041,6 +3045,7 @@ button, .btn {
         &.revert {
             transform: rotate(180deg);
             margin-left: 1px;
+            margin-bottom: 2px;
         }
         &.active {
             background-image: url("../assets/images/caret-down-active.svg");
