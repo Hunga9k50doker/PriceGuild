@@ -51,6 +51,8 @@ import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import LazyLoadImg from "components/lazy/LazyLoadImg";
 import Skeleton from "react-loading-skeleton";
 import IconDot3 from "assets/images/dot-3.svg";
+import { CompareAction } from "redux/actions/compare_action";
+import Link from "next/link";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -1192,33 +1194,55 @@ const CardList = (props: PropTypes) => {
     });
   }
   const onSortTable = (name: string) => {
-   
+    if (data?.rows) {
+      // @ts-expect-error
+      setSortCards({
+        sort_value: name,
+        sort_by: sortCards?.sort_value === name && sortCards.sort_by === "desc" ? "asc": "desc"
+      })
+    }
   };
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
-      if (
-        filterData?.sort?.by === name &&
-        !filterData?.sort?.asc &&
-        data.cards
-      ) {
-        return "fa fa-caret-down active";
+      if (sortCards?.sort_value === name && sortCards?.sort_by !== "asc" && data.cards.length) {
+        return "fa fa-caret-down active"
       }
-      return "fa fa-caret-down";
+      return "fa fa-caret-down"
     }
-    if (
-      filterData?.sort?.by === name &&
-      filterData?.sort?.asc &&
-      data.cards
-    ) {
-      return "fa fa-caret-up active";
+    if (sortCards?.sort_value === name && sortCards?.sort_by === "asc" && data.cards.length) {
+      return "fa fa-caret-up active"
     }
-    return "fa fa-caret-up";
+    return "fa fa-caret-up"
   };
   const onGoToCard = (item: any) => {
     
   };
   const onComparison = (cardData: any) => {
+     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
+
+    if ( dataOld.length === 9 ) {
+      return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
+    }
+
+    const cardNew = {
+      code: cardData.cardCode,
+      lastname: cardData.lastname,
+      firstname: cardData.firstname,
+    };
+
+    if (dataOld.find((item: any) => item.code === cardData.cardCode)) {
+      dataOld = dataOld.filter((item: any) => item.code !== cardData.cardCode);
+      dispatch(CompareAction.removeCard(cardData.cardCode));
+      // ToastSystem.success("Card removed from comparison list");
+      ToastSystem.success(<span>Card removed from <Link href="/comparison">comparison list</Link> </span>);
+    } else {
+      dataOld.push(cardNew);
+      // ToastSystem.success("Card added to comparison list");
+      ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
+      dispatch(CompareAction.addCard(cardNew));
+    }
     
+    localStorage.setItem("comparison", JSON.stringify(dataOld));
   };
   const renderCompareIcon = (data: any) => {
     return Boolean(data?.cards?.find((item: any) => item.code === data.cardCode))
@@ -1821,58 +1845,8 @@ const CardList = (props: PropTypes) => {
                             <th style={{ width: "45%" }} scope="col">
                               {" "} Card
                             </th>
-                            {/* <th style={{ width: "13%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("onCardCode")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
-                                Card No.
-                                <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "onCardCode",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "onCardCode",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
-                              </div>
-                            </th> */}
-                            {/* <th style={{ width: "24%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("Name")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
-                                <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "Name",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "Name",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
-                              </div>
-                            </th> */}
                             <th style={{ width: "15%" }} scope="col">
                               <div
-                                onClick={() => onSortTable("minPrice")}
                                 className="d-flex cursor-pointer align-items-center"
                               >
                                 {" "}
@@ -1906,7 +1880,7 @@ const CardList = (props: PropTypes) => {
                             </th>
                             <th style={{ width: "15%" }} scope="col">
                               <div
-                                onClick={() => onSortTable("count")}
+                                onClick={() => onSortTable("avgPrice")}
                                 className="d-flex cursor-pointer align-items-center"
                               >
                                 {" "}
@@ -1914,14 +1888,14 @@ const CardList = (props: PropTypes) => {
                                 <div className="ms-1 sort-table d-flex flex-column-reverse">
                                   <i
                                     className={`sort-asc ${renderSortTable(
-                                      "count",
+                                      "avgPrice",
                                       true
                                     )}`}
                                     aria-hidden="true"
                                   ></i>
                                   <i
                                     className={`sort-desc ${renderSortTable(
-                                      "count",
+                                      "avgPrice",
                                       false
                                     )}`}
                                     aria-hidden="true"
@@ -1929,31 +1903,6 @@ const CardList = (props: PropTypes) => {
                                 </div>
                               </div>
                             </th>
-                            {/* <th style={{ width: "10%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("printRun")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
-                                Print Run
-                                <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "printRun",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "printRun",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
-                              </div>
-                            </th> */}
                             <th style={{ width: "5%" }} scope="col"></th>
                           </tr>
                         </thead>
@@ -2004,19 +1953,6 @@ const CardList = (props: PropTypes) => {
                                   </div>
                                 </div>
                               </td>
-                              {/* <td
-                                onClick={() => onGoToCard(item)}
-                                className="cursor-pointer"
-                              >
-                                {" "}
-                                {item.onCardCode}
-                              </td> */}
-                              {/* <td
-                                onClick={() => onGoToCard(item)}
-                                className="cursor-pointer"
-                              >
-                                
-                              </td> */}
                               <td>
                                 {" "}
                                 {item.minPrice
@@ -2035,7 +1971,6 @@ const CardList = (props: PropTypes) => {
                                   item.avgPrice
                                 }
                               </td>
-                              {/* <td> {item.printRun} </td> */}
                               <td>
                                 <div className="dropdown dropdown--top">
                                   <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
