@@ -136,6 +136,7 @@ const CardList = (props: PropTypes) => {
   const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
   const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
+  const { cards } = useSelector(Selectors.compare);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -1219,20 +1220,20 @@ const CardList = (props: PropTypes) => {
   };
   const onComparison = (cardData: any) => {
      let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
+     
 
     if ( dataOld.length === 9 ) {
       return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
     }
 
     const cardNew = {
-      code: cardData.cardCode,
+      code: cardData.code,
       lastname: cardData.lastname,
       firstname: cardData.firstname,
     };
-
-    if (dataOld.find((item: any) => item.code === cardData.cardCode)) {
-      dataOld = dataOld.filter((item: any) => item.code !== cardData.cardCode);
-      dispatch(CompareAction.removeCard(cardData.cardCode));
+    if (dataOld.find((item: any) => item.code === cardData.code)) {
+      dataOld = dataOld.filter((item: any) => item.code !== cardData.code);
+      dispatch(CompareAction.removeCard(cardData.code));
       // ToastSystem.success("Card removed from comparison list");
       ToastSystem.success(<span>Card removed from <Link href="/comparison">comparison list</Link> </span>);
     } else {
@@ -1245,15 +1246,14 @@ const CardList = (props: PropTypes) => {
     localStorage.setItem("comparison", JSON.stringify(dataOld));
   };
   const renderCompareIcon = (data: any) => {
-    return Boolean(data?.cards?.find((item: any) => item.code === data.cardCode))
-      ? IconCanFull
-      : IconCan;
+    return Boolean(cards.find((item) => item.code === data.code))
+    ? IconCanFull
+    : IconCan;
   };
 
   const renderOptionIcon = (data: any) => {
-    return Boolean(data?.cards?.find((item: any) => item.code === data.cardCode))
-      ? IconCanFull
-      : IconDot3;
+    return Boolean(cards.find((item) => item.code === data.code)) ? IconCanFull
+    : IconDot3
   };
 
   React.useEffect(() => {
