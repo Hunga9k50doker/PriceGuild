@@ -44,19 +44,21 @@ const MoreFromCollection = (props: PropTypes) => {
   }, [props.cardData.id, currency])
 
   const getTopTradingCard = async () => {
-    try {
-      const params = {
-        "currency": currency,
-        "setID":  props.cardData.set.id,
-        "cardCode": props?.cardData.code,
-        "limit": 10
-      };
-      const result =  await CollectionApi.getMoreCollection(params);
-      if (result.success) {
-        setCollection(result.data.map((item: any) => new CardModel(item)) ?? []);
+    if(props?.cardData.code) {
+      try {
+        const params = {
+          "currency": currency,
+          "setID":  props.cardData.set.id,
+          "cardCode": props?.cardData.code,
+          "limit": 10
+        };
+        const result =  await CollectionApi.getMoreCollection(params);
+        if (result.success) {
+          setCollection(result.data.map((item: any) => new CardModel(item)) ?? []);
+        }
       }
-    }
-    catch (err) {
+      catch (err) {
+      }
     }
   }
 
