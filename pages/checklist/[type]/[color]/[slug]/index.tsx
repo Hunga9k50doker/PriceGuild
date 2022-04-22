@@ -207,29 +207,32 @@ const CollectionBase = ({ ...props}) => {
   const renderBreadcrumbs = () => {
     return (
       <nav aria-label="breadcrumb" className="breadcrumb-nav">
-        <ol className="breadcrumb cursor-default">
-          <li className="breadcrumb-item">
+        <ol className="breadcrumb cursor-default" vocab="https://schema.org/" typeof="BreadcrumbList">
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
             <Link
               href={`/collections/${collection?.sport?.name
                 ?.replace(/\s/g, "")
                 ?.toLowerCase()}`}
             >
-              <a title={`${collection?.sport?.name} Card Collections`}>
-                {collection?.sport?.name} Card Collections
+              <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage">
+                <span property="name"> {collection?.sport?.name} Card Collections </span>
+                <meta property="position" content="1"></meta>
               </a>
             </Link>
           </li>
-          <li className="breadcrumb-item">
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
             <Link href={`/${collection.url}`}>
-              <a title={collection?.title}>
-                {collection?.title}
+              <a title={collection?.title} property="item" typeof="WebPage">
+                <span property="name"> {collection?.title} </span>
+                <meta property="position" content="2"></meta>
               </a>
             </Link>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">
+          <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
             <Link href={`/checklist/${router?.query?.type}/${router?.query?.color}/${router?.query?.slug}`}>
-              <a title={collection?.title}>
-                {`${collection?.type} - ${collection?.color}`}
+              <a title={collection?.title} property="item" typeof="WebPage">
+                <span property="name"> {`${collection?.type} - ${collection?.color}`} </span>
+                <meta property="position" content="3"></meta>
               </a>
             </Link>
           </li>

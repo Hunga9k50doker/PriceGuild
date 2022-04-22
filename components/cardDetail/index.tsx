@@ -218,32 +218,36 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     if (cardData?.id) {
       return (
         <nav className="border-botom" aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
+          <ol className="breadcrumb" vocab="https://schema.org/" typeof="BreadcrumbList">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
-                <a title={`${cardData.sport.name} Card Collections`}>
-                  {cardData.sport.name} Card Collections
+                <a title={`${cardData.sport.name} Card Collections`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.sport.name} Card Collections </span>
+                  <meta property="position" content="1"></meta>
                 </a>
               </Link>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/${cardData.set.url}`}>
-                <a title={cardData.set.title}>
-                  {cardData.set.title}
+                <a title={cardData.set.title} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.set.title} </span>
+                  <meta property="position" content="2"></meta>
                 </a>
               </Link>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/checklist/${cardData.type.id}/${cardData.color.code}/${cardData.color.url}`}>
-                <a title={`${cardData.type.name} - ${cardData.color.name}`}>
-                  {cardData.type.name} - {cardData.color.name}
+                <a title={`${cardData.type.name} - ${cardData.color.name}`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.type.name} - {cardData.color.name} </span>
+                  <meta property="position" content="3"></meta>
                 </a>
               </Link>
             </li>
-            <li className="breadcrumb-item active" aria-current="page">
+            <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
               <Link href={`/card-details/${cardData?.code}/${gen_card_url(cardData?.webName, cardData?.cardNumber)}`}>
-                <a title={`${cardData.firstname} ${cardData?.lastname ?? ""}`}>
-                  {cardData.firstname} {cardData?.lastname ?? ""}
+                <a title={`${cardData.firstname} ${cardData?.lastname ?? ""}`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.firstname} {cardData?.lastname ?? ""} </span>
+                  <meta property="position" content="4"></meta>
                 </a>
               </Link>
             </li>
