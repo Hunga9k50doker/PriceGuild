@@ -1196,11 +1196,15 @@ const CardList = (props: PropTypes) => {
   }
   const onSortTable = (name: string) => {
     if (data?.rows) {
+      let itemSort = MetaData.sort_card_list.find((item: any) => item?.sort_value === name && item?.sort_by === sortCards.sort_by);
+      
+      itemSort = {
+        ...itemSort,
+        sort_by: itemSort?.sort_value === name && sortCards.sort_by === "desc" ? "asc" : "desc",
+      }
+      
       // @ts-expect-error
-      setSortCards({
-        sort_value: name,
-        sort_by: sortCards?.sort_value === name && sortCards.sort_by === "desc" ? "asc": "desc"
-      })
+      setSortCards(itemSort)
     }
   };
   const renderSortTable = (name: string, asc: boolean) => {
@@ -1264,6 +1268,25 @@ const CardList = (props: PropTypes) => {
       setIsSelect(false);
     }
   }, [cardSelected]);
+
+  const onScroll = () => {
+    if(!$("#customScroll").hasClass('custom-scroll-sticky')) {
+      $("#customScroll").addClass('custom-scroll-sticky');
+    } else {
+      if($("#customScroll table").offset().left == 16 ) {
+        $("#customScroll").removeClass('custom-scroll-sticky');
+      }
+    }
+  }
+  useEffect(() => {
+    if (width > 768) {
+      return setIsInline(true)
+    } 
+    if (width <= 768) {
+      return setIsInline(false)
+    }
+  }, [width])
+
   return (
     <div className="container-fluid container-search-page">
       <Head>
@@ -1825,252 +1848,253 @@ const CardList = (props: PropTypes) => {
             :
             (
               <>
-                <div className="pricing-grid mt-3">
-                    <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll">
-                      <table
-                        className="table table-striped table-hover"
-                        style={{ minWidth: "1140px" }}
-                      >
-                        <thead
-                          style={{
-                            top: isSelect ? 52 : 0,
-                          }}
-                          className="p-sticky-header"
+                <div className="card-detail card-top-100 no-padding">
+                  <div className="pricing-grid mt-3">
+                      <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
+                        <table
+                          className="table table-striped table-hover"
                         >
-                          <tr>
-                            <th
-                              style={{ width: "5%" }}
-                              scope="col"
-                              className="text-center"
-                            >
-                              <input
-                                onChange={() => {
-                                  isCheckAll ? onClear() : onSelectAll();
-                                } }
-                                checked={isCheckAll}
-                                className="form-check-input cursor-pointer mt-1"
-                                type="checkbox" />
-                            </th>
-                            <th style={{ width: "45%" }} scope="col">
-                              {" "} Card
-                            </th>
-                            <th style={{ width: "15%" }} scope="col">
-                              <div
-                                className="d-flex cursor-pointer align-items-center"
+                          <thead
+                            style={{
+                              top: isSelect ? 52 : 0,
+                            }}
+                            className="p-sticky-header"
+                          >
+                            <tr>
+                              <th
+                                style={{ width: "4%" }}
+                                scope="col"
+                                className="text-center"
                               >
-                                {" "}
-                                Min
-                              </div>
-                            </th>
-                            <th style={{ width: "15%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("maxPrice")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
-                                Max
-                                <div className="ms-1 sort-table d-flex flex-column-reverse">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "maxPrice",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "maxPrice",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
-                              </div>
-                            </th>
-                            <th style={{ width: "15%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("avgPrice")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
-                                Everage
-                                <div className="ms-1 sort-table d-flex flex-column-reverse">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "avgPrice",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "avgPrice",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
-                              </div>
-                            </th>
-                            <th style={{ width: "5%" }} scope="col"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data?.cards.map((item, index) => (
-                            <tr key={index} >
-                              <td className="text-center">
-                                {" "}
                                 <input
-                                  onChange={() => onSelectItem(item.code)}
-                                  checked={cardSelected?.includes(item.code)}
-                                  className="form-check-input cursor-pointer"
+                                  onChange={() => {
+                                    isCheckAll ? onClear() : onSelectAll();
+                                  } }
+                                  checked={isCheckAll}
+                                  className="form-check-input cursor-pointer mt-1"
                                   type="checkbox" />
-                              </td>
-                              <td>
-                                <div className="d-flex">
-                                  <div
-                                    onClick={() => onGoToCard(item)}
-                                    className="cursor-pointer image-box-table mr-2"
-                                  >
-                                    <LazyLoadImg 
-                                    className="w-100"
-                                      imgError={CardPhotoBase}
-                                      //@ts-ignore
-                                     url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
-                                    />
-                                  </div>
-                                  <div
-                                    onClick={() => onGoToCard(item)}
-                                    className="cursor-pointer image-box-table mr-2"
-                                  >
-                                    <img className="w-100" src={CardPhotoBase} alt="" />
-                                  </div>
-                                  <div className="ps-3 collection-card-table-detail">
-                                     <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.publisher} </h1>
-                                    <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
-                                    {(Boolean(item.auto) || Boolean(item.memo)) && (
-                                      <div className="content-tag d-flex mt-2">
-                                        {Boolean(item.auto) && (
-                                          <div className="au-tag"> AU </div>
-                                        )}
-                                        {Boolean(item.memo) && (
-                                          <div className="mem-tag"> MEM </div>
-                                        )}
-                                      </div>
-                                    )}
+                              </th>
+                              <th style={{ width: "46%" }} scope="col">
+                                {" "} Card
+                              </th>
+                              <th style={{ width: "15%" }} scope="col">
+                                <div
+                                  className="d-flex cursor-pointer align-items-center"
+                                >
+                                  {" "}
+                                  Min
+                                </div>
+                              </th>
+                              <th style={{ width: "15%" }} scope="col">
+                                <div
+                                  onClick={() => onSortTable("maxPrice")}
+                                  className="d-flex cursor-pointer align-items-center"
+                                >
+                                  {" "}
+                                  Max
+                                  <div className="ms-1 sort-table d-flex flex-column-reverse">
+                                    <i
+                                      className={`sort-asc ${renderSortTable(
+                                        "maxPrice",
+                                        true
+                                      )}`}
+                                      aria-hidden="true"
+                                    ></i>
+                                    <i
+                                      className={`sort-desc ${renderSortTable(
+                                        "maxPrice",
+                                        false
+                                      )}`}
+                                      aria-hidden="true"
+                                    ></i>
                                   </div>
                                 </div>
-                              </td>
-                              <td>
-                                {" "}
-                                {item.minPrice
-                                  ? formatCurrency(item.minPrice)
-                                  : "N/A"}{" "}
-                              </td>
-                              <td>
-                                {" "}
-                                {item.maxPrice
-                                  ? formatCurrency(item.maxPrice)
-                                  : "N/A"}{" "}
-                              </td>
-                              <td>
-                                {" "}{
-                                  //@ts-ignore
-                                  item.avgPrice ? formatCurrency(item.maxPrice): "N/A"
-                                }{" "}
-                              </td>
-                              <td>
-                                <div className="dropdown dropdown--top">
-                                  <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
-                                  <div
-                                    className="dropdown-menu"
-                                    aria-labelledby="navbarDropdownDot"
-                                    data-bs-popper="none"
-                                  >
-                                    <div
-                                      onClick={() => {
-                                        setCardData(undefined);
-                                        // setCardSelected([item.cardCode]);
-                                        if (loggingIn) {
-                                          setIsOpen(true);
-                                        } else {
-                                          setIsOpenLogin(true);
-                                        }
-                                      } }
-                                      className="dropdown-menu-item d-flex cursor-pointer"
-                                    >
-                                      <div className="dropdown-menu-item__icon">
-                                        <img
-                                          alt=""
-                                          src={!Boolean(item.portfolio)
-                                            ? IconFolder
-                                            : IconFolderFull} />
-                                      </div>
-                                      <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
-                                    </div>
-                                    <div
-                                      // onClick={() => onAddWishList({
-                                      //   ...item,
-                                      //   code: item.cardCode,
-                                      // })}
-                                      className="dropdown-menu-item  d-flex cursor-pointer"
-                                    >
-                                      <div className="dropdown-menu-item__icon">
-                                        <img
-                                          alt=""
-                                          src={!Boolean(item.wishlist)
-                                            ? IconHeart
-                                            : IconHeartFull} />
-                                      </div>
-                                      <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
-                                    </div>
-                                    <div
-                                      onClick={() => onComparison(item)}
-                                      className="dropdown-menu-item  d-flex cursor-pointer"
-                                    >
-                                      <div className="dropdown-menu-item__icon">
-                                        <img alt="" src={renderCompareIcon(item)} />
-                                      </div>
-                                      <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
-                                    </div>
+                              </th>
+                              <th style={{ width: "15%" }} scope="col">
+                                <div
+                                  onClick={() => onSortTable("price")}
+                                  className="d-flex cursor-pointer align-items-center"
+                                >
+                                  {" "}
+                                  Average
+                                  <div className="ms-1 sort-table d-flex flex-column-reverse">
+                                    <i
+                                      className={`sort-asc ${renderSortTable(
+                                        "price",
+                                        true
+                                      )}`}
+                                      aria-hidden="true"
+                                    ></i>
+                                    <i
+                                      className={`sort-desc ${renderSortTable(
+                                        "price",
+                                        false
+                                      )}`}
+                                      aria-hidden="true"
+                                    ></i>
                                   </div>
                                 </div>
-                              </td>
+                              </th>
+                              <th style={{ width: "5%" }} scope="col"></th>
                             </tr>
-                          ))}
-                          {data?.isLoading &&
-                            Array.from(Array(16).keys())?.map((e, index) => (
-                              <tr key={index}>
+                          </thead>
+                          <tbody>
+                            {data?.cards.map((item, index) => (
+                              <tr key={index} >
                                 <td className="text-center">
                                   {" "}
-                                  <Skeleton />{" "}
+                                  <input
+                                    onChange={() => onSelectItem(item.code)}
+                                    checked={cardSelected?.includes(item.code)}
+                                    className="form-check-input cursor-pointer"
+                                    type="checkbox" />
+                                </td>
+                                <td>
+                                  <div className="d-flex">
+                                    <div
+                                      onClick={() => onGoToCard(item)}
+                                      className="cursor-pointer image-box-table mr-2"
+                                    >
+                                      <LazyLoadImg 
+                                      className="w-100"
+                                        imgError={CardPhotoBase}
+                                        //@ts-ignore
+                                      url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
+                                      />
+                                    </div>
+                                    <div
+                                      onClick={() => onGoToCard(item)}
+                                      className="cursor-pointer image-box-table mr-2"
+                                    >
+                                      <img className="w-100" src={CardPhotoBase} alt="" />
+                                    </div>
+                                    <div className="ps-3 collection-card-table-detail">
+                                      <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.publisher} </h1>
+                                      <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
+                                      {(Boolean(item.auto) || Boolean(item.memo)) && (
+                                        <div className="content-tag d-flex mt-2">
+                                          {Boolean(item.auto) && (
+                                            <div className="au-tag"> AU </div>
+                                          )}
+                                          {Boolean(item.memo) && (
+                                            <div className="mem-tag"> MEM </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
                                 </td>
                                 <td>
                                   {" "}
-                                  <Skeleton />{" "}
-                                </td>
-                                <td className="cursor-pointer">
-                                  {" "}
-                                  <Skeleton />{" "}
-                                </td>
-                                <td className="cursor-pointer">
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  {item.minPrice
+                                    ? formatCurrency(item.minPrice)
+                                    : "N/A"}{" "}
                                 </td>
                                 <td>
                                   {" "}
-                                  <Skeleton />{" "}
+                                  {item.maxPrice
+                                    ? formatCurrency(item.maxPrice)
+                                    : "N/A"}{" "}
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  {" "}{
+                                    //@ts-ignore
+                                    item.avgPrice ? formatCurrency(item.maxPrice): "N/A"
+                                  }{" "}
+                                </td>
+                                <td>
+                                  <div className="dropdown dropdown--top">
+                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                                    <div
+                                      className="dropdown-menu"
+                                      aria-labelledby="navbarDropdownDot"
+                                      data-bs-popper="none"
+                                    >
+                                      <div
+                                        onClick={() => {
+                                          setCardData(undefined);
+                                          // setCardSelected([item.cardCode]);
+                                          if (loggingIn) {
+                                            setIsOpen(true);
+                                          } else {
+                                            setIsOpenLogin(true);
+                                          }
+                                        } }
+                                        className="dropdown-menu-item d-flex cursor-pointer"
+                                      >
+                                        <div className="dropdown-menu-item__icon">
+                                          <img
+                                            alt=""
+                                            src={!Boolean(item.portfolio)
+                                              ? IconFolder
+                                              : IconFolderFull} />
+                                        </div>
+                                        <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
+                                      </div>
+                                      <div
+                                        // onClick={() => onAddWishList({
+                                        //   ...item,
+                                        //   code: item.cardCode,
+                                        // })}
+                                        className="dropdown-menu-item  d-flex cursor-pointer"
+                                      >
+                                        <div className="dropdown-menu-item__icon">
+                                          <img
+                                            alt=""
+                                            src={!Boolean(item.wishlist)
+                                              ? IconHeart
+                                              : IconHeartFull} />
+                                        </div>
+                                        <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                                      </div>
+                                      <div
+                                        onClick={() => onComparison(item)}
+                                        className="dropdown-menu-item  d-flex cursor-pointer"
+                                      >
+                                        <div className="dropdown-menu-item__icon">
+                                          <img alt="" src={renderCompareIcon(item)} />
+                                        </div>
+                                        <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </td>
                               </tr>
                             ))}
-                        </tbody>
-                      </table>
-                    </div>
+                            {data?.isLoading &&
+                              Array.from(Array(16).keys())?.map((e, index) => (
+                                <tr key={index}>
+                                  <td className="text-center">
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                  <td>
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                  <td className="cursor-pointer">
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                  <td className="cursor-pointer">
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                  <td>
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                  <td>
+                                    {" "}
+                                    <Skeleton />{" "}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
                   </div>
+                </div>
               </>
             )}
             <div className={`${!data.isLoading && Boolean(data.rows) ?"": "d-none"}`}>
