@@ -1205,14 +1205,14 @@ const CardList = (props: PropTypes) => {
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
       if (sortCards?.sort_value === name && sortCards?.sort_by !== "asc" && data.cards.length) {
-        return "fa fa-caret-down active"
+        return "ic-caret-down active"
       }
-      return "fa fa-caret-down"
+      return "ic-caret-down"
     }
     if (sortCards?.sort_value === name && sortCards?.sort_by === "asc" && data.cards.length) {
-      return "fa fa-caret-up active"
+      return "ic-caret-down revert active"
     }
-    return "fa fa-caret-up"
+    return "ic-caret-down revert"
   };
   const onGoToCard = (item: any) => {
     
