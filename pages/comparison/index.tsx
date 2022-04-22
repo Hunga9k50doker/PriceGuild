@@ -49,6 +49,7 @@ const Comparison: React.FC = ({ ...props}) => {
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [isCopy, SetIsCopy] = useState<boolean>(false);
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
   let router = useRouter();
   const dispatch = useDispatch();
   const {cards} = router.query;
@@ -69,9 +70,6 @@ const Comparison: React.FC = ({ ...props}) => {
       })
     }
 
-    // localStorage.removeItem('comparison');
-    // localStorage.setItem('comparison', JSON.stringify(arrayCards));
-
     return arrayCards;
   }
  
@@ -89,9 +87,13 @@ const Comparison: React.FC = ({ ...props}) => {
     if (isEmpty(card)) {
       //@ts-ignore
       if (props?.isHaveCard) {
-        setCard(getCardData(cards))
+        if(card.length === 0 && Boolean(isFirstTime)){
+          setCard(getCardData(cards))
+          setIsFirstTime(false);
+        }
       } else {
-        setCard(cardState)
+        setCard(cardState);
+        setIsFirstTime(false);
       }
     } 
   }, [card])
@@ -118,13 +120,14 @@ const Comparison: React.FC = ({ ...props}) => {
   const removeCard = (item: CardItemType) => {
     refCompare.current?.removeSeries(`${item.id}`)
     setCard((prevState) => [...prevState?.filter((c) => c.code !== item.code)]);
+    setCardState((prevState) => [...prevState?.filter((c) => c.code !== item.code)]);
     let cardOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
     cardOld = cardOld.filter((c: any) => c?.code !== item.code);
     localStorage.setItem("comparison", JSON.stringify(cardOld));
     dispatch(CompareAction.removeCard(item.code));
     setActiveKey(cardOld?.length ? cardOld[0].code : null)
   };
-
+  
   const selectWishlist = (item: ManageCollectionType) => {
     setWishList(item);
     setIsOpenWishList(false);
@@ -200,11 +203,7 @@ const Comparison: React.FC = ({ ...props}) => {
   const removeErrorCardDetail = (code: string) => {
     setCard(prevState => [...prevState.filter(item => item.code !== code)]);
   }
-
-  const errorCardNoSaleData = (code: string) => {
-    // console.log(code, 'errorCardNoSaleData');
-  }
-    
+  
   useEffect(() => {
     if (isCopy) {
       setTimeout(() => {
@@ -549,7 +548,6 @@ const Comparison: React.FC = ({ ...props}) => {
                   <div className="container-fluid card-detail container-comparison-chart" id="sale-chart-comparison">
                     <div className="content-home">
                       <h2 className="mb-5 title-profile "> Sales Chart </h2>
-                      {/* {console.log(refCompare, 'refComparerefCompare')} */}
                         {Boolean(!loggingIn) ?
                           <PlaceholderChart src={ImageSaleChart.src} /> : 
                           <SaleChartComparison 

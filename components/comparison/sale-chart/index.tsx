@@ -96,8 +96,8 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     } else {
       if (saleChartState.itemCardGradeSelected) {
         const calcMaLine = await getCalcMaLine(cardId, saleChartState)
-        chartData[cardId].updateConstructor(cardId, cardCode, cardName, saleChartState, calcMaLine, cardData, controller)
-        chartData[cardId].updateDataChart(options, chartRef()!, calcMaLine)
+        chartData[cardId]?.updateConstructor(cardId, cardCode, cardName, saleChartState, calcMaLine, cardData, controller)
+        chartData[cardId]?.updateDataChart(options, chartRef()!, calcMaLine)
         refStatistics.current?.updateChartData(chartData);
       } else {
         chartData[cardId].updateConstructor(cardId, cardCode, cardName, saleChartState, calcMaLineDefault, cardData, controller)
