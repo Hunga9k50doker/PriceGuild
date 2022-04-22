@@ -133,7 +133,8 @@ const CardList = (props: PropTypes) => {
   const [printRunsState, setPrintRunsState] = useState<Array<number>>([]);
   const cardNumberRef = React.useRef<FilterHandleTextSearch>(null);
   const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
-
+  const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
+  
   useEffect(() => {
     if ( router.isReady ) {
       setPrioritize([])
@@ -662,9 +663,11 @@ const CardList = (props: PropTypes) => {
     }
   }
   const onSelectAll = () => {
+    setIsCheckAll(true)
     setCardSelected([...data.cards?.map(item => item.code)]);
   }
   const onClear = () => {
+    setIsCheckAll(false);
     setCardSelected([]);
   }
 
@@ -1192,7 +1195,24 @@ const CardList = (props: PropTypes) => {
    
   };
   const renderSortTable = (name: string, asc: boolean) => {
-   
+    if (asc) {
+      if (
+        filterData?.sort?.by === name &&
+        !filterData?.sort?.asc &&
+        data.cards
+      ) {
+        return "fa fa-caret-down active";
+      }
+      return "fa fa-caret-down";
+    }
+    if (
+      filterData?.sort?.by === name &&
+      filterData?.sort?.asc &&
+      data.cards
+    ) {
+      return "fa fa-caret-up active";
+    }
+    return "fa fa-caret-up";
   };
   const onGoToCard = (item: any) => {
     
@@ -1790,7 +1810,13 @@ const CardList = (props: PropTypes) => {
                               scope="col"
                               className="text-center"
                             >
-                             
+                              <input
+                                onChange={() => {
+                                  isCheckAll ? onClear() : onSelectAll();
+                                } }
+                                checked={isCheckAll}
+                                className="form-check-input cursor-pointer mt-1"
+                                type="checkbox" />
                             </th>
                             <th style={{ width: "45%" }} scope="col">
                               {" "} Card
@@ -1851,22 +1877,6 @@ const CardList = (props: PropTypes) => {
                               >
                                 {" "}
                                 Min
-                                <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "minPrice",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "minPrice",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                </div>
                               </div>
                             </th>
                             <th style={{ width: "15%" }} scope="col">
@@ -1876,7 +1886,7 @@ const CardList = (props: PropTypes) => {
                               >
                                 {" "}
                                 Max
-                                <div className="ms-1 sort-table">
+                                <div className="ms-1 sort-table d-flex flex-column-reverse">
                                   <i
                                     className={`sort-asc ${renderSortTable(
                                       "maxPrice",
@@ -1901,7 +1911,7 @@ const CardList = (props: PropTypes) => {
                               >
                                 {" "}
                                 Everage
-                                <div className="ms-1 sort-table">
+                                <div className="ms-1 sort-table d-flex flex-column-reverse">
                                   <i
                                     className={`sort-asc ${renderSortTable(
                                       "count",
@@ -1954,8 +1964,8 @@ const CardList = (props: PropTypes) => {
                               <td className="text-center">
                                 {" "}
                                 <input
-                                  onChange={() => onSelectItem(item.onCardCode)}
-                                  checked={cardSelected?.includes(item.onCardCode)}
+                                  onChange={() => onSelectItem(item.code)}
+                                  checked={cardSelected?.includes(item.code)}
                                   className="form-check-input cursor-pointer"
                                   type="checkbox" />
                               </td>
@@ -1967,7 +1977,8 @@ const CardList = (props: PropTypes) => {
                                   >
                                     <LazyLoadImg 
                                     className="w-100"
-                                    imgError={CardPhotoBase}
+                                      imgError={CardPhotoBase}
+                                      //@ts-ignore
                                      url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
                                     />
                                   </div>
@@ -1977,8 +1988,9 @@ const CardList = (props: PropTypes) => {
                                   >
                                     <img className="w-100" src={CardPhotoBase} alt="" />
                                   </div>
-                                  <div>
-                                    <div> {item.webName} </div>
+                                  <div className="ps-3 collection-card-table-detail">
+                                     <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.publisher} </h1>
+                                    <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
                                     {(Boolean(item.auto) || Boolean(item.memo)) && (
                                       <div className="content-tag d-flex mt-2">
                                         {Boolean(item.auto) && (
@@ -2017,7 +2029,12 @@ const CardList = (props: PropTypes) => {
                                   ? formatCurrency(item.maxPrice)
                                   : "N/A"}{" "}
                               </td>
-                              <td> {item.avgPrice} </td>
+                              <td>
+                                {
+                                  //@ts-ignore
+                                  item.avgPrice
+                                }
+                              </td>
                               {/* <td> {item.printRun} </td> */}
                               <td>
                                 <div className="dropdown dropdown--top">
