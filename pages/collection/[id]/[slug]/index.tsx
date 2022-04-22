@@ -224,7 +224,7 @@ const CollectionDetail = (props: PropTypes) => {
             </Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-            <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, '')?.toLowerCase()}`} >
+            <Link href={`/${collection?.url}`}>
               <a title={collection?.title}> {collection?.title} </a>
             </Link>
           </li>

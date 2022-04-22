@@ -6,7 +6,7 @@ import SaleBarChart, { TypeSale } from "./components/sale_bar_chart";
 import "react-toggle/style.css";
 import SaleChart from "./components/sale_chart";
 import MoreFromCollection from "components/cardDetail/components/moreFromCollection";
-import { formatCurrency } from "utils/helper";
+import { formatCurrency, gen_card_url } from "utils/helper";
 import { ManageCollectionType } from "interfaces";
 import { Types } from "components/cardDetail/BusinessLogic";
 import IconChart from "assets/images/view_chart.svg";
@@ -241,7 +241,11 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
               </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              {cardData.firstname} {cardData?.lastname ?? ""}
+              <Link href={`/card-details/${cardData?.code}/${gen_card_url(cardData?.webName, cardData?.cardNumber)}`}>
+                <a title={`${cardData.firstname} ${cardData?.lastname ?? ""}`}>
+                  {cardData.firstname} {cardData?.lastname ?? ""}
+                </a>
+              </Link>
             </li>
           </ol>
         </nav>
