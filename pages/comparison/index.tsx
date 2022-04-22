@@ -203,6 +203,10 @@ const Comparison: React.FC = ({ ...props}) => {
   const removeErrorCardDetail = (code: string) => {
     setCard(prevState => [...prevState.filter(item => item.code !== code)]);
   }
+
+  const errorCardNoSaleData = (code: string) => {
+    // console.log(code, 'errorCardNoSaleData');
+  }
   
   useEffect(() => {
     if (isCopy) {
