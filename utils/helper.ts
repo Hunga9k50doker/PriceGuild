@@ -36,6 +36,13 @@ export const formatCurrency = (value?: number, currency?: string) => {
     // @ts-ignore
   }).format(value);
 };
+export const formatCurrencyCollection = (value?: number, currency?: string) => {
+  return new Intl.NumberFormat(`en-US`, {
+    currency: `${currency || "USD"}`,
+    style: "currency",
+    // @ts-ignore
+  }).format(value).replace(/.00/g,"");
+};
 export const formatCurrencyIcon = ( currency?: string) => {
   return new Intl.NumberFormat(`en-US`, {
     currency: `${currency || "USD"}`,

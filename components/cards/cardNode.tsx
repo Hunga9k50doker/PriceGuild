@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatCurrency, gen_card_url } from "utils/helper"
+import { formatCurrency, gen_card_url,formatCurrencyCollection } from "utils/helper"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { CardModel } from "model/data_sport/card_sport";
@@ -261,10 +261,10 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </a>
           </Link>
         </td>}
-        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice], currency)} </td>
-        <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice, currency)} </td>
-        <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice, currency)} </td>
-        <td> {!props.item.avgPrice ? "N/A" : formatCurrency(props.item.avgPrice, currency)} </td>
+        <td> {!props.item[namePrice] ? "N/A" : formatCurrencyCollection(props.item[namePrice], currency)} </td>
+        <td> {!props.item.minPrice ? "N/A" : formatCurrencyCollection(props.item.minPrice, currency)} </td>
+        <td> {!props.item.maxPrice ? "N/A" : formatCurrencyCollection(props.item.maxPrice, currency)} </td>
+        <td> {!props.item.avgPrice ? "N/A" : formatCurrencyCollection(props.item.avgPrice, currency)} </td>
         <td>
             <div className="dropdown dropdown--top">
               <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> <img src={renderOptionIcon()} alt="" /> </a>
