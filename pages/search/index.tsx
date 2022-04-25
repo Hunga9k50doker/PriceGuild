@@ -1197,6 +1197,7 @@ const CardList = (props: PropTypes) => {
     if (data?.rows) {
       let itemSort = MetaData.sort_card_list.find((item: any) => item?.sort_value === name && item?.sort_by === sortCards.sort_by);
       
+      //@ts-ignore
       itemSort = {
         ...itemSort,
         sort_by: itemSort?.sort_value === name && sortCards.sort_by === "desc" ? "asc" : "desc",
@@ -1272,15 +1273,17 @@ const CardList = (props: PropTypes) => {
     if(!$("#customScroll").hasClass('custom-scroll-sticky')) {
       $("#customScroll").addClass('custom-scroll-sticky');
     } else {
-      if($("#customScroll table").offset().left == 16 ) {
+      if($("#customScroll table").offset().left == 1 ) {
         $("#customScroll").removeClass('custom-scroll-sticky');
       }
     }
   }
   useEffect(() => {
+    //@ts-ignore
     if (width > 768) {
       return setIsInline(true)
-    } 
+    }
+    //@ts-ignore
     if (width <= 768) {
       return setIsInline(false)
     }
@@ -1845,7 +1848,7 @@ const CardList = (props: PropTypes) => {
             :
             (
               <>
-                <div className="card-detail card-top-100 no-padding">
+                <div className="card-detail card-top-100 no-padding clear-margin-mobile">
                   <div className="pricing-grid mt-3">
                       <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
                         <table
@@ -1963,7 +1966,13 @@ const CardList = (props: PropTypes) => {
                                       <img className="w-100" src={CardPhotoBase} alt="" />
                                     </div>
                                     <div className="ps-3 collection-card-table-detail">
-                                      <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {item?.publisher} </h1>
+                                      <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
+                                        {item?.sport}
+                                        <i className="dot-margin"></i>
+                                        {item?.year}
+                                        <i className="dot-margin"></i>
+                                        {item?.publisher}
+                                      </div>
                                       <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
                                       {(Boolean(item.auto) || Boolean(item.memo)) && (
                                         <div className="content-tag d-flex mt-2">
