@@ -1169,10 +1169,10 @@ const CardList = (props: PropTypes) => {
   }
   const onHandleMode = () => {
     if (!isInline) {
-      return setIsSelect(prevState => !prevState)
+      return setIsSelect((prevState) => !prevState);
     }
     if (isSelect) {
-      setIsSelect(false)
+      setIsSelect(false);
     }
   }
 
@@ -1220,7 +1220,8 @@ const CardList = (props: PropTypes) => {
     return "ic-caret-down revert"
   };
   const onGoToCard = (item: any) => {
-    
+    const url = gen_card_url(item.webName, item.code);
+    router.push(`/card-details/${item.code}/${url}`);
   };
   const onComparison = (cardData: any) => {
      let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
@@ -1783,28 +1784,49 @@ const CardList = (props: PropTypes) => {
                   <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>
                 </button>
                 <button type="button" onClick={() => {
-                  setIsInline(prevState => !prevState)
-                  dispatch(SearchFilterAction.updateModeSearch(true))
+                  setIsInline(prevState => !prevState);
+                  setIsSelect(false);
+                  dispatch(SearchFilterAction.updateModeSearch(true));
                 }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0 clear-padding`}>
                   <i className={`${!isInline ? "" : "active"} ic-line-view`} aria-hidden="true"></i>
                 </button>
-              </div>
-              <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center`}>
+              </div>{console.log(isInline , !data.cards.length)}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSelect(prevState => !prevState);
+                  }
+                }
+                className={`ms-2 ${isInline && Boolean(data.cards.length)
+                        ? "opacity-50"
+                        : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxx`}
+                disabled={isInline && Boolean(data.cards.length)}
+              >
                 {isSelect ? <IconMinis /> : <IconPlus />}
               </button>
             </div>
             <div className="only-mobile">
               <div className="action-list d-flex justify-content-start align-items-center">
-                {/* <div className="me-2"> Sort by: </div> */}
+                
                 <div className="d-flex btn-group-card">
                   <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0`}>
                     <IconDotMoBile isActive={!isInline ? true : false} />
                   </button>
-                  <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
+                  <button type="button" onClick={() => {
+                    setIsInline(prevState => !prevState);
+                    setIsSelect(false);
+                    }
+                  } className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
                     <IconLineMoBile />
                   </button>
                 </div>
-                <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center`}>
+                
+                <button
+                  type="button" onClick={() => { setIsSelect(prevState => !prevState) }}
+                  className={`ms-2 ${isInline && Boolean(data.cards.length)
+                        ? "opacity-50"
+                        : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxxx`}
+                  disabled={isInline && Boolean(data.cards.length)}>
                   {isSelect ? <IconMinis /> : <IconPlus />}
                 </button>
               </div>
@@ -1947,7 +1969,7 @@ const CardList = (props: PropTypes) => {
                                     type="checkbox" />
                                 </td>
                                 <td>
-                                  <div className="d-flex">
+                                  <div className="d-flex" onClick={() => onGoToCard(item)}>
                                     <div
                                       onClick={() => onGoToCard(item)}
                                       className="cursor-pointer image-box-table mr-2"
@@ -1965,7 +1987,7 @@ const CardList = (props: PropTypes) => {
                                     >
                                       <img className="w-100" src={CardPhotoBase} alt="" />
                                     </div>
-                                    <div className="ps-3 collection-card-table-detail">
+                                    <div className="ps-3 collection-card-table-detail" onClick={() => onGoToCard(item)}>
                                       <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
                                         {item?.sport}
                                         <i className="dot-margin"></i>
@@ -2016,7 +2038,7 @@ const CardList = (props: PropTypes) => {
                                       <div
                                         onClick={() => {
                                           setCardData(undefined);
-                                          // setCardSelected([item.cardCode]);
+                                          setCardSelected([item.code]);
                                           if (loggingIn) {
                                             setIsOpen(true);
                                           } else {
