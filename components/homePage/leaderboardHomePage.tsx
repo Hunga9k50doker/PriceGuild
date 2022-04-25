@@ -8,6 +8,8 @@ import JoinCommunityImage from "assets/images/join-community.png";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Loading from "components/loading/loading"
+import { useSelector } from 'react-redux';
+import Selectors from "redux/selectors";
 
 const dataLoader = Array.from(Array(10).keys());
 
@@ -26,13 +28,19 @@ const LeaderboardHomePage = (props: PropTypes) => {
     cards: [],
     isLoading: true,
   })
+  const { currency } = useSelector(Selectors.config);
   const [page] = useState<number>(1);
 
   useEffect(() => {
+    let isCheckSportId = false;
     if (props.sportId) {
       getListCard() 
+      isCheckSportId = true;
     }
-  }, [props.sportId])
+    if(!isCheckSportId) {
+      getListCard() 
+    }
+  }, [props.sportId, currency])
 
   const getListCard = async () => {
     try {
@@ -42,7 +50,8 @@ const LeaderboardHomePage = (props: PropTypes) => {
       let params = {
         sport: props.sportId,
         page,
-        limit: 10
+        limit: 10,
+        currency: currency
       };
       const result = await api.v1.portfolio.portfolioLeaderboard(params);
       if (result.success) {
@@ -92,7 +101,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
                   <tr key={key} >
                     <td> {item.rank} </td>
                     <td> {item.username === "Unknown" ? `Unknown #${item.userid}` : item.username} </td>
-                    <td> {formatCurrency(item.total_value)} </td>
+                    <td> {formatCurrency(item.total_value, currency)} </td>
                     <td className="th-upload-total">{formatNumber(item.total_upload)}</td>
                   </tr>
                 )}

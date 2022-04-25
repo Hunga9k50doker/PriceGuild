@@ -27,7 +27,7 @@ const LatestCollectionItem = (props: PropTypes) => {
           src={props.item?.url_image ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${props.item?.url_image}` : ImgCard.src}
         />
         </div>
-        <div className="sub-title">{props.item.sportName} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{props.item.setYear} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item.publisherName}</div>
+        <div className="sub-title">{props.item.sportName} <i className="dot-margin" />{props.item.setYear} <i className="dot-margin" /> {props.item.publisherName}</div>
         <div onClick={onPressCollection}  className="title-collection">{`${props.item.title}`}</div>
       </div>
     </div>

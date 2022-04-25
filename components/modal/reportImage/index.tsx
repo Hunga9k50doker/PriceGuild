@@ -181,9 +181,9 @@ const Index = ({
           <div className="product-item">
             <div className="sub-title">
               {props?.cardData?.sport.name}
-              <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>
+              <i className="dot-margin" />
               {props?.cardData?.year}
-              <i className="mx-1 fa fs4 fa-circle" aria-hidden="true"></i>{" "}
+              <i className="dot-margin" />{" "}
               {props.cardData?.publisher?.name}
             </div>
             <div className="card-title cursor-pointer">

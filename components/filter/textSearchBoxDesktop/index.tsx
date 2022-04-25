@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FilterType, filterDataType } from "interfaces"
 import { cloneDeep, sumBy } from "lodash";
-import IconSearch from "assets/images/search.png"
+import IconSearch from "assets/images/search.svg"
 
 type PropsType = {
   name: string,
@@ -78,7 +78,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandleTextSearch, PropsType>((prop
             <div className="checkbox-select__search-wrapp">
               {props.isSearch !== false && <div className="position-relative checkbox-select__search-wrapp-input">
                 <input value={keySearch} onChange={(e) => setKeySearch(e.target.value)} onKeyPress={_handleKeyPress} name={props.name} type="text" placeholder="Search"/>
-                <img onClick={onSearch} className="position-absolute icon-close-input-filter cursor-pointer" src={IconSearch.src} alt="IconSearch" />
+                <img onClick={onSearch} className="position-absolute icon-close-input-filter cursor-pointer" src={IconSearch} alt="IconSearch" />
               </div>}
             </div>
           </div>

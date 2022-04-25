@@ -20,7 +20,6 @@ import Select from 'react-select'
 import FilterSport from "components/filter/filterSport"
 import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
-import IconList from "assets/images/List.png";
 import ButtonClear from "assets/images/icon-remove.svg";
 import LoginModal from "components/modal/login"
 import IconPlus from "components/icon/iconPlus"
@@ -111,6 +110,7 @@ const CardList = (props: PropTypes) => {
     // page: 1,
     rows: 0
   })
+  const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
     ManageCollectionType | undefined
   >();
@@ -337,7 +337,7 @@ const CardList = (props: PropTypes) => {
         ...params,
         page: page[page.length-1],
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         sort_dict: {
           sort_value: sortCards?.sort_value,
           sort_by: sortCards?.sort_by
@@ -470,7 +470,7 @@ const CardList = (props: PropTypes) => {
       setPagesSelected([1])
       getListCard()
     }
-  }, [sortCards])
+  }, [sortCards, currency])
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
@@ -899,7 +899,6 @@ const CardList = (props: PropTypes) => {
       getListCard(event, false)
     }, 550);
   }
-
   const [scrollY, setScrollY] = useState<number>(0);
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();
@@ -1777,15 +1776,14 @@ const CardList = (props: PropTypes) => {
                 <button type="button" onClick={() => {
                   setIsInline(prevState => !prevState)
                   dispatch(SearchFilterAction.updateModeSearch(false))
-                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                  <i className="fa fa-th" aria-hidden="true"></i>
+                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}>
+                  <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>
                 </button>
                 <button type="button" onClick={() => {
                   setIsInline(prevState => !prevState)
                   dispatch(SearchFilterAction.updateModeSearch(true))
-                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
-                  {/* <i className="fa fa-list" aria-hidden="true"></i> */}
-                  <img src={IconList.src} alt="" title="" />
+                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0 clear-padding`}>
+                  <i className={`${!isInline ? "" : "active"} ic-line-view`} aria-hidden="true"></i>
                 </button>
               </div>
               <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center`}>
@@ -1800,7 +1798,6 @@ const CardList = (props: PropTypes) => {
                     <IconDotMoBile isActive={!isInline ? true : false} />
                   </button>
                   <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
-                    {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                     <IconLineMoBile />
                   </button>
                 </div>

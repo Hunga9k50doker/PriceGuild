@@ -221,11 +221,7 @@
           border-radius: 0px 6px 6px 0px;
         }
         .sort {
-          transform: translateY(4px);
-          margin-left: 9.5px;
-          .fa.fa-caret-down {
-            transform: translateY(-7px);
-          }
+          margin-left: 10px;
         }
       }
     }
@@ -5480,17 +5476,6 @@ th .form-check-input.form-check-input-head {
   margin-left: 6px;
 }
 
-.table-sort {
-  th {
-    .sort-desc {
-      transform: translateY(3px);
-    }
-    .sort-asc {
-      transform: translateY(-3px);
-    }
-  }
-}
-
 .box-image-picture__img {
   aspect-ratio: 1 / 1.39;
 }
@@ -5868,7 +5853,25 @@ th .form-check-input.form-check-input-head {
     transform: rotate(359deg);
   }
 }
-
+.nav-item--usd {
+  .dropdown-menu {
+    left: unset!important;
+    right: 0;
+    padding: 0.25rem;
+    min-width: 6rem;
+    .dropdown-menu-content {
+      overflow: scroll;
+      overflow-x: hidden;
+      max-height: 250px;
+      .dropdown-menu__item {
+        cursor: pointer;
+        &:hover {
+          color: #124DE3;
+        }
+      }
+    }
+  }
+}
 .react-datepicker-popper {
   z-index: 999;
 }

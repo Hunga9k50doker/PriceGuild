@@ -5,12 +5,14 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import moment from 'moment';
 import { isEmpty } from 'lodash';
-import { formatCurrency, formatNumber } from "utils/helper"
+import { formatCurrency, formatNumber, formatCurrencyIcon } from "utils/helper"
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 
 type PropsType = {
   price_data?: any;
 }
-const options = {
+let  options = {
   chart: {
         type: 'area',
         zoomType: 'x',
@@ -156,7 +158,7 @@ const options = {
 };
 
 const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
-
+  const { currency } = useSelector(Selectors.config);
   const refChart = useRef();
 
   const chartRef = (): Highcharts.Chart | null => {
@@ -189,13 +191,31 @@ const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
 
       options.series[0].data = data;
       // @ts-ignore
+      options.tooltip.pointFormatter = 
+          function() {
+            //@ts-ignore
+            const {y} = this;
+            return (
+              `  <div style="color: white">${formatCurrency(y,currency)} </div>`
+            )
+        }
+        options.yAxis.labels =  {
+          //@ts-ignore
+          formatter: function () {
+            //@ts-ignore
+              return `${formatCurrencyIcon(currency)}` + this.value;
+          }
+        }
+      
+      
+      // @ts-ignore
       chart.update({ ...options } as Highcharts.Options);
     } 
     if (!isEmpty(price_data)) {
       renderDataChartConfig();
       
     }
-  },[price_data])
+  },[price_data, currency])
 
 
   {/* @ts-ignore */}

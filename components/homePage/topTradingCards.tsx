@@ -2,6 +2,8 @@ import React, { FC, useEffect, useState } from "react";
 import { TopElementType } from "interfaces"
 import { api } from 'configs/axios';
 import CardSlickElement from "components/card-slick/cardSlickElement"
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 
 type PropTypes = {
   cardElement: FC<any>,
@@ -20,11 +22,17 @@ const TopTradingCards = ({routerLink = "/top-100", sportId = 1, title = "Top Tra
     isLoading: true,
     card: []
   })
+  const { currency } = useSelector(Selectors.config);
   useEffect(() => {
+    let checkSport = false;
     if (sportId) {
+      checkSport = true;
       getTopTradingCard(365)
     }
-  }, [sportId])
+    if(!checkSport) {
+      getTopTradingCard(365)
+    }
+  }, [sportId, currency])
 
   const getTopTradingCard = async (value: number = 7) => {
     try {
@@ -34,7 +42,7 @@ const TopTradingCards = ({routerLink = "/top-100", sportId = 1, title = "Top Tra
       const params = {
         "timePeriod": value,
         "sport": sportId,
-        "currency": "USD"
+        "currency": currency
       };
       const result = await api.v1.getTopTradingCard(params);
       if (result.success) {

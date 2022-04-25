@@ -140,6 +140,7 @@ const CardListCollection = ({
   >(undefined);   
   const dispatch = useDispatch();
   const filters = useSelector(Selectors.filter);
+  
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
@@ -152,6 +153,7 @@ const CardListCollection = ({
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
   const collectionRef = React.useRef<FilterHandle>(null);
+  const { currency } = useSelector(Selectors.config);
   
   useEffect(() => {
     if (inputSearchRef) {
@@ -298,7 +300,7 @@ const CardListCollection = ({
         page: page[page.length-1],
         search_term: inputSearchRef?.current?.value,
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         filter_dict: dataFilter,
         sort_dict: {
           sort_value: sortCards?.sort_value,
@@ -751,20 +753,28 @@ const CardListCollection = ({
     return trackFilter[index].isUpdate;
   }
   useEffect(() => {
-    
+    let isCheckCurrency = true;
     if (isEditCardData || isAddCardProfile) {
+      isCheckCurrency =false;
       setSelectDataFilter(dataFilterStore)
     }
 
     if (!isEmpty(filterData)) {
+      isCheckCurrency =false;
       dispatch(SearchFilterAction.updateSetDataFilter(filterData))
     }
     
+
     if (!isEmpty(filters.years) && !data.isLoading) {
+      isCheckCurrency =false;
       setPagesSelected([1])
       getListCard([1])
     }
-  }, [filterData, sortCards])
+    if(isCheckCurrency  && !data.isLoading ) {
+      setPagesSelected([1])
+      getListCard([1])
+    }
+  }, [filterData, sortCards, currency])
   
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {
@@ -1524,7 +1534,7 @@ const CardListCollection = ({
           { !isSearchMobile &&
             <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
               <h2 className="col-8 title">{data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />} {Boolean(data?.group_type === 2) && (
-                <i className="ms-1 fa fa-lock fz-70" aria-hidden="true"></i>
+                <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>
               )}{" "}</h2>
               <div className="col-4 d-flex justify-content-end align-items-center" >
                 <div className="search-form d-none d-md-block">
@@ -1611,7 +1621,7 @@ const CardListCollection = ({
                     !isSearchMobile &&
                     <div className="d-flex align-items-center fz-14 fz-12-mob">
                       <span className="fw-bold me-1">{count?.count_cards}</span> {t('portfolio.card_in_portfolio')}
-                      <span className="icon-circle clear-padding margin-10"> <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" style={{ color: 'rgba(109, 117, 136, 0.35)' }} /> </span>
+                      <span className="icon-circle clear-padding margin-10">  <i className="dot-margin" /> </span>
                       <span className="fw-bold me-1">{count?.count_non_duplicate_cards}</span> Non-duplicate Cards
                   </div>
                 }
@@ -1630,26 +1640,23 @@ const CardListCollection = ({
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState)
                       dispatch(SearchFilterAction.updateModeProfile(false))
-                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}> <i className="fa fa-th" aria-hidden="true"></i> </button>
+                    }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}> 
+                    <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i> </button>
                     <button type="button" onClick={() => {
                       setIsInline(prevState => !prevState);
                       setIsSelect(false);
                       dispatch(SearchFilterAction.updateModeProfile(true))
                     }} className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine/>
                     </button>
                   </div>
                   {isSelectCard && <div>
-                    {/* <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary btn-search-plus d-flex justify-content-center align-items-center btn-not-shadow ${isSelect ? 'active' : ''}`}>
+                    <button type="button"
+                      onClick={onHandleMode}
+                      disabled={isInline && !cardSelected.length}
+                      className={`ms-2  ${isInline && !cardSelected.length ? "opacity-50" : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}>
                       {isSelect ? <IconMinis /> : <IconPlus />}
-                    </button> */}
-                          <button type="button"
-                  onClick={onHandleMode}
-                  disabled={isInline && !cardSelected.length}
-                  className={`ms-2  ${isInline && !cardSelected.length ? "opacity-50" : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}>
-                  {isSelect ? <IconMinis /> : <IconPlus />}
-                </button>
+                    </button>
                   </div>}
                 </div>
               </div>
@@ -2240,7 +2247,6 @@ const CardListCollection = ({
                       setIsSelect(false)
                       dispatch(SearchFilterAction.updateModeProfile(true))
                     } } className={` ${isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                       <ListLine />
                     </button>
                   </div>

@@ -16,6 +16,12 @@ export class ConfigAction {
       payload,
     };
   }
+  static updateNameCurrency (payload: string) {
+    return {
+      type: ActionTypes.reducer.config.updateNameCurrencies,
+      payload
+    }
+  }
   static updateSports(payload: SportType[]) {
     return {
       type: ActionTypes.reducer.config.updateSports,
