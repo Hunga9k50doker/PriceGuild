@@ -1743,7 +1743,7 @@ input[type="number"] {
     margin-left: 6px;
   }
   .dropdown {
-    margin-right: 10px;
+    margin-right: 6px;
     &.active {
       .btn {
         background: #e9eaed !important;
@@ -1969,11 +1969,12 @@ input[type="number"] {
       }
       .grade-card {
         position: absolute;
-        top: 10px;
-        left: 20px;
-        padding: 4px 8px;
+        top: 12px;
+        left: 12px;
+        padding: 5px 8px;
         border-radius: 24px;
         font-size: 14px;
+        line-height: 1;
       }
       .edit-card {
         &.compare {
@@ -5051,8 +5052,10 @@ input[type="number"] {
     .filter-list {
       .dropdown {
         .btn {
-          padding: 4.5px 9px;
+          padding: 8px 10px;
           font-size: 14px;
+          line-height: 1;
+          font-weight: 400;
           color: #18213a;
           background: #ffffff;
           border: 1px solid #cccfd6;
