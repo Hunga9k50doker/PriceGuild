@@ -1852,9 +1852,6 @@ const CardList = (props: PropTypes) => {
                           className="table table-striped table-hover"
                         >
                           <thead
-                            style={{
-                              top: isSelect ? 52 : 0,
-                            }}
                             className="p-sticky-header"
                           >
                             <tr>
@@ -1984,19 +1981,19 @@ const CardList = (props: PropTypes) => {
                                 <td>
                                   {" "}
                                   {item.minPrice
-                                    ? formatCurrency(item.minPrice)
+                                    ? formatCurrency(item.minPrice, currency)
                                     : "N/A"}{" "}
                                 </td>
                                 <td>
                                   {" "}
                                   {item.maxPrice
-                                    ? formatCurrency(item.maxPrice)
+                                    ? formatCurrency(item.maxPrice, currency)
                                     : "N/A"}{" "}
                                 </td>
                                 <td>
                                   {" "}{
                                     //@ts-ignore
-                                    item.avgPrice ? formatCurrency(item.maxPrice): "N/A"
+                                    item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A"
                                   }{" "}
                                 </td>
                                 <td>
