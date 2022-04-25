@@ -41,7 +41,7 @@ export const formatCurrencyCollection = (value?: number, currency?: string) => {
     currency: `${currency || "USD"}`,
     style: "currency",
     // @ts-ignore
-  }).format(value).replace(/.00/g,"");
+  }).format(value).replaceAll(".00","")
 };
 export const formatCurrencyIcon = ( currency?: string) => {
   return new Intl.NumberFormat(`en-US`, {
