@@ -11,6 +11,8 @@ import $ from "jquery";
 import { User } from "model/user";
 import { MyStorage } from "helper/local_storage";
 import Head from "next/head";
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 
 type PropTypes = {
   location: any;
@@ -25,6 +27,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const [data, setData] = useState<DataType>();
+  const { currency } = useSelector(Selectors.config);
   
   useEffect(() => {
     const getDataOwenrs = async () => {
@@ -34,6 +37,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
           await api.v1.collectors_catalog.pg_app_collectors_catalog({
             card_code: router?.query?.id,
             table: "portfolio",
+            currency: currency
           });
         if (result.success) {
           setData(result.data);
@@ -47,7 +51,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
     if(!isEmpty(router.query)){
       getDataOwenrs();
     }
-  }, [router.query]);
+  }, [router.query, currency]);
 
   const getLevelUser = (point: number) => {
     const level = userClass.find((item) => {
@@ -148,7 +152,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
                     </thead>
                     <tbody>
                       {isLoading &&
-                        Array.from(Array(5).keys()).map(
+                        Array.from(Array(10).keys()).map(
                           (item: any, key: number) => (
                             <tr key={key}>
                               <td className="text-center">
@@ -169,7 +173,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
                             </tr>
                           )
                         )}
-                      {data?.user_data.map((item: any, key: number) => (
+                      {!isLoading && data?.user_data.map((item: any, key: number) => (
                         <tr key={key}>
                           <td className="text-center">{key + 1}</td>
                           <td>
@@ -192,7 +196,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
                             {item?.cards?.map((card: any, index: number) => (
                               <React.Fragment key={index}>
                                 {Boolean(index) && <br />}
-                                {Boolean(card.lastest_value) ? formatCurrency(card.lastest_value) : "N/A"}
+                                {Boolean(card.lastest_value) ? formatCurrency(card.lastest_value, currency) : "N/A"}
                               </React.Fragment>
                             ))}
                           </td>
