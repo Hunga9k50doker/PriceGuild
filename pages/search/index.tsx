@@ -20,7 +20,6 @@ import Select from 'react-select'
 import FilterSport from "components/filter/filterSport"
 import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
-import IconList from "assets/images/List.png";
 import ButtonClear from "assets/images/icon-remove.svg";
 import LoginModal from "components/modal/login"
 import IconPlus from "components/icon/iconPlus"
@@ -40,6 +39,7 @@ import { ToastSystem } from "helper/toast_system";
 import TextSearchBoxDesktop from "components/filter/textSearchBoxDesktop";
 import { useDebouncedCallback } from "utils/useDebouncedEffect";
 import { FilterHandleTextSearch } from "components/filter/textSearchBoxDesktop";
+import { ConfigAction } from "redux/actions/config_action";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -98,6 +98,7 @@ const CardList = (props: PropTypes) => {
     // page: 1,
     rows: 0
   })
+  const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
     ManageCollectionType | undefined
   >();
@@ -130,6 +131,16 @@ const CardList = (props: PropTypes) => {
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
+  useEffect(() => {
+      //@ts-ignore
+    if(width < 767.98) {
+      if(isSelect) {
+        dispatch(ConfigAction.updateShowTabBar(false));
+      } else {
+        dispatch(ConfigAction.updateShowTabBar(true));
+      }
+    }
+  }, [isSelect])
 
   const resetPage = (isChange: boolean = false) => {
     if (Boolean(isModeSearchTableStore)) {
@@ -312,7 +323,7 @@ const CardList = (props: PropTypes) => {
         ...params,
         page: page[page.length-1],
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         sort_dict: {
           sort_value: sortCards?.sort_value,
           sort_by: sortCards?.sort_by
@@ -398,7 +409,24 @@ const CardList = (props: PropTypes) => {
 
   const getFilterCollection = async () => {
     try {
-      const result = await api.v1.getFilterCollection({ set_id: filterData?.set.map(item => item.id) });
+      let prms: any = {
+        set_id: filterData?.set.map(item => item.id),
+      }
+      if (query.sport || query?.sport_criteria) {
+        prms.sport = +(query?.sport ?? query?.sport_criteria);
+      }
+
+      if (isEmpty(query)) {
+        prms.sport = +(userInfo?.userDefaultSport ?? 1)
+      }
+
+      if (query.q ) {
+        prms.search_term = query.q;
+      }
+      if (filterData?.sport?.length) {
+        prms.sport = filterData?.sport[0]?.id;
+      }
+      const result = await api.v1.getFilterCollection(prms);
       result.data.type = convertListDataToGrouped(result.data.type, FilterType.firstLetter, (item1, item2) => {
         return item1.name.localeCompare(item2.name);
       })
@@ -428,7 +456,7 @@ const CardList = (props: PropTypes) => {
       setPagesSelected([1])
       getListCard()
     }
-  }, [sortCards])
+  }, [sortCards, currency])
 
   const refModal = useRef();
   const onChangeFilter = (e: any, key: string) => {
@@ -855,7 +883,6 @@ const CardList = (props: PropTypes) => {
       getListCard(event, false)
     }, 550);
   }
-
   const [scrollY, setScrollY] = useState<number>(0);
   const handleScroll = () => {
     var scrollTop = $(window).scrollTop();
@@ -1275,6 +1302,7 @@ const CardList = (props: PropTypes) => {
                         ref={playerNameRef}
                         onChange={onChangeSearch}
                         name="playerName"
+                        isButton={true}
                       />
                     </div>
                     <div className="accordion" id="CardNumberFilter">
@@ -1283,6 +1311,7 @@ const CardList = (props: PropTypes) => {
                         ref={cardNumberRef}
                         onChange={onChangeSearch}
                         name="cardNumber"
+                        isButton={true}
                       />
                     </div>
                   </div>
@@ -1601,7 +1630,7 @@ const CardList = (props: PropTypes) => {
                   <div className="d-flex align-items-center ml-1 btn-group-head-search  btn-group-head-search--mobile">
                       <div className="group-head-search-info">
                         <div className="group-head-search-info-text d-flex">
-                          <div> Select All </div>
+                          <div onClick={onSelectAll}> Select All </div>
                           <div> <span className="fw-bold">{cardSelected.length}</span> cards selected</div>
                         </div>
                         <img onClick={onHandleMode} src={IconCloseMobile} alt="" title="" />
@@ -1639,15 +1668,14 @@ const CardList = (props: PropTypes) => {
                 <button type="button" onClick={() => {
                   setIsInline(prevState => !prevState)
                   dispatch(SearchFilterAction.updateModeSearch(false))
-                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}>
-                  <i className="fa fa-th" aria-hidden="true"></i>
+                }} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}>
+                  <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>
                 </button>
                 <button type="button" onClick={() => {
                   setIsInline(prevState => !prevState)
                   dispatch(SearchFilterAction.updateModeSearch(true))
-                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
-                  {/* <i className="fa fa-list" aria-hidden="true"></i> */}
-                  <img src={IconList.src} alt="" title="" />
+                }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0 clear-padding`}>
+                  <i className={`${!isInline ? "" : "active"} ic-line-view`} aria-hidden="true"></i>
                 </button>
               </div>
               <button type="button" onClick={() => setIsSelect(prevState => !prevState)} className={`ms-2 btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center`}>
@@ -1662,7 +1690,6 @@ const CardList = (props: PropTypes) => {
                     <IconDotMoBile isActive={!isInline ? true : false} />
                   </button>
                   <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
-                    {/* <i className="fa fa-list" aria-hidden="true"></i> */}
                     <IconLineMoBile />
                   </button>
                 </div>

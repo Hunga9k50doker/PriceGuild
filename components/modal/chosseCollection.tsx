@@ -113,7 +113,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
             <div className="row col-mar-10">
               <div className="mb-4 no-padding-content">
                 <div className="search">
-                  <i className="fa fa-search" />
+                  <i className="ic-search-input" />
                   <input type="text" onChange={onSeachCollection} className="form-control" placeholder="Search" />
                 </div>
               </div>

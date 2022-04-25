@@ -256,7 +256,7 @@ const SelectGrading = ({
         Card saved to wishlist{" "}
         <Link href={`/profile/wishlists/${wishList?.group_ref}/${wishList?.group_name?.replaceAll("/", "-")}`}>
           <a className="text-decoration-none">
-            {wishList?.group_name} { Boolean(wishList?.type === 2) && <i className="fa fa-lock" aria-hidden="true"></i>}{" "}
+            {wishList?.group_name} { Boolean(wishList?.type === 2) && <i className="ic-padlock fz-10"></i>}{" "}
           </a>
         </Link>
       </div>
@@ -320,6 +320,7 @@ const SelectGrading = ({
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"

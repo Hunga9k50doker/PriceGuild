@@ -150,6 +150,7 @@ const ReportCard = () => {
                       setValue('portf_req_sport', value?.sportName ?? '');
                       setSportSelected(value)
                     }}
+                    isSearchable={ false }
                     value={sportSelected}
                     getOptionValue={getOptionValue}
                     defaultValue={sportSelected}

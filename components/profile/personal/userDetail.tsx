@@ -41,10 +41,12 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
   const [isUser, setIsUser] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common");
   const [matchPatchRoute, setMatchPatchRoute] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   const getUserDetail = async () => {
     try {
       const params = {
-        profileid: userId
+        profileid: userId,
+        currency: currency
       }
       const res = await api.v1.authorization.getUserInfo(params);
       if (res.success) {
@@ -84,7 +86,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
     if (userId) {
       getUserDetail()
     }
-  }, [userId])
+  }, [userId, currency])
   
   const goToTab = (name: string) => {
     if (Boolean(Number(router.query.page))) {
@@ -156,7 +158,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
                         )}
                   </OverlayTrigger>
     }
-    return profile?.total_value !== 0 ? formatCurrency(profile?.total_value) : formatCurrency(0)
+    return profile?.total_value !== 0 ? formatCurrency(profile?.total_value, currency) : formatCurrency(0)
   }
   
   return (
@@ -209,7 +211,7 @@ const UserDetail = ({ isFriend = false, userId, onSuccess, onTabDetail, setProfi
           </div>
           {profile?.user_info ?
             <div className="d-flex justify-content-center align-items-center mt-1 fz-14 pt-1 content-user-profile-info">
-              {profile?.user_info.location}<i style={{ color: 'rgba(109, 117, 136, 0.35)' }} className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> Member since {moment(profile?.user_info.member_since, "YYYY-MM-DD").format("MMM D, YYYY")}
+              {profile?.user_info.location} <i className="dot-margin" /> Member since {moment(profile?.user_info.member_since, "YYYY-MM-DD").format("MMM D, YYYY")}
             </div> : <Skeleton style={{ width: 250 }} />}
         </div>
         <div className="row mt-5 content-user-profile-card">

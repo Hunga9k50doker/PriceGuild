@@ -303,8 +303,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
-  
     var file = e.target.files[0];
+    if(file?.type !== "image/jpeg" &&  file?.type !== "image/png"  &&  file?.type !== "image/jpg") {
+      return ToastSystem.error("File type not supported, please upload jpg or png files.");
+    }
     if(file?.size >= 10485760) {
       return ToastSystem.error("Please upload a file smaller than 10 MB");
     }
@@ -312,7 +314,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       var url = URL.createObjectURL(file);
       let current_path: string =
         name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
-      EditImageRef?.current?.action(url, name, current_path);
+      EditImageRef?.current?.action(url, name, current_path, file?.type);
     }
   };
 
@@ -476,9 +478,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           if (!isEmpty(dataFilterStore)) {
             dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           }
-          
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`);
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0 }/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`); 
         } else {
           router.back();
         }
@@ -783,6 +784,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const onSaveEntry = () => {
     dispatch(ConfigAction.updateShowMenuCollection(false))
+    isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   const renderTextButton = () => {
@@ -943,33 +945,49 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     setTimeout(() => {
       fn(ConfigAction.updateShowMenuCollection(true));
     },550)
-    
   }
+
+  const formatOptionPortfolio = ({id, group_name, type}: any) => (
+   <>
+    {group_name}
+    {type == 2 && <i className="ms-1 ic-padlock" aria-hidden="true"></i>}
+   </>
+  );
 
   return (
     <div className="add-collection prf-template pl-3 position-relative">
       <div>
         <div className="only-mobile">
           {isEdit ? (
-            <Link
-              href={`/profile/collections/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
+            <>
+            {+router?.query?.collection !== 0 ? <Link
+              href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
             >
-              <a className="container-collection-profile-head">
+              <a className="container-collection-profile-head" title={groupRef?.name}>
                 <img
-                  // onClick={() => history.push("profile/collections")}
                   src={ArrowProfile}
                   alt=""
                 />
                 {groupRef?.name}
               </a>
+            </Link> :
+            <Link href={`/profile/portfolio/0/All Cards`}>
+              <a className="container-collection-profile-head" title="All Cards"> 
+                <img
+                  src={ArrowProfile}
+                  alt=""
+                />
+                All Cards
+              </a>
             </Link>
+            }
+          </>
           ) : (
             <Link
               href={`/profile/collections`}
             >
             <a className="container-collection-profile-head">
               <img
-                // onClick={() => history.push("profile/collections")}
                 src={ArrowProfile}
                 alt=""
               />
@@ -977,10 +995,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
              </a>
             </Link>
           )}
-          {/* <Link to="/profile/collections" className="container-collection-profile-head">
-              <img onClick={() => history.push("profile/collections")}  src={ArrowProfile} />
-              {groupRef?.name}
-            </Link> */}
         </div>
       </div>
       <div className="only-mobile add-collection-title" >
@@ -1011,9 +1025,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <div key={key} className="card-add">
                     <div className="card-add-info d-flex align-items-center">
                       {item?.sport}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.year}{" "}
-                      <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                      <i className="dot-margin" />{" "}
                       {item?.publisher}
                     </div>
                     <div className="mb-3 fs-5 card-add-description mt-2">
@@ -1267,7 +1281,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             )?.group_name ?? ""}
                           </div>
                         </div>
-                        <div className="d-flex images justify-content-center align-items-center">
+                        {/*<div className="d-flex images justify-content-center align-items-center">
                           <div className="aspect-sm">
                             <img
                               src={
@@ -1288,7 +1302,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                               alt=""
                             />
                           </div>
-                        </div>
+                        </div>*/}
                       </div>
                     </div>
                   ))}
@@ -1422,6 +1436,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
+                        isSearchable={ false }
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"
@@ -1513,6 +1528,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           classNamePrefix="select-price"
                           className="select-price customScroll input-height-56"
                           options={currencies}
+                          isSearchable={ false }
                           styles={{
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
@@ -1569,6 +1585,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
+                        onFocus={e => e.target.blur()}
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
@@ -1597,6 +1614,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 render={({ field: { onChange, value } }) => (
                   <Select
                     value={value}
+                    isSearchable={ false }
                     onChange={(e) => {
                       onChange(e);
                       onUpdateValue(e, "group_ref");
@@ -1607,6 +1625,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     getOptionValue={(item: any) => item.id}
                     // classNamePrefix="w-100 input-collection-prefix"
                     options={cards.groups}
+                    formatOptionLabel={formatOptionPortfolio}
                     styles={{
                       // @ts-ignore
                       dropdownIndicator: (provided, state) => ({

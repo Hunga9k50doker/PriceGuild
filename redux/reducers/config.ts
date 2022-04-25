@@ -9,6 +9,7 @@ let initialState: ConfigReducerType = {
   is_email_verify: false,
   is_show_card_detail_collection: false,
   is_show_tab_bar: true,
+  currency: "USD",
 };
 
 const configReducer = (
@@ -57,6 +58,12 @@ const configReducer = (
       return {
         ...state,
         is_show_tab_bar: action.payload
+      }
+    }
+    case ActionTypes.reducer.config.updateNameCurrencies: {
+      return {
+        ...state,
+        currency: action.payload
       }
     }
     default: {

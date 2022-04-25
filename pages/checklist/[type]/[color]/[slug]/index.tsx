@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
 import {
@@ -22,7 +22,6 @@ import Link from 'next/link';
 import IconPlus from "components/icon/iconPlus";
 import IconMinis from "components/icon/iconMinis";
 import IconDot3 from "assets/images/dot-3.svg";
-// import ListLine from "components/icon/listLine"
 import IconCloseMobile from "assets/images/close_mobile.svg";
 import IconFolder from "assets/images/icon-folder-svg.svg";
 import IconFolderFull from "assets/images/icon-folder-active.svg";
@@ -44,14 +43,9 @@ import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import CaptCha from "components/modal/captcha";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 const rowsPerPage = 100;
-
-type ParamTypes = {
-  id: string;
-  type: string;
-  color: string;
-};
 
 type SortType = {
   by: string;
@@ -61,11 +55,6 @@ type SortType = {
 type FilterDataType = {
   timePeriod?: number;
   sort?: SortType;
-};
-
-type DataTableTye = {
-  cards: Array<CardCollectionType>;
-  isLoading: boolean;
 };
 
 const limit = 20;
@@ -83,7 +72,6 @@ const CollectionBase = ({ ...props}) => {
     rows: 0,
   });
   const [isCaptCha, setIsCaptCha] = useState<boolean>(false);
-  // :type/:color/:slug
   const router = useRouter();
   const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
   const { type, color } = router.query;
@@ -93,6 +81,7 @@ const CollectionBase = ({ ...props}) => {
   const [wishList, setWishList] = React.useState<
     ManageCollectionType | undefined
   >();
+
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [filterData, setFilterData] = useState<FilterDataType>({
     sort: {
@@ -100,17 +89,22 @@ const CollectionBase = ({ ...props}) => {
       asc: true,
     },
   });
+
   const checkListRef = useRef<any>(null);
   const [isSelect, setIsSelect] = useState<boolean>(false);
   const [isInline, setIsInline] = useState<boolean>(true);
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const { isAddCardCheckList, pageSelected } = useSelector(Selectors.searchFilter);
+  const { currency } = useSelector(Selectors.config);
+  const { asPath, pathname } = useRouter();
+
   React.useEffect(() => {
     if (!isEmpty(router.query)) {
       setPagesSelected(Boolean(isAddCardCheckList) ? [pageSelected] : [1]);
       getDetail(Boolean(isAddCardCheckList) && pageSelected ? [pageSelected] : [1]);
     }
   }, [router.query]);
+  
   const [t, i18n] = useTranslation("common")
   const getDetail = async (page: number[] = [1],  headers: any = {}): Promise<void> => {
     try {
@@ -130,6 +124,7 @@ const CollectionBase = ({ ...props}) => {
           sort_value: filterData?.sort?.by,
           sort_by: filterData?.sort?.asc ? "asc" : "desc",
         },
+        currency: currency
       };
 
       const result = await api.v1.collection.checkList({ ...params }, headers);
@@ -174,39 +169,7 @@ const CollectionBase = ({ ...props}) => {
       getDetail([1]);
       setPagesSelected([1]);
     }
-  }, [filterData]);
-
-  const renderButtonFilter = (day: number) => {
-    switch (day) {
-      case 7:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 7 ? "isActive" : ""
-        } `;
-      case 14:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 14 ? "isActive" : ""
-        } `;
-      case 30:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 30 ? "isActive" : ""
-        } `;
-      case 90:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 90 ? "isActive" : ""
-        } `;
-      case 365:
-        return `btn btn-secondary ${
-          filterData?.timePeriod === 365 ? "isActive" : ""
-        } `;
-      default:
-    }
-  };
-
-  const onChangeFilter = (e: any) => {
-    // setFilterData(prevState => {
-    //   return { ...prevState, timePeriod: e };
-    // });
-  };
+  }, [filterData, currency]);
 
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
@@ -215,18 +178,18 @@ const CollectionBase = ({ ...props}) => {
         !filterData?.sort?.asc &&
         collection.rows
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if (
       filterData?.sort?.by === name &&
       filterData?.sort?.asc &&
       collection.rows
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -246,23 +209,34 @@ const CollectionBase = ({ ...props}) => {
   const renderBreadcrumbs = () => {
     return (
       <nav aria-label="breadcrumb" className="breadcrumb-nav">
-        <ol className="breadcrumb cursor-default">
-          <li className="breadcrumb-item">
+        <ol className="breadcrumb cursor-default" vocab="https://schema.org/" typeof="BreadcrumbList">
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
             <Link
               href={`/collections/${collection?.sport?.name
                 ?.replace(/\s/g, "")
                 ?.toLowerCase()}`}
             >
-              <a>
-                {collection?.sport?.name} Card Collections
+              <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage">
+                <span property="name"> {collection?.sport?.name} Card Collections </span>
               </a>
             </Link>
+            <meta property="position" content="1"></meta>
           </li>
-          <li className="breadcrumb-item">
-            <Link href={`/${collection.url}`}>{collection?.title}</Link>
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
+            <Link href={`/${collection.url}`}>
+              <a title={collection?.title} property="item" typeof="WebPage">
+                <span property="name"> {collection?.title} </span>
+              </a>
+            </Link>
+            <meta property="position" content="2"></meta>
           </li>
-          <li className="breadcrumb-item active " aria-current="page">
-            {`${collection?.type} - ${collection?.color}`}
+          <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
+            <Link href={`/checklist/${router?.query?.type}/${router?.query?.color}/${router?.query?.slug}`}>
+              <a title={collection?.title} property="item" typeof="WebPage">
+                <span property="name"> {`${collection?.type} - ${collection?.color}`} </span>
+              </a>
+            </Link>
+            <meta property="position" content="3"></meta>
           </li>
         </ol>
       </nav>
@@ -270,7 +244,6 @@ const CollectionBase = ({ ...props}) => {
   };
 
   const selectCollection = (item: ManageCollectionType) => {
-
     dispatch(SearchFilterAction.updateIsAddCardCheckList(true))
 
     router.push(
@@ -312,8 +285,8 @@ const CollectionBase = ({ ...props}) => {
     setIsCheckAll(true);
     //@ts-ignore
     setCardSelected([...collection.cards?.map((item) => item.cardCode)]);
-    /// cần sửa
   };
+
   const onClear = () => {
     setIsCheckAll(false);
     setCardSelected([]);
@@ -355,6 +328,7 @@ const CollectionBase = ({ ...props}) => {
       ? IconCanFull
       : IconCan;
   };
+
   const renderOptionIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.cardCode))
       ? IconCanFull
@@ -377,11 +351,9 @@ const CollectionBase = ({ ...props}) => {
     if (dataOld.find((item: any) => item.code === cardData.cardCode)) {
       dataOld = dataOld.filter((item: any) => item.code !== cardData.cardCode);
       dispatch(CompareAction.removeCard(cardData.cardCode));
-      // ToastSystem.success("Card removed from comparison list");
       ToastSystem.success(<span>Card removed from <Link href="/comparison">comparison list</Link> </span>);
     } else {
       dataOld.push(cardNew);
-      // ToastSystem.success("Card added to comparison list");
       ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
       dispatch(CompareAction.addCard(cardNew));
     }
@@ -432,13 +404,14 @@ const CollectionBase = ({ ...props}) => {
   return (
     <>
       <Head>
-      <title>{
-        //@ts-ignore
-        props?.titlePage ?? ''}</title>
-      <meta name="description" content={
-        //@ts-ignore
-        props?.descriptionPage ?? ''} />
-    </Head><div className="container-fluid card-detail collection-detail collection-detail--mobile">
+        <title>{
+          //@ts-ignore
+          props?.titlePage ?? ''}</title>
+        <meta name="description" content={
+          //@ts-ignore
+          props?.descriptionPage ?? ''} />
+      </Head>
+      <div className="container-fluid card-detail collection-detail collection-detail--mobile">
         <div>
           {" "}
           {!Boolean(collection?.id) ? (
@@ -474,9 +447,9 @@ const CollectionBase = ({ ...props}) => {
               <div className="col-md-6 col-12 ps-4 col-detail-base">
                 <div className="collection-title-topic d-flex align-items-center">
                   <div>{collection?.sport?.name}</div>{" "}
-                  <div className="circle-gray"></div>{" "}
+                  <i className="dot-margin" />{" "}
                   <div>{collection?.year}</div>{" "}
-                  <div className="circle-gray"></div>{" "}
+                  <i className="dot-margin" />{" "}
                   <div>{collection?.publisher?.name}</div>
                 </div>
                 <h1 className=" collection-title mb-3">
@@ -535,10 +508,10 @@ const CollectionBase = ({ ...props}) => {
                     <button
                       type="button"
                       onClick={() => setIsInline((prevState) => !prevState)}
-                      className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary`}
+                      className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}
                     >
                       {" "}
-                      <i className="fa fa-th" aria-hidden="true"></i>{" "}
+                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>{" "}
                     </button>
                     <button
                       type="button"
@@ -548,8 +521,6 @@ const CollectionBase = ({ ...props}) => {
                       } }
                       className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}
                     >
-                      {/* <i className="fa fa-list" aria-hidden="true"></i> */}
-                      {/* <img src={IconList} /> */}
                       <ListLine />
                     </button>
                   </div>
@@ -656,7 +627,7 @@ const CollectionBase = ({ ...props}) => {
                       key={item.id}
                       cardSelected={cardSelected}
                       onSelectItem={onSelectItem}
-                      imageUrl={item?.image
+                      imageUrl={ item?.image
                         ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
                         : undefined}
                       isSelect={isSelect}
@@ -889,18 +860,15 @@ const CollectionBase = ({ ...props}) => {
                                     onClick={() => onGoToCard(item)}
                                     className="cursor-pointer image-box-table mr-2"
                                   >
-                                    <img
-                                      alt=""
-                                      className="w-100"
-                                      onError={({ currentTarget }) => {
-                                        currentTarget.onerror = null; // prevents looping
-                                        currentTarget.src = CardPhotoBase;
-                                      } }
-                                      src={item?.image
-                                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
-                                          ? "ns"
-                                          : "sp"}/${item?.image}.jpg`
-                                        : CardPhotoBase} />
+                                    <LazyLoadImg 
+                                    className="w-100"
+                                    imgError={CardPhotoBase}
+                                     url={item?.image
+                                      ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
+                                        ? "ns"
+                                        : "sp"}/${item?.image}.jpg`
+                                      : CardPhotoBase} 
+                                    />
                                   </div>
                                   <div
                                     onClick={() => onGoToCard(item)}
@@ -936,13 +904,13 @@ const CollectionBase = ({ ...props}) => {
                               <td>
                                 {" "}
                                 {item.minPrice
-                                  ? formatCurrency(item.minPrice)
+                                  ? formatCurrency(item.minPrice, currency)
                                   : "N/A"}{" "}
                               </td>
                               <td>
                                 {" "}
                                 {item.maxPrice
-                                  ? formatCurrency(item.maxPrice)
+                                  ? formatCurrency(item.maxPrice, currency)
                                   : "N/A"}{" "}
                               </td>
                               <td> {item.count} </td>
@@ -1082,33 +1050,6 @@ const CollectionBase = ({ ...props}) => {
                   totalPage={Math.ceil((collection.rows ?? 0) / rowsPerPage)} />
               </div>
             </div>
-            {/* <nav aria-label="Page navigation example">
-      <ul className="pagination">
-        <li className="page-item"><a className="page-link" href="#">Previous</a></li>
-        <li className="page-item"><a className="page-link" href="#">1</a></li>
-        <li className="page-item"><a className="page-link" href="#">2</a></li>
-        <li className="page-item"><a className="page-link" href="#">3</a></li>
-        <li className="page-item"><a className="page-link" href="#">Next</a></li>
-      </ul>
-    </nav> */}
-            {/* <div style={{ fontSize: 18 }} className="pricing-grid mt-0">
-      <div className="fs-3 fw-bold mb-5">Sales Overview</div>
-      <div className="btn-group btn-group-sm filter-date" role="group" aria-label="Basic radio toggle button group">
-        <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" defaultChecked />
-        <label onClick={() => onChangeFilter(7)} className="btn btn-light" htmlFor="btnradio1">1 week</label>
-        <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" />
-        <label onClick={() => onChangeFilter(14)} className="btn btn-light" htmlFor="btnradio2">2 weeks</label>
-        <input type="radio" className="btn-check" name="btnradio" id="btnradio3" autoComplete="off" />
-        <label onClick={() => onChangeFilter(30)} className="btn btn-light" htmlFor="btnradio3">1 Month</label>
-        <input type="radio" className="btn-check" name="btnradio" id="btnradio4" autoComplete="off" />
-        <label onClick={() => onChangeFilter(90)} className="btn btn-light" htmlFor="btnradio4">3 Month</label>
-        <input type="radio" className="btn-check" name="btnradio" id="btnradio5" autoComplete="off" />
-        <label onClick={() => onChangeFilter(365)} className="btn btn-light" htmlFor="btnradio5">1 Year</label>
-      </div>
-      <div className="content-pricing-grid mh-100 customScroll">
-        <ChartLineDemo />
-      </div>
-    </div> */}
           </div>
         </div>
         <ChosseCollection
@@ -1157,22 +1098,23 @@ const CollectionBase = ({ ...props}) => {
       </div></>
   );
 };
+
 export const getServerSideProps = async (context: any) => { 
   try {
-      const ctx = context.query;
-      let prms = {
-       type: Number(context.query.type),
-       color: context.query.color
-      }
+    const ctx = context.query;
+    let prms = {
+      type: Number(context.query.type),
+      color: context.query.color
+    }
 
-      const config = {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(prms)
-      }
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(prms)
+    }
     
     const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/checklist/page-title`, config);
     const data = await res.json();
@@ -1185,7 +1127,7 @@ export const getServerSideProps = async (context: any) => {
     }}
 
   } catch (error) {
-    
+    /**/
   }
   return {
     props: {},

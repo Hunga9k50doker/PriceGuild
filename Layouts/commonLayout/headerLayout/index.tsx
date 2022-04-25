@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import SmartSearch from "components/smartSearch"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ import logoHeader from "assets/images/logo-header.svg";
 import logoHeader1024 from "assets/images/logo-header-1024.svg";
 import { HomeActions } from "redux/actions/home_action";
 import IconArrow from 'assets/images/arrow_nav.png'
-import IconUserProfile from "assets/images/header_user.png"
+import IconUserProfile from "assets/images/icon-user.svg"
 import IconCollectionProfile from "assets/images/profile_collection.png"
 import IconHeartProfile from "assets/images/profile_heart.png"
 import IconFriendProfile from "assets/images/profile_user_group.png"
@@ -29,6 +29,7 @@ import IconArrowBackMenu from "assets/images/arrow-back-black.svg";
 import IconAccount from "assets/images/account.svg";
 import IconInfo from "assets/images/info.svg";
 import IconBowse from "assets/images/bowse.svg";
+import UserPicture from "assets/images/user-picture.svg";
 import IconArrowLanguage from "./componennts/iconArrowLanguage";
 import InputSearch, { FilterModalHandle } from "components/smartSearchMobile/inputSearch";
 // @ts-ignore
@@ -38,6 +39,8 @@ import { MaintenanceAction } from "redux/actions/maintenance_action";
 import imgInfo from "assets/images/alert-info.svg";
 import imgClose from "assets/images/cross-gray.svg";
 import { isEmpty } from "lodash";
+import { api } from "configs/axios";
+import { getCookie, setCookie } from "utils/helper";
 
 const Header = (props: any) => {
 
@@ -46,6 +49,8 @@ const Header = (props: any) => {
   const { userInfo, loggingIn } = useSelector(Selectors.auth);
   const { popularPublishers } = useSelector(Selectors.home);
   const { cards } = useSelector(Selectors.compare);
+  const [nameCurrency, setNameCurrency] = useState<string>("USD");
+  const { currencies, currency } = useSelector(Selectors.config);
   const { maintenanceList } = useSelector(Selectors.maintenance);
   const [maintenanceStatus, setMaintenanceStatus] = useState<any>({})
   const dispatch = useDispatch();
@@ -66,6 +71,10 @@ const Header = (props: any) => {
   const [showProfileContent, setShowProfileContent] = useState<boolean>(false);
   const inputSearchRefs = React.useRef<FilterModalHandle>(null);
   const [keyTab, setKeyTab] = useState(0)
+  // const listCurrency = useMemo(() => {
+  //   return api.v1.currency.getListCurrency();
+  // },[]);
+  // console.log(listCurrency,"d")
   React.useEffect(() => {
     setIsShow(false)
     setShowMenuContent(false);
@@ -116,7 +125,6 @@ const Header = (props: any) => {
     }
   }, [isShow])
 
-
   const logout = () => {
     dispatch(AuthActions.logout());
   };
@@ -124,6 +132,7 @@ const Header = (props: any) => {
   const goToCollections = (sportName: string) => {
     router.push(`/collections/${sportName}`);
   }
+
   const goToCollectionsLink = (sportName: string) => {
     return `/collections/${sportName}`
   }
@@ -139,6 +148,9 @@ const Header = (props: any) => {
 
   React.useEffect(() => {
     dispatch(ConfigAction.getCurrencies());
+    setNameCurrency(  getCookie('currency_name') || "USD")
+    dispatch(ConfigAction.updateNameCurrency( getCookie('currency_name') || "USD"))
+
   }, [])
 
   React.useEffect(() => {
@@ -219,6 +231,11 @@ const Header = (props: any) => {
       }
     }
   }, [maintenanceList]);
+  const updateCurrency = (name: string) => {
+    setNameCurrency(name)
+    dispatch(ConfigAction.updateNameCurrency(name))
+    setCookie("currency_name", name , 36000)
+  }
 
   React.useEffect(() => {
     setIsShowMessage(!isEmpty(maintenanceStatus))
@@ -300,8 +317,20 @@ const Header = (props: any) => {
                       </a>
                     </Link>
                   </li>
-                  <li className="nav-item nav-item--usd">
-                    <a className="nav-link" aria-current="page" href="#" title="USD"> USD <IconArrowLanguage /> </a>
+                  <li className="nav-item nav-item--usd position-relative">
+                    <a className="nav-link" aria-current="page" href="#" id="dropdown-currency" role="button"
+                     data-bs-toggle="dropdown" title={nameCurrency}> {nameCurrency}
+                     <IconArrowLanguage /> </a>
+                    <div className="dropdown-menu mt-0 " aria-labelledby="dropdown-currency">
+                        <div className="dropdown-menu-content scroll-style">
+                          {currencies.map((item, k) =>
+                            <div className="dropdown-menu__item" onClick={() => updateCurrency(item.label)}>
+                              {item.label}
+                            </div>
+                         )}
+                        </div>
+                    </div>
+                 
                   </li>
                   <li className="nav-item nav-item--usd">
                     <a className="nav-link" aria-current="page" href="#" title="EN"> EN <IconArrowLanguage /> </a>
@@ -453,7 +482,7 @@ const Header = (props: any) => {
                   </li>
                   {loginState ? <>
                     <li className="nav-item dropdown user">
-                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <i style={{ fontSize: 40 }} className="fa fa-user-circle-o" aria-hidden="true" /> </a>
+                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <img className="w-38" src={UserPicture} alt="" title="" /> </a>
                       <ul className="dropdown-menu dropdown-user-login" aria-labelledby="navbarDropdown">
                         <li >
                           <Link href="/profile/personal">
@@ -464,7 +493,7 @@ const Header = (props: any) => {
                         <li>
                           <Link href="/profile/personal">
                             <a className="dropdown-item" title="Profile">
-                              <span><img alt="Profile" src={IconUserProfile.src} /></span> Profile
+                              <span><img alt="Profile" src={IconUserProfile} /></span> Profile
                             </a>
                           </Link>
                         </li>
@@ -551,26 +580,6 @@ const Header = (props: any) => {
           </nav>
         </div>
       </div >
-      {/*  */}
-      {/* {showSearchData &&
-        <div className="section-search-content">
-          <span className="recent-search">Recent Search</span>
-          <ul>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-            <li>
-              <span className="main-text">David Beckham</span> <span className="belong-text">in Football</span>
-            </li>
-          </ul>
-        </div>
-      } */}
       <div className={`${showMenuContent ? 'active' : ''} section-menu-content`}>
         <div className="section-logo-nav">
           <div className="d-flex justify-content-between section-logo">
@@ -579,20 +588,21 @@ const Header = (props: any) => {
           </div>
           <div className="section-select">
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              value={{ value: currency, label: currency }}
               classNamePrefix="select-currency"
               className="select-price select-currency customScroll"
-              options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
-              ]} />
+              onChange={(e: any) => {
+                updateCurrency(e?.value || "USD")
+              }}
+              options={currencies} />
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              // defaultValue={{ value: 'usd', label: 'USD' }}
               classNamePrefix="select-language"
               className="select-price select-language customScroll"
+              value={{ value: "EN", label: "EN" }}
               options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
+                { value: 'EN', label: 'EN' },
+                // { value: 'th', label: 'TH' },
               ]} />
           </div>
         </div>

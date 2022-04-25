@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-
+import { formatCurrencyIcon } from "utils/helper";
 const getOptions = () => {
   return {
     chart: {
@@ -102,7 +102,7 @@ const SaleBarChart = (props: Props) => {
   const [options] = useState(getOptions())
   var dataLabelAxisX: any[] = [];
   var dataAxisX: Map<string, SaleBarItem> = new Map();
-
+  const { currency } = useSelector(Selectors.config);
   const { userInfo } = useSelector(Selectors.auth);
   const refChart = useRef();
 
@@ -125,7 +125,7 @@ const SaleBarChart = (props: Props) => {
       shared: true,
       useHTML: true,
       headerFormat: '<table style="background-color: #18213A">',
-      pointFormat: `<tr><td style="color:#FFF">${props.type === TypeSale.volume ? '' : '$'}{point.y} ${props.type === TypeSale.volume ? 'Sales' : ''}</td>`,
+      pointFormat: `<tr><td style="color:#FFF">${props.type === TypeSale.volume ? '' : `${formatCurrencyIcon(currency)}`}{point.y} ${props.type === TypeSale.volume ? 'Sales' : ''}</td>`,
       footerFormat: '</table>',
       valueDecimals: props.type === TypeSale.volume ? 0 : 2
     };
@@ -223,7 +223,7 @@ const SaleBarChart = (props: Props) => {
 
   return (
     <div className="content-chart">
-      <div className="content-chart__title">{props.type === TypeSale.volume ? `${props.keyData} Sales Volume` : `${props.keyData} Average Sales Value ($)`}</div>
+      <div className="content-chart__title">{props.type === TypeSale.volume ? `${props.keyData} Sales Volume` : `${props.keyData} Average Sales Value (${formatCurrencyIcon(currency)})`}</div>
       <div className="content-chart__type">75 sales total</div>
       {/* @ts-ignore */}
       <HighchartsReact ref={refChart} highcharts={Highcharts} options={options} />

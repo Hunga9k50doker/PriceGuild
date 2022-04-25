@@ -221,6 +221,7 @@ export type FilterReducerType = {
   auto_memo: Array<FilterType>;
   sports: Array<FilterType>;
   grades?: DataGroupedSearch<FilterType>[];
+  group_refs?: Array<FilterType>;
 };
 
 export type FriendReducerType = {
@@ -274,6 +275,7 @@ export type ConfigReducerType = {
   is_email_verify: Boolean;
   is_show_card_detail_collection: Boolean;
   is_show_tab_bar: Boolean;
+  currency: string
 };
 
 export type PublisherType = {
@@ -290,6 +292,7 @@ export type FilterResponseType = {
   years: Array<number> | Array<any>;
   sports: Array<FilterType>;
   grades?: Array<GradeType>;
+  group_refs?: Array<FilterType>;
 };
 
 export type GradeType = {
@@ -718,3 +721,10 @@ export interface BlogData {
   ordering: string;
   sport: string;
 }
+
+export type ProfileBanner = {
+  is_friend: boolean;
+  portfolio_count: number;
+  wishlist_count: string;
+  user_info: UserInfoType;
+};

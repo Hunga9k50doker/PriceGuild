@@ -86,6 +86,7 @@ const InputSearchMobile = React.forwardRef<FilterModalHandle, PropTypes>(({
 
   React.useImperativeHandle(ref, () => ({
     onClearData() {
+      //@ts-ignore
       onClear()
     },
   }));
@@ -219,6 +220,7 @@ const InputSearchMobile = React.forwardRef<FilterModalHandle, PropTypes>(({
     // @ts-ignore
     setValueState()
     setSuggestions([])
+    $(".react-autosuggest__input").focus()
   }
 
   return (

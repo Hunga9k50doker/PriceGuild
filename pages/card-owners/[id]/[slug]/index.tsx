@@ -90,38 +90,47 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
       <section id="page-resd">
         <div className="container-fluid container--card-owner">
           <nav aria-label="breadcrumb">
-            <ol className="breadcrumb breadcrumb--card-owner mt-25 pb-10 mb-80 line-bottom">
+            <ol className="breadcrumb breadcrumb--card-owner mt-25 pb-10 mb-80 line-bottom" vocab="https://schema.org/" typeof="BreadcrumbList">
               {isLoading ? <Skeleton width={150} /> : <>
-                <li className="breadcrumb-item">
+                <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
                   <Link href={`/collections/${data?.descriptive_stats?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
-                    <a title="Search">
-                      {data?.descriptive_stats?.sport?.name} Card Collections
+                    <a title={`${data?.descriptive_stats?.sport?.name} Card Collections`} property="item" typeof="WebPage">
+                      <span property="name"> {data?.descriptive_stats?.sport?.name} Card Collections </span>
                     </a>
                   </Link>
+                  <meta property="position" content="1"></meta>
                 </li>
-                <li className="breadcrumb-item">
+                <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
                   <Link href={`/${data?.descriptive_stats?.set?.url}`}>
-                    <a title={`${data?.descriptive_stats?.year?.name} ${data?.descriptive_stats?.set?.name} ${data?.descriptive_stats?.sport?.name} Cards`}>
-                      {data?.descriptive_stats?.set?.title} Cards
+                    <a title={`${data?.descriptive_stats?.year?.name} ${data?.descriptive_stats?.set?.name} ${data?.descriptive_stats?.sport?.name} Cards`} property="item" typeof="WebPage">
+                      <span property="name"> {data?.descriptive_stats?.set?.title} Cards </span>
                     </a>
                   </Link>
+                  <meta property="position" content="2"></meta>
                 </li>
-                <li className="breadcrumb-item">
+                <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
                   <Link href={`/checklist/${data?.descriptive_stats?.type.id}/${data?.descriptive_stats?.color.code}/${data?.descriptive_stats?.color.url}`}>
-                    <a title={`${data?.descriptive_stats?.type?.name} - ${data?.descriptive_stats?.color?.name}`}>
-                      {data?.descriptive_stats?.type?.name} - {data?.descriptive_stats?.color?.name}
+                    <a title={`${data?.descriptive_stats?.type?.name} - ${data?.descriptive_stats?.color?.name}`} property="item" typeof="WebPage">
+                      <span property="name"> {data?.descriptive_stats?.type?.name} - {data?.descriptive_stats?.color?.name} </span>
                     </a>
                   </Link>
+                  <meta property="position" content="3"></meta>
                 </li>
-                <li className="breadcrumb-item">
+                <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
                   <Link href={`/card-details/${data?.descriptive_stats.code}/${gen_card_url(data?.descriptive_stats.webName, data?.descriptive_stats.OnCardCode)}`}>
-                    <a title={data?.descriptive_stats?.lastname}>
-                      {data?.descriptive_stats?.lastname}
+                    <a title={data?.descriptive_stats?.lastname} property="item" typeof="WebPage">
+                      <span property="name"> {data?.descriptive_stats?.lastname} </span>
                     </a>
                   </Link>
+                  <meta property="position" content="4"></meta>
                 </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  Card Owners
+                <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
+                  <Link href={`/card-owners/${data?.descriptive_stats.code}/${gen_card_url(data?.descriptive_stats.webName, data?.descriptive_stats.OnCardCode)}`}>
+                    <a title="Card Owners" property="item" typeof="WebPage">
+                      <span property="name"> Card Owners </span>
+                    </a>
+                  </Link>
+                  <meta property="position" content="5"></meta>
                 </li>
               </>}
             </ol>

@@ -279,7 +279,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
           </button>
         </div>
         {
-          Boolean( isDeviceIOS) &&
+          !Boolean( isDeviceIOS) &&
           <div className="d-flex align-items-center social-buttons-apple w-100">
             <AppleSignin
 
@@ -299,7 +299,7 @@ const SocialLogin = ( {  ...props }: PropTypes) => {
             className="apple-auth-btn w-100"
 
             render={(props: any) => <button {...props} type="button" className="btn btn-light w-100 d-inline-flex align-items-center" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook">
-              <i style={{ fontSize: 30 }} className="fa fa-apple"></i>
+              <i style={{ fontSize: 30 }} className="ic-apple"></i>
               <span>
                 Login with Apple ID
               </span>

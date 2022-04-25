@@ -25,6 +25,7 @@ import EditIconBlack from "assets/images/edit-icon-black.svg";
 // @ts-ignore
 import $ from "jquery"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 
 type PropTypes = {
   item: CardModel & { [key: string]: any },
@@ -60,6 +61,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [isShowTooltip, setIsShowTooltip] = useState<boolean>(false);
   const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   const gotoCard = (code: string) => {
     if (!props.isSelect) {
       if (!props.gotoCard) {
@@ -183,7 +185,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if (!props.item.minPrice && !props.item.maxPrice) {
       return "N/A"
     }
-    return `${formatCurrency(props.item.minPrice)} - ${formatCurrency(props.item.maxPrice)}`
+    return `${formatCurrency(props.item.minPrice, currency)} - ${formatCurrency(props.item.maxPrice, currency)}`
   }
 
   const renderCompareIcon = () => {
@@ -233,8 +235,8 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </div>
             
             <div className="ps-3 collection-card-table-detail">
-              <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{props.item?.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {props.item?.publisher} </h1>
-              <div onClick={()=>  gotoCard(props.item?.code)} className="mb-1  collection-card-desc fw-500 cursor-pointer" > {`${props.item.webName}${isEmpty(props.item?.onCardCode) ? '' : ' - #' + props.item.onCardCode}`} </div>
+              <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{props.item?.sport} <i className="dot-margin" /> {props.item?.year} <i className="dot-margin" /> {props.item?.publisher} </h1>
+              <div onClick={()=>  gotoCard(props.item?.code)} className="mb-1 collection-card-desc fw-500 cursor-pointer" > {`${props.item.webName}${isEmpty(props.item?.onCardCode) ? '' : ' - #' + props.item.onCardCode}`} </div>
               <div className="d-flex btn-group-auto">
                 {Boolean(props.item.auto) && <button className="cursor-default btn btn-au--custom"> AU </button>}
                 {Boolean(props.item.memo) && <button className="cursor-default btn btn-mem--custom"> MEM </button>}
@@ -259,10 +261,10 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </a>
           </Link>
         </td>}
-        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice])} </td>
-        <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice)} </td>
-        <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice)} </td>
-        <td> {!props.item.avgPrice ? "N/A" : formatCurrency(props.item.avgPrice)} </td>
+        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice], currency)} </td>
+        <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice, currency)} </td>
+        <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice, currency)} </td>
+        <td> {!props.item.avgPrice ? "N/A" : formatCurrency(props.item.avgPrice, currency)} </td>
         <td>
             <div className="dropdown dropdown--top">
               <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> <img src={renderOptionIcon()} alt="" /> </a>
@@ -325,34 +327,19 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                   {renderGrade()}
                 </div>}
                 {props.isEditCard ? <div onClick={onEdit} className="edit-card">
-                  <img src={IconEdit.src} alt="" />
-                  {/* <i className="fa fa-pencil" aria-hidden="true" /> */}
+                  <img src={IconEdit.src} alt="Edit" title="Edit" />
                 </div> : <span onClick={onComparison} className="edit-card compare">
                   {renderCompareIcon()}
                 </span>}
               </div>
               <div className="d-flex justify-content-center align-items-center px-4">
                 {props.isEditCard ? <div onClick={onEditNote} className={`rounded-circle border border-1 p-2 mx-2 ${!props.item.note ? "d-none" : ""}`}>
-                  {/* <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http:www.w3.org/2000/svg">
-                    <path d="M13.3333 0H2.66667C1.196 0 0 1.196 0 2.66667V13.3333C0 14.804 1.196 16 2.66667 16H13.3333C14.804 16 16 14.804 16 13.3333V2.66667C16 1.196 14.804 0 13.3333 0ZM14.6667 13.3333C14.6667 14.0693 14.0693 14.6667 13.3333 14.6667H2.66667C1.93133 14.6667 1.33333 14.0693 1.33333 13.3333V2.66667C1.33333 1.93133 1.93133 1.33333 2.66667 1.33333H13.3333C14.0693 1.33333 14.6667 1.93133 14.6667 2.66667V13.3333Z" fill="black" />
-                    <path d="M12.3333 4.66699H3.66667C3.29867 4.66699 3 4.96566 3 5.33366C3 5.70166 3.29867 6.00033 3.66667 6.00033H12.3333C12.7013 6.00033 13 5.70166 13 5.33366C13 4.96566 12.7013 4.66699 12.3333 4.66699Z" fill="black" />
-                    <path d="M12.3333 7.33301H3.66667C3.29867 7.33301 3 7.63167 3 7.99967C3 8.36767 3.29867 8.66634 3.66667 8.66634H12.3333C12.7013 8.66634 13 8.36767 13 7.99967C13 7.63167 12.7013 7.33301 12.3333 7.33301Z" fill="black" />
-                    <path d="M8 10H3.66667C3.29867 10 3 10.2987 3 10.6667C3 11.0347 3.29867 11.3333 3.66667 11.3333H8C8.368 11.3333 8.66667 11.0347 8.66667 10.6667C8.66667 10.2987 8.368 10 8 10Z" fill="black" />
-                  </svg> */}
                   <img src={IconEditNode.src} alt="" />
                 </div> : <>
                   <div onClick={onAddCollection} className="cursor-pointer rounded-circle rounded-circle-shadow p-2 mx-2">
-                    {/* <svg width="25" height="22" viewBox="0 0 25 22" fill="none" xmlns="http:www.w3.org/2000/svg">
-                      <path d="M23.784 17.9203H4.21602C3.80352 17.9203 3.47266 17.5895 3.47266 17.177V0.823071C3.47266 0.410571 3.80352 0.0797119 4.21602 0.0797119H11.2027C11.4734 0.0797119 11.7227 0.225806 11.8516 0.462134L13.3898 3.23792H23.7797C24.1922 3.23792 24.523 3.56877 24.523 3.98127V17.177C24.5273 17.5895 24.1965 17.9203 23.784 17.9203V17.9203ZM4.95938 16.4336H23.0406V4.72463H12.9559C12.6852 4.72463 12.4359 4.57854 12.307 4.34221L10.7645 1.56643H4.95938V16.4336V16.4336Z" fill={`${Boolean(props.item.portfolio) ? "#0B0E61" : "black"}`} />
-                      <rect y="9" width="12.5" height="12.5" rx="6.25" fill="white" />
-                      <path fillRule="evenodd" clipRule="evenodd" d="M6.77778 14.7222V10.5H5.72223V14.7222H1.5V15.7778H5.72223V20H6.77778V15.7778H11V14.7222H6.77778Z" fill={`${Boolean(props.item.portfolio) ? "#0B0E61" : "black"}`} />
-                    </svg> */}
                     <img src={`${Boolean(props.item.portfolio) ? IconFolderFull : IconFolder}`} alt="" />
                   </div>
                   <div onClick={onAddWishList} className="cursor-pointer rounded-circle rounded-circle-shadow p-2 mx-2">
-                    {/* <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http:www.w3.org/2000/svg">
-                      <path d="M18.3644 2.45469C17.33 1.34277 15.8804 0.710103 14.3617 0.707758C12.8417 0.709517 11.3906 1.34185 10.3546 2.45398L10.0015 2.8271L9.64836 2.45398C7.59251 0.24132 4.13215 0.11425 1.91953 2.1701C1.82148 2.26124 1.72679 2.35589 1.63565 2.45398C-0.545218 4.80631 -0.545218 8.44174 1.63565 10.7941L9.48255 19.0691C9.75403 19.3557 10.2064 19.368 10.493 19.0965C10.5024 19.0876 10.5115 19.0785 10.5204 19.0691L18.3645 10.7941C20.5452 8.44199 20.5452 4.80677 18.3644 2.45469ZM17.3302 9.80981H17.3294L10.0015 17.5388L2.67282 9.80981C1.00676 8.01241 1.00676 5.23493 2.67282 3.43753C4.1858 1.79769 6.74172 1.69487 8.38156 3.20785C8.46118 3.28131 8.53778 3.35791 8.61124 3.43753L9.48255 4.35675C9.76969 4.64205 10.2333 4.64205 10.5204 4.35675L11.3917 3.43824C12.9047 1.7984 15.4606 1.69558 17.1005 3.20856C17.1801 3.28202 17.2567 3.35863 17.3302 3.43824C19.0107 5.23849 19.023 8.02104 17.3302 9.80981Z" fill={`${Boolean(props.item.wishlist) ? "#0B0E61" : "black"}`} />
-                    </svg> */}
                     <img style={{ height: 20 }} src={`${Boolean(props.item.wishlist) ? IconHeartFull : IconHeart}`} alt="" />
                   </div>
                 </>}
@@ -368,7 +355,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
               </div>
             </div>
             <div className="col-7 col-md-8 content-product-detail">
-              <div className="sub-title mb-1">{props.item.sport}<i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{props.item.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{props.item.publisher}</div>
+              <div className="sub-title mb-1">{props.item.sport} <i className="dot-margin" />{props.item.year}  <i className="dot-margin" />{props.item.publisher}</div>
               <div className="position-relative card-title--hover">
                 <div className="cursor-pointer content-product-detail-name card-title" onClick={(e) => {
                   gotoCard(props.item?.code)
@@ -475,14 +462,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                     gotoCard(props.item?.code)
                   }}
                   className="image-product cursor-pointer position-relative box-card-element">
-                  <img
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null; // prevents looping
-                      if (ImageCardSearch) {
-                        currentTarget.src=ImageCardSearch.src;
-                      }
-                    }}
-                    className="img-product-element" src={props?.item?.url_image || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name  || `${props?.imageUrl}` } alt="" title="" />
+                  <LazyLoadImg imgError={ImageCardSearch.src} url={ props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name  || `${props?.imageUrl}` } className="img-product-element"/>
                   {props.item.grade_display_value && props.item.grade_display_value != "Not Specified" && <div className={`grade-card  ${props.item.grade_company === "ungraded" ? '' : 'custom-grade-bold'}`}
                     style={{
                       backgroundColor: props.item.grade_company?.color_2,
@@ -499,6 +479,14 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                   </div> : <>
                     <div onClick={onAddCollection} className="collecion-check cursor-pointer">
                       <img src={`${Boolean(props.item.portfolio) ? IconFolderFull : IconFolder}`} alt="" title="" />
+                      {Boolean(props.item?.portfolio) &&
+                        <div className="position-absolute menu-wishlist">
+                          <ul className="box-menu">
+                            <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
+                            <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
+                          </ul>
+                        </div>
+                      }
                     </div>
                       <div onClick={onAddWishList} className="edit-note cursor-pointer" onMouseEnter={() => { setOnIcon(true); setOnMenu(true) }} onMouseLeave={() => { setOnIcon(false); onLeaveIcon();  }}>
                       <img src={`${Boolean(props.item.wishlist) ? IconHeartFull : IconHeart}`} alt="" title="" />
@@ -513,16 +501,8 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                       </ul>
                     </div>
                   }
-                  {openMnCardPortfolio && Boolean(props.item?.portfolio) &&
-                    <div className="position-absolute menu-wishlist" onMouseEnter={() => { setOnMenu(true) }} onMouseLeave={() => { setOnMenu(false); onLeave();  }}>
-                      <ul className="box-menu">
-                        <li className="d-flex align-items-center" onClick={(e) => {onEdit(e)}}> <img src={EditIconBlack} alt="IconDelete" /> <span> Edit card in Portfolio </span> </li>
-                        <li className="d-flex align-items-center" onClick={(e) => {addNewEntriesPortfolio(e)}}> <img src={IconUnion} alt="IconUnion" /> <span> Add New Entry </span> </li>
-                      </ul>
-                    </div>
-                  }
                 </div>
-                <div className="sub-title">{props.item.sport}<i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{props.item.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{props.item.publisher}</div>
+                <div className="sub-title">{props.item.sport} <i className="dot-margin" />{props.item.year}  <i className="dot-margin" />{props.item.publisher}</div>
                 <div className="position-relative card-title--hover">
                   <div className="card-title cursor-pointer" onClick={(e) => {
                     gotoCard(props.item?.code)
@@ -538,7 +518,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
                 </div>
                 {Boolean(props.item.auto) && <button type="button" className="cursor-default btn btn-primary btn-sm me-1 btn-au mb-3"> AU </button>}
                 {Boolean(props.item.memo) && <button type="button" className="cursor-default btn btn-secondary btn-sm btn-mem mb-3"> MEM </button>}
-                <div className="range-price-card"> {props.item[namePrice] ? formatCurrency(props.item[namePrice]) : renderPrice()} </div>
+                <div className="range-price-card"> {props.item[namePrice] ? formatCurrency(props.item[namePrice], currency) : renderPrice()} </div>
               </div>
             </div>
           </div>

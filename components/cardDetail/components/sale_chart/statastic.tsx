@@ -1,16 +1,18 @@
 import IconQuestion from "assets/images/question.svg";
 import { SaleChartState } from 'pages/card/BusinessLogic';
-import { formatNumber } from 'utils/helper';
+import { formatNumber, formatCurrency } from 'utils/helper';
 import { HelperSales, UtilsColorGrade } from 'model/data_sport/pricing_grid';
+import {  useSelector } from "react-redux";
+import Selectors from "redux/selectors";
 
 interface Props {
     saleChartState: SaleChartState;
 }
 
 const StatisticAverage = ({saleChartState}: Props) => {
-
+    const { currency } = useSelector(Selectors.config);
     return (
-        <div className="table-responsive over-flow-unset">
+        <div className="table-responsive">
             <table className="table"  style={{ marginBottom: 0 }}>
                 <thead>
                     <tr>
@@ -51,10 +53,10 @@ const StatisticAverage = ({saleChartState}: Props) => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>${formatNumber(saleChartState.calcMaLine[item.value].stats.latest)}</td>
-                                        <td>${formatNumber(saleChartState.calcMaLine[item.value].stats.min)}</td>
-                                        <td>${formatNumber(saleChartState.calcMaLine[item.value].stats.max)}</td>
-                                        <td>${formatNumber(saleChartState.calcMaLine[item.value].stats.average)}</td>
+                                        <td>{formatCurrency(saleChartState.calcMaLine[item.value].stats.latest, currency)}</td>
+                                        <td>{formatCurrency(saleChartState.calcMaLine[item.value].stats.min, currency)}</td>
+                                        <td>{formatCurrency(saleChartState.calcMaLine[item.value].stats.max, currency)}</td>
+                                        <td>{formatCurrency(saleChartState.calcMaLine[item.value].stats.average,currency)}</td>
                                         <td>{formatNumber(saleChartState.calcMaLine[item.value].stats.total_trades)}</td>
                                         <td>{formatNumber(saleChartState.calcMaLine[item.value].stats.change)}%</td>
                                     </tr>

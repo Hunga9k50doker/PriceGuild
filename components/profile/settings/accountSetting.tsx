@@ -139,6 +139,7 @@ const AccountSetting = ({ profileData }: PropsType) => {
                 }) => (
                   <Select
                     value={value}
+                    isSearchable={ false }
                     onChange={(e) => {
                       onChange(e);
                     }}
@@ -167,6 +168,7 @@ const AccountSetting = ({ profileData }: PropsType) => {
                   field: { onChange, value },
                 }) => (
                   <Select
+                    isSearchable={ false }
                     value={value}
                     onChange={(e) => {
                       onChange(e);

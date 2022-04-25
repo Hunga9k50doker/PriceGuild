@@ -60,6 +60,7 @@ function SportLandingPage({...props}) {
   const [cardData, setCardData] = useState<CardModel | undefined>()
   const [priceChart, setPriceChart] = useState<any>({});
   const { cardBreakDown } = useSelector(Selectors.home);
+  const { currency } = useSelector(Selectors.config);
 
   React.useEffect(() => {
     if (sportSelected) {
@@ -139,10 +140,15 @@ function SportLandingPage({...props}) {
   }, [cardSelected])
 
   useEffect(() => {
+    let isCurrency= true;
     if (!isEmpty(cardData)) {
+      isCurrency = false;
       getMClineData();
     }
-  },[cardData])
+    if(isCurrency) {
+      getMClineData();
+    }
+  },[cardData, currency])
 
   const getOptionCardBreakDown = async (sportId: number) => {
     try {
@@ -163,7 +169,7 @@ function SportLandingPage({...props}) {
     try {
       let prms = {
         card_code: cardSelected?.cardCode,
-        currency: userInfo.userDefaultCurrency,
+        currency: currency,
       }
 
       const res = await CardDetailApis.loadCardDetail(prms);
@@ -181,11 +187,11 @@ function SportLandingPage({...props}) {
       //@ts-ignore
       let card_code = cardData?.code; 
       let prms = {
-        card_code,
+        card_code: card_code,
         grade_company: 'all',
         grade_value: 'all',
         time_period: 365,
-        currency: userInfo.userDefaultCurrency,
+        currency: currency,
         resample: "D"
       }
       const res = await api.v1.mc_line_home_fuature.getCalcMaLineFuature(prms);
@@ -256,6 +262,7 @@ function SportLandingPage({...props}) {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
                   } }
+                  isSearchable={ false }
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}
@@ -354,7 +361,7 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        value={formatCurrency(cardPrice?.latest)} /> : <Skeleton style={{ width: 100 }} />}
+                        value={formatCurrency(cardPrice?.latest, currency)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
                 <div className="row">
@@ -365,7 +372,7 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        value={formatCurrency(cardPrice?.min)} /> : <Skeleton style={{ width: 100 }} />}
+                        value={formatCurrency(cardPrice?.min, currency)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
                 <div className="row">
@@ -376,7 +383,7 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        value={formatCurrency(cardPrice?.max)} /> : <Skeleton style={{ width: 100 }} />}
+                        value={formatCurrency(cardPrice?.max, currency)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
                 <div className="row">
@@ -387,7 +394,7 @@ function SportLandingPage({...props}) {
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        value={formatCurrency(cardPrice?.average)} /> : <Skeleton style={{ width: 100 }} />}
+                        value={formatCurrency(cardPrice?.average, currency)} /> : <Skeleton style={{ width: 100 }} />}
                   </div>
                 </div>
                 <div className="row">
@@ -410,6 +417,7 @@ function SportLandingPage({...props}) {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
                   } }
+                  isSearchable={ false }
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}

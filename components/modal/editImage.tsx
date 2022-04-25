@@ -49,7 +49,7 @@ type FilterHandle = {
   imageEditorInst: ImageEditorInstType
 }
 export type EditImageType = {
-  action: (src: string, name: string, current_path: string) => void
+  action: (src: string, name: string, current_path: string, file_type: string) => void
 }
 
 const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
@@ -62,8 +62,11 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
   const [allCropImage, setAllCropImage] = React.useState<any>(null);
   const [currentPath, setCurrentPath] = React.useState<string | undefined>(null);
   const [link, setLink] = React.useState<any>("");
+
+  const [fileType, setFileType] = useState<string>();
   React.useImperativeHandle(ref, () => ({
-    action(src: string, name: string, current_path?: string) {
+    action(src: string, name: string, file_type: string, current_path?: string) {
+      setFileType(file_type);
       setIsOpen(true);
       setImageSrc(src);
       setNameImage(name)
@@ -75,7 +78,7 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
     if (allCropImage) {
       setIsLoading(true);
       const imageEditorInst = allCropImage?.current?.cropper.getCroppedCanvas();
-      const data = imageEditorInst?.toDataURL({ format: "jpeg", quality: 0.7 });
+      const data = imageEditorInst?.toDataURL(fileType);
       updateImage(data);
     }
   };

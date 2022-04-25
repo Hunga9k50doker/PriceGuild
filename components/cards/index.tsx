@@ -44,14 +44,14 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
       if (sortCards?.sort_value === name && sortCards?.sort_by !== "asc" && props.cards.length) {
-        return "fa fa-caret-down active"
+        return "ic-caret-down active"
       }
-      return "fa fa-caret-down"
+      return "ic-caret-down"
     }
     if (sortCards?.sort_value === name && sortCards?.sort_by === "asc" && props.cards.length) {
-      return "fa fa-caret-up active"
+      return "ic-caret-down revert active"
     }
-    return "fa fa-caret-up"
+    return "ic-caret-down revert"
   }
   
   return (
@@ -79,8 +79,14 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
               <th scope="col" style={{width: "10%"}}>
                 <div className="d-flex cursor-pointer"> Grade </div>
               </th>
-              {isPortfolioAll && <th scope="col" style={{width: "10%"}}>
-                <div className="d-flex cursor-pointer"> Portfolio </div>
+              {isPortfolioAll && <th scope="col" style={{ width: "10%" }}>
+                <div onClick={() => onSortTable && onSortTable("group_name")} className="d-flex cursor-pointer align-items-center">Portfolio
+                {/* <div className="d-flex cursor-pointer">  </div> */}
+                  <div className="ms-1 sort-table d-flex flex-column-reverse" onClick={() => onSortTable && onSortTable("group_name")}>
+                    <i className={`sort-asc ${renderSortTable("group_name", true)}`} aria-hidden="true"></i>
+                    <i className={`sort-desc ${renderSortTable("group_name", false)}`} aria-hidden="true"></i>
+                  </div>
+                </div> 
               </th>}
               <th scope="col" style={{width: "10%"}}>
                 <div onClick={() => onSortTable && onSortTable("latest_price")} className="d-flex cursor-pointer align-items-center"> Latest

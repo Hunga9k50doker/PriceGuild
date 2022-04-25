@@ -271,9 +271,6 @@ div.header {
       border-radius: 6px;
       margin-bottom: 6px;
       box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.05);
-      .fa-chevron-right {
-        color: #124de3;
-      }
     }
   }
   .sub-content {
@@ -936,21 +933,6 @@ input {
   }
 }
 
-.table {
-  .fa-caret-up {
-    color: rgba(0, 0, 0, 0.2);
-    &.active {
-      color: #000;
-    }
-  }
-  .fa-caret-down {
-    color: rgba(0, 0, 0, 0.2);
-    &.active {
-      color: #000;
-    }
-  }
-}
-
 .filter-date {
   border: 1px solid #cccfd6;
   border-radius: 6px;
@@ -1298,6 +1280,10 @@ input {
       border: 2px solid #cccfd6;
       box-sizing: border-box;
       border-radius: 6px;
+      box-shadow: none !important;
+      &--is-focused {
+        border: 2px solid #124de3 !important;
+      }
       .react-select-grading__indicator {
         svg {
           transition: transform 0.2s linear;
@@ -1336,6 +1322,7 @@ input {
       .css-yk16xz-control {
         height: 56px;
         border: 2px solid #cccfd6;
+        box-shadow: none !important;
       }
       .input-collection__control {
         height: 56px;
@@ -1370,14 +1357,24 @@ input {
       height: 56px;
       border: 2px solid #cccfd6;
     }
+    .purchase-price {
+      .input-height-56 {
+        border: none;
+      }
+    }
     .select-price {
       border-radius: 6px 0px 0px 6px;
+      .select-price__control {
+        border: 2px solid #cccfd6;
+      }
       .css-1pahdxg-control {
-        border-color: #124de3;
+        border: 2px solid #124de3;
+        box-shadow: none !important;
       }
     }
     .input-price {
       border-radius: 0px 6px 6px 0px;
+      border: 2px solid #cccfd6 !important;
     }
     .item-value {
       label {
@@ -1589,7 +1586,7 @@ input {
       align-items: center;
       justify-content: flex-start !important;
       .content-card {
-        width: calc(100% - 137px);
+        width: 100%;
       }
     }
     &-info {
@@ -1656,22 +1653,14 @@ input {
 
 .search {
   position: relative;
-}
-
-.search input {
-  text-indent: 25px;
-  border: 2px solid #d6d4d4;
-}
-
-.search input:focus {
-  box-shadow: none;
-  border: 2px solid blue;
-}
-
-.search .fa-search {
-  position: absolute;
-  top: 11px;
-  left: 16px;
+  input {
+    text-indent: 40px;
+    border: 2px solid #d6d4d4;
+    &:focus {
+      box-shadow: none;
+      border: 2px solid blue;
+    }
+  }
 }
 
 input::-webkit-outer-spin-button,
@@ -1772,6 +1761,13 @@ input[type="number"] {
         border: none;
         .checkbox-select__search-wrapp {
           padding: 0 12px;
+          position: relative;
+          height: auto;
+          .input-close {
+            position: absolute;
+            right: 25px;
+            top: 9px;
+          }
         }
         .checkbox-select__filters-wrapp {
           margin: 12px 6px 0 12px;
@@ -1872,10 +1868,6 @@ input[type="number"] {
       top: 6%;
       left: 9%;
       transform: translate(-50%, -50%);
-      .fa-check-square {
-        font-size: 30px;
-        color: #124de3;
-      }
       .select-none {
         width: 26px;
         height: 26px;
@@ -2047,6 +2039,34 @@ input[type="number"] {
             path {
               fill: red;
             }
+          }
+        }
+        .menu-wishlist {
+          right: -60px;
+          display: none;
+          background-color: transparent;
+          box-shadow: none;
+          .box-menu {
+            background-color: #fff;
+            box-shadow: 0px 12px 48px rgb(109 117 136 / 12%);
+            border-radius: 6px;
+            li {
+              margin: 0;
+              &:first-child {
+                padding-top: 6px;
+              }
+              &:last-child {
+                padding-bottom: 6px;
+              }
+              span {
+                white-space: nowrap;
+              }
+            }
+          }
+        }
+        &:hover {
+          .menu-wishlist {
+            display: block;
           }
         }
       }
@@ -4595,9 +4615,6 @@ input[type="number"] {
         color: #0b0e61;
       }
       .search {
-        .fa-search {
-          top: 14px;
-        }
         input {
           width: 286px;
           height: 46px;
@@ -6078,13 +6095,6 @@ input[type="number"] {
   padding-left: 48px !important;
   padding-right: 48px !important;
 }
-.circle-gray {
-  width: 4px;
-  height: 4px;
-  background: rgba(109, 117, 136, 0.35);
-  margin: 0px 6px;
-  border-radius: 25px;
-}
 
 @media screen and (max-width: 1360px) {
   .content-home {
@@ -6331,7 +6341,7 @@ input[type="number"] {
   }
 }
 .icon-close-input-filter {
-  top: 8px;
+  top: 7px;
   right: 10px;
 }
 .progessBg {
@@ -6619,4 +6629,11 @@ input[type="number"] {
 
 .text-color-blue {
   color: #124DE3;
+}
+
+.input-collection__control {
+  box-shadow: none !important;
+  &--is-focused{
+    border: 2px solid #124de3 !important;
+  }
 }

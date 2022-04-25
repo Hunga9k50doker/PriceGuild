@@ -6,7 +6,7 @@ import SaleBarChart, { TypeSale } from "./components/sale_bar_chart";
 import "react-toggle/style.css";
 import SaleChart from "./components/sale_chart";
 import MoreFromCollection from "components/cardDetail/components/moreFromCollection";
-import { formatCurrency } from "utils/helper";
+import { formatCurrency, gen_card_url } from "utils/helper";
 import { ManageCollectionType } from "interfaces";
 import { Types } from "components/cardDetail/BusinessLogic";
 import IconChart from "assets/images/view_chart.svg";
@@ -66,6 +66,7 @@ import CaptCha from "components/modal/captcha";
 import { api } from "configs/axios";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
+import { ConfigAction } from "redux/actions/config_action";
 
 type PropTypes = {
   code?: string;
@@ -95,6 +96,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const pricingGridRef = useRef<any>(null);
   const salesOverviewRef = useRef<any>(null);
   const salesChartdRef = useRef<any>(null);
+  const treeRef = useRef<any>(null);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isLoadingSalesChart, setIsLoadingSalesChart] = useState<boolean>(false);
   const [cardData, setCardData] = useState<CardModel | undefined>()
@@ -129,6 +131,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [onMenu, setOnMenu] = useState<boolean>(false);
   const [onIcon, setOnIcon] = useState<boolean>(false);
   const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
+  const { currency } = useSelector(Selectors.config);
   useEffect(() => {
     if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
       let cardCode = router?.query?.cardCodeDetail ?? props.code;
@@ -140,7 +143,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
         controller.loadCardDetail({
           // @ts-ignore
           card_code: cardCode,
-          currency: userInfo.userDefaultCurrency,
+          currency: currency,
         }).catch(error => {
           props.errorCard && props.errorCard(props?.code ?? '')
         });
@@ -149,7 +152,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           controller.loadSaleData({
             // @ts-ignore
             card_code: cardCode,
-            currency: userInfo.userDefaultCurrency,
+            currency: currency,
           }).catch(err => {
             //@ts-ignore
             if (err?.status === 403) {
@@ -175,7 +178,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
         controller.loadPricingGrid({
           // @ts-ignore
           cardcode: cardCode,
-          currency: userInfo.userDefaultCurrency,
+          currency: currency,
           userid: userInfo.userid,
         }).catch((err: any) => {
           props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
@@ -183,7 +186,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
       }
     }
     
-  }, [props.code, loggingIn, router.query]);
+  }, [props.code, loggingIn, router.query, currency]);
   
   useImperativeHandle(ref, () => ({
     loadSalaData: _loadSaleDataCapCha,
@@ -195,7 +198,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     controller.loadSaleData({
       // @ts-ignore
       card_code: keepCardCode,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
     }, headers);
   }
 
@@ -207,7 +210,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     controller.loadCardDetail({
       // @ts-ignore
       card_code: cardCode,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
       onUpdateCard: undefined,
     });
   }
@@ -216,30 +219,38 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     if (cardData?.id) {
       return (
         <nav className="border-botom" aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
+          <ol className="breadcrumb" vocab="https://schema.org/" typeof="BreadcrumbList">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/collections/${cardData.sport.name.replace(/\s/g, '').toLowerCase()}`}>
-                <a title={`${cardData.sport.name} Card Collections`}>
-                  {cardData.sport.name} Card Collections
+                <a title={`${cardData.sport.name} Card Collections`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.sport.name} Card Collections </span>
                 </a>
               </Link>
+              <meta property="position" content="1"></meta>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/${cardData.set.url}`}>
-                <a title={cardData.set.title}>
-                  {cardData.set.title}
+                <a title={cardData.set.title} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.set.title} </span>
                 </a>
               </Link>
+              <meta property="position" content="2"></meta>
             </li>
-            <li className="breadcrumb-item">
+            <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
               <Link href={`/checklist/${cardData.type.id}/${cardData.color.code}/${cardData.color.url}`}>
-                <a title={`${cardData.type.name} - ${cardData.color.name}`}>
-                  {cardData.type.name} - {cardData.color.name}
+                <a title={`${cardData.type.name} - ${cardData.color.name}`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.type.name} - {cardData.color.name} </span>
                 </a>
               </Link>
+              <meta property="position" content="3"></meta>
             </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              {cardData.firstname} {cardData?.lastname ?? ""}
+            <li className="breadcrumb-item active" aria-current="page" property="itemListElement" typeof="ListItem">
+              <Link href={`/card-details/${cardData?.code}/${gen_card_url(cardData?.webName, cardData?.cardNumber)}`}>
+                <a title={`${cardData.firstname} ${cardData?.lastname ?? ""}`} property="item" typeof="WebPage">
+                  <span property="name"> {cardData.firstname} {cardData?.lastname ?? ""} </span>
+                </a>
+              </Link>
+              <meta property="position" content="4"></meta>
             </li>
           </ol>
         </nav>
@@ -469,7 +480,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
           );
         }}
       </CardDetailConsumer>
-      <div className="pricing-grid-content mr--16">
+      <div className="pricing-grid-content mr--16" id="pricing-grid-content">
         {lengthTablePrice !== 0 ?
           <>
             <div className="filter-pricing-grid d-flex justify-content-between align-items-center">
@@ -578,21 +589,21 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       </div>
                                     </div>
                                   </td>
-                                  <td> {item.min ? formatCurrency(item.min) : <OverlayTrigger
+                                  <td> {item.min ? formatCurrency(item.min, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
                                       <span ref={ref} {...triggerHandler}>$###</span>
                                     )}
                                   </OverlayTrigger>}</td>
-                                  <td> {item.max ? formatCurrency(item.max) : <OverlayTrigger
+                                  <td> {item.max ? formatCurrency(item.max, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
                                       <span ref={ref} {...triggerHandler}>$###</span>
                                     )}
                                   </OverlayTrigger>} </td>
-                                  <td> {item.avg ? formatCurrency(item.avg) : <OverlayTrigger
+                                  <td> {item.avg ? formatCurrency(item.avg, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
@@ -623,7 +634,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                               if (loggingIn) {
                                                 sagaController.requestCalcMaxLineV1({
                                                   cardId: +cardData.id,
-                                                  currency: userInfo.userDefaultCurrency,
+                                                  currency: currency,
                                                   cardGrades: cardGrades,
                                                   period: saleChartState.periodSelected.id,
                                                   oldData: saleChartState.calcMaLine
@@ -684,11 +695,24 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
     );
   };
 
-  const onScroll = () => {
-    if (!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
-      $("#table_grade").addClass('custom-scroll-sticky-card');
+  const onScroll = (e:any) => {
+    if(!$("#pricing-grid-content").hasClass("pricing-grid-content--scroll")) {
+      if ($("#table_grade table").offset().left < 33) {
+        $("#pricing-grid-content").addClass("pricing-grid-content--scroll");
+      }
     } else {
-      if ($("#table_grade table").offset().left == 33) {
+      if ($("#table_grade table").offset().left == 1) {
+        $("#pricing-grid-content").removeClass("pricing-grid-content--scroll");
+      }
+    }
+    if (!$("#table_grade").hasClass('custom-scroll-sticky-card')) {
+   
+      if ($("#table_grade table").offset().left < 33) {
+        // $("#pricing-grid-content").addClass("pricing-grid-content--scroll");
+        $("#table_grade").addClass('custom-scroll-sticky-card');
+      }
+    } else {
+      if ($("#table_grade table").offset().left === 33) {
         $("#table_grade").removeClass('custom-scroll-sticky-card');
       }
     }
@@ -744,7 +768,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
             controller.loadSaleData({
               // @ts-ignore
               card_code: cardCode,
-              currency: userInfo.userDefaultCurrency,
+              currency: currency,
             },headers).catch(err => {
               //@ts-ignore
               if (err?.status === 403) {
@@ -1014,7 +1038,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                       <div className="col-12 col-sm-5 com-md-5  card-detail-content-right mt-1 px-0">
                         <div className="card-detail-content-right__title d-flex align-items-center">
                           {!Boolean(cardData.sport.name) ? <Skeleton width={150} /> : <>
-                            {cardData.sport.name} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" /> {cardData.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />{" "}
+                            {cardData.sport.name} <i className="dot-margin" /> {cardData.year} <i className="dot-margin" />{" "}
                             {cardData?.publisher?.name}
                           </>}
                         </div>
@@ -1040,9 +1064,9 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                         <div className="fs-3 fw-bold mt-4 card-detail-content-right__price">
                           {!Boolean(cardData.fullWebName) ? <Skeleton width={200} /> : <>
                             {!cardData.minPrice && !cardData.maxPrice ? "N/A" : <>
-                              {formatCurrency(cardData.minPrice) +
+                              {formatCurrency(cardData.minPrice, currency) +
                                 " - " +
-                                formatCurrency(cardData.maxPrice)}
+                                formatCurrency(cardData.maxPrice, currency)}
                             </>}
                           </>}
                         </div>
@@ -1296,6 +1320,8 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       treeCheckable
                                       treeDefaultExpandAll
                                       value={saleChartState.gradeTreeSelected}
+                                      showSearch={false}
+                                      ref={treeRef}
                                       onChange={(e: string[]) => {
                                         let dataSelect = e || []
                                         const hasAll = !!e.find(it => it === 'ALL')
@@ -1319,7 +1345,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                         if (loggingIn) {
                                           sagaController.requestCalcMaxLineV1({
                                             cardId: +cardData.id,
-                                            currency: userInfo.userDefaultCurrency,
+                                            currency: currency,
                                             cardGrades: dataSelect,
                                             period: saleChartState.periodSelected.id,
                                             oldData: saleChartState.calcMaLine
@@ -1343,7 +1369,15 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       }}
                                       onDropdownVisibleChange={() => {
                                         const dropdown = document.querySelector('.grade-tree-selected-custom')
+                                       
+                                        if(Boolean(treeRef?.current?.state?.open)) {
+                                          dispatch(ConfigAction.updateShowTabBar(true));
+                                        } else {
+                                          dispatch(ConfigAction.updateShowTabBar(false));
+                                        }
+                                        
                                         if (dropdown) {
+                                        
                                           if (saleChartState.gradeTreeSelected?.length >= 5) {
                                             const warning = dropdown.querySelector('.warning-selected')
                                             if (warning) return
@@ -1446,7 +1480,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                       if (loggingIn) {
                                         sagaController.requestCalcMaxLineV1({
                                           cardId: +cardData.id,
-                                          currency: userInfo.userDefaultCurrency,
+                                          currency: currency,
                                           cardGrades: saleChartState.gradeTreeSelected,
                                           period: saleChartState.listTimePeriod[index].id,
                                         });
@@ -1502,7 +1536,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                               calcMaxLineRequest={async () => {
                                 await sagaController.requestCalcMaxLineV1({
                                   cardId: +cardData.id,
-                                  currency: userInfo.userDefaultCurrency,
+                                  currency: currency,
                                   cardGrades: saleChartState.gradeTreeSelected,
                                   period: saleChartState.periodSelected.id
                                 });
@@ -1511,7 +1545,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                 return sagaController.reloadPricingGrid({
                                   // @ts-ignore
                                   cardcode: cardData.code,
-                                  currency: userInfo.userDefaultCurrency,
+                                  currency: currency,
                                   userid: userInfo.userid,
                                 }).catch((err: any) => {
                                   props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');

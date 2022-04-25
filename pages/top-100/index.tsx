@@ -102,6 +102,7 @@ const Top100 = (props: PropTypes) => {
   const [t, i18n] = useTranslation("common")
   const { filterSearchTop100, isFilterStoreTop100 } = useSelector(Selectors.searchFilter);
   const [filterState, setFilterState] = useState<Boolean>(false);
+  const { currency } = useSelector(Selectors.config);
 
   useEffect(() => {
     if (sports.length) {
@@ -123,8 +124,7 @@ const Top100 = (props: PropTypes) => {
     }
 
     getListCard();
-    console.log(filterData, 'filterData');
-  }, [filterData, sortData]);
+  }, [filterData, sortData, currency]);
 
   useEffect(() => {
     if (Boolean(isFilterStoreTop100)) { 
@@ -146,7 +146,7 @@ const Top100 = (props: PropTypes) => {
       setDataTable([]);
       let params = {
         timePeriod: filterData?.timePeriod,
-        currency: "USD",
+        currency: currency,
         sport: filterData?.sport[0].id,
         ...sortData,
         auto_memo: isEmpty(filterData?.a_filter)
@@ -211,18 +211,18 @@ const Top100 = (props: PropTypes) => {
         !sortData?.sort?.asc &&
         data?.cards.length
       ) {
-        return "fa fa-caret-down active";
+        return "ic-caret-down active";
       }
-      return "fa fa-caret-down";
+      return "ic-caret-down";
     }
     if (
       sortData?.sort?.by === name &&
       sortData?.sort?.asc &&
       data?.cards.length
     ) {
-      return "fa fa-caret-up active";
+      return "ic-caret-down revert active";
     }
-    return "fa fa-caret-up";
+    return "ic-caret-down revert";
   };
 
   const onSortTable = (name: string) => {
@@ -973,8 +973,8 @@ const Top100 = (props: PropTypes) => {
                           </div>
                           <div className="th-content">
                             <div className="d-flex align-items-center th-title">
-                              {item.sport} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
-                              {item.year} <i className="mx-1 fa fs4 fa-circle" aria-hidden="true" />
+                              {item.sport} <i className="dot-margin" />
+                              {item.year} <i className="dot-margin" />
                               {item.publisher}
                             </div>
                             <div className="fw-500 cursor-pointer" onClick={() => gotoCard(item)}>
@@ -993,7 +993,7 @@ const Top100 = (props: PropTypes) => {
                           </div>
                         </div>
                       </td>
-                      <td>{formatCurrency(item.maxSales)}</td>
+                      <td>{formatCurrency(item.maxSales, currency)}</td>
                       <td>{item.tradeVol}</td>
                       <td>
                         <div className="dropdown dropdown--top">
