@@ -405,7 +405,7 @@ const Header = (props: any) => {
                         </div>
                       </div>
                       <div className="col-xxl-4 col-md-5 popular-publisher-header">
-                        <h3> Popular Publishers </h3>
+                        <h5> Popular Publishers </h5>
                         <div className="header-nav mt-2 d-flex">
                           <div className="col nav popular-publisher-item flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             {popularPublishers?.map((item, key) =>
@@ -427,7 +427,7 @@ const Header = (props: any) => {
                               </button>
                             )}
                           </div>
-                          <div className="col tab-content pt-2" id="v-pills-tabContent">
+                          <div className="col tab-content" id="v-pills-tabContent">
                             {popularPublishers?.map((item, key) =>
                               <div
                                 key={key}
