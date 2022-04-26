@@ -13,6 +13,7 @@ import { MyStorage } from "helper/local_storage";
 import Head from "next/head";
 import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
+import { getCookie } from "utils/helper";
 
 type PropTypes = {
   location: any;
@@ -48,7 +49,7 @@ const CardOwnersPage: React.FC<PropTypes> = (props) => {
         console.log(err);
       }
     };
-    if(!isEmpty(router.query)){
+    if(!isEmpty(router.query) &&  getCookie('currency_name') ===  currency){
       getDataOwenrs();
     }
   }, [router.query, currency]);
