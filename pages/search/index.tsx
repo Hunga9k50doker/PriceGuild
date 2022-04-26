@@ -1790,17 +1790,14 @@ const CardList = (props: PropTypes) => {
                 }} className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0 clear-padding`}>
                   <i className={`${!isInline ? "" : "active"} ic-line-view`} aria-hidden="true"></i>
                 </button>
-              </div>{console.log(isInline , !data.cards.length)}
+              </div>
               <button
                 type="button"
-                onClick={() => {
-                  setIsSelect(prevState => !prevState);
-                  }
-                }
-                className={`ms-2 ${isInline && Boolean(data.cards.length)
+                onClick={onHandleMode}
+                className={`ms-2 ${isInline && !cardSelected.length
                         ? "opacity-50"
                         : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxx`}
-                disabled={isInline && Boolean(data.cards.length)}
+                disabled={isInline && !cardSelected.length}
               >
                 {isSelect ? <IconMinis /> : <IconPlus />}
               </button>
