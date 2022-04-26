@@ -52,6 +52,8 @@ import Skeleton from "react-loading-skeleton";
 import IconDot3 from "assets/images/dot-3.svg";
 import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
+import EditIconBlack from "assets/images/edit-icon-black.svg";
+import IconUnion from "assets/images/union_wishlist.svg";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -137,6 +139,7 @@ const CardList = (props: PropTypes) => {
   const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const { cards } = useSelector(Selectors.compare);
+  const [cardPortfolio, setCardPortfolio] = useState<Array<string | number>>([]);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -709,7 +712,7 @@ const CardList = (props: PropTypes) => {
     getDataOptionInput();
 
     router.push(
-      `/collections-add-card?collection=${item.group_ref}&code=${cardSelected.toString()}`
+      `/collections-add-card?collection=${item.group_ref}&code=${cardPortfolio.toString()}`
     );
   };
 
@@ -1262,9 +1265,7 @@ const CardList = (props: PropTypes) => {
   };
 
   const renderOptionIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.code))
-    ? IconCanFull
-    : IconDot3;
+    return !data.portfolio ? IconDot3 : IconFolderFull;
   };
 
   React.useEffect(() => {
@@ -2039,9 +2040,10 @@ const CardList = (props: PropTypes) => {
                                       data-bs-popper="none"
                                     >
                                       <div
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                          e.preventDefault();
                                           setCardData(undefined);
-                                          setCardSelected([item.code]);
+                                          setCardPortfolio([item.code]);
                                           if (loggingIn) {
                                             setIsOpen(true);
                                           } else {
@@ -2059,34 +2061,71 @@ const CardList = (props: PropTypes) => {
                                         </div>
                                         <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
                                       </div>
-                                      <div
-                                        onClick={() => onAddWishList(
-                                          //@ts-ignore
-                                          {
-                                            //@ts-ignore
-                                            ...item,
-                                            code: item.code,
-                                          })
-                                        }
-                                        className="dropdown-menu-item  d-flex cursor-pointer"
-                                      >
-                                        <div className="dropdown-menu-item__icon">
-                                          <img
-                                            alt=""
-                                            src={!Boolean(item.wishlist)
-                                              ? IconHeart
-                                              : IconHeartFull} />
-                                        </div>
-                                        <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
-                                      </div>
-                                      <div
-                                        onClick={() => onComparison(item)}
-                                        className="dropdown-menu-item  d-flex cursor-pointer"
-                                      >
-                                        <div className="dropdown-menu-item__icon">
-                                          <img alt="" src={renderCompareIcon(item)} />
-                                        </div>
-                                        <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                      {Boolean(item.portfolio) ? 
+                                       <><div
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
+                                          } }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                          <div className="dropdown-menu-item__icon">
+                                            <img
+                                              alt=""
+                                              src={EditIconBlack} />
+                                          </div>
+                                          <div className="dropdown-menu-item__txt"> Edit card in Portfolio </div>
+                                        </div><div
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              setCardData(undefined);
+                                              if (loggingIn) {
+                                                setIsOpen(true);
+                                              } else {
+                                                setIsOpenLogin(true);
+                                              }
+                                            }
+                                            }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                            <div className="dropdown-menu-item__icon">
+                                              <img alt="" src={IconUnion} />
+                                            </div>
+                                            <div className="dropdown-menu-item__txt"> {" "} Add New Entry {" "} </div>
+                                          </div></>
+                                      :
+                                       <><div
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            onAddWishList(
+                                              //@ts-ignore
+                                              {
+                                                //@ts-ignore
+                                                ...item,
+                                                code: item.code,
+                                              });
+                                          } }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                          <div className="dropdown-menu-item__icon">
+                                            <img
+                                              alt=""
+                                              src={!Boolean(item.wishlist)
+                                                ? IconHeart
+                                                : IconHeartFull} />
+                                          </div>
+                                          <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                                        </div><div
+                                          onClick={() => onComparison(item)}
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                            <div className="dropdown-menu-item__icon">
+                                              <img alt="" src={renderCompareIcon(item)} />
+                                            </div>
+                                            <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                          </div></> }
+                                      <div>
+
                                       </div>
                                     </div>
                                   </div>
@@ -2094,7 +2133,7 @@ const CardList = (props: PropTypes) => {
                               </tr>
                             ))}
                             {data?.isLoading &&
-                              Array.from(Array(16).keys())?.map((e, index) => (
+                              Array.from(Array(16).keys())?.map((_e, index) => (
                                 <tr key={index}>
                                   <td className="text-center">
                                     {" "}
