@@ -3127,6 +3127,10 @@
           border-top: none;
           tr {
             td {
+              font-size: 16px;
+              @media screen and (max-width: 767.98px){
+                font-size: 14px;
+              }
               font-family: 'Manrope', sans-serif;
               font-style: normal;
               font-weight: normal;
