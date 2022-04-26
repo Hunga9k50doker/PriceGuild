@@ -2096,6 +2096,7 @@ const CardList = (props: PropTypes) => {
                                             onClick={(e) => {
                                               e.preventDefault();
                                               setCardData(undefined);
+                                              setCardPortfolio([item.code]);
                                               if (loggingIn) {
                                                 setIsOpen(true);
                                               } else {
