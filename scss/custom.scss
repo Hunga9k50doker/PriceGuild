@@ -3064,3 +3064,16 @@
 .user_link {
   color: #212529 !important;
 }
+
+.react-select-smart__menu {
+  z-index: 99 !important;
+}
+
+.overflow-scroll {
+    overflow-y: hidden !important;
+    overflow-x: scroll !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}

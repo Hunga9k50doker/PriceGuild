@@ -3159,3 +3159,21 @@ button, .btn {
         background-repeat: no-repeat;
     }
 }
+.clear-margin-mobile {
+    .content-pricing-grid-custom {
+        table {
+            min-width: 1100px;
+        }
+    }
+}
+@media screen and (max-width: 520px) {
+    .clear-margin-mobile {
+        margin: 0 -15px;
+        .content-pricing-grid {
+            padding-left: 15px !important;
+            &.custom-scroll-sticky {
+                padding-left: 0 !important;
+            }
+        }
+    }
+}
