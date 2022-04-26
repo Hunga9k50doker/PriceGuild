@@ -1341,6 +1341,11 @@
         outline: none;
         box-shadow: none;
         background-position: -0.5px -0.5px;
+        cursor: pointer;
+        transition: all 0.3s;
+        &:hover {
+            border-color: #6D7588;
+        }
     }
 }
 
@@ -2772,9 +2777,14 @@ ul {
                     top: 2px;
                     margin: 0 !important;
                     padding: 0 !important;
+                    transition: all 0.3s;
+                    &:hover {
+                        border-color: #6D7588;
+                    }
                     + label {
                         display: block;
                         padding-left: 2em;
+                        cursor: pointer;
                     }
                 }
             }

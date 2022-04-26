@@ -125,7 +125,6 @@
       }
       .form-check {
         height: 48px;
-        margin-left: 12px;
         input.form-check-input {
           height: 16px;
           width: 16px;
@@ -133,6 +132,14 @@
           top: 0px;
           border-radius: 2px;
           border: 2px solid rgba(109, 117, 136, 0.35);
+          cursor: pointer;
+          transition: all 0.3s;
+          &:hover {
+            border-color: #6D7588;
+          }
+          + label {
+            cursor: pointer;
+          }
         }
         label.form-check-label {
           font-family: 'Manrope', sans-serif;
@@ -313,6 +320,10 @@
                       border: 2px solid rgba(109, 117, 136, 0.35);
                       box-sizing: border-box;
                       border-radius: 2px;
+                      transition: all 0.3s;
+                      &:hover {
+                        border-color: #6D7588;
+                      }
                     }
                   }
                   .sort-table {
@@ -355,6 +366,10 @@
                     border: 2px solid rgba(109, 117, 136, 0.35);
                     box-sizing: border-box;
                     border-radius: 2px;
+                    transition: all 0.3s;
+                    &:hover {
+                      border-color: #6D7588;
+                    }
                   }
                   .content-tag {
                     .au-tag {

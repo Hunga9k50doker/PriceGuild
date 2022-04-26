@@ -2352,10 +2352,18 @@
   }
 }
 
-th .form-check-input.form-check-input-head {
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
+table {
+  .form-check-input {
+    transition: all 0.3s;
+    &:hover {
+      border-color: #6D7588;
+    }
+    &.form-check-input-head {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+    }
+  }
 }
 
 .nav-item--usd {

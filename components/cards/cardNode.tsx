@@ -206,7 +206,7 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
   const renderInLine = () => {
     if (isTable) {
       return <tr >
-        <td className="position-relative align-middle">
+        <td className="position-relative align-middle text-center">
          <input onChange={onSelectItem} checked={props.cardSelected?.includes(props.item[props?.valueName ?? "code"])} className="form-check-input cursor-pointer border-checkbox" type="checkbox" /> 
         </td>
         <td>
