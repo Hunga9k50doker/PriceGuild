@@ -111,7 +111,8 @@ const CardList = (props: PropTypes) => {
     isLoading: true,
     // isLoadMore: false,
     // page: 1,
-    rows: 0
+    rows: 0,
+    null_price_tooltip:'',
   })
   const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
@@ -2016,7 +2017,7 @@ const CardList = (props: PropTypes) => {
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.minPrice ? formatCurrency(item.minPrice, currency) : <OverlayTrigger
+                                  {item.minPrice !== null ? (item.minPrice ? formatCurrency(item.minPrice, currency): "N/A") : <OverlayTrigger
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
@@ -2026,7 +2027,7 @@ const CardList = (props: PropTypes) => {
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.maxPrice ? formatCurrency(item.maxPrice, currency) : <OverlayTrigger
+                                  {item.maxPrice !== null ? (item.maxPrice ? formatCurrency(item.maxPrice, currency) : "N/A") : <OverlayTrigger
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
@@ -2037,7 +2038,7 @@ const CardList = (props: PropTypes) => {
                                 <td>
                                   {" "}{
                                   //@ts-ignore
-                                  item.avgPrice ? formatCurrency(item.avgPrice, currency) : <OverlayTrigger
+                                  item.avgPrice !== null ? (item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A") : <OverlayTrigger
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
