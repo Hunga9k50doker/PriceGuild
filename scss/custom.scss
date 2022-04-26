@@ -3101,6 +3101,10 @@
           height: 48px;
           tr {
             th {
+              font-size: 16px;
+              @media screen and (max-width: 767.98px){
+                font-size: 14px;
+              }
               &:first-child {
                 .form-check-input {
                   border: 2px solid rgba(109, 117, 136, 0.35);
@@ -3110,6 +3114,7 @@
                   &:hover {
                     border-color: #6D7588;
                   }
+                  
                 }
               }
               .sort-table {
@@ -3221,4 +3226,8 @@
       }
     }
   }
+}
+
+.c-dark-title-card {
+    color: #18213a !important;
 }

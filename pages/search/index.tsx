@@ -1231,7 +1231,7 @@ const CardList = (props: PropTypes) => {
   };
   const onGoToCard = (item: any) => {
     const url = gen_card_url(item.webName, item.code);
-    router.push(`/card-details/${item.code}/${url}`);
+    return `/card-details/${item.code}/${url}`;
   };
   const onComparison = (cardData: any) => {
      let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
@@ -1975,45 +1975,47 @@ const CardList = (props: PropTypes) => {
                                     type="checkbox" />
                                 </td>
                                 <td>
-                                  <div className="d-flex" onClick={() => onGoToCard(item)}>
-                                    <div
-                                      onClick={() => onGoToCard(item)}
-                                      className="cursor-pointer image-box-table mr-2"
-                                    >
-                                      <LazyLoadImg 
-                                      className="w-100"
-                                        imgError={CardPhotoBase}
-                                        //@ts-ignore
-                                      url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
-                                      />
-                                    </div>
-                                    <div
-                                      onClick={() => onGoToCard(item)}
-                                      className="cursor-pointer image-box-table mr-2"
-                                    >
-                                      <img className="w-100" src={CardPhotoBase} alt="" />
-                                    </div>
-                                    <div className="ps-3 collection-card-table-detail" onClick={() => onGoToCard(item)}>
-                                      <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
-                                        {item?.sport}
-                                        <i className="dot-margin"></i>
-                                        {item?.year}
-                                        <i className="dot-margin"></i>
-                                        {item?.publisher}
+                                  <Link href={onGoToCard(item)}>
+                                    <a className="d-flex text-decoration-none c-dark-title-card">
+                                      <div
+                                        // onClick={() => onGoToCard(item)}
+                                        className="cursor-pointer image-box-table mr-2"
+                                      >
+                                        <LazyLoadImg 
+                                        className="w-100"
+                                          imgError={CardPhotoBase}
+                                          //@ts-ignore
+                                        url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
+                                        />
                                       </div>
-                                      <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
-                                      {(Boolean(item.auto) || Boolean(item.memo)) && (
-                                        <div className="content-tag d-flex mt-2">
-                                          {Boolean(item.auto) && (
-                                            <div className="au-tag"> AU </div>
-                                          )}
-                                          {Boolean(item.memo) && (
-                                            <div className="mem-tag"> MEM </div>
-                                          )}
+                                      <div
+                                        // onClick={() => onGoToCard(item)}
+                                        className="cursor-pointer image-box-table mr-2"
+                                      >
+                                        <img className="w-100" src={CardPhotoBase} alt="" />
+                                      </div>
+                                      <div className="ps-3 collection-card-table-detail">
+                                        <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
+                                          {item?.sport}
+                                          <i className="dot-margin"></i>
+                                          {item?.year}
+                                          <i className="dot-margin"></i>
+                                          {item?.publisher}
                                         </div>
-                                      )}
-                                    </div>
-                                  </div>
+                                        <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
+                                        {(Boolean(item.auto) || Boolean(item.memo)) && (
+                                          <div className="content-tag d-flex mt-2">
+                                            {Boolean(item.auto) && (
+                                              <div className="au-tag"> AU </div>
+                                            )}
+                                            {Boolean(item.memo) && (
+                                              <div className="mem-tag"> MEM </div>
+                                            )}
+                                          </div>
+                                        )}
+                                        </div>
+                                      </a>
+                                  </Link>
                                 </td>
                                 <td>
                                   {" "}
