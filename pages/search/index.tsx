@@ -1261,9 +1261,11 @@ const CardList = (props: PropTypes) => {
     : IconCan;
   };
 
-  const renderOptionIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.code)) ? IconCanFull
-    : IconDot3
+  const renderOptionIcon = (item: any) => {
+    return Boolean(cards.find((item) => item.code === data.code))
+    ? IconCanFull
+    : IconCan;
+    // return Boolean(data?.cards.find((el: any) => el.code === item.code)) ? IconFolderFull : IconFolder
   };
 
   React.useEffect(() => {
@@ -2059,10 +2061,14 @@ const CardList = (props: PropTypes) => {
                                         <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
                                       </div>
                                       <div
-                                        // onClick={() => onAddWishList({
-                                        //   ...item,
-                                        //   code: item.cardCode,
-                                        // })}
+                                        onClick={() => onAddWishList(
+                                          //@ts-ignore
+                                          {
+                                            //@ts-ignore
+                                            ...item,
+                                            code: item.code,
+                                          })
+                                        }
                                         className="dropdown-menu-item  d-flex cursor-pointer"
                                       >
                                         <div className="dropdown-menu-item__icon">

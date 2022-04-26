@@ -3106,6 +3106,10 @@
                   border: 2px solid rgba(109, 117, 136, 0.35);
                   box-sizing: border-box;
                   border-radius: 2px;
+                  transition: all 0.3s;
+                  &:hover {
+                    border-color: #6D7588;
+                  }
                 }
               }
               .sort-table {
@@ -3153,6 +3157,10 @@
                 border: 2px solid rgba(109, 117, 136, 0.35);
                 box-sizing: border-box;
                 border-radius: 2px;
+                transition: all 0.3s;
+                &:hover {
+                  border-color: #6D7588;
+                }
               }
               @media screen and (max-width: 767.98px){
                 input[type="checkbox"] {
