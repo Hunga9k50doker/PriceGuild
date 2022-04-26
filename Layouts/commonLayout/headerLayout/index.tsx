@@ -148,9 +148,11 @@ const Header = (props: any) => {
 
   React.useEffect(() => {
     dispatch(ConfigAction.getCurrencies());
-    setNameCurrency(  getCookie('currency_name') || "USD")
+    setNameCurrency(getCookie('currency_name') || "USD")
     dispatch(ConfigAction.updateNameCurrency( getCookie('currency_name') || "USD"))
-
+    if(isEmpty( getCookie('currency_name'))) {
+      setCookie("currency_name", currency , 36000)
+    }
   }, [])
 
   React.useEffect(() => {
