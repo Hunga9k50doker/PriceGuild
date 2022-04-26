@@ -1158,6 +1158,18 @@
     }
     .pricing-grid-content--sales {
       border-radius: 6px;
+      .form-check{
+        .form-check-input {
+          transition: all 0.3s;
+          border: 2px solid rgba(109, 117, 136, 0.35);
+          &:hover {
+            border-color: #6D7588;
+          }
+          + label {
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 
@@ -2352,10 +2364,18 @@
   }
 }
 
-th .form-check-input.form-check-input-head {
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
+table {
+  .form-check-input {
+    transition: all 0.3s;
+    &:hover {
+      border-color: #6D7588;
+    }
+    &.form-check-input-head {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+    }
+  }
 }
 
 .nav-item--usd {
@@ -5562,6 +5582,10 @@ th .form-check-input.form-check-input-head {
         width: 16px;
         background-image: url('../assets/images/Checkmark.svg');
         margin-right: 10px;
+        transition: all 0.3s;
+        &:hover {
+          border-color: #6D7588;
+        }
         + span {
           opacity: 0.5;
           font-size: 14px;

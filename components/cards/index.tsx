@@ -60,7 +60,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
         <table className="table table-striped table-hover table-sort">
           <thead>
             <tr>
-              <th scope="col" style={{width: "4%"}}>
+              <th className="text-center" scope="col" style={{width: "4%"}}>
                 <div className="w-100 h-100">
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
@@ -135,7 +135,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
           <tbody>
             {props.cards?.map((e, index) => props.cardElement(e, index))}
             {props.isLoading && Array.from(Array(28).keys()).map((e, index) => <tr key={index} >
-             <td className="position-relative align-middle"> <Skeleton height={30} /> </td>
+             <td className="position-relative align-middle text-center"> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>
              <td className="text-capitalize"> <Skeleton height={30} /> </td>
              <td> <Skeleton height={30} /> </td>

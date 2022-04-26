@@ -2091,6 +2091,14 @@ input[type="number"] {
     border: none;
     margin-top: 12px;
   }
+  transition: all 0.3s;
+  &:hover {
+    .selected {
+      .select-none {
+        border-color: #6D7588;
+      }
+    }
+  }
 }
 
 .row-list {
@@ -4246,6 +4254,7 @@ input[type="number"] {
     }
     .form-check-label {
       font-size: 14px;
+      cursor: pointer;
       &.forget-password {
         color: #124de3;
       }
