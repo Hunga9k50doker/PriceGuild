@@ -1261,11 +1261,10 @@ const CardList = (props: PropTypes) => {
     : IconCan;
   };
 
-  const renderOptionIcon = (item: any) => {
+  const renderOptionIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.code))
     ? IconCanFull
-    : IconCan;
-    // return Boolean(data?.cards.find((el: any) => el.code === item.code)) ? IconFolderFull : IconFolder
+    : IconDot3;
   };
 
   React.useEffect(() => {
