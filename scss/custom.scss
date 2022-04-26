@@ -3133,6 +3133,7 @@
               font-size: 16px;
               line-height: 150%;
               color: #18213a;
+              padding: 8px 12px!important;
               .icon-folder {
                 background: #ffffff;
                 box-shadow: 0px 2px 6px rgba(109, 117, 136, 0.15);
@@ -3148,6 +3149,11 @@
                 border: 2px solid rgba(109, 117, 136, 0.35);
                 box-sizing: border-box;
                 border-radius: 2px;
+              }
+              @media screen and (max-width: 767.98px){
+                input[type="checkbox"] {
+                  font-size: 14px;
+                }
               }
               .content-tag {
                 .au-tag {

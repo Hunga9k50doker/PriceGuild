@@ -1874,7 +1874,7 @@ const CardList = (props: PropTypes) => {
               <>
                 <div className="card-detail card-top-100 no-padding clear-margin-mobile">
                   <div className="pricing-grid mt-3">
-                      <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
+                      <div className="content-pricing-grid content-pricing-grid-custom p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
                         <table
                           className="table table-striped table-hover"
                         >
