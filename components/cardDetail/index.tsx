@@ -67,6 +67,7 @@ import { api } from "configs/axios";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
 import { ConfigAction } from "redux/actions/config_action";
+import { getCookie } from "utils/helper";
 
 type PropTypes = {
   code?: string;
@@ -133,59 +134,61 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
   const [openMnCardPortfolio, setOpenMnCardPortfolio] = useState<boolean>(false);
   const { currency } = useSelector(Selectors.config);
   useEffect(() => {
-    if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
-      let cardCode = router?.query?.cardCodeDetail ?? props.code;
-      // @ts-ignore
-      setKeepCardCode(cardCode);
-      let controller: CardDetailSaga = refProvider?.current
-        .controller as CardDetailSaga;
-      if (!isEmpty(cardCode)) {
-        controller.loadCardDetail({
-          // @ts-ignore
-          card_code: cardCode,
-          currency: currency,
-        }).catch(error => {
-          props.errorCard && props.errorCard(props?.code ?? '')
-        });
-
-        if (loggingIn) {
-          controller.loadSaleData({
+    if(getCookie('currency_name') === currency) {
+      if (!isEmpty(router?.query.cardCodeDetail) || !isEmpty(props.code)) {
+        console.log(currency,"currency")
+        let cardCode = router?.query?.cardCodeDetail ?? props.code;
+        // @ts-ignore
+        setKeepCardCode(cardCode);
+        let controller: CardDetailSaga = refProvider?.current
+          .controller as CardDetailSaga;
+        if (!isEmpty(cardCode)) {
+          controller.loadCardDetail({
             // @ts-ignore
             card_code: cardCode,
             currency: currency,
-          }).catch(err => {
-            //@ts-ignore
-            if (err?.status === 403) {
-              setIsNotAcitve(true);
-              setNotActiveMessage(err.message)
-            }
-            // debugger;
-            if (err?.status === 409) {
-            
-              if (Boolean(err?.show_captcha)) {
-                if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
-                  setIsCaptCha(Boolean(err?.show_captcha)) 
-                }
-               
-                props.errorSale && props.errorSale(true);
+          }).catch(error => {
+            props.errorCard && props.errorCard(props?.code ?? '')
+          });
+  
+          if (loggingIn) {
+            controller.loadSaleData({
+              // @ts-ignore
+              card_code: cardCode,
+              currency: currency,
+            }).catch(err => {
+              //@ts-ignore
+              if (err?.status === 403) {
+                setIsNotAcitve(true);
+                setNotActiveMessage(err.message)
               }
-            } else {
-              props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
-            }
+              // debugger;
+              if (err?.status === 409) {
+              
+                if (Boolean(err?.show_captcha)) {
+                  if(router.pathname === "/card-details/[cardCodeDetail]/[cardName]") {
+                    setIsCaptCha(Boolean(err?.show_captcha)) 
+                  }
+                 
+                  props.errorSale && props.errorSale(true);
+                }
+              } else {
+                props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
+              }
+            })
+          }
+          
+          controller.loadPricingGrid({
+            // @ts-ignore
+            cardcode: cardCode,
+            currency: currency,
+            userid: userInfo.userid,
+          }).catch((err: any) => {
+            props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
           })
         }
-        
-        controller.loadPricingGrid({
-          // @ts-ignore
-          cardcode: cardCode,
-          currency: currency,
-          userid: userInfo.userid,
-        }).catch((err: any) => {
-          props.errorNoSaleData && props.errorNoSaleData(props?.code ?? '');
-        })
       }
-    }
-    
+    }    
   }, [props.code, loggingIn, router.query, currency]);
   
   useImperativeHandle(ref, () => ({
