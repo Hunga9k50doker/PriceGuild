@@ -54,6 +54,7 @@ import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -2015,21 +2016,34 @@ const CardList = (props: PropTypes) => {
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.minPrice
-                                    ? formatCurrency(item.minPrice, currency)
-                                    : "N/A"}{" "}
+                                  {item.minPrice ? formatCurrency(item.minPrice, currency) : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.maxPrice
-                                    ? formatCurrency(item.maxPrice, currency)
-                                    : "N/A"}{" "}
+                                  {item.maxPrice ? formatCurrency(item.maxPrice, currency) : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   {" "}{
-                                    //@ts-ignore
-                                    item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A"
-                                  }{" "}
+                                  //@ts-ignore
+                                  item.avgPrice ? formatCurrency(item.avgPrice, currency) : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   <div className="dropdown dropdown--top">
