@@ -65,11 +65,11 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   <input onChange={() => { isCheckAll ? onClear && onClear() :  onSelectAll && onSelectAll() }} checked={isCheckAll} className="form-check-input form-check-input-head cursor-pointer border-checkbox" type="checkbox" readOnly />
                 </div>
               </th>
-              <th scope="col" className={`width-20 ${isPortfolioAll}`} style={{width: "30%"}}>
+              <th scope="col" className={`width-24 ${isPortfolioAll}`} style={{width: "40%"}}>
                 <div className="d-flex cursor-pointer"> Card </div>
               </th>
-              <th scope="col" style={{width: "13%"}}>
-                <div className="d-flex cursor-pointer align-items-center" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
+              <th scope="col" style={{width: "8%"}}>
+                <div className="d-flex cursor-pointer align-items-center white-space-nowrap" onClick={() => onSortTable && onSortTable("onCardCode")}> Card No.
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
                     <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
@@ -105,7 +105,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "10%"}}>
+              <th scope="col" style={{width: "4%"}}>
                 <div onClick={() =>onSortTable &&  onSortTable("minPrice")} className="d-flex cursor-pointer align-items-center"> Min
                   <div className="ms-1 sort-table d-flex flex-column-reverse">
                     <i className={`sort-asc ${renderSortTable("minPrice", true)}`} aria-hidden="true"></i>
@@ -129,7 +129,7 @@ const Cards = <T,>({ onSelectAll, onClear, isCheckAll, isTable = false, isInline
                   </div>
                 </div>
               </th>
-              <th scope="col" style={{width: "9%"}}> </th>
+              <th scope="col" style={{width: "4%"}}> </th>
             </tr>
           </thead>
           <tbody>

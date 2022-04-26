@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatCurrency, gen_card_url } from "utils/helper"
+import { formatCurrency, gen_card_url,formatCurrencyCollection } from "utils/helper"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { CardModel } from "model/data_sport/card_sport";
@@ -211,16 +211,29 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
         </td>
         <td>
           <div className="d-flex ">
-            <div className="box-image-picture" style={{ width: 51, minWidth: 51 }}> 
-            <img
-              onError={({ currentTarget }) => {
-                currentTarget.onerror = null; // prevents looping
-                if (ImageCardSearch) {
-                  currentTarget.src=ImageCardSearch.src;
-                }
-              }}
-              className="box-image-picture__img w-100" src={props?.item?.url_image  || props?.item?.image_front?.file_name  ||  props?.item?.image_back?.file_name || `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+            <div className="d-flex">
+              <div className="box-image-picture box-image-picture-mr" style={{ width: 51, minWidth: 51 }}> 
+                <img
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  if (ImageCardSearch) {
+                    currentTarget.src=ImageCardSearch.src;
+                  }
+                }}
+                className="box-image-picture__img w-100" src={props?.item?.url_image  || props?.item?.image_front?.file_name  ||  `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+              </div>
+              <div className="box-image-picture" style={{ width: 51, minWidth: 51 }}> 
+                <img
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  if (ImageCardSearch) {
+                    currentTarget.src=ImageCardSearch.src;
+                  }
+                }}
+                className="box-image-picture__img w-100" src={props?.item?.url_image  ||   props?.item?.image_back?.file_name || `${process.env.REACT_APP_IMAGE_URL}/collection/${props?.item?.url_image}` } alt="" title="" />
+              </div>
             </div>
+            
             <div className="ps-3 collection-card-table-detail">
               <h1 className="mb-1 fs14 d-flex align-items-center collection-card-title">{props.item?.sport} <i className="dot-margin" /> {props.item?.year} <i className="dot-margin" /> {props.item?.publisher} </h1>
               <div onClick={()=>  gotoCard(props.item?.code)} className="mb-1 collection-card-desc fw-500 cursor-pointer" > {`${props.item.webName}${isEmpty(props.item?.onCardCode) ? '' : ' - #' + props.item.onCardCode}`} </div>
@@ -248,10 +261,10 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
             </a>
           </Link>
         </td>}
-        <td> {!props.item[namePrice] ? "N/A" : formatCurrency(props.item[namePrice], currency)} </td>
-        <td> {!props.item.minPrice ? "N/A" : formatCurrency(props.item.minPrice, currency)} </td>
-        <td> {!props.item.maxPrice ? "N/A" : formatCurrency(props.item.maxPrice, currency)} </td>
-        <td> {!props.item.avgPrice ? "N/A" : formatCurrency(props.item.avgPrice, currency)} </td>
+        <td> {!props.item[namePrice] ? "N/A" : formatCurrencyCollection(props.item[namePrice], currency)} </td>
+        <td> {!props.item.minPrice ? "N/A" : formatCurrencyCollection(props.item.minPrice, currency)} </td>
+        <td> {!props.item.maxPrice ? "N/A" : formatCurrencyCollection(props.item.maxPrice, currency)} </td>
+        <td> {!props.item.avgPrice ? "N/A" : formatCurrencyCollection(props.item.avgPrice, currency)} </td>
         <td>
             <div className="dropdown dropdown--top">
               <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> <img src={renderOptionIcon()} alt="" /> </a>
