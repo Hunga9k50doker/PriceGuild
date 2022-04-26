@@ -48,6 +48,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
   const [gradeCompanys, setGradeCompany] = useState<Array<any>>([])
   const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [point, setPoint] = React.useState<any| undefined>();
+  const {  currency } = useSelector(Selectors.config);
 
   const chartRef = (): Highcharts.Chart | null => {
     if (!refChart?.current) {
@@ -74,7 +75,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
   const getCalcMaLine = async (cardId: string | number, saleChartState: SaleChartState) => {
     const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
       card_id: +cardId,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
       grade_company: saleChartState.itemCardGradeSelected.gradeCompany,
       grade_value: saleChartState.itemCardGradeSelected.gradeValue,
       time_period: +timePeriodSelected.value,
@@ -119,7 +120,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     Object.keys(chartData).forEach(async (cardId) => {
       const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
         card_id: +cardId,
-        currency: userInfo.userDefaultCurrency,
+        currency: currency,
         grade_company:
           chartData[cardId].itemCardGradeSelected.gradeCompany,
         grade_value:
@@ -148,7 +149,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     chartData[cardId].saleState.updateCardGradeSelected(cardGradeSelected)
     const calcMaLine: CalcMaLine = await CardDetailApis.getCalcMaLine({
       card_id: +cardId,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
       grade_company:
         chartData[cardId].itemCardGradeSelected.gradeCompany,
       grade_value:
@@ -295,7 +296,7 @@ const SaleChartComparison = React.forwardRef<RefType, Props>((props, ref) => {
     chartData[cardData.id].controller.reloadPricingGrid({
       // @ts-ignore
       cardcode: cardData.code,
-      currency: userInfo.userDefaultCurrency,
+      currency: currency,
       userid: userInfo.userid,
     }).catch((err: any) => {
         props.errorNoSaleData && props.errorNoSaleData(cardData.code);

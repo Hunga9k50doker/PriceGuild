@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import SmartSearch from "components/smartSearch"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -39,6 +39,8 @@ import { MaintenanceAction } from "redux/actions/maintenance_action";
 import imgInfo from "assets/images/alert-info.svg";
 import imgClose from "assets/images/cross-gray.svg";
 import { isEmpty } from "lodash";
+import { api } from "configs/axios";
+import { getCookie, setCookie } from "utils/helper";
 
 const Header = (props: any) => {
 
@@ -47,6 +49,8 @@ const Header = (props: any) => {
   const { userInfo, loggingIn } = useSelector(Selectors.auth);
   const { popularPublishers } = useSelector(Selectors.home);
   const { cards } = useSelector(Selectors.compare);
+  const [nameCurrency, setNameCurrency] = useState<string>("USD");
+  const { currencies, currency } = useSelector(Selectors.config);
   const { maintenanceList } = useSelector(Selectors.maintenance);
   const [maintenanceStatus, setMaintenanceStatus] = useState<any>({})
   const dispatch = useDispatch();
@@ -67,6 +71,10 @@ const Header = (props: any) => {
   const [showProfileContent, setShowProfileContent] = useState<boolean>(false);
   const inputSearchRefs = React.useRef<FilterModalHandle>(null);
   const [keyTab, setKeyTab] = useState(0)
+  // const listCurrency = useMemo(() => {
+  //   return api.v1.currency.getListCurrency();
+  // },[]);
+  // console.log(listCurrency,"d")
   React.useEffect(() => {
     setIsShow(false)
     setShowMenuContent(false);
@@ -140,6 +148,9 @@ const Header = (props: any) => {
 
   React.useEffect(() => {
     dispatch(ConfigAction.getCurrencies());
+    setNameCurrency(  getCookie('currency_name') || "USD")
+    dispatch(ConfigAction.updateNameCurrency( getCookie('currency_name') || "USD"))
+
   }, [])
 
   React.useEffect(() => {
@@ -220,6 +231,11 @@ const Header = (props: any) => {
       }
     }
   }, [maintenanceList]);
+  const updateCurrency = (name: string) => {
+    setNameCurrency(name)
+    dispatch(ConfigAction.updateNameCurrency(name))
+    setCookie("currency_name", name , 36000)
+  }
 
   React.useEffect(() => {
     setIsShowMessage(!isEmpty(maintenanceStatus))
@@ -301,8 +317,20 @@ const Header = (props: any) => {
                       </a>
                     </Link>
                   </li>
-                  <li className="nav-item nav-item--usd">
-                    <a className="nav-link" aria-current="page" href="#" title="USD"> USD <IconArrowLanguage /> </a>
+                  <li className="nav-item nav-item--usd position-relative">
+                    <a className="nav-link" aria-current="page" href="#" id="dropdown-currency" role="button"
+                     data-bs-toggle="dropdown" title={nameCurrency}> {nameCurrency}
+                     <IconArrowLanguage /> </a>
+                    <div className="dropdown-menu mt-0 " aria-labelledby="dropdown-currency">
+                        <div className="dropdown-menu-content scroll-style">
+                          {currencies.map((item, k) =>
+                            <div className="dropdown-menu__item" onClick={() => updateCurrency(item.label)}>
+                              {item.label}
+                            </div>
+                         )}
+                        </div>
+                    </div>
+                 
                   </li>
                   <li className="nav-item nav-item--usd">
                     <a className="nav-link" aria-current="page" href="#" title="EN"> EN <IconArrowLanguage /> </a>
@@ -377,7 +405,7 @@ const Header = (props: any) => {
                         </div>
                       </div>
                       <div className="col-xxl-4 col-md-5 popular-publisher-header">
-                        <h3> Popular Publishers </h3>
+                        <h5> Popular Publishers </h5>
                         <div className="header-nav mt-2 d-flex">
                           <div className="col nav popular-publisher-item flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             {popularPublishers?.map((item, key) =>
@@ -399,7 +427,7 @@ const Header = (props: any) => {
                               </button>
                             )}
                           </div>
-                          <div className="col tab-content pt-2" id="v-pills-tabContent">
+                          <div className="col tab-content" id="v-pills-tabContent">
                             {popularPublishers?.map((item, key) =>
                               <div
                                 key={key}
@@ -560,20 +588,21 @@ const Header = (props: any) => {
           </div>
           <div className="section-select">
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              value={{ value: currency, label: currency }}
               classNamePrefix="select-currency"
               className="select-price select-currency customScroll"
-              options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
-              ]} />
+              onChange={(e: any) => {
+                updateCurrency(e?.value || "USD")
+              }}
+              options={currencies} />
             <Select
-              defaultValue={{ value: 'usd', label: 'USD' }}
+              // defaultValue={{ value: 'usd', label: 'USD' }}
               classNamePrefix="select-language"
               className="select-price select-language customScroll"
+              value={{ value: "EN", label: "EN" }}
               options={[
-                { value: 'usd', label: 'USD' },
-                { value: 'th', label: 'TH' },
+                { value: 'EN', label: 'EN' },
+                // { value: 'th', label: 'TH' },
               ]} />
           </div>
         </div>

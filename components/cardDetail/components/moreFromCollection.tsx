@@ -27,30 +27,38 @@ const MoreFromCollection = (props: PropTypes) => {
   const [collections, setCollection] = useState<CardModel[]>([])
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
   ManageCollectionType | undefined
     >();
     const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   useEffect(() => {
+    let isCheckCurrency = true;
     if (+props.cardData.id !== 0) {
+      isCheckCurrency = false;
       getTopTradingCard()
     }
-  }, [props.cardData.id])
+    if(isCheckCurrency) {
+      getTopTradingCard()
+    }
+  }, [props.cardData.id, currency])
 
   const getTopTradingCard = async () => {
-    try {
-      const params = {
-        "currency": "USD",
-        "setID":  props.cardData.set.id,
-        "cardCode": props?.cardData.code,
-        "limit": 10
-      };
-      const result =  await CollectionApi.getMoreCollection(params);
-      if (result.success) {
-        setCollection(result.data.map((item: any) => new CardModel(item)) ?? []);
+    if(props?.cardData.code) {
+      try {
+        const params = {
+          "currency": currency,
+          "setID":  props.cardData.set.id,
+          "cardCode": props?.cardData.code,
+          "limit": 10
+        };
+        const result =  await CollectionApi.getMoreCollection(params);
+        if (result.success) {
+          setCollection(result.data.map((item: any) => new CardModel(item)) ?? []);
+        }
       }
-    }
-    catch (err) {
+      catch (err) {
+      }
     }
   }
 

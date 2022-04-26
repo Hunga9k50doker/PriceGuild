@@ -50,6 +50,7 @@ const Comparison: React.FC = ({ ...props}) => {
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [isCopy, SetIsCopy] = useState<boolean>(false);
   const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  const { currency } = useSelector(Selectors.config);
   let router = useRouter();
   const dispatch = useDispatch();
   const {cards} = router.query;
@@ -314,7 +315,7 @@ const Comparison: React.FC = ({ ...props}) => {
                   </div>
                   <div className="comparison-content-box-detail__price">
                     {item.webName ? (
-                      !item.minPrice && !item.maxPrice ? "N/A" : `${formatCurrency(item.minPrice)} - ${formatCurrency(item.maxPrice)}`
+                      !item.minPrice && !item.maxPrice ? "N/A" : `${formatCurrency(item.minPrice, currency)} - ${formatCurrency(item.maxPrice, currency)}`
                     ) : (
                       <Skeleton style={{ width: 100 }} />
                     )}

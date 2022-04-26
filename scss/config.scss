@@ -5853,7 +5853,25 @@ th .form-check-input.form-check-input-head {
     transform: rotate(359deg);
   }
 }
-
+.nav-item--usd {
+  .dropdown-menu {
+    left: unset!important;
+    right: 0;
+    padding: 0.25rem;
+    min-width: 6rem;
+    .dropdown-menu-content {
+      overflow: scroll;
+      overflow-x: hidden;
+      max-height: 250px;
+      .dropdown-menu__item {
+        cursor: pointer;
+        &:hover {
+          color: #124DE3;
+        }
+      }
+    }
+  }
+}
 .react-datepicker-popper {
   z-index: 999;
 }

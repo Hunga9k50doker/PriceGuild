@@ -85,6 +85,7 @@ const CollectionDetail = (props: PropTypes) => {
     },
   });
   const [isOpen, setIsOpen] = React.useState(false);
+  const { currency } = useSelector(Selectors.config);
 
   const getDetail = async (headers: any = {}): Promise<void> => {
     try {
@@ -114,16 +115,22 @@ const CollectionDetail = (props: PropTypes) => {
   }, [collection]);
 
   React.useEffect(() => {
+    let isCheckCurrency =  true;
     if (!isEmpty(collection)) {
+      isCheckCurrency = false;
+      salesOverviewCollection();
+    
+    }
+    if(isCheckCurrency) {
       salesOverviewCollection();
     }
-  }, [filterData]);
+  }, [filterData, currency]);
 
   const salesOverviewCollection = async () => {
     try {
       const params = {
         setID: Number(id),
-        currency: "USD",
+        currency: currency,
         ...filterData,
       };
       const res = await api.v1.collection.getSalesOverview(params);
@@ -453,7 +460,7 @@ const CollectionDetail = (props: PropTypes) => {
                             <div></div>
                           </div>
                         </td>
-                        <td>{formatCurrency(item.maxSales)}</td>
+                        <td>{formatCurrency(item.maxSales, currency)}</td>
                         <td>{item.tradeVol}</td>
                         <td>
                           {/* <div className="icon-folder">

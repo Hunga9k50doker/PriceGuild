@@ -140,6 +140,7 @@ const CardListCollection = ({
   >(undefined);   
   const dispatch = useDispatch();
   const filters = useSelector(Selectors.filter);
+  
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
@@ -152,6 +153,7 @@ const CardListCollection = ({
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
   const { isEditCardData, pageSelected, isAddCardProfile, paramsSearchFilterProfile, changeGradeCardEdit, newGradeChanged, cardSelectedStore, dataFilterStore, lastestFilterEditCardStore, isModeProfileTableStore } = useSelector(Selectors.searchFilter);
   const collectionRef = React.useRef<FilterHandle>(null);
+  const { currency } = useSelector(Selectors.config);
   
   useEffect(() => {
     if (inputSearchRef) {
@@ -298,7 +300,7 @@ const CardListCollection = ({
         page: page[page.length-1],
         search_term: inputSearchRef?.current?.value,
         limit: rowsPerPage,
-        currency: "USD",
+        currency: currency,
         filter_dict: dataFilter,
         sort_dict: {
           sort_value: sortCards?.sort_value,
@@ -751,20 +753,28 @@ const CardListCollection = ({
     return trackFilter[index].isUpdate;
   }
   useEffect(() => {
-    
+    let isCheckCurrency = true;
     if (isEditCardData || isAddCardProfile) {
+      isCheckCurrency =false;
       setSelectDataFilter(dataFilterStore)
     }
 
     if (!isEmpty(filterData)) {
+      isCheckCurrency =false;
       dispatch(SearchFilterAction.updateSetDataFilter(filterData))
     }
     
+
     if (!isEmpty(filters.years) && !data.isLoading) {
+      isCheckCurrency =false;
       setPagesSelected([1])
       getListCard([1])
     }
-  }, [filterData, sortCards])
+    if(isCheckCurrency  && !data.isLoading ) {
+      setPagesSelected([1])
+      getListCard([1])
+    }
+  }, [filterData, sortCards, currency])
   
   // const
   const onChangeFilter = (e: any, key: string, label?: string) => {

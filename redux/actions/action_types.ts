@@ -30,6 +30,7 @@ class _ConfigTypeReducer {
   readonly updateEmailVerify = "update-is-email-verify"
   readonly updateIsShowCollection = "update-is-show-collection"
   readonly updateIsShowTabBar = "update-is-show-tab-bar"
+  readonly updateNameCurrencies = "update-name-currencies";
 }
 
 /**Begin Category type */
