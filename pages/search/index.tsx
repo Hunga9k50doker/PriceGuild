@@ -1262,9 +1262,7 @@ const CardList = (props: PropTypes) => {
   };
 
   const renderOptionIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.code))
-    ? IconCanFull
-    : IconDot3;
+    return !data.portfolio ? IconDot3 : IconFolderFull;
   };
 
   React.useEffect(() => {
@@ -2039,7 +2037,8 @@ const CardList = (props: PropTypes) => {
                                       data-bs-popper="none"
                                     >
                                       <div
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                          e.preventDefault();
                                           setCardData(undefined);
                                           setCardSelected([item.code]);
                                           if (loggingIn) {
@@ -2060,13 +2059,17 @@ const CardList = (props: PropTypes) => {
                                         <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
                                       </div>
                                       <div
-                                        onClick={() => onAddWishList(
-                                          //@ts-ignore
-                                          {
+                                        onClick={(e) =>
+                                        {
+                                          e.preventDefault();
+                                          onAddWishList(
                                             //@ts-ignore
-                                            ...item,
-                                            code: item.code,
-                                          })
+                                            {
+                                              //@ts-ignore
+                                              ...item,
+                                              code: item.code,
+                                            })
+                                          }
                                         }
                                         className="dropdown-menu-item  d-flex cursor-pointer"
                                       >
@@ -2094,7 +2097,7 @@ const CardList = (props: PropTypes) => {
                               </tr>
                             ))}
                             {data?.isLoading &&
-                              Array.from(Array(16).keys())?.map((e, index) => (
+                              Array.from(Array(16).keys())?.map((_e, index) => (
                                 <tr key={index}>
                                   <td className="text-center">
                                     {" "}
