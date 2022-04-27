@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { MyStorage } from 'helper/local_storage';
+import {pageView, event} from "libs/ga"
 
 type PropTypes = {
   isOpen: boolean,
@@ -138,6 +139,16 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         "list_name":table
       })
       setDataJson(result)
+
+      /* ga event */
+      event({
+        action: "data_export",
+        params : {
+          eventCategory:  'Portfolio',
+          eventAction:    "data_export",
+          eventLabel:     "Portfolio Data Export"
+        }
+      })
     }
     catch (err) {
 

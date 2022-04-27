@@ -52,6 +52,7 @@ import Skeleton from "react-loading-skeleton";
 import IconDot3 from "assets/images/dot-3.svg";
 import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
+import {pageView, event} from "libs/ga"
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -1249,6 +1250,16 @@ const CardList = (props: PropTypes) => {
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld));
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   };
   const renderCompareIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.code))
@@ -1289,6 +1300,18 @@ const CardList = (props: PropTypes) => {
       return setIsInline(false)
     }
   }, [width])
+
+  const addGAEvent = () => {
+    /* ga event */
+    event({
+      action: "multi_add_to_portfolio ",
+      params : {
+        eventCategory:  'Portfolio',
+        eventAction:    'multi_add_to_portfolio',
+        eventLabel:     'Multi Card Added to Portfolio'
+      }
+    })
+  }
 
   return (
     <div className="container-fluid container-search-page">
@@ -1714,6 +1737,7 @@ const CardList = (props: PropTypes) => {
                 type="button"
                 onClick={() => {
                   setCardData(undefined);
+                  addGAEvent();
                   if (loggingIn) {
                     setIsOpen(true)
                   } else {
@@ -1755,6 +1779,7 @@ const CardList = (props: PropTypes) => {
                             type="button"
                             onClick={() => {
                               setCardData(undefined);
+                              addGAEvent();
                               if (loggingIn) {
                                 setIsOpen(true)
                               }
@@ -2035,6 +2060,7 @@ const CardList = (props: PropTypes) => {
                                       <div
                                         onClick={() => {
                                           setCardData(undefined);
+                                          addGAEvent();
                                           setCardSelected([item.code]);
                                           if (loggingIn) {
                                             setIsOpen(true);

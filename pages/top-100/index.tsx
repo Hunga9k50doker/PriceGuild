@@ -34,7 +34,7 @@ import { CardModel } from "model/data_sport/card_sport";
 import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
-import filterSport from "components/filter/filterSport";
+import {pageView, event} from "libs/ga"
 
 const rowsPerPage = 20;
 
@@ -377,6 +377,16 @@ const Top100 = (props: PropTypes) => {
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld));
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   };
 
   const onLoadMore = () => {

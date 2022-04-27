@@ -36,6 +36,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import {pageView, event} from "libs/ga"
 
 const ungraded = "ungraded";
 const NotSpecified = "1";
@@ -316,6 +317,16 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
       EditImageRef?.current?.action(url, name, current_path, file?.type);
     }
+
+    /* ga event */
+    event({
+      action: "portfolio_image_upload ",
+      params : {
+        eventCategory:  'Portfolio',
+        eventAction:    'portfolio_image_upload',
+        eventLabel:     'Image Uploaded to Portfolio'
+      }
+    })
   };
 
   const onUpLoadFile = (value: string) => {
