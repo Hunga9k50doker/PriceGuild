@@ -190,7 +190,11 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
         overlay={<Tooltip>{props?.priceTooltip ?? 'Login to see pricing'}</Tooltip>}
       >
         {({ ref, ...triggerHandler }) => (
-          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+          <Link href="/login">
+           <a title="Login" className="range-price-card text-decoration-none">
+             <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+           </a>
+          </Link>
         )}
       </OverlayTrigger>
        {' - '}
@@ -198,7 +202,11 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
         overlay={<Tooltip>{props?.priceTooltip ?? 'Login to see pricing'}</Tooltip>}
       >
         {({ ref, ...triggerHandler }) => (
-          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+          <Link href="/login">
+            <a title="Login" className="range-price-card text-decoration-none">
+              <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+            </a>
+          </Link>
         )}
       </OverlayTrigger> </> 
     }

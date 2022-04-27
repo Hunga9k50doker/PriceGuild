@@ -83,6 +83,7 @@ type PrioritizeType = {
 }
 
 const CardList = (props: PropTypes) => {
+  const nameToolTip = "Login to see pricing"
   const { width } = useWindowDimensions();
   const { loggingIn, userInfo} = useSelector(Selectors.auth);
   const router = useRouter();
@@ -2049,7 +2050,11 @@ const CardList = (props: PropTypes) => {
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span  className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
                                     )}
                                   </OverlayTrigger>}
                                 </td>
@@ -2059,7 +2064,11 @@ const CardList = (props: PropTypes) => {
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
                                     )}
                                   </OverlayTrigger>}
                                 </td>
@@ -2070,7 +2079,11 @@ const CardList = (props: PropTypes) => {
                                     overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
                                     )}
                                   </OverlayTrigger>}
                                 </td>

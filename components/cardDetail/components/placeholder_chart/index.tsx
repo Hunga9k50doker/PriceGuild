@@ -2,6 +2,7 @@ import React, { useState }  from 'react'
 import IconLock from "assets/images/icon_lock.svg";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import Link from 'next/link'
 
 type PropTypes = {
     src: string,
@@ -26,7 +27,11 @@ const PlaceholderChart = ({ src = "", isNoData = false, message, isNoIcon = fals
                             overlay={<Tooltip>{ message ?? 'Login to see pricing'}</Tooltip>}
                         >
                         {({ ref, ...triggerHandler }) => (
-                            <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />
+                            <Link href="/login">
+                                <a title="Login" className="range-price-card text-decoration-none">
+                                    <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />
+                                </a>
+                            </Link>
                         )}
                         </OverlayTrigger>
                     }
