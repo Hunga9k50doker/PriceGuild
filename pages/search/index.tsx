@@ -675,6 +675,13 @@ const CardList = (props: PropTypes) => {
     else {
       setCardSelected(prevState => [...prevState, code]);
     }
+
+    if (cardPortfolio.includes(code)) {
+      setCardPortfolio(prevState => [...pull(prevState, code)]);
+    }
+    else {
+      setCardPortfolio(prevState => [...prevState, code]);
+    }
   }
   const onSelectAll = () => {
     setIsCheckAll(true)
@@ -684,6 +691,7 @@ const CardList = (props: PropTypes) => {
   const onClear = () => {
     setIsCheckAll(false);
     setCardSelected([]);
+    setCardPortfolio([]);
   }
 
   const checkFilter = (obj: { [key: string]: Array<FilterType> }) => {
