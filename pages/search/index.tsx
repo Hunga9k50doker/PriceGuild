@@ -679,6 +679,7 @@ const CardList = (props: PropTypes) => {
   const onSelectAll = () => {
     setIsCheckAll(true)
     setCardSelected([...data.cards?.map(item => item.code)]);
+    setCardPortfolio([...data.cards?.map(item => item.code)]);
   }
   const onClear = () => {
     setIsCheckAll(false);
@@ -1730,7 +1731,7 @@ const CardList = (props: PropTypes) => {
                     setIsOpenLogin(true);
                   }
                 }}
-                className="me-2 btn  btn-portfolio"
+                className="me-2 btn btn-portfolio"
                 > Add to { t('portfolio.text')} </button>
               }
               {/* {cardSelected.length < 2 &&
