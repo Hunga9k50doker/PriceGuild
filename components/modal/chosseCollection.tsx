@@ -8,6 +8,7 @@ import Selectors from "redux/selectors";
 import { useTranslation } from "react-i18next";
 import { useRouter } from 'next/router'
 import { isEmpty } from 'lodash';
+import Skeleton from 'react-loading-skeleton'
 
 type PropTypes = {
   isOpen: boolean,
@@ -22,6 +23,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   const [dataSearch, setDataSearch] = useState<Array<ManageCollectionType>>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
   const { loggingIn, userInfo } = useSelector(Selectors.auth);
+  const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common");
   React.useEffect(() => {
     if (loggingIn && isOpen) {
@@ -32,7 +34,8 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
 
   const router = useRouter();
   
-  const getData = async (isAdd:boolean = false) => {
+  const getData = async (isAdd: boolean = false) => {
+    setIsLoading(true);
     try {
       const params = {
         table: table,
@@ -56,11 +59,13 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
           return router.push('/verify-email')
         }
       }
+      setIsLoading(false);
     }
     catch (err: any) {
       console.log(err)
       setCollections([])
       setDataSearch([])
+      setIsLoading(false);
       if(err?.response?.status === 403) {
         return router.push('/verify-email')
       }
@@ -95,7 +100,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
         }}
         centered show={isOpen} fullscreen="sm-down" className="modal-choose-collection">
         <Modal.Header >
-          <Modal.Title className="text-truncate text-capitalize">Choose {title === 'collection' ? t('portfolio.text') : title}</Modal.Title>
+          <Modal.Title className="text-truncate text-capitalize">{ isLoading ? <Skeleton  width={150} /> : `Choose ${title === 'collection' ? t('portfolio.text') : title}` }</Modal.Title>
           <button
             onClick={() => setIsOpen(false)}
             type="button"
@@ -112,17 +117,17 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
           <form >
             <div className="row col-mar-10">
               <div className="mb-4 no-padding-content">
-                <div className="search">
+                { isLoading ? <Skeleton width={450} /> : <div className="search">
                   <i className="ic-search-input" />
                   <input type="text" onChange={onSeachCollection} className="form-control" placeholder="Search" />
-                </div>
+                </div>}
               </div>
-              <div className="customScroll collection no-padding-content scroll-style">
+              {isLoading ? <div className='mb-5'><Skeleton width={250} /> <div className='mb-5'></div> </div>: <div className="customScroll collection no-padding-content scroll-style">
                 <div className="mb-3">
                   <div className="item-collection d-flex align-items-center rounded border border-1 p-11 cursor-pointer" onClick={() => {
-                      setIsOpen(false);
-                      setIsModal(true);
-                    }}>
+                    setIsOpen(false);
+                    setIsModal(true);
+                  }}>
                     <button type="button" className="btn btn-create btn-outline-primary btn-lg">
                       <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.6001 0.733276H11.4001V11.3999L0.733398 11.3999V14.5999H11.4001V25.2666H14.6001V14.5999H25.2667V11.3999L14.6001 11.3999V0.733276Z" fill="#124DE3" />
@@ -145,7 +150,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
                       </div>
                     </div>)}
                 </div>
-              </div>
+              </div>}
             </div>
           </form>
         </Modal.Body>

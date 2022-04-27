@@ -4421,9 +4421,9 @@ input[type="number"] {
               color: #6d7588;
             }
           }
-          &:hover {
-            border-color: #124de3 !important;
-          }
+          // &:hover {
+          //   border-color: #124de3 !important;
+          // }
         }
         .collection {
           max-height: calc(100vh - 270px);
