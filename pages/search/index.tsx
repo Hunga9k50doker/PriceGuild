@@ -676,14 +676,23 @@ const CardList = (props: PropTypes) => {
     else {
       setCardSelected(prevState => [...prevState, code]);
     }
+
+    if (cardPortfolio.includes(code)) {
+      setCardPortfolio(prevState => [...pull(prevState, code)]);
+    }
+    else {
+      setCardPortfolio(prevState => [...prevState, code]);
+    }
   }
   const onSelectAll = () => {
     setIsCheckAll(true)
     setCardSelected([...data.cards?.map(item => item.code)]);
+    setCardPortfolio([...data.cards?.map(item => item.code)]);
   }
   const onClear = () => {
     setIsCheckAll(false);
     setCardSelected([]);
+    setCardPortfolio([]);
   }
 
   const checkFilter = (obj: { [key: string]: Array<FilterType> }) => {
@@ -1754,7 +1763,7 @@ const CardList = (props: PropTypes) => {
                     setIsOpenLogin(true);
                   }
                 }}
-                className="me-2 btn  btn-portfolio"
+                className="me-2 btn btn-portfolio"
                 > Add to { t('portfolio.text')} </button>
               }
               {/* {cardSelected.length < 2 &&
