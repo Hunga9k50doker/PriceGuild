@@ -44,6 +44,7 @@ import Head from "next/head";
 import CaptCha from "components/modal/captcha";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import LazyLoadImg from "components/lazy/LazyLoadImg";
+import {pageView, event} from "libs/ga"
 
 const rowsPerPage = 100;
 
@@ -359,6 +360,16 @@ const CollectionBase = ({ ...props}) => {
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld));
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   };
 
   const onLoadMore = () => {
@@ -400,6 +411,18 @@ const CollectionBase = ({ ...props}) => {
       getDetail(event);
     }, 550);
   };
+
+  const addGAEvent = () => {
+    /* ga event */
+    event({
+      action: "multi_add_to_portfolio ",
+      params : {
+        eventCategory:  'Portfolio',
+        eventAction:    'multi_add_to_portfolio',
+        eventLabel:     'Multi Card Added to Portfolio'
+      }
+    })
+  }
 
   return (
     <>
@@ -550,6 +573,7 @@ const CollectionBase = ({ ...props}) => {
                       type="button"
                       onClick={() => {
                         setCardData(undefined);
+                        addGAEvent();
                         if (loggingIn) {
                           setIsOpen(true);
                         } else {
@@ -601,6 +625,7 @@ const CollectionBase = ({ ...props}) => {
                             type="button"
                             onClick={() => {
                               setCardData(undefined);
+                              addGAEvent();
                               if (loggingIn) {
                                 setIsOpen(true);
                               } else {
@@ -926,6 +951,7 @@ const CollectionBase = ({ ...props}) => {
                                     <div
                                       onClick={() => {
                                         setCardData(undefined);
+                                        addGAEvent();
                                         setCardSelected([item.cardCode]);
                                         if (loggingIn) {
                                           setIsOpen(true);

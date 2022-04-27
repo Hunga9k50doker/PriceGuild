@@ -13,7 +13,8 @@ import IconLineChart from "assets/images/line-chart.svg"
 import IconTableChart from "assets/images/table-chart.svg"
 import IconBarChart from "assets/images/bar-chart.svg"
 import IconDelete from "assets/images/delete_chart.svg"
-import IconDot3 from "assets/images/dot-3.svg";
+import {pageView, event} from "libs/ga"
+
 type PropTypes = {
   isOpen: boolean,
   setIsOpen: (isOpen: boolean) => void,
@@ -30,7 +31,6 @@ type ChartForm = {
   data: any;
   user_pp: any;
 };
-
 
 const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, onConfirmRemove }: PropTypes) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -67,6 +67,16 @@ const UpsertChart = ({ isOpen, setIsOpen, collection, chartDetail, onSuccess, on
         return ToastSystem.success(result.message);
       }
       ToastSystem.error(result.error);
+
+      /* ga event */
+      event({
+        action: "anayltics_widget_added",
+        params : {
+          eventCategory:  'Portfolio',
+          eventAction:    'anayltics_widget_added',
+          eventLabel:     'Analytics Widget Added'
+        }
+      })
     }
     catch (err) {
       setIsLoading(false)

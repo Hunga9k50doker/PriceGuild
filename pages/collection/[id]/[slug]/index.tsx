@@ -36,6 +36,7 @@ import { ToastSystem } from "helper/toast_system";
 import { CompareAction } from "redux/actions/compare_action";
 import SelectGrading from "components/modal/selectGrading";
 import LazyLoadImg from "components/lazy/LazyLoadImg";
+import {pageView, event} from "libs/ga"
 
 type PropTypes = {
   location: any;
@@ -616,6 +617,16 @@ const CollectionDetail = (props: PropTypes) => {
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld));
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   };
 
   return (

@@ -26,6 +26,7 @@ import EditIconBlack from "assets/images/edit-icon-black.svg";
 import $ from "jquery"
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import LazyLoadImg from "components/lazy/LazyLoadImg";
+import {pageView, event} from "libs/ga"
 
 type PropTypes = {
   item: CardModel & { [key: string]: any },
@@ -134,6 +135,16 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld))
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   }
 
   const renderGrade = () => {
@@ -156,6 +167,16 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     if(props.isSelect) return;
     
     props.onAddCollection && props.onAddCollection();
+
+    /* ga event */
+    event({
+      action: "add_to_portfolio",
+      params : {
+        eventCategory:  'Portfolio',
+        eventAction:    'add_to_portfolio',
+        eventLabel:     'Card Added to Portfolio'
+      }
+    })
   }
   const addNewEntriesPortfolio = (e?: any) => {
     e.stopPropagation();

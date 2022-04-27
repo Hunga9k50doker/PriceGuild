@@ -6,6 +6,7 @@ import Select, { components } from "react-select";
 import { isEmpty } from "lodash";
 import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
+import {pageView, event} from "libs/ga"
 
 type PropTypes = {
   isOpen: boolean;
@@ -110,6 +111,17 @@ const Index = ({
   };
 
   const onSubmit = async (data: CardForm) => {
+
+    /* ga event */
+    event({
+      action: "card_error_reported",
+      params : {
+        eventCategory:  'Card Error Reporting',
+        eventAction:    'card_error_reported',
+        eventLabel:     'Card Error Reported'
+      }
+    })
+
     setIsLoading(true)
     let params: any = {  
       ...data,

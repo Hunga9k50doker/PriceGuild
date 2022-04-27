@@ -54,6 +54,7 @@ import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
+import {pageView, event} from "libs/ga"
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const defaultSort: SelectDefultType = {
@@ -142,6 +143,7 @@ const CardList = (props: PropTypes) => {
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const { cards } = useSelector(Selectors.compare);
   const [cardPortfolio, setCardPortfolio] = useState<Array<string | number>>([]);
+  const [onActiveOption, setOnActiveOption] = useState<boolean>(false);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -1259,6 +1261,16 @@ const CardList = (props: PropTypes) => {
     }
     
     localStorage.setItem("comparison", JSON.stringify(dataOld));
+
+    /* ga event */
+    event({
+      action: "card_added_to_comparison",
+      params : {
+        eventCategory:  'Comparison',
+        eventAction:    "card_added_to_comparison",
+        eventLabel:     "Card Added to Comparison"
+      }
+    })
   };
   const renderCompareIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.code))
@@ -1298,6 +1310,18 @@ const CardList = (props: PropTypes) => {
       return setIsInline(false)
     }
   }, [width])
+
+  const addGAEvent = () => {
+    /* ga event */
+    event({
+      action: "multi_add_to_portfolio ",
+      params : {
+        eventCategory:  'Portfolio',
+        eventAction:    'multi_add_to_portfolio',
+        eventLabel:     'Multi Card Added to Portfolio'
+      }
+    })
+  }
 
   return (
     <div className="container-fluid container-search-page">
@@ -1723,6 +1747,7 @@ const CardList = (props: PropTypes) => {
                 type="button"
                 onClick={() => {
                   setCardData(undefined);
+                  addGAEvent();
                   if (loggingIn) {
                     setIsOpen(true)
                   } else {
@@ -1764,6 +1789,7 @@ const CardList = (props: PropTypes) => {
                             type="button"
                             onClick={() => {
                               setCardData(undefined);
+                              addGAEvent();
                               if (loggingIn) {
                                 setIsOpen(true)
                               }
@@ -1877,13 +1903,13 @@ const CardList = (props: PropTypes) => {
             (
               <>
                 <div className="card-detail card-top-100 no-padding clear-margin-mobile">
-                  <div className="pricing-grid mt-3">
+                  <div className="pricing-grid search-table-mode mt-3">
                       <div className="content-pricing-grid content-pricing-grid-custom p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
                         <table
                           className="table table-striped table-hover"
                         >
                           <thead
-                            className="p-sticky-header"
+                            className="p-sticky-header thead-search-table"
                           >
                             <tr>
                               <th
@@ -2050,7 +2076,7 @@ const CardList = (props: PropTypes) => {
                                 </td>
                                 <td>
                                   <div className="dropdown dropdown--top">
-                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"  onClick={() => setOnActiveOption(false) }> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
                                     <div
                                       className="dropdown-menu"
                                       aria-labelledby="navbarDropdownDot"
@@ -2058,14 +2084,21 @@ const CardList = (props: PropTypes) => {
                                     >
                                       <div
                                         onClick={(e) => {
-                                          e.preventDefault();
-                                          setCardData(undefined);
-                                          setCardPortfolio([item.code]);
-                                          if (loggingIn) {
-                                            setIsOpen(true);
+                                          // e.preventDefault();
+                                          e.stopPropagation();
+                                          if(!item.portfolio) {
+                                            setCardData(undefined);
+                                            addGAEvent();
+                                            setCardPortfolio([item.code]);
+                                            if (loggingIn) {
+                                              setIsOpen(true);
+                                            } else {
+                                              setIsOpenLogin(true);
+                                            }
                                           } else {
-                                            setIsOpenLogin(true);
+                                           setOnActiveOption(!onActiveOption);
                                           }
+                                          
                                         } }
                                         className="dropdown-menu-item d-flex cursor-pointer"
                                       >
@@ -2078,7 +2111,7 @@ const CardList = (props: PropTypes) => {
                                         </div>
                                         <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
                                       </div>
-                                      {Boolean(item.portfolio) ? 
+                                      {onActiveOption ? 
                                        <><div
                                           onClick={(e) => {
                                             e.preventDefault();
