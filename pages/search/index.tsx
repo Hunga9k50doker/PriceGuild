@@ -52,7 +52,10 @@ import Skeleton from "react-loading-skeleton";
 import IconDot3 from "assets/images/dot-3.svg";
 import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
+import EditIconBlack from "assets/images/edit-icon-black.svg";
+import IconUnion from "assets/images/union_wishlist.svg";
 import {pageView, event} from "libs/ga"
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const defaultSort: SelectDefultType = {
   value: 1,
@@ -109,7 +112,8 @@ const CardList = (props: PropTypes) => {
     isLoading: true,
     // isLoadMore: false,
     // page: 1,
-    rows: 0
+    rows: 0,
+    null_price_tooltip:'',
   })
   const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
@@ -138,6 +142,8 @@ const CardList = (props: PropTypes) => {
   const playerNameRef = React.useRef<FilterHandleTextSearch>(null);
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
   const { cards } = useSelector(Selectors.compare);
+  const [cardPortfolio, setCardPortfolio] = useState<Array<string | number>>([]);
+  const [onActiveOption, setOnActiveOption] = useState<boolean>(false);
 
   useEffect(() => {
     if ( router.isReady ) {
@@ -154,6 +160,11 @@ const CardList = (props: PropTypes) => {
       } else {
         dispatch(ConfigAction.updateShowTabBar(true));
       }
+    }
+
+    if (!isSelect) {
+      setIsCheckAll(false);
+      setCardSelected([]);
     }
   }, [isSelect])
 
@@ -705,7 +716,7 @@ const CardList = (props: PropTypes) => {
     getDataOptionInput();
 
     router.push(
-      `/collections-add-card?collection=${item.group_ref}&code=${cardSelected.toString()}`
+      `/collections-add-card?collection=${item.group_ref}&code=${cardPortfolio.toString()}`
     );
   };
 
@@ -1222,7 +1233,7 @@ const CardList = (props: PropTypes) => {
   };
   const onGoToCard = (item: any) => {
     const url = gen_card_url(item.webName, item.code);
-    router.push(`/card-details/${item.code}/${url}`);
+    return `/card-details/${item.code}/${url}`;
   };
   const onComparison = (cardData: any) => {
      let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
@@ -1268,8 +1279,7 @@ const CardList = (props: PropTypes) => {
   };
 
   const renderOptionIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.code)) ? IconCanFull
-    : IconDot3
+    return !data.portfolio ? IconDot3 : IconFolderFull;
   };
 
   React.useEffect(() => {
@@ -1844,11 +1854,11 @@ const CardList = (props: PropTypes) => {
                 </div>
                 
                 <button
-                  type="button" onClick={() => { setIsSelect(prevState => !prevState) }}
-                  className={`ms-2 ${isInline && Boolean(data.cards.length)
+                  type="button" onClick={onHandleMode}
+                  className={`ms-2 ${isInline && !cardSelected.length
                         ? "opacity-50"
                         : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxxx`}
-                  disabled={isInline && Boolean(data.cards.length)}>
+                  disabled={isInline && !cardSelected.length}>
                   {isSelect ? <IconMinis /> : <IconPlus />}
                 </button>
               </div>
@@ -1893,13 +1903,13 @@ const CardList = (props: PropTypes) => {
             (
               <>
                 <div className="card-detail card-top-100 no-padding clear-margin-mobile">
-                  <div className="pricing-grid mt-3">
-                      <div className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
+                  <div className="pricing-grid search-table-mode mt-3">
+                      <div className="content-pricing-grid content-pricing-grid-custom p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
                         <table
                           className="table table-striped table-hover"
                         >
                           <thead
-                            className="p-sticky-header"
+                            className="p-sticky-header thead-search-table"
                           >
                             <tr>
                               <th
@@ -1991,82 +2001,104 @@ const CardList = (props: PropTypes) => {
                                     type="checkbox" />
                                 </td>
                                 <td>
-                                  <div className="d-flex" onClick={() => onGoToCard(item)}>
-                                    <div
-                                      onClick={() => onGoToCard(item)}
-                                      className="cursor-pointer image-box-table mr-2"
-                                    >
-                                      <LazyLoadImg 
-                                      className="w-100"
-                                        imgError={CardPhotoBase}
-                                        //@ts-ignore
-                                      url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
-                                      />
-                                    </div>
-                                    <div
-                                      onClick={() => onGoToCard(item)}
-                                      className="cursor-pointer image-box-table mr-2"
-                                    >
-                                      <img className="w-100" src={CardPhotoBase} alt="" />
-                                    </div>
-                                    <div className="ps-3 collection-card-table-detail" onClick={() => onGoToCard(item)}>
-                                      <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
-                                        {item?.sport}
-                                        <i className="dot-margin"></i>
-                                        {item?.year}
-                                        <i className="dot-margin"></i>
-                                        {item?.publisher}
+                                  <Link href={onGoToCard(item)}>
+                                    <a className="d-flex text-decoration-none c-dark-title-card">
+                                      <div
+                                        // onClick={() => onGoToCard(item)}
+                                        className="cursor-pointer image-box-table mr-2"
+                                      >
+                                        <LazyLoadImg 
+                                        className="w-100"
+                                          imgError={CardPhotoBase}
+                                          //@ts-ignore
+                                        url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
+                                        />
                                       </div>
-                                      <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
-                                      {(Boolean(item.auto) || Boolean(item.memo)) && (
-                                        <div className="content-tag d-flex mt-2">
-                                          {Boolean(item.auto) && (
-                                            <div className="au-tag"> AU </div>
-                                          )}
-                                          {Boolean(item.memo) && (
-                                            <div className="mem-tag"> MEM </div>
-                                          )}
+                                      <div
+                                        // onClick={() => onGoToCard(item)}
+                                        className="cursor-pointer image-box-table mr-2"
+                                      >
+                                        <img className="w-100" src={CardPhotoBase} alt="" />
+                                      </div>
+                                      <div className="ps-3 collection-card-table-detail">
+                                        <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
+                                          {item?.sport}
+                                          <i className="dot-margin"></i>
+                                          {item?.year}
+                                          <i className="dot-margin"></i>
+                                          {item?.publisher}
                                         </div>
-                                      )}
-                                    </div>
-                                  </div>
+                                        <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
+                                        {(Boolean(item.auto) || Boolean(item.memo)) && (
+                                          <div className="content-tag d-flex mt-2">
+                                            {Boolean(item.auto) && (
+                                              <div className="au-tag"> AU </div>
+                                            )}
+                                            {Boolean(item.memo) && (
+                                              <div className="mem-tag"> MEM </div>
+                                            )}
+                                          </div>
+                                        )}
+                                        </div>
+                                      </a>
+                                  </Link>
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.minPrice
-                                    ? formatCurrency(item.minPrice, currency)
-                                    : "N/A"}{" "}
+                                  {item.minPrice !== null ? (item.minPrice ? formatCurrency(item.minPrice, currency): "N/A") : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   {" "}
-                                  {item.maxPrice
-                                    ? formatCurrency(item.maxPrice, currency)
-                                    : "N/A"}{" "}
+                                  {item.maxPrice !== null ? (item.maxPrice ? formatCurrency(item.maxPrice, currency) : "N/A") : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   {" "}{
-                                    //@ts-ignore
-                                    item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A"
-                                  }{" "}
+                                  //@ts-ignore
+                                  item.avgPrice !== null ? (item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A") : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                    )}
+                                  </OverlayTrigger>}
                                 </td>
                                 <td>
                                   <div className="dropdown dropdown--top">
-                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"  onClick={() => setOnActiveOption(false) }> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
                                     <div
                                       className="dropdown-menu"
                                       aria-labelledby="navbarDropdownDot"
                                       data-bs-popper="none"
                                     >
                                       <div
-                                        onClick={() => {
-                                          setCardData(undefined);
-                                          addGAEvent();
-                                          setCardSelected([item.code]);
-                                          if (loggingIn) {
-                                            setIsOpen(true);
+                                        onClick={(e) => {
+                                          // e.preventDefault();
+                                          e.stopPropagation();
+                                          if(!item.portfolio) {
+                                            setCardData(undefined);
+                                            addGAEvent();
+                                            setCardPortfolio([item.code]);
+                                            if (loggingIn) {
+                                              setIsOpen(true);
+                                            } else {
+                                              setIsOpenLogin(true);
+                                            }
                                           } else {
-                                            setIsOpenLogin(true);
+                                           setOnActiveOption(!onActiveOption);
                                           }
+                                          
                                         } }
                                         className="dropdown-menu-item d-flex cursor-pointer"
                                       >
@@ -2079,30 +2111,72 @@ const CardList = (props: PropTypes) => {
                                         </div>
                                         <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
                                       </div>
-                                      <div
-                                        // onClick={() => onAddWishList({
-                                        //   ...item,
-                                        //   code: item.cardCode,
-                                        // })}
-                                        className="dropdown-menu-item  d-flex cursor-pointer"
-                                      >
-                                        <div className="dropdown-menu-item__icon">
-                                          <img
-                                            alt=""
-                                            src={!Boolean(item.wishlist)
-                                              ? IconHeart
-                                              : IconHeartFull} />
-                                        </div>
-                                        <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
-                                      </div>
-                                      <div
-                                        onClick={() => onComparison(item)}
-                                        className="dropdown-menu-item  d-flex cursor-pointer"
-                                      >
-                                        <div className="dropdown-menu-item__icon">
-                                          <img alt="" src={renderCompareIcon(item)} />
-                                        </div>
-                                        <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                      {onActiveOption ? 
+                                       <><div
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
+                                          } }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                          <div className="dropdown-menu-item__icon">
+                                            <img
+                                              alt=""
+                                              src={EditIconBlack} />
+                                          </div>
+                                          <div className="dropdown-menu-item__txt"> Edit card in Portfolio </div>
+                                        </div><div
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              setCardData(undefined);
+                                              setCardPortfolio([item.code]);
+                                              if (loggingIn) {
+                                                setIsOpen(true);
+                                              } else {
+                                                setIsOpenLogin(true);
+                                              }
+                                            }
+                                            }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                            <div className="dropdown-menu-item__icon">
+                                              <img alt="" src={IconUnion} />
+                                            </div>
+                                            <div className="dropdown-menu-item__txt"> {" "} Add New Entry {" "} </div>
+                                          </div></>
+                                      :
+                                       <><div
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            onAddWishList(
+                                              //@ts-ignore
+                                              {
+                                                //@ts-ignore
+                                                ...item,
+                                                code: item.code,
+                                              });
+                                          } }
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                          <div className="dropdown-menu-item__icon">
+                                            <img
+                                              alt=""
+                                              src={!Boolean(item.wishlist)
+                                                ? IconHeart
+                                                : IconHeartFull} />
+                                          </div>
+                                          <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                                        </div><div
+                                          onClick={() => onComparison(item)}
+                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                        >
+                                            <div className="dropdown-menu-item__icon">
+                                              <img alt="" src={renderCompareIcon(item)} />
+                                            </div>
+                                            <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                          </div></> }
+                                      <div>
+
                                       </div>
                                     </div>
                                   </div>
@@ -2110,7 +2184,7 @@ const CardList = (props: PropTypes) => {
                               </tr>
                             ))}
                             {data?.isLoading &&
-                              Array.from(Array(16).keys())?.map((e, index) => (
+                              Array.from(Array(16).keys())?.map((_e, index) => (
                                 <tr key={index}>
                                   <td className="text-center">
                                     {" "}

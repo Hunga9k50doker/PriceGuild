@@ -87,6 +87,7 @@ const CollectionDetail = (props: PropTypes) => {
   });
   const [isOpen, setIsOpen] = React.useState(false);
   const { currency } = useSelector(Selectors.config);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getDetail = async (headers: any = {}): Promise<void> => {
     try {
@@ -122,24 +123,30 @@ const CollectionDetail = (props: PropTypes) => {
       salesOverviewCollection();
     
     }
-    if(isCheckCurrency) {
+    if(isCheckCurrency && !isLoading) {
       salesOverviewCollection();
     }
   }, [filterData, currency]);
 
   const salesOverviewCollection = async () => {
+    await setIsLoading(true);
     try {
       const params = {
         setID: Number(id),
         currency: currency,
         ...filterData,
       };
-      const res = await api.v1.collection.getSalesOverview(params);
-      if (res.success) {
-        return setDataTable(res.data);
+      if(params.auto_memo) {
+        const res = await api.v1.collection.getSalesOverview(params);
+        if (res.success) {
+          setIsLoading(false);
+          return setDataTable(res.data);
+        }
       }
+      
       setDataTable([]);
     } catch (error) {
+      setIsLoading(false);
       console.log("error........", error);
     }
   };
