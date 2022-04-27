@@ -3095,10 +3095,11 @@
     .content-pricing-grid {
       table {
         border-collapse: collapse;
-        thead {
+        thead.thead-search-table {
           border-radius: 6px !important;
           overflow: hidden;
           height: 48px;
+          background-color: unset;
           tr {
             th {
               font-size: 16px;
@@ -3114,7 +3115,7 @@
                   &:hover {
                     border-color: #6D7588;
                   }
-                  
+                  box-shadow: none;
                 }
               }
               .sort-table {
@@ -3166,6 +3167,7 @@
                 &:hover {
                   border-color: #6D7588;
                 }
+                box-shadow: none;
               }
               @media screen and (max-width: 767.98px){
                 input[type="checkbox"] {
