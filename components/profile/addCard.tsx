@@ -36,6 +36,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ungraded = "ungraded";
 const NotSpecified = "1";
