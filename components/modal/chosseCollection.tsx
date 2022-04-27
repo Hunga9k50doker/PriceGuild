@@ -117,12 +117,12 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
           <form >
             <div className="row col-mar-10">
               <div className="mb-4 no-padding-content">
-                { isLoading ? <Skeleton width={250} /> : <div className="search">
+                { isLoading ? <Skeleton width={450} /> : <div className="search">
                   <i className="ic-search-input" />
                   <input type="text" onChange={onSeachCollection} className="form-control" placeholder="Search" />
                 </div>}
               </div>
-              {isLoading ? <div className='mb-3'><Skeleton width={250} /> </div>: <div className="customScroll collection no-padding-content scroll-style">
+              {isLoading ? <div className='mb-5'><Skeleton width={250} /> <div className='mb-5'></div> </div>: <div className="customScroll collection no-padding-content scroll-style">
                 <div className="mb-3">
                   <div className="item-collection d-flex align-items-center rounded border border-1 p-11 cursor-pointer" onClick={() => {
                     setIsOpen(false);
