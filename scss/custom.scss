@@ -3246,5 +3246,24 @@
 }
 
 .c-dark-title-card {
-    color: #18213a !important;
+  color: #18213a !important;
+}
+
+.form-collection--checked {
+  &.hover {
+    .form-check {
+      margin: 0;
+      padding: 8px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      &:hover {
+        background: rgba(233, 241, 255, 0.35);
+        transition: all 0.3s;
+      }
+      .form-check-input {
+        margin-left: 0;
+        margin-right: 10px;
+      }
+    }
+  }  
 }

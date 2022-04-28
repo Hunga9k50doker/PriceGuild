@@ -5379,16 +5379,27 @@ table {
       .add-collection-right {
         padding-left: 12px !important;
         .form-check {
-          padding-top: 6px;
-          padding-bottom: 6px;
-          margin-left: 8px;
+          padding: 7px;
+          transition: all .3s;
+          border-radius: 6px;
           .form-check-input {
             border: 2px solid rgba(109, 117, 136, 0.35);
             box-sizing: border-box;
             border-radius: 2px;
+            box-shadow: none !important;
           }
           .form-check-label {
             font-size: 14px;
+          }
+          &.hover-checkbox {
+            cursor: pointer;
+            .form-check-input {
+              margin-left: 0;
+              margin-right: 10px;
+            }
+            &:hover {
+              background-color: rgba(233,241,255,.35);
+            }
           }
         }
       }
