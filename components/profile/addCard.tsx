@@ -38,6 +38,7 @@ import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import "react-datepicker/dist/react-datepicker.css";
 import {pageView, event} from "libs/ga"
+import ModalDeleteCollection from "components/modal/delete/collection/index";
 
 const ungraded = "ungraded";
 const NotSpecified = "1";
@@ -170,6 +171,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const [isFilterTop100State, setIsFilterTop100State] = useState<boolean>(false);
   const [isSaveCardCheckList, setIsSaveCardCheckList] = useState<boolean>(false);
   const [isSaveCardProfile, setIsSaveCardProfile] = useState<boolean>(false);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   // React.useEffect(() => {
   //   resizeWindow();
   //   window.addEventListener("resize", resizeWindow);
@@ -1769,7 +1771,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               <div className="d-flex justify-content-center btn-remove-card-collection">
                 <button
                   disabled={isLoadingDelete}
-                  onClick={onRemoveCard}
+                  onClick={() => setIsOpenModal(true)}
                   className="btn btn-remove"
                 > <img src={IconDelete.src} alt="" /> {renderTitleRemove()} </button>
               </div>
@@ -1805,6 +1807,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         }`}
         onSuccessFile={onSuccessFile}
         ref={EditImageRef}
+      />
+      <ModalDeleteCollection 
+        isOpen={isOpenModal}
+        title={`Are you sure you want to remove this card from your collection?`}
+        onClose={() => setIsOpenModal(false)}
+        onSuccess={()=>  {setIsOpenModal(false); onRemoveCard()}}
       />
     </div>
   );
