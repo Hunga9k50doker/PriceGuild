@@ -30,6 +30,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
   })
   const { currency } = useSelector(Selectors.config);
   const [page] = useState<number>(1);
+  const { userInfo } = useSelector(Selectors.auth);
 
   useEffect(() => {
     let isCheckSportId = false;
@@ -100,7 +101,14 @@ const LeaderboardHomePage = (props: PropTypes) => {
                 {data.cards?.map((item, key) =>
                   <tr key={key} >
                     <td> {item.rank} </td>
-                    <td> {item.username === "Unknown" ? `Unknown #${item.userid}` : item.username} </td>
+                    <td>
+                      <Link href={userInfo.userid === item.userid ? `/profile/personal` : `/profile/${item.userid}`}>
+                        <a className="text-reset text-decoration-none">
+                          {item.username === "Unknown" ? `Unknown #${item.userid}` : item.username}
+                        </a> 
+                      </Link>
+                       
+                    </td>
                     <td> {formatCurrency(item.total_value, currency)} </td>
                     <td className="th-upload-total">{formatNumber(item.total_upload)}</td>
                   </tr>
