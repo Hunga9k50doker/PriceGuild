@@ -27,7 +27,7 @@ const PlaceholderChart = ({ src = "", isNoData = false, message, isNoIcon = fals
                             overlay={<Tooltip>{ message ?? 'Login to see pricing'}</Tooltip>}
                         >
                         {({ ref, ...triggerHandler }) => (
-                            <Link href="/login">
+                            <Link href={message==="Activate account to see pricing" ?"/verify-email":"/login"}>
                                 <a title="Login" className="range-price-card text-decoration-none">
                                     <img src={IconLock} alt="" ref={ref} {...triggerHandler} className="chart-placeholder-icon cursor-pointer" />
                                 </a>
