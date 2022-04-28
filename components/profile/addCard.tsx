@@ -688,9 +688,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (Boolean(isAddCardProfile)) {
         dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
       }
-
+      
       router.back();
     }
+    
   };
 
   const onSubmitForm = () => {
