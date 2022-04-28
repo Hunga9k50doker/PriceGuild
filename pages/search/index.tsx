@@ -416,10 +416,11 @@ const CardList = (props: PropTypes) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-    getListCard([1], false, true, headers)
+    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], false, true, headers)
   }
 
   const onLoadMore = () => {
+    dispatch(SearchFilterAction.updatePageSelected(pagesSelected[pagesSelected.length-1] + 1));
     if (pagesSelected[pagesSelected.length-1] + 1 <= (Math.ceil((data.rows ?? 0) / rowsPerPage))) {
       getListCard([...pagesSelected, pagesSelected[pagesSelected.length-1]+1], false)
       // setCurrentPage(currentPage + 1);
@@ -2124,8 +2125,6 @@ const CardList = (props: PropTypes) => {
                                        <><div
                                           onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(SearchFilterAction.updateIsFilter(true))
-                                            getDataOptionInput();
                                             router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
                                           } }
                                           className="dropdown-menu-item  d-flex cursor-pointer"
