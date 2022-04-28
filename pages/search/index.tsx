@@ -405,6 +405,7 @@ const CardList = (props: PropTypes) => {
       if (err?.response?.status === 409) {
         //@ts-ignore
           setIsCaptCha(Boolean(err?.response?.data?.show_captcha))
+          console.log(pageSelected,'pageSelectedpageSelected')
       }
       
       setData(prevState => {
@@ -416,9 +417,11 @@ const CardList = (props: PropTypes) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-    getListCard(pageSelected && Boolean(isFilterStore) ? [pageSelected] : [1], false, true, headers)
+    getListCard(pageSelected ? [pageSelected] : [1], false, true, headers)
   }
-
+  useEffect(() => {
+    console.log(pageSelected,'pageSelected');
+  },[pageSelected])
   const onLoadMore = () => {
     dispatch(SearchFilterAction.updatePageSelected(pagesSelected[pagesSelected.length-1] + 1));
     if (pagesSelected[pagesSelected.length-1] + 1 <= (Math.ceil((data.rows ?? 0) / rowsPerPage))) {
