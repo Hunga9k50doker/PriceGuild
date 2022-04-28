@@ -92,6 +92,7 @@ export interface RefType {
 }
 
 const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
+  const nameToolTip = "Login to see pricing"
   const [value, setValue] = useState(["ALL"]);
   const dispatch = useDispatch();
   const pricingGridRef = useRef<any>(null);
@@ -596,21 +597,33 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                       <Link href={priceTooltipPricingGrid === nameToolTip?"/login":"/verify-email"}>
+                                          <a title="Login" className="range-price-card-custom text-decoration-none">
+                                            <span className="cursor-pointer"  ref={ref} {...triggerHandler}>$###</span>
+                                          </a>
+                                        </Link>
                                     )}
                                   </OverlayTrigger>}</td>
                                   <td> {item.max ? formatCurrency(item.max, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                      <Link href={priceTooltipPricingGrid === nameToolTip?"/login":"/verify-email"}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span className="cursor-pointer"  ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
                                     )}
                                   </OverlayTrigger>} </td>
                                   <td> {item.avg ? formatCurrency(item.avg, currency) : <OverlayTrigger
                                     overlay={<Tooltip>{priceTooltipPricingGrid ?? ''}</Tooltip>}
                                   >
                                     {({ ref, ...triggerHandler }) => (
-                                      <span ref={ref} {...triggerHandler}>$###</span>
+                                      <Link href={priceTooltipPricingGrid === nameToolTip?"/login":"/verify-email"}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span  className="cursor-pointer"  ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
                                     )}
                                   </OverlayTrigger>} </td>
                                   <td> {item.count} </td>
