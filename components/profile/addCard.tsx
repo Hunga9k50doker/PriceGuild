@@ -491,11 +491,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           }
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0 }/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`); 
-        } else {
-          router.back();
+          // router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0 }/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`); 
         }
-       
+        // else {
+         
+        // }
+        router.back();
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
@@ -674,7 +675,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // router.push("/profile/collections");
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/','-') : 'All Cards'}`);
+      // router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/','-') : 'All Cards'}`);
     } else {
       if (Boolean(isFilterState)) {
         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
@@ -688,9 +689,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (Boolean(isAddCardProfile)) {
         dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
       }
-
-      router.back();
+      
     }
+    router.back();
   };
 
   const onSubmitForm = () => {
