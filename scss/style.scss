@@ -575,19 +575,18 @@ input {
     color: #18213a;
   }
   .checkbox-select__filters-wrapp {
-    padding: 10px 0 !important;
-    margin: 0px 3px 0 17px;
+    margin: 10px 0;
     li {
       list-style: none;
       padding-top: 9px;
       padding-bottom: 9px;
       @media (min-width: 768px) {
-        padding-top: 6px;
-        padding-bottom: 6px;
+        padding-top: 2px;
+        padding-bottom: 2px;
       }
     }
     &.filter-sport {
-      height: 205px;
+      max-height: 168px;
     }
   }
   .checkbox-select-list {
@@ -656,10 +655,9 @@ input {
     }
   }
   &__dropdown {
-    padding: 3px;
+    padding: 10px 6px 10px 0;
     border-radius: 0 0 8px 8px;
     overflow: hidden;
-    border: 1px solid #e9eaed;
     &:after,
     &:before {
       position: absolute;
@@ -723,7 +721,7 @@ input {
   }
   &__filters-wrapp {
     padding: 0 12px !important;
-    height: 157px;
+    max-height: 268px;
     overflow-y: auto;
     @media screen and (max-width: 767.98px) {
       height: unset;
@@ -6653,5 +6651,32 @@ input[type="number"] {
   box-shadow: none !important;
   &--is-focused{
     border: 2px solid #124de3 !important;
+  }
+}
+
+#collapseyear {
+  ul {
+    &.customScroll {
+      max-height: 138px;
+    }
+  }
+}
+
+.checkbox-select {
+  ul {
+    li {
+      .hover-checkbox {
+        transition: all 0.3s;
+        border-radius: 6px;
+        padding: 7px !important;
+        &:hover {
+          background-color: rgba(233, 241, 255, 0.35);
+        }
+        .form-check-input {
+          left: 10px !important;
+          top: 9px !important;
+        }
+      }
+    }
   }
 }

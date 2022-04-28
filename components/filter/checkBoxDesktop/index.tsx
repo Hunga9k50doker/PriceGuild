@@ -144,7 +144,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
 
   const renderCheckBox = (e: FilterType, i: number) => {
     return <li key={i} >
-      <div className="ms-1 form-check">
+      <div className="form-check hover-checkbox">
         <input
           className="form-check-input cursor-pointer"
           type="checkbox"
