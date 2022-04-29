@@ -848,6 +848,50 @@
     padding-left: 134px;
     padding-right: 134px;
   }
+  &.collection-detail--checklist {
+    @media screen and (min-width: 1141px) and(max-width: 1440px) {
+      .content-home {
+        padding-left: 0px;
+        padding-right: 0px;
+        .pricing-grid {
+          .content-pricing-grid {
+            overflow-x: scroll;
+          }
+        }
+      }
+    }
+    @media screen and (min-width: 768px) {
+      .content-pricing-grid {
+        table {
+          thead {
+            tr {
+              th {
+                white-space: nowrap;
+                &:first-child {
+                  position: sticky;
+                  left: 0;
+                  background-color: #e9f1ff;
+                  z-index: 10;
+                }
+              }
+            }
+          }
+          tbody {
+            tr {
+              td {
+                &:first-child {
+                  position: sticky;
+                  left: 0;
+                  z-index: 10;
+                  background-color: #fff;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .content-home > .row {
     margin-left: 0;
     margin-right: 0;
@@ -5910,4 +5954,6 @@ table {
 }
 .react-datepicker-popper {
   z-index: 999;
+}
+.card-detail.card-detail--checklist {
 }
