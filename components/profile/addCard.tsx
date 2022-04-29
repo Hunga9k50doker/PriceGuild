@@ -974,7 +974,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           {isEdit ? (
             <>
             {+router?.query?.collection !== 0 ? <Link
-              href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
+              href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
             >
               <a className="container-collection-profile-head" title={groupRef?.name}>
                 <img
@@ -1343,7 +1343,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       {isEdit ? (
                         <>
                           {+router?.query?.collection !== 0 ? <Link
-                            href={`/profile/portfolio/${groupRef?.id}/${groupRef?.name?.replaceAll("/", "-")}`}
+                            href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
                           >
                             <a title={groupRef?.name}>
                             {groupRef?.name}

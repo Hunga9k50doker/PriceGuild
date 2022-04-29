@@ -103,7 +103,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         setIsLoading(false);
         return pathname[1] !== 'search' ? ToastSystem.success(<div className="toast-grade-content">
           Create new { title === 'collection' ? 'portfolio' : title } successfully {" "}
-          <Link href={`/profile/${title === 'collection' ? 'portfolio' : title+'s'}/${result?.data?.id}/${result?.data?.group_name?.replaceAll("/", "-")}}`}>
+          <Link href={`/profile/${title === 'collection' ? 'portfolio' : title+'s'}/${result?.data?.id}/${encodeURIComponent(result?.data?.group_name?.replaceAll("/", "-"))}}`}>
             <a className="text-decoration-none">
               {result?.data?.group_name} {" "} { Boolean(result?.data?.type === 2) && <i className="ic-padlock fz-10" aria-hidden="true"></i>}{" "}
             </a>

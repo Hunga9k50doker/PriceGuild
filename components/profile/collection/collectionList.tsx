@@ -188,7 +188,7 @@ const CollectionList = ({
   const gotoCard = (item: ManageCollectionType) => {
     props.gotoCard
       ? props.gotoCard(item)
-      : router.push(`/profile/${!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? router.query.page + '/' : ''}${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${item.group_name.replaceAll("/", "-")}`);
+      : router.push(`/profile/${!isEmpty(router.query.page) && Boolean(Number(router.query.page)) ? router.query.page + '/' : ''}${title === 'collection' ? t('portfolio.text_normal'): title+'s'}/${item.group_ref}/${encodeURIComponent(item.group_name.replaceAll("/", "-"))}`);
   };
 
   const gotoAnalytics = (item: ManageCollectionType) => {
