@@ -2556,12 +2556,6 @@ nav {
     }
 }
 
-#sportFilter, #gradeFilter, #yearsFilter, #collectionsFilter, #auto_memoFilter {
-    .accordion-item {
-        padding-bottom: 10px;
-    }
-}
-
 #yearsFilter {
     .accordion-item {
         border: none;
@@ -2773,18 +2767,19 @@ ul {
                 position: relative;
                 .form-check-input {
                     position: absolute;
-                    left: 0;
+                    left: 5px;
                     top: 2px;
                     margin: 0 !important;
                     padding: 0 !important;
                     transition: all 0.3s;
                     box-shadow: none !important;
+                    border-radius: 2px;
                     &:hover {
                         border-color: #6D7588;
                     }
                     + label {
                         display: block;
-                        padding-left: 2em;
+                        padding-left: 30px;
                         cursor: pointer;
                     }
                 }
@@ -3175,6 +3170,45 @@ button, .btn {
             &.custom-scroll-sticky {
                 padding-left: 0 !important;
             }
+        }
+    }
+}
+
+#collapsepublisher, #collapseset {
+    .customScroll {
+        .checkbox-select-list {
+            &:not(:first-child) {
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
+.modal-content {
+    #sportFilter {
+        #collapsesportFilter {
+            padding-top: 16px;
+        }
+    }
+    #collapseauto_memo {
+        ul#ulauto_memo {
+            padding-top: 16px !important;
+        }
+    }
+    .shop__sidebar {
+        .sidebar__categories {
+            .accordion {
+                padding-bottom: 16px !important;
+            }
+        }
+    }
+}
+
+#collapsesportFilter {
+    ul.filter-sport {
+        margin-bottom: 15px !important;
+        li {
+            padding: 6px 0 !important;
         }
     }
 }
