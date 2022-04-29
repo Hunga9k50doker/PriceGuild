@@ -285,7 +285,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="onlyme" value="2" />
                   <label className="form-check-label cursor-pointer" htmlFor="onlyme">Only me</label>
                 </div>
-                <div className="form-check col form-check-inline ">
+                <div className="form-check col form-check-inline">
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="everyone" value="1" />
                   <label className="form-check-label cursor-pointer" htmlFor="everyone">Everyone</label>
                 </div>
