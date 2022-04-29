@@ -861,6 +861,12 @@
       }
     }
     @media screen and (min-width: 768px) {
+      .template-collection-detail--mobile .pricing-grid .content-pricing-grid {
+        // width: 100vw;
+        margin-left: -32px!important;
+        padding-left: 32px!important;
+        // padding-right: 16px!important;
+      }
       .content-pricing-grid {
         table {
           thead {
@@ -869,7 +875,7 @@
                 white-space: nowrap;
                 &:first-child {
                   position: sticky;
-                  left: 0;
+                  left: -32px;
                   background-color: #e9f1ff;
                   z-index: 10;
                 }
@@ -881,7 +887,7 @@
               td {
                 &:first-child {
                   position: sticky;
-                  left: 0;
+                  left: -32px;
                   z-index: 10;
                   background-color: #fff;
                 }
