@@ -21,6 +21,7 @@ import FilterSport from "components/filter/filterSport"
 import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
 import ButtonClear from "assets/images/icon-remove.svg";
+import ArrowRegular from "assets/images/arrow-regular-01.svg";
 import LoginModal from "components/modal/login"
 import IconPlus from "components/icon/iconPlus"
 import IconMinis from "components/icon/iconMinis"
@@ -2125,14 +2126,14 @@ const CardList = (props: PropTypes) => {
                                         } }
                                         className="dropdown-menu-item d-flex cursor-pointer"
                                       >
-                                        <div className="dropdown-menu-item__icon">
+                                        <div className="dropdown-menu-item__icon mw-25">
                                           <img
                                             alt=""
                                             src={!Boolean(item.portfolio)
                                               ? IconFolder
-                                              : IconFolderFull} />
+                                              : ( onActiveOption ? ArrowRegular : IconFolderFull )} />
                                         </div>
-                                        <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
+                                        <div className="dropdown-menu-item__txt"> {" "} {onActiveOption || Boolean(item.portfolio) ? 'Added' : 'Add'} to {t('portfolio.text')} {" "} </div>
                                       </div>
                                       {onActiveOption ? 
                                        <><div
@@ -2140,9 +2141,9 @@ const CardList = (props: PropTypes) => {
                                             e.preventDefault();
                                             router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
                                           } }
-                                          className="dropdown-menu-item  d-flex cursor-pointer"
+                                          className="dropdown-menu-item d-flex cursor-pointer"
                                         >
-                                          <div className="dropdown-menu-item__icon">
+                                          <div className="dropdown-menu-item__icon mw-25">
                                             <img
                                               alt=""
                                               src={EditIconBlack} />
@@ -2162,7 +2163,7 @@ const CardList = (props: PropTypes) => {
                                             }
                                           className="dropdown-menu-item  d-flex cursor-pointer"
                                         >
-                                            <div className="dropdown-menu-item__icon">
+                                            <div className="dropdown-menu-item__icon mw-25">
                                               <img alt="" src={IconUnion} />
                                             </div>
                                             <div className="dropdown-menu-item__txt"> {" "} Add New Entry {" "} </div>
@@ -2181,7 +2182,7 @@ const CardList = (props: PropTypes) => {
                                           } }
                                           className="dropdown-menu-item  d-flex cursor-pointer"
                                         >
-                                          <div className="dropdown-menu-item__icon">
+                                          <div className="dropdown-menu-item__icon mw-25">
                                             <img
                                               alt=""
                                               src={!Boolean(item.wishlist)
@@ -2193,7 +2194,7 @@ const CardList = (props: PropTypes) => {
                                           onClick={() => onComparison(item)}
                                           className="dropdown-menu-item  d-flex cursor-pointer"
                                         >
-                                            <div className="dropdown-menu-item__icon">
+                                            <div className="dropdown-menu-item__icon mw-25">
                                               <img alt="" src={renderCompareIcon(item)} />
                                             </div>
                                             <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>

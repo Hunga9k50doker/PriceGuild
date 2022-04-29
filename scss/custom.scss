@@ -3238,6 +3238,12 @@
                       font-size: 14px;
                       color: #18213A;
                     }
+                    &__icon {
+                      &.mw-25 {
+                        min-width: 30px;
+                        text-align: center;
+                      }
+                    }
                   }
                 }
               }
