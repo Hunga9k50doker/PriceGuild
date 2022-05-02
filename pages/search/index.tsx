@@ -1895,6 +1895,7 @@ const CardList = (props: PropTypes) => {
                       onAddCollection={() => {
                         setCardData(undefined);
                         setCardSelected([item.code]);
+                        setCardPortfolio([item.code]);
                         if (loggingIn) {
                           setIsOpen(true)
                         }
