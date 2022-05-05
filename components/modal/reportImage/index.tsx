@@ -326,7 +326,7 @@ const Index = ({
                 </div>
               }
           
-              <div className="form-check">
+              <div className="form-check hover-checkbox">
                 <input
                   {...register("report_authentic")}
                   className="form-check-input"
@@ -337,7 +337,7 @@ const Index = ({
                   Graded Only as Authentic
                 </label>
               </div>
-              <div className="form-check">
+              <div className="form-check hover-checkbox">
                 <input
                   {...register("report_auto_only_grade")}
                   className="form-check-input"

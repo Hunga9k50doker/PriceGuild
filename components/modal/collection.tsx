@@ -280,12 +280,12 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
             </div>}
             {isCheckGroupRef() && <div className={`mb-3 form-check-radio ${isEmpty(collectionDetail) ? 'pb-0' : '' }`}>
               <label className="form-label">Who can see this {title === 'collection' ? t('portfolio.text_normal') : title }</label>
-              <div className={`row pe-10 form-collection--checked ${!isEmpty(collectionDetail)? 'edit' : ''}`}>
-                <div className="form-check ms-3 col form-check-inline ">
+              <div className={`d-flex pe-10 form-collection--checked hover ${!isEmpty(collectionDetail)? 'edit' : ''}`}>
+                <div className="form-check col form-check-inline ">
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="onlyme" value="2" />
                   <label className="form-check-label cursor-pointer" htmlFor="onlyme">Only me</label>
                 </div>
-                <div className="form-check col form-check-inline ">
+                <div className="form-check col form-check-inline">
                   <input className="form-check-input cursor-pointer" {...register("type", { required: true })} type="radio" name="type" id="everyone" value="1" />
                   <label className="form-check-label cursor-pointer" htmlFor="everyone">Everyone</label>
                 </div>
