@@ -575,31 +575,18 @@ input {
     color: #18213a;
   }
   .checkbox-select__filters-wrapp {
-    padding: 10px 0 !important;
-    margin: 0px 3px 0 17px;
+    margin: 10px 0;
     li {
       list-style: none;
-      padding-top: 9px;
-      padding-bottom: 9px;
+      padding-top: 5px;
+      padding-bottom: 5px;
       @media (min-width: 768px) {
-        padding-top: 6px;
-        padding-bottom: 6px;
+        padding-top: 0;
+        padding-bottom: 0;
       }
     }
     &.filter-sport {
-      height: 205px;
-    }
-  }
-  .checkbox-select-list {
-    padding-bottom: 15px;
-    .checkbox-select__title-wrapp {
-      padding-bottom: 12px;
-    }
-    li {
-      padding-bottom: 12px;
-      &:last-child {
-        padding-bottom: 0px;
-      }
+      max-height: 168px;
     }
   }
   .text-decoration-underline {
@@ -656,10 +643,9 @@ input {
     }
   }
   &__dropdown {
-    padding: 3px;
+    padding: 10px 6px 10px 0;
     border-radius: 0 0 8px 8px;
     overflow: hidden;
-    border: 1px solid #e9eaed;
     &:after,
     &:before {
       position: absolute;
@@ -675,7 +661,7 @@ input {
     }
   }
   &__search-wrapp {
-    padding: 9px;
+    padding: 9px 9px 2px 9px;
     input {
       width: 100%;
       height: 32px;
@@ -723,7 +709,7 @@ input {
   }
   &__filters-wrapp {
     padding: 0 12px !important;
-    height: 157px;
+    max-height: 268px;
     overflow-y: auto;
     @media screen and (max-width: 767.98px) {
       height: unset;
@@ -731,7 +717,7 @@ input {
   }
   &__title-wrapp {
     position: relative;
-    padding: 0 8px;
+    padding: 0 12px;
   }
   &__check-wrapp {
     position: relative;
@@ -6560,7 +6546,6 @@ input[type="number"] {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 20px;
   cursor: pointer;
   div.text-see-more {
     font-family: Manrope;
@@ -6657,5 +6642,32 @@ input[type="number"] {
   box-shadow: none !important;
   &--is-focused{
     border: 2px solid #124de3 !important;
+  }
+}
+
+#collapseyear {
+  ul {
+    &.customScroll {
+      max-height: 138px;
+    }
+  }
+}
+
+.checkbox-select {
+  ul {
+    li {
+      .hover-checkbox {
+        transition: all 0.3s;
+        border-radius: 6px;
+        padding: 6px !important;
+        &:hover {
+          background-color: rgba(233, 241, 255, 0.35);
+        }
+        .form-check-input {
+          left: 10px !important;
+          top: 9px !important;
+        }
+      }
+    }
   }
 }

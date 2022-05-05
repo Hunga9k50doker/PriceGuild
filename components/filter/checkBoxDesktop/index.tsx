@@ -144,7 +144,7 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
 
   const renderCheckBox = (e: FilterType, i: number) => {
     return <li key={i} >
-      <div className="ms-1 form-check">
+      <div className="form-check hover-checkbox">
         <input
           className="form-check-input cursor-pointer"
           type="checkbox"
@@ -209,12 +209,12 @@ const CheckBoxFilter = React.forwardRef<FilterHandle, PropsType>((props, ref) =>
       <div id={`collapse${props.name}`} className="accordion-collapse collapse show" data-bs-parent={`#${props.name}Filter`}>
         <div className="checkbox-select">
           <div id="dropdown" className="checkbox-select__dropdown activeSearch" >
-            <div className="checkbox-select__search-wrapp">
-              {props.isSearch !== false && <div className="position-relative checkbox-select__search-wrapp-input">
+            {props.isSearch !== false && <div className="checkbox-select__search-wrapp">
+             <div className="position-relative checkbox-select__search-wrapp-input">
                 <input value={keySearch} onChange={onSearch} name={props.name} type="text" placeholder="Search" />
                 {Boolean(keySearch) && <i onClick={onClearSearch} className="ic-close-input position-absolute icon-close-input-filter 111" aria-hidden="true"></i>}
-              </div>}
-            </div>
+              </div>
+            </div>}
             <ul className={`customScroll ${props.isSearch === false ? "mt-0" : ""}  checkbox-select__filters-wrapp mb-0`}>
               {(Boolean(options?.length || optionsSearch?.length) || keySearch) ? (optionsSearch ?? options)?.map((item, key: number) => renderContent(item, key)) :
                 <>

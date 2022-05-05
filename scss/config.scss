@@ -4285,6 +4285,7 @@ table {
           .checkbox-select__search-wrapp {
             position: relative;
             height: auto;
+            padding-top: 16px;
             .input-close {
               position: absolute;
               right: 25px;
@@ -4390,7 +4391,7 @@ table {
             }
           }
           .checkbox-select-list > li {
-            padding: 13px 12px;
+            padding: 13px 6px;
           }
         }
       }
