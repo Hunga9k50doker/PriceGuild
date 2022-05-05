@@ -434,7 +434,7 @@ const CollectionBase = ({ ...props}) => {
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
-      <div className="container-fluid card-detail collection-detail collection-detail--mobile">
+      <div className="container-fluid card-detail collection-detail collection-detail--checklist  collection-detail--mobile">
         <div>
           {" "}
           {!Boolean(collection?.id) ? (
