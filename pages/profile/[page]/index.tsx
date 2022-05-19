@@ -431,7 +431,7 @@ export const getServerSideProps = async (context:any) => {
         body: JSON.stringify(params)
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/profile/profile-username-from-id`, config);
+      const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/profile/profile-username-from-id`, config);
       data = await res.json();
 
       if (data.success) {

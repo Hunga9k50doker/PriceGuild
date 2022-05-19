@@ -443,7 +443,7 @@ export const getServerSideProps = async (context:any) => {
         body: JSON.stringify(params)
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/portfolio/group-name-from-group-ref`, config);
+      const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/portfolio/group-name-from-group-ref`, config);
       data = await res.json();
 
       if (data.success) {

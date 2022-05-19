@@ -17,9 +17,7 @@ import { ToastSystem } from "helper/toast_system";
 import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
 import PersonalPortfolio from "components/personalPortfolio"
-import {
-  CollectionApi,
-} from "api/collection";
+import { CollectionApi } from "api/collection";
 import FaqHomePage from "components/homePage/componnents/faqHomePage"
 import Selectors from "redux/selectors";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,21 +29,11 @@ import { CardDetailApis } from "api/CardDetailApis";
 import { HomeActions } from "redux/actions/home_action";
 // import Head from 'next/head';
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
-
-type ParamTypes = {
-  sportName: string
-}
-
 export type Inputs = {
   sport: number;
 }
 
-function SportLandingPage({...props}) {
+function SportLandingPage({ ...props }) {
   const router = useRouter();
   const { sportName } = router.query;
   const [sportSelected, setSportSelected] = useState<SportType>();
@@ -97,12 +85,11 @@ function SportLandingPage({...props}) {
       // }
     }
   }
-  
+
   const getListPublisher = async () => {
     try {
       const params = {
         sport: sportSelected?.id
-        // sport_name: 'baseball'
       }
       const result = await api.v1.getPopularPublisher(params);
       if (result.success) {
@@ -121,8 +108,8 @@ function SportLandingPage({...props}) {
   }
 
   const renderLink = () => {
-		if (!loggingIn) return '/login';
-		return '/profile/collections';
+    if (!loggingIn) return '/login';
+    return '/profile/collections';
   }
 
   const getOptionValue = (option: any) => option.order;
@@ -131,7 +118,7 @@ function SportLandingPage({...props}) {
     if (!isEmpty(cardBreakDown)) {
       setCardSelected(cardBreakDown[0]);
     }
-  },[cardBreakDown])
+  }, [cardBreakDown])
 
   useEffect(() => {
     if (!isEmpty(cardSelected)) {
@@ -140,15 +127,15 @@ function SportLandingPage({...props}) {
   }, [cardSelected])
 
   useEffect(() => {
-    let isCurrency= true;
+    let isCurrency = true;
     if (!isEmpty(cardData)) {
       isCurrency = false;
       getMClineData();
     }
-    if(isCurrency) {
+    if (isCurrency) {
       getMClineData();
     }
-  },[cardData, currency])
+  }, [cardData, currency])
 
   const getOptionCardBreakDown = async (sportId: number) => {
     try {
@@ -156,7 +143,7 @@ function SportLandingPage({...props}) {
         "sport": sportSelected?.id
       }
       const res = await api.v1.cards_break_down.cardBreakDown(prms);
-      
+
       if (res.success) {
         dispatch(HomeActions.updateCardBreakDown(res.data));
       }
@@ -164,7 +151,7 @@ function SportLandingPage({...props}) {
       console.log('error.....', error)
     }
   }
-  
+
   const getCardDetail = async () => {
     try {
       let prms = {
@@ -174,18 +161,18 @@ function SportLandingPage({...props}) {
 
       const res = await CardDetailApis.loadCardDetail(prms);
 
-      if (res.success) { 
+      if (res.success) {
         setCardData(new CardModel(res.data?.card_detail))
       }
     } catch (error) {
-      
+
     }
   }
 
   const getMClineData = async () => {
     try {
       //@ts-ignore
-      let card_code = cardData?.code; 
+      let card_code = cardData?.code;
       let prms = {
         card_code: card_code,
         grade_company: 'all',
@@ -200,7 +187,7 @@ function SportLandingPage({...props}) {
         setCardPrice(res.data.stats)
       }
     } catch (error) {
-      
+
     }
   }
 
@@ -248,7 +235,7 @@ function SportLandingPage({...props}) {
                     if (ImageCardSearch) {
                       currentTarget.src = ImageCardSearch.src;
                     }
-                  } }
+                  }}
                   className="img-product-element"
                   height="277"
                   src={`https://img.priceguide.cards/${cardData?.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData?.cardFrontImage?.img}.jpg`}
@@ -261,8 +248,8 @@ function SportLandingPage({...props}) {
                   onChange={(value) => {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
-                  } }
-                  isSearchable={ false }
+                  }}
+                  isSearchable={false}
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}
@@ -416,8 +403,8 @@ function SportLandingPage({...props}) {
                   onChange={(value) => {
                     setValue('sport', value?.order?.toString() ?? '');
                     setCardSelected(value);
-                  } }
-                  isSearchable={ false }
+                  }}
+                  isSearchable={false}
                   value={cardSelected}
                   options={cardBreakDown}
                   getOptionValue={getOptionValue}
@@ -471,50 +458,4 @@ function SportLandingPage({...props}) {
   );
 }
 
-// function capitalizeFirstLetter(string: string) {
-//   return string.charAt(0).toUpperCase() + string.slice(1);
-// }
-
-// export const getServerSideProps = async (context: any) => { 
-//   try {
-//       const params = {
-//         sport_name: context?.query?.sportName
-//       }
-//     const result = await api.v1.getPopularPublisher(params);
-//     const sportName = capitalizeFirstLetter(context?.query?.sportName);
-    
-//     let titlePage = `Free Online ${sportName} Card Price Guide - ${sportName} Card Values from `;
-//     let descriptionPage = `${sportName} Price Guide. Find actual prices for your favorite cards. Add cards to your personal online collection and track values over time.`;
-    
-//     let check_more = false;
-//     if (result.success) {
-//       result.data.map((item, key) => {
-//         if (key < 3) {
-//           //@ts-ignore
-//           titlePage += item.publisherName + ", "
-//         } 
-//         if (key > 3) {
-//           check_more = true;
-//           return;
-//         }
-        
-//       })
-//     }
-//     let textEditor = titlePage.slice(0, -2);
-
-//     titlePage = `${textEditor} ${check_more ? '& more' : ''}| PriceGuide.Cards`;
-
-//     return {props:{
-//      titlePage,
-//       descriptionPage,
-//      result
-//     }}
-
-//   } catch (error) {
-    
-//   }
-//   return {
-//     props: {},
-//   };
-// }
 export default React.memo(SportLandingPage);

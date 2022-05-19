@@ -35,7 +35,7 @@ export const getServerSideProps = async (context: any) => {
       body: JSON.stringify(prms)
     }
     
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/card_details/card-details/page-title`, config);
+    const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/card_details/card-details/page-title`, config);
 
     const data = await res.json();
     let titlePage = `${data?.webName} ${data?.OnCardCode ? '- #' + data?.OnCardCode : ''} | PriceGuide.Cards`;

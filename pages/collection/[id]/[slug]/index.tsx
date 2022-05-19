@@ -873,7 +873,7 @@ export const getServerSideProps = async (context: any) => {
       body: JSON.stringify(params)
     }
 
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/collections/collection/page-title`, config);
+    const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/collections/collection/page-title`, config);
     data = await res.json();
 
     titlePage = data?.collection_title ?? '';

@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Head from 'next/head';
-import { api } from 'configs/axios';
 import Sport from "components/sport";
-import Error404 from './404';
 
-function SportLandingPage({...props}) {
-  
-  if (props.statusCode === 404) {
-    return <Error404/>
-  }
+function SportLandingPage({ ...props }) {
 
   return (
     <>
@@ -20,8 +14,8 @@ function SportLandingPage({...props}) {
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
-      <Sport/>
-     </>
+      <Sport />
+    </>
   );
 }
 
@@ -29,37 +23,10 @@ function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const getServerSideProps = async (context: any) => { 
+export const getServerSideProps = async (context: any) => {
   try {
-    const params = {
-      sport_name: context?.query?.sportName
-    }
 
-    const result = await api.v1.getPopularPublisher(params);
-    const sportName = capitalizeFirstLetter(context?.query?.sportName);
-    
-    let titlePage = `Free Online ${sportName} Card Price Guide - ${sportName} Card Values from `;
-    let descriptionPage = `${sportName} Price Guide. Find actual prices for your favorite cards. Add cards to your personal online collection and track values over time.`;
-    
-    let check_more = false;
-    if (result.success) {
-      result.data.map((item, key) => {
-        if (key < 3) {
-          //@ts-ignore
-          titlePage += item.publisherName + ", "
-        } 
-        if (key > 3) {
-          check_more = true;
-          return;
-        }
-        
-      })
-    }
-    
-    let textEditor = titlePage.slice(0, -2);
-
-    titlePage = `${textEditor} ${check_more ? '& more' : ''}| PriceGuide.Cards`;
-    
+    // Check if the sport is a valid sport
     let statusCode = 200;
 
     const prms = {
@@ -75,27 +42,69 @@ export const getServerSideProps = async (context: any) => {
       //@ts-ignore
       body: JSON.stringify(prms)
     }
-    
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/cards/check-sport-exists`, config);
+
+    const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/cards/check-sport-exists`, config);
     const data = await res.json();
 
     if (!data.exists) {
-      statusCode = 404;
-    }
-
-    if (statusCode === 404) {
-        return {
-          notFound: true,
+      return {
+        // returns the default 404 page with a status code of 404
+        notFound: true,
       };
     }
-    return {props:{
-     titlePage,
-     descriptionPage,
-     statusCode
-    }}
+
+    // Sport exists, continue. Call API to get a list of publishers for the page title
+    const config_popular = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sport_name: context?.query?.sportName })
+    }
+
+    const res_popular = await fetch(`${process.env.REACT_APP_API_LOCAL}/publishers/popular`, config_popular);
+    const data_popular = await res_popular.json();
+
+    // Build the page title
+    const sportName = capitalizeFirstLetter(context?.query?.sportName);
+    let titlePage = `Free Online ${sportName} Card Price Guide - ${sportName} Card Values from `;
+    let descriptionPage = `${sportName} Price Guide. Find actual prices for your favorite cards. Add cards to your personal online collection and track values over time.`;
+
+    // Loop 3 (max) publishers on to the page title
+    interface PopularDict {
+      id: number,
+      publisherName: string,
+      count: number,
+      image: string
+    }
+
+    let check_more = false;
+
+    data_popular.data.map((item: Array<PopularDict>, key: number) => {
+      if (key < 3) {
+        // @ts-ignore
+        titlePage += item.publisherName + ", "
+      }
+      if (key > 3) {
+        check_more = true;
+        return;
+      }
+    })
+
+    let textEditor = titlePage.slice(0, -2);
+
+    titlePage = `${textEditor} ${check_more ? '& more ' : ''}| PriceGuide.Cards`;
+
+    return {
+      props: {
+        titlePage,
+        descriptionPage
+      }
+    }
 
   } catch (error) {
-    
+    // console.log('error', error);
   }
   return {
     props: {},
