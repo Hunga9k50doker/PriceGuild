@@ -1,5 +1,6 @@
 import { NewHttpClient } from "./axiosClients";
 import { Collection } from "model/portfolio/collection";
+
 export class CollectionApi {
   static getCollection(body: CollectionParam) {
     return new NewHttpClient<CollectionResponse>({
@@ -40,7 +41,7 @@ export interface DataType {
   years: Array<number>;
   name?: string;
   filter_collections: Array<string>;
-  filter_publishers:  Array<string>;
+  filter_publishers: Array<string>;
 }
 
 export interface CollectionResponse {

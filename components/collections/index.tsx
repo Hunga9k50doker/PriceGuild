@@ -386,7 +386,7 @@ const CollectionList = () => {
     }
     timerid = setTimeout(() => {
       setPagesSelected(event);
-      getListCard(event, false);
+      getListCard(event, true);
     }, 550);
   };
 
@@ -535,7 +535,7 @@ const CollectionList = () => {
     ) {
       getListCard(
         [...pagesSelected, pagesSelected[pagesSelected.length - 1] + 1],
-        false
+        true
       );
       
       setPagesSelected([
