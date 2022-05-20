@@ -1125,7 +1125,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
                             {
                               Boolean(totalCollectorPort) &&
                               <button
-                                onClick={() => router.push(`/card-owners/${router?.query?.cardCodeDetail}/${cardData.slugCard}`)}
+                                onClick={() => router.push(`/card-owners/${router?.query?.cardCodeDetail}/${gen_card_url(cardData?.webName, cardData?.cardNumber)}`)}
                                 type="button"
                                 className="btn btn-see-one"
                               > See {Boolean(totalCollectorPort) ? totalCollectorPort : ""} Card Owners </button>

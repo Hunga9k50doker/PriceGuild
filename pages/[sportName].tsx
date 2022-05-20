@@ -26,27 +26,37 @@ function capitalizeFirstLetter(string: string) {
 export const getServerSideProps = async (context: any) => {
   try {
 
-    // Check if the sport is a valid sport
-    let statusCode = 200;
+    // METHOD 1 Check if the sport is a valid sport via API
+    // const prms = {
+    //   sport: context?.query?.sportName,
+    // };
 
-    const prms = {
-      sport: context?.query?.sportName,
-    };
+    // const config = {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   //@ts-ignore
+    //   body: JSON.stringify(prms)
+    // }
 
-    const config = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      //@ts-ignore
-      body: JSON.stringify(prms)
-    }
+    // const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/cards/check-sport-exists`, config);
+    // const data = await res.json();
 
-    const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/cards/check-sport-exists`, config);
-    const data = await res.json();
+    // if (!data.exists) {
+    //   return {
+    //     // returns the default 404 page with a status code of 404
+    //     notFound: true,
+    //   };
+    // }
 
-    if (!data.exists) {
+    // METHOD 2 Check if the sport is a valid sport via hardcode
+    const accepted_sports = ["baseball", "football", "hockey", "basketball", 
+                             "racing", "soccer", "wrestling", "multi-sport", 
+                             "non-sport", "mma", "golf", "tennis", "boxing"];
+
+    if (!accepted_sports.includes(context?.query?.sportName)) {
       return {
         // returns the default 404 page with a status code of 404
         notFound: true,
