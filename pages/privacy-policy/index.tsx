@@ -74,7 +74,7 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 							<p>We implement a variety of security measures when a user places an order enters, submits, or accesses their information to maintain the safety of your personal information.</p>
 							<p>All transactions are processed through a gateway provider and are not stored or processed on our servers.</p>
 							<h4>How can you delete your data?</h4>
-                            <p>Users can delete their account by heading to the
+                            <p>Users can delete their account by heading to the 
                                 <Link href="/profile/settings/confidentiality">
                                     <a target="_blank" title="account administation page">
                                         account administation page
