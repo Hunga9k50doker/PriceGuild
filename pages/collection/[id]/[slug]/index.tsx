@@ -713,7 +713,7 @@ const CollectionDetail = (props: PropTypes) => {
                   <label>Base/Insert:</label> {collection?.total_types}
                 </li>
                 <li>
-                  <label>{t('portfolio.card_in_portfolio')}:</label> {collection?.total_cards}
+                  <label>Cards in Collection:</label> {collection?.total_cards}
                 </li>
               </ul>
             </div>
