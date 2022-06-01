@@ -1244,7 +1244,7 @@ const CardList = (props: PropTypes) => {
     return "ic-caret-down revert"
   };
   const onGoToCard = (item: any) => {
-    const url = gen_card_url(item.webName, item.code);
+    const url = gen_card_url(item.webName, item.onCardCode);
     return `/card-details/${item.code}/${url}`;
   };
   const onComparison = (cardData: any) => {
