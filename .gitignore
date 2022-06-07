@@ -5,7 +5,7 @@
 /build
 /.next
 
-# /.env
+.env
 # /.env.staging
 # /.env.production
 
