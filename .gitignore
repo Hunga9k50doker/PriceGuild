@@ -6,8 +6,8 @@
 /.next
 
 .env
-# /.env.staging
-# /.env.production
+.env.staging
+.env.production
 
 package-lock.json
 yarn.lock
@@ -16,3 +16,5 @@ yarn.lock
 
 /dist
 /.env
+/.env.staging
+/.env.production
