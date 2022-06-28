@@ -27,7 +27,7 @@ export type QueryResponse<T> = {
   error?: string;
   show_captcha?: boolean;
   null_price_tooltip?: string;
-  status?:number
+  status?: number
 };
 
 export type SportType = {
@@ -191,8 +191,8 @@ export namespace FilterType {
       return firstLetterPre > firstLetterNext
         ? 1
         : firstLetterPre < firstLetterNext
-        ? -1
-        : 0;
+          ? -1
+          : 0;
     }
 
     if (firstLetterPre >= 49 && firstLetterPre <= 57) {
@@ -570,10 +570,10 @@ export type CountType = {
 };
 
 export interface StatsAnalytics {
-  avg: number, 
-  last: number, 
-  max: number, 
-  min: number, 
+  avg: number,
+  last: number,
+  max: number,
+  min: number,
   year: number
 }
 

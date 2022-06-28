@@ -23,7 +23,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   const [dataSearch, setDataSearch] = useState<Array<ManageCollectionType>>([]);
   const [isModal, setIsModal] = useState<boolean>(false);
   const { loggingIn, userInfo } = useSelector(Selectors.auth);
-  const [ isLoading, setIsLoading ] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [t, i18n] = useTranslation("common");
   React.useEffect(() => {
     if (loggingIn && isOpen) {
@@ -33,7 +33,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
   }, [isOpen, loggingIn])
 
   const router = useRouter();
-  
+
   const getData = async (isAdd: boolean = false) => {
     setIsLoading(true);
     try {
@@ -45,10 +45,14 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       if (result.success) {
         setCollections(result.data)
         setDataSearch(result.data)
-       
-        if(isAdd) {
-          let collectionNew = result.data[ result.data.length -1];
+
+        // This is called when a new portfolio is created
+        if (isAdd) {
+          let collectionNew = result.data[result.data.length - 1];
           props.selectCollection && props.selectCollection(collectionNew)
+
+          console.log('getData inside isAdd', collectionNew);
+
           setIsOpen(false);
           setIsModal(false)
         }
@@ -66,7 +70,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       setCollections([])
       setDataSearch([])
       setIsLoading(false);
-      if(err?.response?.status === 403) {
+      if (err?.response?.status === 403) {
         return router.push('/verify-email')
       }
     }
@@ -100,7 +104,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
         }}
         centered show={isOpen} fullscreen="sm-down" className="modal-choose-collection">
         <Modal.Header >
-          <Modal.Title className="text-truncate text-capitalize">{ isLoading ? <Skeleton  width={150} /> : `Choose ${title === 'collection' ? t('portfolio.text') : title}` }</Modal.Title>
+          <Modal.Title className="text-truncate text-capitalize">{isLoading ? <Skeleton width={150} /> : `Choose ${title === 'collection' ? t('portfolio.text') : title}`}</Modal.Title>
           <button
             onClick={() => setIsOpen(false)}
             type="button"
@@ -117,12 +121,12 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
           <form >
             <div className="row col-mar-10">
               <div className="mb-4 no-padding-content">
-                { isLoading ? <Skeleton width={450} /> : <div className="search">
+                {isLoading ? <Skeleton width={450} /> : <div className="search">
                   <i className="ic-search-input" />
                   <input type="text" onChange={onSeachCollection} className="form-control" placeholder="Search" />
                 </div>}
               </div>
-              {isLoading ? <div className='mb-5'><Skeleton width={250} /> <div className='mb-5'></div> </div>: <div className="customScroll collection no-padding-content scroll-style">
+              {isLoading ? <div className='mb-5'><Skeleton width={250} /> <div className='mb-5'></div> </div> : <div className="customScroll collection no-padding-content scroll-style">
                 <div className="mb-3">
                   <div className="item-collection d-flex align-items-center rounded border border-1 p-11 cursor-pointer" onClick={() => {
                     setIsOpen(false);

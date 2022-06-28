@@ -727,6 +727,8 @@ const CardList = (props: PropTypes) => {
     dispatch(SearchFilterAction.updateIsFilter(true))
     getDataOptionInput();
 
+    console.log('logging here', item);
+
     router.push(
       `/collections-add-card?collection=${item.group_ref}&code=${cardPortfolio.toString()}`
     );

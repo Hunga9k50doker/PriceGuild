@@ -10,7 +10,7 @@ import Link from 'next/link'
 import * as Yup from 'yup';
 import { RegexString } from 'utils/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {is_ios_device} from 'utils/helper';
+import { is_ios_device } from 'utils/helper';
 import { ConfigAction } from "redux/actions/config_action";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import useWindowDimensions from "utils/useWindowDimensions"
@@ -81,7 +81,7 @@ const LoginPage = (props: PropTypes) => {
   const onFail = () => {
     setIsLoading(false)
     // @ts-ignore
-    captchaRef.current.resetCaptcha(); 
+    captchaRef.current.resetCaptcha();
   }
 
   const onSuccess = () => {
@@ -124,65 +124,65 @@ const LoginPage = (props: PropTypes) => {
 
   return (
     <>
-        <div className="login-form">
-          <form onSubmit={handleSubmit(onSubmit)} className="row">
-            <div className={`col-12 form-data ${errors.userName ? "error-validation" : ""}`}>
-              <label className="text-form mt-1">Username or Email</label>
-              <input {...register("userName")} type="text" name="userName" className="form-control" placeholder="Your Username or Email" onFocus={() => handleOnFocus()} onBlur={() => handleOnBlur()} />
-              {/* errors will return when field validation fails  */}
-              {errors.userName?.message && <div className="invalid-feedback d-inline">{errors.userName?.message}</div>}
+      <div className="login-form">
+        <form onSubmit={handleSubmit(onSubmit)} className="row">
+          <div className={`col-12 form-data ${errors.userName ? "error-validation" : ""}`}>
+            <label className="text-form mt-1">Username or Email</label>
+            <input {...register("userName")} type="text" name="userName" className="form-control" placeholder="Your Username or Email" onFocus={() => handleOnFocus()} onBlur={() => handleOnBlur()} />
+            {/* errors will return when field validation fails  */}
+            {errors.userName?.message && <div className="invalid-feedback d-inline">{errors.userName?.message}</div>}
 
+          </div>
+          <div className={`col-12 position-relative form-data password ${errors.password ? "error-validation" : ""}`}>
+            <label className="text-form  mt-3">Password</label>
+            <div className="password-input position-relative">
+              <input {...register("password")} type={typePassword} name="password" className="form-control mt-1" placeholder="Your Password" onFocus={() => handleOnFocus()} onBlur={() => handleOnBlur()} />
+              <button onClick={onChangeTypePassword} type="button" className="btn position-absolute">
+                {renderIcon()}
+              </button>
             </div>
-            <div className={`col-12 position-relative form-data password ${errors.password ? "error-validation" : ""}`}>
-              <label className="text-form  mt-3">Password</label>
-              <div className="password-input position-relative">
-                <input {...register("password")} type={typePassword} name="password" className="form-control mt-1" placeholder="Your Password" onFocus={() => handleOnFocus()} onBlur={() => handleOnBlur()}/>
-                <button onClick={onChangeTypePassword} type="button" className="btn position-absolute">
-                  {renderIcon()}
-                </button>
-              </div>
-              {errors.password?.message && <div className="invalid-feedback d-inline">{errors.password?.message}</div>}
-            </div>
-            <div className="col-12 mt-4 form-data mb-3">
-              <div className="form-check ps-0">
+            {errors.password?.message && <div className="invalid-feedback d-inline">{errors.password?.message}</div>}
+          </div>
+          <div className="col-12 mt-4 form-data mb-3">
+            <div className="form-check ps-0">
               <label className="form-check-label forget-password" htmlFor="rememberMe">
                 <Link href={"/password/reset"}>
-                    <a className="text-reset text-decoration-none">Forgot Your Password?</a>
+                  <a className="text-reset text-decoration-none">Forgot Your Password?</a>
                 </Link>
-            </label>
-              </div>
+              </label>
+            </div>
           </div>
           <HCaptcha
-              sitekey={`${process.env.REACT_APP_SITE_KEY}`}
-              // onLoad={onLoad}
-              // @ts-ignore
-              onVerify={setToken}
-              ref={captchaRef}
-              onExpire={() => {
-                setToken(null)
-                /// @ts-ignore
-                captchaRef.current.resetCaptcha();
-              }}
-              size={width >= 430 ?  'normal' : 'compact'}
+            sitekey={`${process.env.REACT_APP_SITE_KEY}`}
+            // onLoad={onLoad}
+            // @ts-ignore
+            onVerify={setToken}
+            ref={captchaRef}
+            onExpire={() => {
+              setToken(null)
+              /// @ts-ignore
+              captchaRef.current.resetCaptcha();
+            }}
+            size={width >= 430 ? 'normal' : 'compact'}
           />
-            <div className="d-grid gap-2 form-data mt-3">
-              <button disabled={!token || isLoading} className="btn btn-primary btn-login" type="submit">Login</button>
-            </div>
-
-          </form>
-          <div className='socials-media text-center'>
-            <div className="col-12 mt-4">
-              <p className="text-center mb-0 text-continue">or continue with</p>
-            </div>
-            <SocialLogin message="Login successful"  />
+          <div className="d-grid gap-2 form-data mt-3">
+            <button disabled={!token || isLoading} className="btn btn-primary btn-login" type="submit">Login</button>
           </div>
 
+        </form>
+        <div className='socials-media text-center'>
+          <div className="col-12 mt-4">
+            <p className="text-center mb-0 text-continue">or continue with</p>
           </div>
+          <SocialLogin message="Login successful" />
+        </div>
 
-            <div className="col-12 section-account">
-              <p className="text-center mb-0 text-have-account">Don't have an account?</p>
-              <p className="text-center mb-0 create-account mt-2"><Link href={"/register"}>Create Account</Link></p>
-        </div>   
+      </div>
+
+      <div className="col-12 section-account">
+        <p className="text-center mb-0 text-have-account">Don't have an account?</p>
+        <p className="text-center mb-0 create-account mt-2"><Link href={"/register"}>Create Account</Link></p>
+      </div>
     </>
 
   );
