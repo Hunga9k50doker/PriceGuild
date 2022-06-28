@@ -29,7 +29,7 @@ export const getServerSideProps = async (context: any) => {
     const ctx = context?.query;
     const pageName = ctx.page === 'wishlists' ? 'Wishlists' : 'Profolio'
     let titlePage = ctx.type;
-    let subTitle = `- Personal ${pageName} | PriceGuide.Cards`;
+    let subTitle = ` - Personal ${pageName} | PriceGuide.Cards`;
     return {
       props: {
         titlePage,
