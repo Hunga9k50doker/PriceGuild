@@ -154,6 +154,7 @@ const CardList = (props: PropTypes) => {
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
+  
   useEffect(() => {
       //@ts-ignore
     if(width < 767.98) {
@@ -726,9 +727,6 @@ const CardList = (props: PropTypes) => {
   const selectCollection = (item: ManageCollectionType) => {
     dispatch(SearchFilterAction.updateIsFilter(true))
     getDataOptionInput();
-
-    console.log('logging here', item);
-
     router.push(
       `/collections-add-card?collection=${item.group_ref}&code=${cardPortfolio.toString()}`
     );

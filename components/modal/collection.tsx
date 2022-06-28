@@ -24,6 +24,7 @@ type PropTypes = {
   onClose?: () => void,
   onSuccess?: (item?: any) => void,
   collectionDetail?: ManageCollectionType,
+  selectCollection?: (item: ManageCollectionType) => void;
   onConfirmRemove?: () => void,
   title?: string,
   table?: string,
@@ -34,7 +35,12 @@ type CollectionForm = {
   type: string;
 };
 
-const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
+const Collection = ({ 
+  onClaimPhoto, 
+  title = "collection", 
+  table, 
+  collectionDetail, 
+  isOpen = false, ...props }: PropTypes) => {
 
   const inputNameRef = useRef<HTMLInputElement>(null);
 
@@ -98,6 +104,10 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     catch (err) { }
   }
 
+  const selectCollection = (item: ManageCollectionType) => {
+    props.selectCollection && props.selectCollection(item)
+  }
+
   // Create a New Portfolio / Wishlist
   const onCreate = async (data: CollectionForm) => {
     try {
@@ -117,7 +127,15 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
           type: Number(data.type),
           isEdit: false
         });
-        resetForm(); console.log(pathname[1], 'pathname[0]')
+
+        selectCollection({
+          group_ref: result.data.id,
+          group_name: result.data.group_name,
+          type: result.data.type,
+          unique_card: 0,
+          total_card: 0
+        });
+        resetForm();
         setIsLoading(false);
 
         // Do not show the success toast when user is in the flow of adding a card

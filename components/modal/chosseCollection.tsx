@@ -48,10 +48,11 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
 
         // This is called when a new portfolio is created
         if (isAdd) {
-          let collectionNew = result.data[result.data.length - 1];
-          props.selectCollection && props.selectCollection(collectionNew)
 
-          console.log('getData inside isAdd', collectionNew);
+          // selectCollection props are now set inside the collection model on
+          // function `onCreate`. Old props are commented out below but are not needed.
+          // let collectionNew = result.data[result.data.length - 1];
+          // props.selectCollection && props.selectCollection(collectionNew)
 
           setIsOpen(false);
           setIsModal(false)
@@ -161,6 +162,7 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       </Modal>
       <Collection
         onSuccess={onCreateSuccess}
+        selectCollection={selectCollection}
         isOpen={isModal}
         onClose={() => onHandleModal(false)}
         table={table}
