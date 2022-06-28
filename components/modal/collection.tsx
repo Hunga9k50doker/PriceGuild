@@ -37,9 +37,9 @@ type CollectionForm = {
 const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetail, isOpen = false, ...props }: PropTypes) => {
 
   const inputNameRef = useRef<HTMLInputElement>(null);
-  
+
   const CSVRef = React.useRef<HTMLLinkElement>(null);
-  
+
   const validationSchema = Yup.object().shape({
     collectionName: Yup.string()
       .matches(RegexString.trimWhiteSpace, 'This field is required')
@@ -47,19 +47,20 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
+
   const [dataJson, setDataJson] = useState<any>({
     head: [],
     body: [],
   });
-  
+
   const router = useRouter()
-  
+
   const [t, i18n] = useTranslation("common")
-  
+
   const pathname = router.pathname.split("/")
 
-  const { register,
+  const { 
+    register,
     handleSubmit,
     reset,
     setValue,
@@ -97,6 +98,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
     catch (err) { }
   }
 
+  // Create a New Portfolio / Wishlist
   const onCreate = async (data: CollectionForm) => {
     try {
       const params = {
@@ -107,6 +109,9 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       setIsLoading(true);
       const result = await api.v1.collection.createCollection(params);
       if (result.success) {
+
+        console.log('folder created sucesfully here', result)
+
         props.onSuccess && props.onSuccess({
           name: data.collectionName,
           type: Number(data.type),
@@ -114,14 +119,18 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
         });
         resetForm(); console.log(pathname[1], 'pathname[0]')
         setIsLoading(false);
-        return pathname[1] !== 'search' ? ToastSystem.success(<div className="toast-grade-content">
-          Create new {title === 'collection' ? 'portfolio' : title} successfully {" "}
-          <Link href={`/profile/${title === 'collection' ? 'portfolio' : title + 's'}/${result?.data?.id}/${encodeURIComponent(result?.data?.group_name?.replaceAll("/", "-"))}}`}>
-            <a className="text-decoration-none">
-              {result?.data?.group_name} {" "} {Boolean(result?.data?.type === 2) && <i className="ic-padlock fz-10" aria-hidden="true"></i>}{" "}
-            </a>
-          </Link>
-        </div>) : '';
+
+        // Do not show the success toast when user is in the flow of adding a card
+        // only show when created inside the profile section
+        return pathname[1] == 'profile' ? ToastSystem.success(
+          <div className="toast-grade-content">
+            Create new {title === 'collection' ? 'portfolio' : title} successfully {" "}
+            <Link href={`/profile/${title === 'collection' ? 'portfolio' : title + 's'}/${result?.data?.id}/${encodeURIComponent(result?.data?.group_name?.replaceAll("/", "-"))}}`}>
+              <a className="text-decoration-none">
+                {result?.data?.group_name} {" "} {Boolean(result?.data?.type === 2) && <i className="ic-padlock fz-10" aria-hidden="true"></i>}{" "}
+              </a>
+            </Link>
+          </div>) : '';
       }
       ToastSystem.error(result.message ?? result.error);
     }
@@ -227,7 +236,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
       host = process.env.DOMAIN;
     }
     let data_url = encodeURI(`${fb_share}${host}/profile/${MyStorage.user.userid.toString()}/${table === 'wishlist' ? 'wishlists' : table}/${collectionDetail?.group_ref}/${collectionDetail?.group_name.indexOf('/') === -1 ? collectionDetail?.group_name?.replace(/\s/g, "-") : collectionDetail?.group_name?.replaceAll('/', '-').replaceAll(' ', '')}`);
-    
+
     return data_url;
   }
 
@@ -244,7 +253,7 @@ const Collection = ({ onClaimPhoto, title = "collection", table, collectionDetai
 
     return data_url;
   }
-  
+
   const onChange = (e: any) => {
     const { value } = e.target;
     if (value) {
