@@ -37,7 +37,7 @@ import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import "react-datepicker/dist/react-datepicker.css";
-import {pageView, event} from "libs/ga"
+import { pageView, event } from "libs/ga"
 import ModalDeleteCollection from "components/modal/delete/collection/index";
 
 const ungraded = "ungraded";
@@ -113,14 +113,21 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     []
   );
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore, dataFilterStore } = useSelector(Selectors.searchFilter);
+  const { 
+    isFilterStore, 
+    isFilterStoreTop100, 
+    isAddCardCheckList, 
+    isAddCardProfile, 
+    cardSelectedStore, 
+    dataFilterStore 
+  } = useSelector(Selectors.searchFilter);
   const {
     register,
     getValues,
     watch,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<CardForm>();
   const [gradeValue, setGradeValue] = useState<Array<any>>([]);
   const watchGrade = watch("grade_company");
@@ -128,7 +135,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const watchNote = watch("note");
   const watchGradeValue = watch("grade_value");
   // const watchAgreeShare = watch("agree_share");
-  const dataQueries = router.query; 
+  const dataQueries = router.query;
   const [cards, setCards] = useState<CardsAddType>({
     groups: [],
     cards: [],
@@ -159,7 +166,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   let resizeWindow = () => {
     setWindowWidth(window.innerWidth);
   };
-  
+
   const [showContentAddCollection, SetShowContentAddCollection] =
     React.useState<boolean>(false);
   const { width } = useWindowDimensions();
@@ -181,10 +188,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   //   return () => window.removeEventListener("resize", resizeWindow);
   // }, [windowWidth]);
   React.useEffect(() => {
-    if(!Boolean(isFilterState))
-    setIsFilterState(isFilterStore);
+    if (!Boolean(isFilterState))
+      setIsFilterState(isFilterStore);
   }, [isFilterStore])
-  
+
   React.useEffect(() => {
     if (Boolean(isFilterState) && Boolean(isFilterStore)) {
       dispatch(SearchFilterAction.updateIsFilter(false))
@@ -198,32 +205,32 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [isFilterTop100State])
 
   React.useEffect(() => {
-     if ((Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList))) {
-       dispatch(SearchFilterAction.updateIsAddCardCheckList(false))
-     }
+    if ((Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList))) {
+      dispatch(SearchFilterAction.updateIsAddCardCheckList(false))
+    }
   }, [isSaveCardCheckList])
-  
+
   React.useEffect(() => {
-     if ((Boolean(isSaveCardProfile) && Boolean(isAddCardProfile))) {
-       dispatch(SearchFilterAction.updateIsAddCardProfile(false))
-     }
+    if ((Boolean(isSaveCardProfile) && Boolean(isAddCardProfile))) {
+      dispatch(SearchFilterAction.updateIsAddCardProfile(false))
+    }
   }, [isSaveCardProfile])
-  
+
   React.useEffect(() => {
-     if(!Boolean(isFilterState))
+    if (!Boolean(isFilterState))
       setIsFilterState(isFilterStoreTop100);
-  },[isFilterStoreTop100])
-  
+  }, [isFilterStoreTop100])
+
   React.useEffect(() => {
-    if(!Boolean(isSaveCardCheckList))
+    if (!Boolean(isSaveCardCheckList))
       setIsSaveCardCheckList(isSaveCardCheckList);
   }, [isAddCardCheckList])
 
   React.useEffect(() => {
-    if(!Boolean(isSaveCardProfile))
+    if (!Boolean(isSaveCardProfile))
       setIsSaveCardProfile(isSaveCardProfile);
   }, [isAddCardProfile])
-  
+
   const getDataCards = async () => {
     try {
       const params = {
@@ -242,7 +249,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           setCardsOld(cloneDeep(data));
           setCards(data);
           // if (width < 768) {
-            // setCardsMobile(cloneDeep(data));
+          // setCardsMobile(cloneDeep(data));
           // }
           const dataEntry =
             data?.cards[0].data[0];
@@ -255,9 +262,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           });
           setValue("group_ref", selecedData);
           if (isEmpty(cardSelectedStore)) {
-             setFromValue(dataEntry);
+            setFromValue(dataEntry);
           }
-         
+
         } else {
           const selecedData = data?.groups?.find(
             (item) => item.id === +(dataQueries?.collection ?? 0)
@@ -279,10 +286,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       setCards({});
     }
   };
-  
+
   React.useEffect(() => {
     if (!isEmpty(router.query)) {
-        const getDataGrade = async () => {
+      const getDataGrade = async () => {
         try {
           const params = {
             has_values: true,
@@ -299,19 +306,19 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           // console.log(err);
           setGradeCompanys([]);
         }
-        };
+      };
       getDataCards();
       getDataGrade();
       setWindowWidth(window.innerWidth);
     }
-    
+
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
     var file = e.target.files[0];
-    if(file?.type !== "image/jpeg" &&  file?.type !== "image/png"  &&  file?.type !== "image/jpg") {
+    if (file?.type !== "image/jpeg" && file?.type !== "image/png" && file?.type !== "image/jpg") {
       return ToastSystem.error("File type not supported, please upload jpg or png files.");
     }
-    if(file?.size >= 10485760) {
+    if (file?.size >= 10485760) {
       return ToastSystem.error("Please upload a file smaller than 10 MB");
     }
     if (file) {
@@ -324,10 +331,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     /* ga event */
     event({
       action: "portfolio_image_upload ",
-      params : {
-        eventCategory:  'Portfolio',
-        eventAction:    'portfolio_image_upload',
-        eventLabel:     'Image Uploaded to Portfolio'
+      params: {
+        eventCategory: 'Portfolio',
+        eventAction: 'portfolio_image_upload',
+        eventLabel: 'Image Uploaded to Portfolio'
       }
     })
   };
@@ -412,10 +419,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         // delete datanew.front_image;
       }
 
-      let dataCompare = {...datanew};
+      let dataCompare = { ...datanew };
       delete dataCompare.back_image;
       delete dataCompare.front_image;
-      
+
       if (!isEqual(dataOld, dataCompare)) {
         return setUndoChangeStatus(true);
       } else {
@@ -425,7 +432,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         return setUndoChangeStatus(false);
       }
     }
-    
+
   }, [imageFront, imageBack]);
 
   React.useEffect(() => {
@@ -451,9 +458,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (cards.cards?.[activeEntry.cardIndex]?.data.length) {
         let cardData = cloneDeep(cards.cards);
         let index = cardData?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
-       
-        return onActiveEntry(activeEntry.cardIndex,  index ?? 0 , cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]);
-        
+
+        return onActiveEntry(activeEntry.cardIndex, index ?? 0, cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]);
+
       }
     }
   }, [cards?.cards])
@@ -485,7 +492,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       const result = await api.v1.portfolio.saveCards(params);
       if (result.success) {
         setIsLoading(false);
-        
+
         if (isEdit) {
           // @ts-ignore
           // localStorage.setItem('saveChangePortfolio', true);
@@ -493,11 +500,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           }
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0 }/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/","-") : 'All Cards'}`); 
+          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/", "-") : 'All Cards'}`);
         } else {
           router.back();
         }
-       
+
         return ToastSystem.success(result.message ?? "Create successfully");
       }
       if (!result.success) {
@@ -510,7 +517,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       return ToastSystem.error(result.message ?? result.error);
     } catch (err: any) {
       setIsLoading(false);
-      if(err?.response?.status === 403) {
+      if (err?.response?.status === 403) {
         return router.push('/verify-email')
       }
       // console.log(err);
@@ -523,23 +530,23 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (key === 'date_acq') {
         //@ts-ignore
         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
-        moment(e?.value ?? e).format("YYYY-MM-DD");
+          moment(e?.value ?? e).format("YYYY-MM-DD");
       } else {
         //@ts-ignore
         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
-        e?.value ?? e;
+          e?.value ?? e;
       }
-     
+
       setCards(newData);
-    } 
+    }
     // @ts-ignore
     let dataCompare = { ...newData.cards?.[activeEntry.cardIndex]?.data?.[activeEntry.entryIndex] };
     delete dataCompare.back_image;
     delete dataCompare.front_image;
 
     const dataEntry = cardsOld.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex];
-    
-    let dataOldCompare = {...dataEntry};
+
+    let dataOldCompare = { ...dataEntry };
 
     // @ts-ignore
     if (isEqual(dataOldCompare, dataCompare)) {
@@ -551,7 +558,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const onNewEntry = () => {
     // @ts-ignore
-    if(width < 768) {
+    if (width < 768) {
       $('.d-block-add-collection').animate({
         scrollTop: 0
       }, 300);
@@ -559,7 +566,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     let newData = { ...cards };
 
     if (newData.cards?.length) {
-      const newEntry = { ...cloneDeep(defaultCard), group_ref:  Number(dataQueries?.collection ?? 0) };
+      const newEntry = { ...cloneDeep(defaultCard), group_ref: Number(dataQueries?.collection ?? 0) };
       newData?.cards[activeEntry.cardIndex].data.push({ ...newEntry });
       setCards(newData);
       // set new index on old card
@@ -569,16 +576,16 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       // end
       setActiveEntry((prevState) => {
         // @ts-ignore
-        return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1  };
+        return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1 };
       });
       setFromValue(newEntry);
     }
 
-    isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   const onDuplicateEntry = () => {
-    let newData = { ...cards }; 
+    let newData = { ...cards };
     if (newData.cards?.length) {
       let newEntry = cloneDeep(
         newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
@@ -588,15 +595,15 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         back: backgroundImage.src,
       }
       newData?.cards[activeEntry.cardIndex].data.push({ ...newEntry });
-      
+
       setCards(newData);
       // set new index on old card
       setActiveEntry((prevState) => {
         // @ts-ignore
         return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1 };
       });
-      isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-       // @ts-ignore
+      isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      // @ts-ignore
       if (width < 768) {
         $('.d-block-add-collection').animate({
           scrollTop: 0
@@ -620,7 +627,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     let oldCompare = { ...data };
     delete oldCompare.back_image;
     delete oldCompare.front_image;
-    
+
     if (!isEmpty(dataEntry)) {
       if (!isEqual(dataEntry, oldCompare)) {
         setOldValueActive(dataEntry);
@@ -663,12 +670,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       url: dataEntry?.image_upload?.back ?? imageUpload.src,
       path: dataEntry.back_image,
     });
-  
+
     setImageFront({
       url: dataEntry?.image_upload?.front ?? imageUpload.src,
       path: dataEntry.front_image,
     });
-    
+
     setValue("note", dataEntry.note);
     // setValue("agree_share", dataEntry.agree_share);
   };
@@ -676,7 +683,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // router.push("/profile/collections");
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/','-') : 'All Cards'}`);
+      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/', '-') : 'All Cards'}`);
     } else {
       if (Boolean(isFilterState)) {
         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
@@ -690,24 +697,24 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (Boolean(isAddCardProfile)) {
         dispatch(SearchFilterAction.updateIsAddCardProfile(isAddCardProfile));
       }
-      
+
       router.back();
     }
-    
+
   };
 
   const onSubmitForm = () => {
     let newDataForm = null;
     // if (width >= 768) {
-      newDataForm = cloneDeep([...(cards?.cards ?? [])]);
+    newDataForm = cloneDeep([...(cards?.cards ?? [])]);
     // } else {
     //   newDataForm = cloneDeep([...(cardsMobile?.cards ?? [])]);
     // }
     newDataForm?.forEach((v, i) => {
       delete v.web_name;
       v.data?.forEach((card) => {
-        card.image_upload.back = card?.back_image ??  "";
-        card.image_upload.front = card?.front_image  ?? "";
+        card.image_upload.back = card?.back_image ?? "";
+        card.image_upload.front = card?.front_image ?? "";
 
         card.date_acq = moment(card.date_acq).format("YYYY-MM-DD");
         card.group_ref = card.group_ref?.id ?? card.group_ref;
@@ -726,7 +733,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           if (card?.grade_value !== cardSelectedStore?.grade_value) {
             flag = true
           }
-          
+
           if (flag) {
             dispatch(SearchFilterAction.updateChangedGradeValue(true));
             dispatch(SearchFilterAction.updateNewGradeValue({
@@ -784,7 +791,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   React.useEffect(() => {
     // @ts-ignore
     if (is_show_card_detail_collection && width < 768) {
-      
+
     } else {
 
     }
@@ -799,7 +806,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
   const onSaveEntry = () => {
     dispatch(ConfigAction.updateShowMenuCollection(false))
-    isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   const renderTextButton = () => {
@@ -816,66 +823,66 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     try {
       let newData: any = null;
       // if (width >= 768) {
-        newData = cloneDeep([...(cards?.cards ?? [])]);
+      newData = cloneDeep([...(cards?.cards ?? [])]);
       // } else {
       //   newData = cloneDeep([...(cardsMobile?.cards ?? [])]);
       // }
 
-      if(newData && newData[0].data.length > 1) {
-        isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      if (newData && newData[0].data.length > 1) {
+        isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       }
     } catch (error) {
       //
-    }  
+    }
     setIsLoadingDelete(true);
     // @ts-ignore
-    if(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) {
-        try {
-          const params = {
-            table: "portfolio",
-            portid_list: [
-              // @ts-ignore
-              cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
-                .port_id,
-            ],
-          };
-          const result = await api.v1.portfolio.deleteCardsPortfolio(params);
-          if (result.success) {
-            setActiveEntry({
-              cardIndex: 0,
-              entryIndex: 0,
-            });
-            setCards({
-              groups: [],
-              cards: [],
-            });
-            setCardsOld({
-              groups: [],
-              cards: [],
-            });
-            // setCardsMobile({
-            //   groups: [],
-            //   cards: undefined,
-            // });
-            // SetShowContentAddCollection(false);
-            dispatch(ConfigAction.updateShowMenuCollection(false))
-            getDataCards();
-            setIsLoadingDelete(false);
-            // // onHandleToast()
-            // setCardSelected([]);
-            // setPagesSelected([1])
-            // getListCard([1])
-            // setIsOpenModal(false)
-            return ToastSystem.success(result.message ?? result.error);
-          }
-          //setIsOpenModal(false)
+    if (cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id) {
+      try {
+        const params = {
+          table: "portfolio",
+          portid_list: [
+            // @ts-ignore
+            cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
+              .port_id,
+          ],
+        };
+        const result = await api.v1.portfolio.deleteCardsPortfolio(params);
+        if (result.success) {
+          setActiveEntry({
+            cardIndex: 0,
+            entryIndex: 0,
+          });
+          setCards({
+            groups: [],
+            cards: [],
+          });
+          setCardsOld({
+            groups: [],
+            cards: [],
+          });
+          // setCardsMobile({
+          //   groups: [],
+          //   cards: undefined,
+          // });
+          // SetShowContentAddCollection(false);
+          dispatch(ConfigAction.updateShowMenuCollection(false))
+          getDataCards();
           setIsLoadingDelete(false);
-          return ToastSystem.error(result.message ?? result.error);
-        } catch (err) {
-          setIsLoadingDelete(false);
+          // // onHandleToast()
+          // setCardSelected([]);
+          // setPagesSelected([1])
+          // getListCard([1])
           // setIsOpenModal(false)
-          // console.log(err);
+          return ToastSystem.success(result.message ?? result.error);
         }
+        //setIsOpenModal(false)
+        setIsLoadingDelete(false);
+        return ToastSystem.error(result.message ?? result.error);
+      } catch (err) {
+        setIsLoadingDelete(false);
+        // setIsOpenModal(false)
+        // console.log(err);
+      }
     }
     onRemoveEntry();
   };
@@ -884,7 +891,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     const dataKey = { ...activeEntry };
     let newData: any = null;
     // if (width >= 768) {
-      newData = cloneDeep([...(cards?.cards ?? [])]);
+    newData = cloneDeep([...(cards?.cards ?? [])]);
     // } else {
     //   newData = cloneDeep([...(cardsMobile?.cards ?? [])]);
     // }
@@ -908,9 +915,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     //     cards: newData,
     //   };
     // });
-    if (newData?.length) { 
+    if (newData?.length) {
       // console.log(newData)
-      const dataEntry = {...newData[0].data[0]};
+      const dataEntry = { ...newData[0].data[0] };
       onActiveEntry(0, 0, dataEntry)
     }
     // SetShowContentAddCollection(false);
@@ -923,10 +930,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       entry?.grade_company?.name == ungraded && entry.grade_value != NotSpecified
         ? ""
         : entry?.grade_company?.name === ungraded
-        ? ungraded
+          ? ungraded
           : "";
     const values = gradeCompanys?.find(item => item?.id == entry?.grade_company?.id)?.values ?? [];
-    
+
     const gradeCompanyShow = values?.find(
       (item: any) => item?.value == entry?.grade_value
     );
@@ -947,7 +954,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (width < 768) {
       return "Remove Card";
     }
-   return `Remove Card from ${t('portfolio.text')}` 
+    return `Remove Card from ${t('portfolio.text')}`
   }
 
   const scrollTopAsync = (d: number, fn: Function) => {
@@ -959,14 +966,14 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     }
     setTimeout(() => {
       fn(ConfigAction.updateShowMenuCollection(true));
-    },550)
+    }, 550)
   }
 
-  const formatOptionPortfolio = ({id, group_name, type}: any) => (
-   <>
-    {group_name}
-    {type == 2 && <i className="ms-1 ic-padlock" aria-hidden="true"></i>}
-   </>
+  const formatOptionPortfolio = ({ id, group_name, type }: any) => (
+    <>
+      {group_name}
+      {type == 2 && <i className="ms-1 ic-padlock" aria-hidden="true"></i>}
+    </>
   );
 
   return (
@@ -975,39 +982,39 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <>
-            {+router?.query?.collection !== 0 ? <Link
-              href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
-            >
-              <a className="container-collection-profile-head" title={groupRef?.name}>
-                <img
-                  src={ArrowProfile}
-                  alt=""
-                />
-                {groupRef?.name}
-              </a>
-            </Link> :
-            <Link href={`/profile/portfolio/0/All Cards`}>
-              <a className="container-collection-profile-head" title="All Cards"> 
-                <img
-                  src={ArrowProfile}
-                  alt=""
-                />
-                All Cards
-              </a>
-            </Link>
-            }
-          </>
+              {+router?.query?.collection !== 0 ? <Link
+                href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
+              >
+                <a className="container-collection-profile-head" title={groupRef?.name}>
+                  <img
+                    src={ArrowProfile}
+                    alt=""
+                  />
+                  {groupRef?.name}
+                </a>
+              </Link> :
+                <Link href={`/profile/portfolio/0/All Cards`}>
+                  <a className="container-collection-profile-head" title="All Cards">
+                    <img
+                      src={ArrowProfile}
+                      alt=""
+                    />
+                    All Cards
+                  </a>
+                </Link>
+              }
+            </>
           ) : (
             <Link
               href={`/profile/collections`}
             >
-            <a className="container-collection-profile-head">
-              <img
-                src={ArrowProfile}
-                alt=""
-              />
-              {t('portfolio.text')}
-             </a>
+              <a className="container-collection-profile-head">
+                <img
+                  src={ArrowProfile}
+                  alt=""
+                />
+                {t('portfolio.text')}
+              </a>
             </Link>
           )}
         </div>
@@ -1064,7 +1071,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         )}
                       </div>
                     </div>}
-                
+
                     {item?.data?.map((entry, k) => (
                       <div
                         key={k}
@@ -1077,19 +1084,18 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         className="mb-3 card-add-detail entry"
                       >
                         <div
-                          className={`d-flex justify-content-between ${
-                            activeEntry.cardIndex === key &&
-                            activeEntry.entryIndex === k
+                          className={`d-flex justify-content-between ${activeEntry.cardIndex === key &&
+                              activeEntry.entryIndex === k
                               ? "active"
                               : ""
-                          }  rounded border border-1 p-2`}
+                            }  rounded border border-1 p-2`}
                           onClick={() => {
                             //@ts-ignore
                             if (width < 768) {
                               onActiveEntry(key, k, entry);
                               // setCards(cloneDeep(cardsMobile));
                               scrollTopAsync(0, dispatch)
-                                // dispatch(ConfigAction.updateShowMenuCollection(true))
+                              // dispatch(ConfigAction.updateShowMenuCollection(true))
                               setFromValue(entry);
                               // SetShowContentAddCollection(true);
                             }
@@ -1098,27 +1104,26 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           <div className="box-left">
                             <div className="d-block justify-content-between align-items-center card-add-detail__txt">
                               <div
-                                className={`me-1 ${
-                                  entry?.grade_company &&
-                                  entry?.grade_company?.name == ungraded &&
-                                  `${entry.grade_value}` == NotSpecified
+                                className={`me-1 ${entry?.grade_company &&
+                                    entry?.grade_company?.name == ungraded &&
+                                    `${entry.grade_value}` == NotSpecified
                                     ? ""
                                     : "card-add-detail-grade text-nowrap"
-                                }`}
+                                  }`}
                                 style={{
                                   backgroundColor:
                                     entry?.grade_company &&
-                                    entry?.grade_company?.name === ungraded &&
-                                    `${entry.grade_value}` == NotSpecified
+                                      entry?.grade_company?.name === ungraded &&
+                                      `${entry.grade_value}` == NotSpecified
                                       ? "transparent"
                                       : entry?.grade_company?.color_2 ??
-                                        entry?.grade_company?.grade_color_2,
+                                      entry?.grade_company?.grade_color_2,
                                   color:
                                     entry?.grade_company?.name === ungraded &&
-                                    `${entry.grade_value}` == NotSpecified
+                                      `${entry.grade_value}` == NotSpecified
                                       ? "#18213A"
                                       : entry?.grade_company?.color_1 ??
-                                        entry?.grade_company?.grade_color_1,
+                                      entry?.grade_company?.grade_color_1,
                                 }}
                               >
                                 {renderGradeValue(entry)}
@@ -1200,103 +1205,100 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           </div>
         </div>
         <div
-          className={`col-md-8 col-12 add-collection-right ${
-            is_show_card_detail_collection ? "d-block-add-collection" : ""
-          }`}
+          className={`col-md-8 col-12 add-collection-right ${is_show_card_detail_collection ? "d-block-add-collection" : ""
+            }`}
         >
           {
             //@ts-ignore
             width < 768 && is_show_card_detail_collection === true && (
-            // <div>
-            //   <div className={`d-flex align-items-center active rounded border border-1 p-2`} onClick={ () => {SetShowContentAddCollection(width < 768 ? false : false)}}>
-            //     <div className='arrowBack'>
-            //       <img src={IconArrow}  className='revertArrow'/>
-            //     </div>
-            //     <div>
-            //         <div className="d-flex justify-content-between align-items-center card-add-detail__txt">
+              // <div>
+              //   <div className={`d-flex align-items-center active rounded border border-1 p-2`} onClick={ () => {SetShowContentAddCollection(width < 768 ? false : false)}}>
+              //     <div className='arrowBack'>
+              //       <img src={IconArrow}  className='revertArrow'/>
+              //     </div>
+              //     <div>
+              //         <div className="d-flex justify-content-between align-items-center card-add-detail__txt">
 
-            //           <div className={`me-1 title-grade ${activeEntryData?.grade_company && activeEntryData?.grade_company?.name != "ungraded" ? 'card-add-detail-grade' : ''
-            //             }`}
-            //             style={{ backgroundColor: activeEntryData?.grade_company && activeEntryData?.grade_company?.name != "ungraded" ? activeEntryData?.grade_company?.color_2 ?? activeEntryData?.grade_company?.grade_color_2 : 'transparent' }}>
-            //             <span className="text-transform-capitalize">{activeEntryData?.grade_company?.name}</span> {activeEntryData?.grade_value}
-            //           </div>
-            //           {/* <span>{formatCurrencyCustom(activeEntryData?.user_price, activeEntryData?.user_currency)}</span> */}
-            //           </div>
-            //         <div className="card-add-detail__name">{cards?.groups?.find(item => item.id === (activeEntryData?.group_ref?.id ?? activeEntryData?.group_ref))?.group_name ?? ""}</div>
-            //       </div>
-            //     </div>
-            //   </div>
-            <>
-              {cards.cards?.map((item, key) => (
-                <div key={key} className="card-add">
-                  {item?.data?.map((entry, k) => (
-                    <div
-                      key={k}
-                      onClick={() => onActiveEntry(key, k, entry)}
-                      className="mb-3 card-add-detail entry"
-                    >
+              //           <div className={`me-1 title-grade ${activeEntryData?.grade_company && activeEntryData?.grade_company?.name != "ungraded" ? 'card-add-detail-grade' : ''
+              //             }`}
+              //             style={{ backgroundColor: activeEntryData?.grade_company && activeEntryData?.grade_company?.name != "ungraded" ? activeEntryData?.grade_company?.color_2 ?? activeEntryData?.grade_company?.grade_color_2 : 'transparent' }}>
+              //             <span className="text-transform-capitalize">{activeEntryData?.grade_company?.name}</span> {activeEntryData?.grade_value}
+              //           </div>
+              //           {/* <span>{formatCurrencyCustom(activeEntryData?.user_price, activeEntryData?.user_currency)}</span> */}
+              //           </div>
+              //         <div className="card-add-detail__name">{cards?.groups?.find(item => item.id === (activeEntryData?.group_ref?.id ?? activeEntryData?.group_ref))?.group_name ?? ""}</div>
+              //       </div>
+              //     </div>
+              //   </div>
+              <>
+                {cards.cards?.map((item, key) => (
+                  <div key={key} className="card-add">
+                    {item?.data?.map((entry, k) => (
                       <div
-                        className={`d-flex justify-content-between card-add-mobile ${
-                          activeEntry.cardIndex === key &&
-                          activeEntry.entryIndex === k
-                            ? "active"
-                            : "d-none"
-                        }  rounded border border-1 p-2`}
-                        onClick={() => {
-                          // setCards(cloneDeep(cardsMobile))
-                          // SetShowContentAddCollection(false);
-                          dispatch(ConfigAction.updateShowMenuCollection(false))
-                        }}
+                        key={k}
+                        onClick={() => onActiveEntry(key, k, entry)}
+                        className="mb-3 card-add-detail entry"
                       >
-                        <div className="arrowBack">
-                          <img src={IconArrow.src} className="revertArrow" alt="" />
-                        </div>
-                        <div className="content-card">
-                          <div className="d-block justify-content-between align-items-center card-add-detail__txt box-left">
-                            <div className="d-block align-items-center">
-                              <div
-                                className={`me-1 ${
-                                  entry?.grade_company &&
-                                  entry?.grade_company?.name == ungraded &&
-                                  `${entry.grade_value}` == NotSpecified
-                                    ? ""
-                                    : "card-add-detail-grade text-nowrap"
-                                }`}
-                                style={{
-                                  backgroundColor:
-                                  entry?.grade_company &&
-                                  entry?.grade_company?.name === ungraded &&
-                                  `${entry.grade_value}` == NotSpecified
-                                    ? "transparent"
-                                    : entry?.grade_company?.color_2 ??
-                                      entry?.grade_company?.grade_color_2,
-                                color:
-                                  entry?.grade_company?.name === ungraded &&
-                                  `${entry.grade_value}` == NotSpecified
-                                    ? "#18213A"
-                                    : entry?.grade_company?.color_1 ??
-                                      entry?.grade_company?.grade_color_1,
-                                }}
-                              >
-                                {renderGradeValue(entry)}
+                        <div
+                          className={`d-flex justify-content-between card-add-mobile ${activeEntry.cardIndex === key &&
+                              activeEntry.entryIndex === k
+                              ? "active"
+                              : "d-none"
+                            }  rounded border border-1 p-2`}
+                          onClick={() => {
+                            // setCards(cloneDeep(cardsMobile))
+                            // SetShowContentAddCollection(false);
+                            dispatch(ConfigAction.updateShowMenuCollection(false))
+                          }}
+                        >
+                          <div className="arrowBack">
+                            <img src={IconArrow.src} className="revertArrow" alt="" />
+                          </div>
+                          <div className="content-card">
+                            <div className="d-block justify-content-between align-items-center card-add-detail__txt box-left">
+                              <div className="d-block align-items-center">
+                                <div
+                                  className={`me-1 ${entry?.grade_company &&
+                                      entry?.grade_company?.name == ungraded &&
+                                      `${entry.grade_value}` == NotSpecified
+                                      ? ""
+                                      : "card-add-detail-grade text-nowrap"
+                                    }`}
+                                  style={{
+                                    backgroundColor:
+                                      entry?.grade_company &&
+                                        entry?.grade_company?.name === ungraded &&
+                                        `${entry.grade_value}` == NotSpecified
+                                        ? "transparent"
+                                        : entry?.grade_company?.color_2 ??
+                                        entry?.grade_company?.grade_color_2,
+                                    color:
+                                      entry?.grade_company?.name === ungraded &&
+                                        `${entry.grade_value}` == NotSpecified
+                                        ? "#18213A"
+                                        : entry?.grade_company?.color_1 ??
+                                        entry?.grade_company?.grade_color_1,
+                                  }}
+                                >
+                                  {renderGradeValue(entry)}
+                                </div>
+                                <strong className="ms-1 text-ellipsis">
+                                  {Boolean(+entry.user_price) && formatCurrencyCustom(
+                                    entry.user_price,
+                                    entry.user_currency
+                                  )}
+                                </strong>
                               </div>
-                              <strong className="ms-1 text-ellipsis">
-                                {Boolean(+entry.user_price) && formatCurrencyCustom(
-                                  entry.user_price,
-                                  entry.user_currency
-                                )}
-                              </strong>
+                            </div>
+                            <div className="card-add-detail__name">
+                              {cards?.groups?.find(
+                                (item) =>
+                                  item.id ===
+                                  (entry?.group_ref?.id ?? entry?.group_ref)
+                              )?.group_name ?? ""}
                             </div>
                           </div>
-                          <div className="card-add-detail__name">
-                            {cards?.groups?.find(
-                              (item) =>
-                                item.id ===
-                                (entry?.group_ref?.id ?? entry?.group_ref)
-                            )?.group_name ?? ""}
-                          </div>
-                        </div>
-                        {/*<div className="d-flex images justify-content-center align-items-center">
+                          {/*<div className="d-flex images justify-content-center align-items-center">
                           <div className="aspect-sm">
                             <img
                               src={
@@ -1318,59 +1320,59 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             />
                           </div>
                         </div>*/}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </>
-          )}
+                    ))}
+                  </div>
+                ))}
+              </>
+            )}
           {
             //@ts-ignore
             width >= 768 && (
-            <>
-              {isEdit && isEmpty(groupRef) ? (
-                <Skeleton style={{ width: 100 }} />
-              ) : (
-                <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb breadcrumb-edit-card mt-1">
-                    <li className="breadcrumb-item">
-                      <Link href="/profile/portfolio">
-                        <a title={t('portfolio.text')}>
-                          {t('portfolio.text')}
-                        </a>
-                      </Link>
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                      {isEdit ? (
-                        <>
-                          {+router?.query?.collection !== 0 ? <Link
-                            href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
-                          >
-                            <a title={groupRef?.name}>
-                            {groupRef?.name}
-                            </a>
-                          </Link> :
-                          <Link href={`/profile/portfolio/0/All Cards`}>
-                            <a title="All Cards"> All Cards </a>
-                          </Link>
-                          }
-                        </>
-                      ) : (
-                        "Add Card"
+              <>
+                {isEdit && isEmpty(groupRef) ? (
+                  <Skeleton style={{ width: 100 }} />
+                ) : (
+                  <nav aria-label="breadcrumb">
+                    <ol className="breadcrumb breadcrumb-edit-card mt-1">
+                      <li className="breadcrumb-item">
+                        <Link href="/profile/portfolio">
+                          <a title={t('portfolio.text')}>
+                            {t('portfolio.text')}
+                          </a>
+                        </Link>
+                      </li>
+                      <li className="breadcrumb-item active" aria-current="page">
+                        {isEdit ? (
+                          <>
+                            {+router?.query?.collection !== 0 ? <Link
+                              href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
+                            >
+                              <a title={groupRef?.name}>
+                                {groupRef?.name}
+                              </a>
+                            </Link> :
+                              <Link href={`/profile/portfolio/0/All Cards`}>
+                                <a title="All Cards"> All Cards </a>
+                              </Link>
+                            }
+                          </>
+                        ) : (
+                          "Add Card"
+                        )}
+                      </li>
+                      {isEdit && (
+                        <li
+                          className="breadcrumb-item active"
+                          aria-current="page"
+                        > Edit Card </li>
                       )}
-                    </li>
-                    {isEdit && (
-                      <li
-                        className="breadcrumb-item active"
-                        aria-current="page"
-                      > Edit Card </li>
-                    )}
-                  </ol>
-                </nav>
-              )}
-            </>
-          )}
+                    </ol>
+                  </nav>
+                )}
+              </>
+            )}
 
           <div className="add-collection-right-content">
             <div className="d-flex justify-content-between align-items-center add-collection-right__title">
@@ -1379,59 +1381,59 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               </h2>
               { // @ts-ignore
                 isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex]?.data[activeEntry?.entryIndex]?.port_id) && undoChangeStatus && (
-                <button type="button" onClick={onUndo} className="btn btn-undo m-0">
-                  <img src={rotateLeft} alt="Undo Changes" title="Undo Changes"/> Undo Changes
-                </button>
-              )}
+                  <button type="button" onClick={onUndo} className="btn btn-undo m-0">
+                    <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes
+                  </button>
+                )}
               {// @ts-ignore
                 Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.port_id) && renderTextButton() === "s" && (
-                <button
-                  type="button"
-                  onClick={onRemoveEntry}
-                  className="btn btn-remove-entry"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <button
+                    type="button"
+                    onClick={onRemoveEntry}
+                    className="btn btn-remove-entry"
                   >
-                    <path
-                      d="M3.35559 5.66221L3.35559 15.1827C3.35559 15.7454 3.56345 16.2738 3.92657 16.653C4.28801 17.0332 4.79102 17.2491 5.31745 17.25H12.6826C13.2091 17.2491 13.7121 17.0332 14.0734 16.653C14.4365 16.2738 14.6444 15.7454 14.6444 15.1827L14.6444 5.66221C15.3662 5.47202 15.834 4.77979 15.7374 4.04455C15.6407 3.30945 15.0098 2.75956 14.2629 2.75941H12.2699V2.27639C12.2721 1.8702 12.1104 1.48017 11.8207 1.19322C11.531 0.906428 11.1375 0.74673 10.7283 0.750051L7.2717 0.750051C6.86251 0.74673 6.46899 0.906428 6.17932 1.19322C5.88964 1.48017 5.72785 1.8702 5.73013 2.27639V2.75941L3.7371 2.75941C2.99019 2.75956 2.3593 3.30945 2.26259 4.04455C2.16604 4.77979 2.63377 5.47202 3.35559 5.66221ZM12.6826 16.4772H5.31745C4.65189 16.4772 4.13413 15.9096 4.13413 15.1827L4.13413 5.69617L13.8659 5.69617L13.8659 15.1827C13.8659 15.9096 13.3481 16.4772 12.6826 16.4772ZM6.50867 2.27639C6.50609 2.07518 6.58577 1.88152 6.72961 1.73949C6.87331 1.59745 7.06886 1.51941 7.2717 1.52288L10.7283 1.52288C10.9311 1.51941 11.1267 1.59745 11.2704 1.73949C11.4142 1.88137 11.4939 2.07518 11.4913 2.27639V2.75941L6.50867 2.75941V2.27639ZM3.7371 3.53224L14.2629 3.53224C14.6499 3.53224 14.9636 3.84364 14.9636 4.22779C14.9636 4.61194 14.6499 4.92334 14.2629 4.92334L3.7371 4.92334C3.35012 4.92334 3.03642 4.61194 3.03642 4.22779C3.03642 3.84364 3.35012 3.53224 3.7371 3.53224Z"
-                      fill="#CA1130"
-                      stroke="#CA1130"
-                      stroke-width="0.4"
-                      stroke-linejoin="round"
-                    />
-                    <rect
-                      x="5.94141"
-                      y="7.5"
-                      width="1.14"
-                      height="7.32"
-                      rx="0.57"
-                      fill="#CA1130"
-                    />
-                    <rect
-                      x="8.42969"
-                      y="7.5"
-                      width="1.14"
-                      height="7.32"
-                      rx="0.57"
-                      fill="#CA1130"
-                    />
-                    <rect
-                      x="10.9219"
-                      y="7.5"
-                      width="1.14"
-                      height="7.32"
-                      rx="0.57"
-                      fill="#CA1130"
-                    />
-                  </svg>
-                  Remove Entry
-                </button>
-              )}
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3.35559 5.66221L3.35559 15.1827C3.35559 15.7454 3.56345 16.2738 3.92657 16.653C4.28801 17.0332 4.79102 17.2491 5.31745 17.25H12.6826C13.2091 17.2491 13.7121 17.0332 14.0734 16.653C14.4365 16.2738 14.6444 15.7454 14.6444 15.1827L14.6444 5.66221C15.3662 5.47202 15.834 4.77979 15.7374 4.04455C15.6407 3.30945 15.0098 2.75956 14.2629 2.75941H12.2699V2.27639C12.2721 1.8702 12.1104 1.48017 11.8207 1.19322C11.531 0.906428 11.1375 0.74673 10.7283 0.750051L7.2717 0.750051C6.86251 0.74673 6.46899 0.906428 6.17932 1.19322C5.88964 1.48017 5.72785 1.8702 5.73013 2.27639V2.75941L3.7371 2.75941C2.99019 2.75956 2.3593 3.30945 2.26259 4.04455C2.16604 4.77979 2.63377 5.47202 3.35559 5.66221ZM12.6826 16.4772H5.31745C4.65189 16.4772 4.13413 15.9096 4.13413 15.1827L4.13413 5.69617L13.8659 5.69617L13.8659 15.1827C13.8659 15.9096 13.3481 16.4772 12.6826 16.4772ZM6.50867 2.27639C6.50609 2.07518 6.58577 1.88152 6.72961 1.73949C6.87331 1.59745 7.06886 1.51941 7.2717 1.52288L10.7283 1.52288C10.9311 1.51941 11.1267 1.59745 11.2704 1.73949C11.4142 1.88137 11.4939 2.07518 11.4913 2.27639V2.75941L6.50867 2.75941V2.27639ZM3.7371 3.53224L14.2629 3.53224C14.6499 3.53224 14.9636 3.84364 14.9636 4.22779C14.9636 4.61194 14.6499 4.92334 14.2629 4.92334L3.7371 4.92334C3.35012 4.92334 3.03642 4.61194 3.03642 4.22779C3.03642 3.84364 3.35012 3.53224 3.7371 3.53224Z"
+                        fill="#CA1130"
+                        stroke="#CA1130"
+                        stroke-width="0.4"
+                        stroke-linejoin="round"
+                      />
+                      <rect
+                        x="5.94141"
+                        y="7.5"
+                        width="1.14"
+                        height="7.32"
+                        rx="0.57"
+                        fill="#CA1130"
+                      />
+                      <rect
+                        x="8.42969"
+                        y="7.5"
+                        width="1.14"
+                        height="7.32"
+                        rx="0.57"
+                        fill="#CA1130"
+                      />
+                      <rect
+                        x="10.9219"
+                        y="7.5"
+                        width="1.14"
+                        height="7.32"
+                        rx="0.57"
+                        fill="#CA1130"
+                      />
+                    </svg>
+                    Remove Entry
+                  </button>
+                )}
             </div>
             <div>
               {!isEmpty(gradeCompanys) && (
@@ -1451,7 +1453,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           setValue("grade_value", e.values[0].value);
                           onUpdateValue(e.values[0].value, "grade_value");
                         }}
-                        isSearchable={ false }
+                        isSearchable={false}
                         components={{ Option }}
                         classNamePrefix="react-select-grading"
                         className="react-select-grading"
@@ -1516,7 +1518,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <label htmlFor="inputEmail4" className="form-label">
                     Purchase Price{" "}
                     <OverlayTrigger
-                     overlay={<Tooltip>This value is private. It can be used in the collection analytics as a substitute value for missing prices.</Tooltip>}
+                      overlay={<Tooltip>This value is private. It can be used in the collection analytics as a substitute value for missing prices.</Tooltip>}
                     >
                       {({ ref, ...triggerHandler }) => (
                         <img
@@ -1543,7 +1545,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           classNamePrefix="select-price"
                           className="select-price customScroll input-height-56"
                           options={currencies}
-                          isSearchable={ false }
+                          isSearchable={false}
                           styles={{
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
@@ -1621,7 +1623,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             <div className="mb-3 mt-4">
               <label htmlFor="" className="form-label">
                 {" "}
-                { t('portfolio.text') }{" "}
+                {t('portfolio.text')}{" "}
               </label>
               <Controller
                 control={control}
@@ -1629,7 +1631,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 render={({ field: { onChange, value } }) => (
                   <Select
                     value={value}
-                    isSearchable={ false }
+                    isSearchable={false}
                     onChange={(e) => {
                       onChange(e);
                       onUpdateValue(e, "group_ref");
@@ -1666,12 +1668,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Front")}
                     accept="image/*"
-                    onClick={(e: any) => {e.target.value = ''}}
+                    onClick={(e: any) => { e.target.value = '' }}
                   />
                   <img
                     className="cursor-pointer w-100"
                     src={
-                      imageFront.url ? (imageFront.url === backgroundImage.src ? backgroundImageUpload.src :   imageFront.url) : backgroundImageUpload.src
+                      imageFront.url ? (imageFront.url === backgroundImage.src ? backgroundImageUpload.src : imageFront.url) : backgroundImageUpload.src
                     }
                     alt=""
                   />
@@ -1695,7 +1697,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Back")}
                     accept="image/*"
-                    onClick={(e: any) => {e.target.value = ''}}
+                    onClick={(e: any) => { e.target.value = '' }}
                   />
                 </div>
                 <div className="mt-1 form-label"> Card Back </div>
@@ -1750,12 +1752,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               {
                 //@ts-ignore
                 width < 768 && (
-                <button
-                  onClick={onSaveEntry}
-                  type="button"
-                  className="btn-lg btn btn-light btn-save w-50 mr-2"
-                > Save Entry 	&amp; Back </button>
-              )}
+                  <button
+                    onClick={onSaveEntry}
+                    type="button"
+                    className="btn-lg btn btn-light btn-save w-50 mr-2"
+                  > Save Entry 	&amp; Back </button>
+                )}
               <button
                 onClick={onNewEntry}
                 type="button"
@@ -1769,51 +1771,50 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             </div>
             { // @ts-ignore
               isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
-              <div className="d-flex justify-content-center btn-remove-card-collection">
-                <button
-                  disabled={isLoadingDelete}
-                  onClick={() => setIsOpenModal(true)}
-                  className="btn btn-remove"
-                > <img src={IconDelete.src} alt="" /> {renderTitleRemove()} </button>
-              </div>
-            )}
+                <div className="d-flex justify-content-center btn-remove-card-collection">
+                  <button
+                    disabled={isLoadingDelete}
+                    onClick={() => setIsOpenModal(true)}
+                    className="btn btn-remove"
+                  > <img src={IconDelete.src} alt="" /> {renderTitleRemove()} </button>
+                </div>
+              )}
             {
               // @ts-ignore
-              width < 768 && Boolean(cards?.cards.length) && !Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id)  && (
-              <div className="d-flex justify-content-center btn-remove-card-collection">
-                <button
-                  disabled={isLoadingDelete}
-                  onClick={onRemoveEntry}
-                  className="btn btn-remove"
-                > <img src={IconDelete.src} alt="Remove Entry" title="Remove Entry" /> Remove Entry </button>
-              </div>
-            )}
-            { // @ts-ignore
-              width < 768 && isEdit && Boolean(cards?.cards.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (  
+              width < 768 && Boolean(cards?.cards.length) && !Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
                 <div className="d-flex justify-content-center btn-remove-card-collection">
-                <button
-                  onClick={onUndo}
-                  className="btn btn-undo"
-                >  <img src={rotateLeft} alt="Undo Changes" title="Undo Changes"/> Undo Changes </button>
-              </div>
+                  <button
+                    disabled={isLoadingDelete}
+                    onClick={onRemoveEntry}
+                    className="btn btn-remove"
+                  > <img src={IconDelete.src} alt="Remove Entry" title="Remove Entry" /> Remove Entry </button>
+                </div>
+              )}
+            { // @ts-ignore
+              width < 768 && isEdit && Boolean(cards?.cards.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
+                <div className="d-flex justify-content-center btn-remove-card-collection">
+                  <button
+                    onClick={onUndo}
+                    className="btn btn-undo"
+                  >  <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes </button>
+                </div>
               )}
           </div>
         </div>
       </div>
       <EditImage
-        code={`${
-          cards?.cards?.length
+        code={`${cards?.cards?.length
             ? cards?.cards[activeEntry.cardIndex].card_id
             : ""
-        }`}
+          }`}
         onSuccessFile={onSuccessFile}
         ref={EditImageRef}
       />
-      <ModalDeleteCollection 
+      <ModalDeleteCollection
         isOpen={isOpenModal}
         title={`Are you sure you want to remove this card from your collection?`}
         onClose={() => setIsOpenModal(false)}
-        onSuccess={()=>  {setIsOpenModal(false); onRemoveCard()}}
+        onSuccess={() => { setIsOpenModal(false); onRemoveCard() }}
       />
     </div>
   );
