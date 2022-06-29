@@ -10,9 +10,9 @@ export default function App() {
   return (
     <>
       <Head>
-				<title>404 | PriceGuide.Cards</title>
-				<meta name="description" content="" />
-			</Head>
+        <title>404 | PriceGuide.Cards</title>
+        <meta name="description" content="" />
+      </Head>
       <div className="notFound">
         <div className="content-404">
           <img src={img404} alt="404" title="404" width="454" height="490" />

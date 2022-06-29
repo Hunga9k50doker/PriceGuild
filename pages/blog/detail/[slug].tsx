@@ -1,17 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
-import imgAdvertisement2 from "assets/images/advertisement-sidebar.jpg";
-import imgClose2 from "assets/images/cross-black.svg";
-import imgSearch from "assets/images/search.svg";
-
-import imgFacebook from "assets/images/icon-facebook.svg";
-import imgTwitter from "assets/images/icon-twitter.svg";
-import imgLinkedin from "assets/images/icon-linkedin.svg";
-import imgCopy from "assets/images/icon-copy-black.svg";
-
-import imgVertical from "assets/images/dots-vertical.svg";
-import imgEdit from "assets/images/icon-edit.svg";
-import imgDelete from "assets/images/icon-delete.svg";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { BlogData } from "interfaces";
@@ -19,6 +6,17 @@ import { api } from 'configs/axios';
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton'
 import Head from 'next/head';
+
+import imgAdvertisement2 from "assets/images/advertisement-sidebar.jpg";
+import imgClose2 from "assets/images/cross-black.svg";
+import imgSearch from "assets/images/search.svg";
+import imgFacebook from "assets/images/icon-facebook.svg";
+import imgTwitter from "assets/images/icon-twitter.svg";
+import imgLinkedin from "assets/images/icon-linkedin.svg";
+import imgCopy from "assets/images/icon-copy-black.svg";
+import imgVertical from "assets/images/dots-vertical.svg";
+import imgEdit from "assets/images/icon-edit.svg";
+import imgDelete from "assets/images/icon-delete.svg";
 
 type PropTypes = {
 	location: any,

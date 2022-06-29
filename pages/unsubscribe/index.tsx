@@ -1,16 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import FriendDetail from "components/profile/friends/friendDetail";
-import { MyStorage } from "helper/local_storage";
-import { AuthActions } from "redux/actions/auth_action";
-import { useDispatch } from 'react-redux';
-import queryString from 'query-string';
+import React, { useEffect, useState } from 'react';
 import { api } from 'configs/axios';
 import Skeleton from 'react-loading-skeleton';
 import { useRouter } from 'next/router';
 import { head, isEmpty } from 'lodash';
 import Head from 'next/head';
 
-const Unsubscribe: React.FC = ({...props}) => {
+const Unsubscribe: React.FC = ({ ...props }) => {
     const router = useRouter();
     const { code } = router.query;
     const [status, setStatus] = useState<boolean>(false);
@@ -23,24 +18,24 @@ const Unsubscribe: React.FC = ({...props}) => {
                 const params = {
                     token: code
                 };
-                    
+
                 const result = await api.v1.account.unSubcribeAcounnt(params);
-                
+
                 setStatus(!result.success);
                 setisLoading(false);
-            
+
                 //@ts-ignore
                 setTitle(result?.title)
                 setMessage(result?.message)
             }
-			catch (err) {
-				setStatus(true);
+            catch (err) {
+                setStatus(true);
                 setisLoading(false);
             }
-		}
-		if (!isEmpty(router.query)) {
-			restoreAccount();
-		}
+        }
+        if (!isEmpty(router.query)) {
+            restoreAccount();
+        }
     }, [router.query])
     return (
         <>
@@ -71,22 +66,24 @@ const Unsubscribe: React.FC = ({...props}) => {
                 </div>
             </div>
         </>
-  );
+    );
 }
-export const getServerSideProps = async (context: any) => { 
-  try {
-   
-    let titlePage = `Unsubscribe | PriceGuide.Cards`;
-    
-    return {props:{
-     titlePage
-    }}
+export const getServerSideProps = async (context: any) => {
+    try {
 
-  } catch (error) {
-    
-  }
-  return {
-    props: {},
-  };
+        let titlePage = `Unsubscribe | PriceGuide.Cards`;
+
+        return {
+            props: {
+                titlePage
+            }
+        }
+
+    } catch (error) {
+
+    }
+    return {
+        props: {},
+    };
 }
 export default Unsubscribe;

@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { api } from "configs/axios";
 import { TopElementType, FilterType, ManageCollectionType } from "interfaces";
-import CheckBoxFilter, { FilterHandle } from "components/filter/customCheckBox";
 import { isEmpty, sumBy } from "lodash";
-import { MetaData } from "utils/constant";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useSelector, useDispatch } from "react-redux";
 import Selectors from "redux/selectors";
-import FilterSport from "components/filter/filterSport";
+import { CompareAction } from "redux/actions/compare_action";
+import { ToastSystem } from "helper/toast_system";
+import Skeleton from "react-loading-skeleton";
+import Head from 'next/head';
+// @ts-ignore
+import $ from "jquery";
+import { useTranslation } from "react-i18next";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { pageView, event } from "libs/ga"
+
+import useWindowDimensions from "utils/useWindowDimensions";
 import { paginate, formatNumber, formatCurrency, gen_card_url } from "utils/helper";
+import { MetaData } from "utils/constant";
+
+import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import ButtonClear from "assets/images/Clear.png";
 import IconFolder from "assets/images/icon-folder-svg.svg";
 import IconFolderFull from "assets/images/icon-folder-active.svg";
@@ -18,23 +29,15 @@ import IconHeartFull from "assets/images/icon_heart_tim.svg";
 import IconCan from "assets/images/icon_can.svg";
 import IconCanFull from "assets/images/icon_can_tim.svg";
 import IconDot3 from "assets/images/dot-3.svg";
+
+import FilterSport from "components/filter/filterSport";
 import LoginModal from "components/modal/login";
 import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
-import { CompareAction } from "redux/actions/compare_action";
-import { ToastSystem } from "helper/toast_system";
+import CheckBoxFilter, { FilterHandle } from "components/filter/customCheckBox";
 import Pagination from "components/panigation";
 import CheckBoxMobile from "components/filter/checkBoxMobile";
-import useWindowDimensions from "utils/useWindowDimensions";
-import Skeleton from "react-loading-skeleton";
-import Head from 'next/head';
-// @ts-ignore
-import $ from "jquery";
 import { CardModel } from "model/data_sport/card_sport";
-import CardPhotoBase from "assets/images/Card Photo Base.svg";
-import { useTranslation } from "react-i18next";
-import { SearchFilterAction } from "redux/actions/search_filter_action";
-import {pageView, event} from "libs/ga"
 
 const rowsPerPage = 20;
 
@@ -114,7 +117,7 @@ const Top100 = (props: PropTypes) => {
       );
     }
   }, [sports]);
-  
+
   useEffect(() => {
     if (!isEmpty(filterData)) {
       dispatch(SearchFilterAction.updateSeachFilterTop100(filterData))
@@ -127,21 +130,21 @@ const Top100 = (props: PropTypes) => {
   }, [filterData, sortData, currency]);
 
   useEffect(() => {
-    if (Boolean(isFilterStoreTop100)) { 
+    if (Boolean(isFilterStoreTop100)) {
       setFilterData(filterSearchTop100);
     }
   }, [isFilterStoreTop100])
-  
+
   useEffect(() => {
     if (Boolean(isFilterStoreTop100) && Boolean(filterState) && automemoRef.current) {
       automemoRef.current.reset(filterSearchTop100?.a_filter);
     }
   }, [filterState])
-  
+
   const getListCard = async () => {
     try {
       setData((prevState) => {
-        return { ...prevState, isLoading: true ,cards :[] };
+        return { ...prevState, isLoading: true, cards: [] };
       });
       setDataTable([]);
       let params = {
@@ -154,11 +157,11 @@ const Top100 = (props: PropTypes) => {
           : filterData?.a_filter?.map((item) => item.id),
         // ...filterData
       };
-      
+
       const result = await api.v1.getTopTradingCard(params);
       if (result.success) {
 
-        result.data = result.data.map(item => ({ ...item, sport: filterData?.sport[0].name}));
+        result.data = result.data.map(item => ({ ...item, sport: filterData?.sport[0].name }));
 
         setDataTable(paginate(result.data, rowsPerPage, [1]));
 
@@ -238,7 +241,7 @@ const Top100 = (props: PropTypes) => {
           };
         });
       }
-      
+
     }
   };
 
@@ -324,7 +327,7 @@ const Top100 = (props: PropTypes) => {
   };
   const renderOptionIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.code)) ? IconCanFull
-    : IconDot3
+      : IconDot3
   }
   const selectWishlist = (item: ManageCollectionType) => {
     setWishList(item);
@@ -343,10 +346,9 @@ const Top100 = (props: PropTypes) => {
 
   const selectCollection = (item: ManageCollectionType) => {
     dispatch(SearchFilterAction.updateIsFilterTop100(true))
-    
+
     router.push(
-      `/collections-add-card?collection=${
-        item.group_ref
+      `/collections-add-card?collection=${item.group_ref
       }&code=${cardSelected.toString()}`
     );
   };
@@ -354,7 +356,7 @@ const Top100 = (props: PropTypes) => {
   const onComparison = (cardData: any) => {
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
-    if ( dataOld.length === 9 ) {
+    if (dataOld.length === 9) {
       return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
     }
 
@@ -375,22 +377,22 @@ const Top100 = (props: PropTypes) => {
       ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
       dispatch(CompareAction.addCard(cardNew));
     }
-    
+
     localStorage.setItem("comparison", JSON.stringify(dataOld));
 
     /* ga event */
     event({
       action: "card_added_to_comparison",
-      params : {
-        eventCategory:  'Comparison',
-        eventAction:    "card_added_to_comparison",
-        eventLabel:     "Card Added to Comparison"
+      params: {
+        eventCategory: 'Comparison',
+        eventAction: "card_added_to_comparison",
+        eventLabel: "Card Added to Comparison"
       }
     })
   };
 
   const onLoadMore = () => {
-  
+
     if (
       pagesSelected[pagesSelected.length - 1] + 1 <=
       Math.ceil((data.cards.length ?? 0) / rowsPerPage)
@@ -474,10 +476,10 @@ const Top100 = (props: PropTypes) => {
     }
   };
   const onScroll = () => {
-    if(!$("#customScroll").hasClass('custom-scroll-sticky')) {
+    if (!$("#customScroll").hasClass('custom-scroll-sticky')) {
       $("#customScroll").addClass('custom-scroll-sticky');
     } else {
-      if($("#customScroll table").offset().left == 16 ) {
+      if ($("#customScroll table").offset().left == 16) {
         $("#customScroll").removeClass('custom-scroll-sticky');
       }
     }
@@ -495,9 +497,9 @@ const Top100 = (props: PropTypes) => {
 
   const gotoCard = (card: any) => {
     const url = gen_card_url(card?.webName, card.onCardCode);
-    return router.push(`/card-details/${card?.code}/${url}`)   
+    return router.push(`/card-details/${card?.code}/${url}`)
   }
-  
+
   return (
     <div className="container-fluid container-top-100">
       <Head>
@@ -506,90 +508,90 @@ const Top100 = (props: PropTypes) => {
       </Head>
       <div className="row">
         {
-            //@ts-ignore
-            width >= 768 && (
-          <>
-            <div className="col-xl-2 col-md-4 g-0 border-end">
-              <div className="mt-3">
-                <div className="sidebar__categories">
-                  <div className="section-title">
-                    <div className="accordion" id="sportFilter">
-                      <div className="accordion-item">
-                        <h2 className="accordion-header">
-                          <button
-                            type="button"
-                            className="accordion-button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapsesportFilter"
+          //@ts-ignore
+          width >= 768 && (
+            <>
+              <div className="col-xl-2 col-md-4 g-0 border-end">
+                <div className="mt-3">
+                  <div className="sidebar__categories">
+                    <div className="section-title">
+                      <div className="accordion" id="sportFilter">
+                        <div className="accordion-item">
+                          <h2 className="accordion-header">
+                            <button
+                              type="button"
+                              className="accordion-button"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#collapsesportFilter"
+                            >
+                              Sport
+                              <span>
+                                {sumBy(sportsState, function (o) {
+                                  return o.options?.length ?? 1;
+                                })}
+                              </span>
+                            </button>
+                          </h2>
+                          <div
+                            id="collapsesportFilter"
+                            className="accordion-collapse collapse show"
+                            data-bs-parent="#sportFilter"
                           >
-                            Sport
-                            <span>
-                              {sumBy(sportsState, function (o) {
-                                return o.options?.length ?? 1;
-                              })}
-                            </span>
-                          </button>
-                        </h2>
-                        <div
-                          id="collapsesportFilter"
-                          className="accordion-collapse collapse show"
-                          data-bs-parent="#sportFilter"
-                        >
-                          <div>
-                            <FilterSport
-                              // isFullHeight
-                              // isAll={true}
-                              isSearch={false}
-                              onChange={onChangeFilter}
-                              name="sport"
-                              //@ts-ignore
-                              defaultValue={+filterData?.sport?.[0]?.id ?? 2}
-                              isDefault={false}
-                              options={sportsState}
-                            />
+                            <div>
+                              <FilterSport
+                                // isFullHeight
+                                // isAll={true}
+                                isSearch={false}
+                                onChange={onChangeFilter}
+                                name="sport"
+                                //@ts-ignore
+                                defaultValue={+filterData?.sport?.[0]?.id ?? 2}
+                                isDefault={false}
+                                options={sportsState}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="accordion" id="yearFilter">
-                      <div className="accordion-item">
-                        <h2 className="accordion-header">
-                          <button
-                            type="button"
-                            className="accordion-button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseYearFilter"
+                      <div className="accordion" id="yearFilter">
+                        <div className="accordion-item">
+                          <h2 className="accordion-header">
+                            <button
+                              type="button"
+                              className="accordion-button"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#collapseYearFilter"
+                            >
+                              Autograph/Memorabilia
+                              <span>
+                                {sumBy(MetaData.auto_memo, function (o) {
+                                  // @ts-ignore
+                                  return o.options?.length ?? 1;
+                                })}
+                              </span>
+                            </button>
+                          </h2>
+                          <div
+                            id="collapseYearFilter"
+                            className="accordion-collapse collapse show"
+                            data-bs-parent="#yearFilter"
                           >
-                            Autograph/Memorabilia
-                            <span>
-                              {sumBy(MetaData.auto_memo, function (o) {
-                                // @ts-ignore
-                                return o.options?.length ?? 1;
-                              })}
-                            </span>
-                          </button>
-                        </h2>
-                        <div
-                          id="collapseYearFilter"
-                          className="accordion-collapse collapse show"
-                          data-bs-parent="#yearFilter"
-                        >
-                          <div>
-                            <CheckBoxFilter
-                              ref={automemoRef}
-                              // prioritize={prioritize}
-                              isSearch={false}
-                              onChange={onChangeFilter}
-                              name="a_filter"
-                              options={MetaData.auto_memo}
-                            />
+                            <div>
+                              <CheckBoxFilter
+                                ref={automemoRef}
+                                // prioritize={prioritize}
+                                isSearch={false}
+                                onChange={onChangeFilter}
+                                name="a_filter"
+                                options={MetaData.auto_memo}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* <div className="sidebar__categories">
+                  {/* <div className="sidebar__categories">
               <div className="section-title">
                 <div className="fw-bold mb-1 mt-3">Sport</div>
                 <CheckBoxFilter
@@ -605,197 +607,190 @@ const Top100 = (props: PropTypes) => {
                   options={MetaData.auto_memo} />
               </div>
             </div> */}
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
         <div className="col-xl-10 col-md-8  card-detail card-top-100">
-        {
+          {
             //@ts-ignore
             width < 768 && (
-            <>
-              <div className="filter-mobile position-relative">
-                <div
-                  style={{
-                    overflowX: "initial",
-                  }}
-                  className="button-filter "
-                >
-                  <button
-                    onClick={() => setFilterValue("sport")}
-                    type="button"
-                    className={`btn btn-primary btn-sm sport-button ${
-                      Boolean(filterData?.sport?.length) ? "active" : ""
-                    }`}
-                    data-bs-toggle="modal"
-                    data-bs-target="#filterModal"
-                  >
-                    {Boolean(filterData?.sport?.length)
-                      ? filterData?.sport[0]?.name
-                      : "Sport"}
-                  </button>
-
-                  <button
-                    onClick={() => setFilterValue("a_filter")}
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#filterModal"
-                  >
-                    Autograph/Memorabilia
-                    {Boolean(filterData?.a_filter?.length) && (
-                      <span className="filter-number filter-number--top100">
-                        {filterData?.a_filter?.length}
-                      </span>
-                    )}
-                  </button>
-
+              <>
+                <div className="filter-mobile position-relative">
                   <div
-                    className="modal fade"
-                    id="filterModal"
-                    tabIndex={-1}
-                    aria-labelledby="filterModalLabel"
-                    aria-hidden="true"
+                    style={{
+                      overflowX: "initial",
+                    }}
+                    className="button-filter "
                   >
+                    <button
+                      onClick={() => setFilterValue("sport")}
+                      type="button"
+                      className={`btn btn-primary btn-sm sport-button ${Boolean(filterData?.sport?.length) ? "active" : ""
+                        }`}
+                      data-bs-toggle="modal"
+                      data-bs-target="#filterModal"
+                    >
+                      {Boolean(filterData?.sport?.length)
+                        ? filterData?.sport[0]?.name
+                        : "Sport"}
+                    </button>
+
+                    <button
+                      onClick={() => setFilterValue("a_filter")}
+                      type="button"
+                      className="btn btn-primary btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#filterModal"
+                    >
+                      Autograph/Memorabilia
+                      {Boolean(filterData?.a_filter?.length) && (
+                        <span className="filter-number filter-number--top100">
+                          {filterData?.a_filter?.length}
+                        </span>
+                      )}
+                    </button>
+
                     <div
-                      className={`modal-dialog ${
-                        filterValue === "all" ? "modal-all" : "align-items-end"
-                      }  modal-filter 
-                            modal-lg modal-dialog-centered ${
-                              filterValue === "sport" ? "modal-sport" : ""
-                            }
-                            ${filterValue ==="auto_memo" ? 'modal-auto_memo' : ''} 
+                      className="modal fade"
+                      id="filterModal"
+                      tabIndex={-1}
+                      aria-labelledby="filterModalLabel"
+                      aria-hidden="true"
+                    >
+                      <div
+                        className={`modal-dialog ${filterValue === "all" ? "modal-all" : "align-items-end"
+                          }  modal-filter 
+                            modal-lg modal-dialog-centered ${filterValue === "sport" ? "modal-sport" : ""
+                          }
+                            ${filterValue === "auto_memo" ? 'modal-auto_memo' : ''} 
     
                             `}
-                    >
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <div className="d-none">
-                            {renderLengthFilterMobile()}
-                          </div>
-                          <h5 className="modal-title" id="filterModalLabel">
-                            {renderTitleFilterMobile()}{" "}
-                            <span
-                              className={` ${
-                                filterValue === "all" ? "d-none" : ""
-                              }`}
+                      >
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <div className="d-none">
+                              {renderLengthFilterMobile()}
+                            </div>
+                            <h5 className="modal-title" id="filterModalLabel">
+                              {renderTitleFilterMobile()}{" "}
+                              <span
+                                className={` ${filterValue === "all" ? "d-none" : ""
+                                  }`}
+                              >
+                                {filterValue === "sport"
+                                  ? renderLengthFilterMobile()
+                                  : lengthFilter}
+                              </span>
+                            </h5>
+                            <button
+                              type="button"
+                              className="btn btn-link text-decoration-none"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
                             >
-                              {filterValue === "sport"
-                                ? renderLengthFilterMobile()
-                                : lengthFilter}
-                            </span>
-                          </h5>
-                          <button
-                            type="button"
-                            className="btn btn-link text-decoration-none"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
+                              {" "}
+                              Close
+                            </button>
+                          </div>
+                          <div
+                            className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""
+                              }`}
                           >
-                            {" "}
-                            Close
-                          </button>
-                        </div>
-                        <div
-                          className={`modal-body ${
-                            filterValue !== "all" ? "filter-custom" : ""
-                          }`}
-                        >
-                          <div className="position-relative">
-                            <div className=" col-lg-2 col-md-2 g-0 border-end">
-                              <div className="shop__sidebar mt-3">
-                                <div className="sidebar__categories">
-                                  <div className="section-title">
-                                    <div
-                                      className={`accordion ${
-                                        filterValue === "sport" ||
-                                        filterValue === "all"
-                                          ? ""
-                                          : "d-none"
-                                      }`}
-                                      id="sportFilter"
-                                    >
-                                      <div className="accordion-item">
-                                        {filterValue === "all" && (
-                                          <h2 className="accordion-header">
-                                            <button
-                                              type="button"
-                                              className="accordion-button"
-                                              data-bs-toggle="collapse"
-                                              data-bs-target="#collapsesportFilter"
-                                            >
-                                              Sport
-                                              <span>
-                                                {sumBy(
-                                                  sportsState,
-                                                  function (o) {
-                                                    return (
-                                                      o.options?.length ?? 1
-                                                    );
-                                                  }
-                                                )}
-                                              </span>
-                                            </button>
-                                          </h2>
-                                        )}
-                                        <div
-                                          id="collapsesportFilter"
-                                          className="accordion-collapse collapse show"
-                                          data-bs-parent="#sportFilter"
-                                        >
-                                          <div>
-                                            <FilterSport
-                                              isSearch={false}
-                                              onChange={onChangeFilter}
-                                              name="sport"
-                                              defaultValue={2}
-                                              isDefault={false}
-                                              options={sportsState}
-                                            />
+                            <div className="position-relative">
+                              <div className=" col-lg-2 col-md-2 g-0 border-end">
+                                <div className="shop__sidebar mt-3">
+                                  <div className="sidebar__categories">
+                                    <div className="section-title">
+                                      <div
+                                        className={`accordion ${filterValue === "sport" ||
+                                            filterValue === "all"
+                                            ? ""
+                                            : "d-none"
+                                          }`}
+                                        id="sportFilter"
+                                      >
+                                        <div className="accordion-item">
+                                          {filterValue === "all" && (
+                                            <h2 className="accordion-header">
+                                              <button
+                                                type="button"
+                                                className="accordion-button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapsesportFilter"
+                                              >
+                                                Sport
+                                                <span>
+                                                  {sumBy(
+                                                    sportsState,
+                                                    function (o) {
+                                                      return (
+                                                        o.options?.length ?? 1
+                                                      );
+                                                    }
+                                                  )}
+                                                </span>
+                                              </button>
+                                            </h2>
+                                          )}
+                                          <div
+                                            id="collapsesportFilter"
+                                            className="accordion-collapse collapse show"
+                                            data-bs-parent="#sportFilter"
+                                          >
+                                            <div>
+                                              <FilterSport
+                                                isSearch={false}
+                                                onChange={onChangeFilter}
+                                                name="sport"
+                                                defaultValue={2}
+                                                isDefault={false}
+                                                options={sportsState}
+                                              />
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
 
-                                    <div
-                                      className={`accordion ${
-                                        filterValue === "a_filter" ||
-                                        filterValue === "all"
-                                          ? ""
-                                          : "d-none"
-                                      }`}
-                                      id="a_filterFilter"
-                                    >
-                                      <div className="accordion-item">
-                                        <CheckBoxMobile
-                                          ref={automemoRef}
-                                          // prioritize={prioritize}
-                                          isSearch={false}
-                                          onChange={onChangeFilter}
-                                          name="a_filter"
-                                          options={MetaData.auto_memo}
-                                          title="Autograph/Memorabilia"
-                                          isButton={filterValue === "all"}
-                                          numberFilter={
-                                            filterData?.a_filter?.length
-                                          }
-                                        />
+                                      <div
+                                        className={`accordion ${filterValue === "a_filter" ||
+                                            filterValue === "all"
+                                            ? ""
+                                            : "d-none"
+                                          }`}
+                                        id="a_filterFilter"
+                                      >
+                                        <div className="accordion-item">
+                                          <CheckBoxMobile
+                                            ref={automemoRef}
+                                            // prioritize={prioritize}
+                                            isSearch={false}
+                                            onChange={onChangeFilter}
+                                            name="a_filter"
+                                            options={MetaData.auto_memo}
+                                            title="Autograph/Memorabilia"
+                                            isButton={filterValue === "all"}
+                                            numberFilter={
+                                              filterData?.a_filter?.length
+                                            }
+                                          />
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+                              {/* {renderButtonClear()} */}
                             </div>
-                            {/* {renderButtonClear()} */}
                           </div>
                         </div>
                       </div>
                     </div>
+                    {/* end modal */}
                   </div>
-                  {/* end modal */}
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
           <h1 >Top 100</h1>
 
@@ -874,7 +869,7 @@ const Top100 = (props: PropTypes) => {
               </div>
             </div>
             <div id="customScroll" className="content-pricing-grid content-pricing-grid-custom content-pricing-grid-custom--top100 p-0 mt-2 mh-100 customScroll"
-            onScroll={onScroll}>
+              onScroll={onScroll}>
               <table className="table table-striped table-hover">
                 <thead className="p-sticky-header">
                   <tr>
@@ -972,11 +967,10 @@ const Top100 = (props: PropTypes) => {
                               }}
                               src={
                                 item?.image
-                                  ? `https://img.priceguide.cards/${
-                                      item.sport === "Non-Sport"
-                                        ? "ns"
-                                        : "sp"
-                                    }/${item?.image}.jpg`
+                                  ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
+                                    ? "ns"
+                                    : "sp"
+                                  }/${item?.image}.jpg`
                                   : CardPhotoBase
                               }
                             />
@@ -988,9 +982,8 @@ const Top100 = (props: PropTypes) => {
                               {item.publisher}
                             </div>
                             <div className="fw-500 cursor-pointer" onClick={() => gotoCard(item)}>
-                              {`${item.webName}${
-                                !item.onCardCode ? "" : " - #" + item.onCardCode
-                              }`}
+                              {`${item.webName}${!item.onCardCode ? "" : " - #" + item.onCardCode
+                                }`}
                             </div>
                             <div className="d-flex btn-group-auto">
                               {Boolean(item.auto) && (
@@ -1086,34 +1079,34 @@ const Top100 = (props: PropTypes) => {
               </table>
             </div>
             {!data.isLoading && Boolean(data.cards.length) && (
-                <>
-                  {
-                    
+              <>
+                {
+
                   Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
                     (data.cards.length ?? 0) / rowsPerPage
-                  )))  && (
-                  <div className="d-flex justify-content-center">
-                    <button
-                      onClick={onLoadMore}
-                      type="button"
-                      className="btn btn-light load-more"
-                    >
-                      Load More
-                    </button>
-                  </div>
+                  ))) && (
+                    <div className="d-flex justify-content-center">
+                      <button
+                        onClick={onLoadMore}
+                        type="button"
+                        className="btn btn-light load-more"
+                      >
+                        Load More
+                      </button>
+                    </div>
                   )
-                  }
-                  <div className="d-flex justify-content-center mt-3 pagination-page">
-                    <Pagination
-                      pagesSelected={pagesSelected}
-                      onSelectPage={handlePageClick}
-                      totalPage={Math.ceil(
-                        (data.cards.length ?? 0) / rowsPerPage
-                      )}
-                    />
-                  </div>
-                </>
-              )}
+                }
+                <div className="d-flex justify-content-center mt-3 pagination-page">
+                  <Pagination
+                    pagesSelected={pagesSelected}
+                    onSelectPage={handlePageClick}
+                    totalPage={Math.ceil(
+                      (data.cards.length ?? 0) / rowsPerPage
+                    )}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

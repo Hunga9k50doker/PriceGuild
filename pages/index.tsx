@@ -190,6 +190,7 @@ function HomePage() {
       </div>
       <TopTradingCards routerLink="" cardElement={TopElementSlick} />
 
+      {/* // Move all of this section below in to a component, I've started the file components/cardbreakdown/CardBreakdown */}
       {/* <CardBreakDown /> */}
 
       <div className="popular-publishers py-5">

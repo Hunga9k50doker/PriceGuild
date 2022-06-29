@@ -17,13 +17,13 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 			<div className="container">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mt-25 pb-10 mb-80 line-bottom">
-                        <li className="breadcrumb-item">
-                            <Link href="/" >
-                                <a title="Home">
-                                    Home
-                                </a>
-                            </Link>
-                        </li>
+						<li className="breadcrumb-item">
+							<Link href="/" >
+								<a title="Home">
+									Home
+								</a>
+							</Link>
+						</li>
 						<li className="breadcrumb-item active" aria-current="page"> Privacy Policy </li>
 					</ol>
 				</nav>
@@ -40,7 +40,7 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 								<li> <a href="#3rd-party-disclosure" title="3rd Party Disclosure">3rd Party Disclosure</a> </li>
 								<li> <a href="#3rd-party-links" title="3rd Party Links">3rd Party Links</a> </li>
 								<li> <a href="#google-adsense" title="Google AdSense">Google AdSense</a> </li>
-								<li> <a href="#fai-information-practices" title="Fair Information Practices">Fair Information Practices</a> 
+								<li> <a href="#fai-information-practices" title="Fair Information Practices">Fair Information Practices</a>
 									<ul>
 										<li> <a href="#fair-information" title="Fair information">Fair information</a> </li>
 										<li> <a href="#practices" title="Practices">Practices</a> </li>
@@ -69,17 +69,17 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 								<li>To send periodic emails regarding your order or other products and services.</li>
 							</ul>
 							<h4 id="information-protection">How do we protect your information?</h4>
-							<p>We only provide articles and information. We never ask for credit card numbers. <br/>We use regular Malware Scanning.</p>
+							<p>We only provide articles and information. We never ask for credit card numbers. <br />We use regular Malware Scanning.</p>
 							<p>Your personal information is contained behind secured networks and is only accessible by a limited number of persons who have special access rights to such systems, and are required to keep the information confidential. In addition, all sensitive/credit information you supply is encrypted via Secure Socket Layer (SSL) technology.</p>
 							<p>We implement a variety of security measures when a user places an order enters, submits, or accesses their information to maintain the safety of your personal information.</p>
 							<p>All transactions are processed through a gateway provider and are not stored or processed on our servers.</p>
 							<h4>How can you delete your data?</h4>
-                            <p>Users can delete their account by heading to the 
-                                <Link href="/profile/settings/confidentiality">
-                                    <a target="_blank" title="account administation page">
-                                        account administation page
-                                    </a>
-                                </Link>. After requesting to delete your account users have a 30 day window within which to re-activate their account, after this time period has passed all user data is automatically deleted from the PriceGuide.Cards servers.</p>
+							<p>Users can delete their account by heading to the
+								<Link href="/profile/settings/confidentiality">
+									<a target="_blank" title="account administation page">
+										account administation page
+									</a>
+								</Link>. After requesting to delete your account users have a 30 day window within which to re-activate their account, after this time period has passed all user data is automatically deleted from the PriceGuide.Cards servers.</p>
 							<h4 id="cookie-usage">Do we use "cookies"?</h4>
 							<p>Yes. Cookies are small files that a site or its service provider transfers to your computer's hard drive through your Web browser (if you allow) that enables the site's or service provider's systems to recognize your browser and capture and remember certain information. For instance, we use cookies to help us remember and process the items in your shopping cart. They are also used to help us understand your preferences based on previous or current site activity, which enables us to provide you with improved services. We also use cookies to help us compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools in the future.</p>
 							<h4>We use cookies to:</h4>
@@ -112,7 +112,7 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 							<h4 id="caloppa">California Online Privacy Protection Act</h4>
 							<p>CalOPPA is the first state law in the nation to require commercial websites and online services to post a privacy policy. The law's reach stretches well beyond California to require any person or company in the United States (and conceivably the world) that operates websites collecting Personally Identifiable Information from California consumers to post a conspicuous privacy policy on its website stating exactly the information being collected and those individuals or companies with whom it is being shared. - See more at: <a href="http://consumercal.org/california-online-privacy-protection-act-caloppa/#sthash.0FdRbT51.dpuf" target="_blank" title="http://consumercal.org/california-online-privacy-protection-act-caloppa/#sthash.0FdRbT51.dpuf">http://consumercal.org/california-online-privacy-protection-act-caloppa/#sthash.0FdRbT51.dpuf</a></p>
 							<h4>According to CalOPPA, we agree to the following:</h4>
-							<p>Users can visit our site anonymously. <br/>Once this privacy policy is created, we will add a link to it on our home page or as a minimum, on the first significant page after entering our website.<br/>Our Privacy Policy link includes the word 'Privacy' and can easily be found on the page specified above.</p>
+							<p>Users can visit our site anonymously. <br />Once this privacy policy is created, we will add a link to it on our home page or as a minimum, on the first significant page after entering our website.<br />Our Privacy Policy link includes the word 'Privacy' and can easily be found on the page specified above.</p>
 							<p className="mb-0">You will be notified of any Privacy Policy changes:</p>
 							<ul>
 								<li>On our Privacy Policy Page</li>
@@ -156,7 +156,7 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 							</ul>
 							<p>and we will promptly remove you from <strong>ALL</strong> correspondence.</p>
 							<h4 id="our-contact-information">Contacting Us</h4>
-							<p>If there are any questions regarding this privacy policy, you may contact us using the information below. <br/><a href="mailto:info@priceguide.cards" title="info@priceguide.cards">info@priceguide.cards</a></p>
+							<p>If there are any questions regarding this privacy policy, you may contact us using the information below. <br /><a href="mailto:info@priceguide.cards" title="info@priceguide.cards">info@priceguide.cards</a></p>
 						</div>
 					</div>
 				</div>

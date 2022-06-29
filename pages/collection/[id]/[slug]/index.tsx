@@ -4,23 +4,21 @@ import Select from "react-select";
 import Skeleton from "react-loading-skeleton";
 import { CollectionType, SalesOverviewType, ManageCollectionType } from "interfaces";
 import { api } from "configs/axios";
-import ParameterTitle from "components/Skeleton/collection/parameterTitle";
-import { formatCurrency, gen_card_url } from "utils/helper";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { isEmpty, truncate } from "lodash";
-import ScrollspyNav from "components/scrollspy/lib/ScrollspyNav";
-import ArrowRight from "assets/images/arrow-right-blue.svg";
-import ArrowGray from "assets/images/arrow-gray.svg";
-import FolderPlus from "assets/images/folder-plus.svg";
 import Modal from "react-bootstrap/Modal";
-import ImageBlurHash from "components/imageBlurHash";
-import ImgCard from "assets/images/Collection_Card.png";
-import LoadingCollection from "components/Skeleton/collection/loadingCollectionDetail";
-import CaptCha from "components/modal/captcha";
-import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import { useTranslation } from "react-i18next";
 import Head from 'next/head';
+import { useSelector, useDispatch } from "react-redux";
+import Selectors from "redux/selectors";
+import { ToastSystem } from "helper/toast_system";
+import { CompareAction } from "redux/actions/compare_action";
+import {pageView, event} from "libs/ga"
+
+import { formatCurrency, gen_card_url } from "utils/helper";
+
+import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import IconFolder from "assets/images/icon-folder-svg.svg";
 import IconFolderFull from "assets/images/icon-folder-active.svg";
 import IconHeart from "assets/images/icon_heart.svg";
@@ -28,15 +26,20 @@ import IconHeartFull from "assets/images/icon_heart_tim.svg";
 import IconDot3 from "assets/images/dot-3.svg";
 import IconCanFull from "assets/images/icon_can_tim.svg";
 import IconCan from "assets/images/icon_can.svg";
-import { useSelector, useDispatch } from "react-redux";
-import Selectors from "redux/selectors";
+import ImgCard from "assets/images/Collection_Card.png";
+import ArrowRight from "assets/images/arrow-right-blue.svg";
+import ArrowGray from "assets/images/arrow-gray.svg";
+import FolderPlus from "assets/images/folder-plus.svg";
+
+import ScrollspyNav from "components/scrollspy/lib/ScrollspyNav";
+import ImageBlurHash from "components/imageBlurHash";
+import LoadingCollection from "components/Skeleton/collection/loadingCollectionDetail";
+import CaptCha from "components/modal/captcha";
 import LoginModal from "components/modal/login";
 import ChosseCollection from "components/modal/chosseCollection";
-import { ToastSystem } from "helper/toast_system";
-import { CompareAction } from "redux/actions/compare_action";
 import SelectGrading from "components/modal/selectGrading";
 import LazyLoadImg from "components/lazy/LazyLoadImg";
-import {pageView, event} from "libs/ga"
+import ParameterTitle from "components/Skeleton/collection/parameterTitle";
 
 type PropTypes = {
   location: any;

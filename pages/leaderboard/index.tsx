@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { api } from "configs/axios";
 import { LeaderboardType, FilterType } from "interfaces";
-import FilterSport from "components/filter/filterSport";
 import { sumBy, inRange } from "lodash";
 import { formatCurrency, paginate, formatNumber } from "utils/helper";
 import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import Skeleton from "react-loading-skeleton";
-import PersonalPortfolio from "components/personalPortfolio";
 import useWindowDimensions from "utils/useWindowDimensions";
-import Pagination from "components/panigation";
-import { userClass } from "utils/constant";
 import Link from "next/link";
 import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery";
+
+import { userClass } from "utils/constant";
+
+import FilterSport from "components/filter/filterSport";
+import PersonalPortfolio from "components/personalPortfolio";
+import Pagination from "components/panigation";
 import Loading from "components/loading/loading"
+
 const rowsPerPage = 50;
 const dataLoader = Array.from(Array(rowsPerPage).keys());
 
@@ -79,7 +82,7 @@ const Leaderboard = () => {
       if (result.success) {
         if (result.data.length) {
           setDataTable(paginate(result.data, rowsPerPage, [1]));
-        }      
+        }
         setIsError202(false);
 
         return setData({
@@ -87,23 +90,23 @@ const Leaderboard = () => {
           isLoading: false,
         });
       }
-      if(result.message === "Leaderboard calculation in progress, please try loading again later") {
+      if (result.message === "Leaderboard calculation in progress, please try loading again later") {
         setIsError202(true)
       }
-     
-      if(result?.status === 202) {
+
+      if (result?.status === 202) {
         setIsError202(true)
         setDataTable([]);
         setData(() => {
-          return  { cards: [] , isLoading: false };
+          return { cards: [], isLoading: false };
         });
       } else {
         setData((prevState) => {
           return { ...prevState, isLoading: false };
         });
       }
-      
-    
+
+
     } catch (err) {
       console.log(err);
       setData((prevState) => {
@@ -148,7 +151,7 @@ const Leaderboard = () => {
       ];
 
       setDataTable(
-        paginate([...data.cards],rowsPerPage, pageNew)
+        paginate([...data.cards], rowsPerPage, pageNew)
       );
       // getListCard([...pagesSelected, pagesSelected[pagesSelected.length-1]+1], false)
       // // setCurrentPage(currentPage + 1);
@@ -167,10 +170,10 @@ const Leaderboard = () => {
     setDataTable(paginate([...data.cards], rowsPerPage, event));
   };
   const onScroll = () => {
-    if(!$("#customScroll").hasClass('custom-scroll-sticky')) {
+    if (!$("#customScroll").hasClass('custom-scroll-sticky')) {
       $("#customScroll").addClass('custom-scroll-sticky');
     } else {
-      if($("#customScroll table").offset().left == 18 ) {
+      if ($("#customScroll table").offset().left == 18) {
         $("#customScroll").removeClass('custom-scroll-sticky');
       }
     }
@@ -186,8 +189,8 @@ const Leaderboard = () => {
     if (level) {
       return level?.level;
     }
-    return userClass[userClass.length-1]?.level;
-   
+    return userClass[userClass.length - 1]?.level;
+
   };
 
   return (
@@ -198,46 +201,47 @@ const Leaderboard = () => {
       </Head>
       <div className="container-fluid leaderboard-page">
         <div className="row">
-            {
-                //@ts-ignore
-                width >= 768 && (
-            <>
-              <div className="col-lg-2 g-0 col-md-2 border-end">
-                <div className="mt-3">
-                  <div className="sidebar__categories">
-                    <div className="section-title mt-4">
-                      <div className="accordion" id="sportFilter">
-                        <div className="accordion-item">
-                          <h2 className="accordion-header">
-                            <button
-                              type="button"
-                              className="accordion-button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#collapseOne"
+          {
+            //@ts-ignore
+            width >= 768 && (
+              <>
+                <div className="col-lg-2 g-0 col-md-2 border-end">
+                  <div className="mt-3">
+                    <div className="sidebar__categories">
+                      <div className="section-title mt-4">
+                        <div className="accordion" id="sportFilter">
+                          <div className="accordion-item">
+                            <h2 className="accordion-header">
+                              <button
+                                type="button"
+                                className="accordion-button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                              >
+                                Sport{" "}
+                                <span>
+                                  {sumBy(sportsState, function (o) {
+                                    return o.options?.length ?? 1;
+                                  })}
+                                </span>
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseOne"
+                              className="accordion-collapse collapse show"
+                              data-bs-parent="#sportFilter"
                             >
-                              Sport{" "}
-                              <span>
-                                {sumBy(sportsState, function (o) {
-                                  return o.options?.length ?? 1;
-                                })}
-                              </span>
-                            </button>
-                          </h2>
-                          <div
-                            id="collapseOne"
-                            className="accordion-collapse collapse show"
-                            data-bs-parent="#sportFilter"
-                          >
-                            <div>
-                              <FilterSport
-                                isFullHeight
-                                isAll={true}
-                                isSearch={false}
-                                onChange={onChangeFilter}
-                                name="sport"
-                                isDefault={true}
-                                options={sportsState}
-                              />
+                              <div>
+                                <FilterSport
+                                  isFullHeight
+                                  isAll={true}
+                                  isSearch={false}
+                                  onChange={onChangeFilter}
+                                  name="sport"
+                                  isDefault={true}
+                                  options={sportsState}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -245,91 +249,90 @@ const Leaderboard = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
           <div className="col-lg-10 col-12 col-md-10 pb-5 mt-3 card-detail min-vh-100 card-detail-leaderboard">
             {
-                //@ts-ignore
-                width < 768 && (
-              <>
-                <div className="filter-mobile position-relative">
-                  <div style={{ overflowX:"initial", overflowY:"initial" }} className="button-filter w-100">
-                    <button
-                      type="button"
-                      className={`btn btn-primary btn-sm sport-button ${
-                        Boolean(filterData?.sport) ? "active" : ""
-                      }`}
-                      data-bs-toggle="modal"
-                      data-bs-target="#filterModal"
-                    >
-                      {Boolean(filterData?.sport)
-                        ? sportsState.find(
+              //@ts-ignore
+              width < 768 && (
+                <>
+                  <div className="filter-mobile position-relative">
+                    <div style={{ overflowX: "initial", overflowY: "initial" }} className="button-filter w-100">
+                      <button
+                        type="button"
+                        className={`btn btn-primary btn-sm sport-button ${Boolean(filterData?.sport) ? "active" : ""
+                          }`}
+                        data-bs-toggle="modal"
+                        data-bs-target="#filterModal"
+                      >
+                        {Boolean(filterData?.sport)
+                          ? sportsState.find(
                             (sport) => sport.id === filterData?.sport
                           )?.name
-                        : "All Sports"}
-                    </button>
+                          : "All Sports"}
+                      </button>
 
-                    {/* start modal */}
+                      {/* start modal */}
 
-                    <div
-                      className="modal fade"
-                      id="filterModal"
-                      tabIndex={-1}
-                      aria-labelledby="filterModalLabel"
-                      aria-hidden="true"
-                    >
                       <div
-                        className={`modal-dialog align-items-end  modal-filter 
-                            modal-lg modal-dialog-centered modal-sport modal-sport-leader-board`}
+                        className="modal fade"
+                        id="filterModal"
+                        tabIndex={-1}
+                        aria-labelledby="filterModalLabel"
+                        aria-hidden="true"
                       >
-                        <div className="modal-content">
-                          <div className="modal-header">
-                            <h5 className="modal-title" id="filterModalLabel">
-                              Sport
-                              <span>
-                                {sumBy(sportsState, function (o) {
-                                  return o.options?.length ?? 1;
-                                })}
-                              </span>
-                            </h5>
-                            <button
-                              type="button"
-                              className="btn btn-link text-decoration-none"
-                              data-bs-dismiss="modal"
-                              aria-label="Close"
-                            >
-                              {" "}
-                              Close
-                            </button>
-                          </div>
-                          <div className={`modal-body filter-custom"`}>
-                            <div className="position-relative">
-                              <div className=" col-lg-2 col-md-2 g-0 border-end">
-                                <div className="shop__sidebar mt-3">
-                                  <div className="sidebar__categories">
-                                    <div className="section-title">
-                                      <div
-                                        className={`accordion`}
-                                        id="sportFilter"
-                                      >
-                                        <div className="accordion-item">
-                                          <div
-                                            id="collapsesportFilter"
-                                            className="accordion-collapse collapse show"
-                                            data-bs-parent="#sportFilter"
-                                          >
-                                            <div>
-                                              <FilterSport
-                                                isFullHeight
-                                                isAll={true}
-                                                isSearch={false}
-                                                onChange={onChangeFilter}
-                                                name="sport"
-                                                isDefault={true}
-                                                options={sportsState}
-                                              />
+                        <div
+                          className={`modal-dialog align-items-end  modal-filter 
+                            modal-lg modal-dialog-centered modal-sport modal-sport-leader-board`}
+                        >
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h5 className="modal-title" id="filterModalLabel">
+                                Sport
+                                <span>
+                                  {sumBy(sportsState, function (o) {
+                                    return o.options?.length ?? 1;
+                                  })}
+                                </span>
+                              </h5>
+                              <button
+                                type="button"
+                                className="btn btn-link text-decoration-none"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              >
+                                {" "}
+                                Close
+                              </button>
+                            </div>
+                            <div className={`modal-body filter-custom"`}>
+                              <div className="position-relative">
+                                <div className=" col-lg-2 col-md-2 g-0 border-end">
+                                  <div className="shop__sidebar mt-3">
+                                    <div className="sidebar__categories">
+                                      <div className="section-title">
+                                        <div
+                                          className={`accordion`}
+                                          id="sportFilter"
+                                        >
+                                          <div className="accordion-item">
+                                            <div
+                                              id="collapsesportFilter"
+                                              className="accordion-collapse collapse show"
+                                              data-bs-parent="#sportFilter"
+                                            >
+                                              <div>
+                                                <FilterSport
+                                                  isFullHeight
+                                                  isAll={true}
+                                                  isSearch={false}
+                                                  onChange={onChangeFilter}
+                                                  name="sport"
+                                                  isDefault={true}
+                                                  options={sportsState}
+                                                />
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -342,12 +345,11 @@ const Leaderboard = () => {
                           </div>
                         </div>
                       </div>
+                      {/* end modal */}
                     </div>
-                    {/* end modal */}
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
 
             <h1 className="text-title">Collectors' Leaderboard</h1>
             <div className="pricing-grid mt-3">
@@ -452,9 +454,9 @@ const Leaderboard = () => {
                           <td className="text-center"> {item.rank} </td>
                           <td>
                             <Link href={userInfo.userid === item.userid ? `/profile/personal` : `/profile/${item.userid}`}>
-                                <a className="text-reset text-decoration-none">
-                                    {item.username === "Unknown"  ? `Unknown #${item.userid}` : item.username}
-                                </a> 
+                              <a className="text-reset text-decoration-none">
+                                {item.username === "Unknown" ? `Unknown #${item.userid}` : item.username}
+                              </a>
                             </Link>
                           </td>
                           <td> {getLevelUser(item.total_upload)} </td>
@@ -464,38 +466,38 @@ const Leaderboard = () => {
                       ))}
                   </tbody>
                 </table>
-             
+
               </div>
-              
-              {data.isLoading  &&
-                  <Loading type ="loading" />
-                  // dataLoader?.map((item, key) => (
-                  //   <div className="my-2" key={key}>
-                  //     <Skeleton />
-                  //   </div>
-                  // ))
+
+              {data.isLoading &&
+                <Loading type="loading" />
+                // dataLoader?.map((item, key) => (
+                //   <div className="my-2" key={key}>
+                //     <Skeleton />
+                //   </div>
+                // ))
               }
-              {!data.isLoading && isError202  &&
+              {!data.isLoading && isError202 &&
                 <Loading type="warning" />
               }
               {!data.isLoading && Boolean(data.cards.length) && !isError202 && (
                 <>
-                   {
-										
+                  {
+
                     Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
                       (data.cards.length ?? 0) / rowsPerPage
-                    )))  && (
-                    <div className="d-flex justify-content-center">
-                      <button
-                      onClick={onLoadMore}
-                      type="button"
-                      className="btn btn-light load-more"
-                      >
-                      Load More
-                      </button>
-                    </div>
+                    ))) && (
+                      <div className="d-flex justify-content-center">
+                        <button
+                          onClick={onLoadMore}
+                          type="button"
+                          className="btn btn-light load-more"
+                        >
+                          Load More
+                        </button>
+                      </div>
                     )
-                    }
+                  }
                   <div className="d-flex justify-content-center pagination-page">
                     <Pagination
                       pagesSelected={pagesSelected}

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { AuthActions } from "redux/actions/auth_action";
-import SocialLogin from "components/socialLogin"
-import IconPassword from "assets/images/icon_password.png"
 import * as Yup from 'yup';
 import { RegexString } from 'utils/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +13,10 @@ import { api } from 'configs/axios';
 import Link from 'next/link'
 import timezone from 'utils/timezones';
 import Head from 'next/head';
+
+import IconPassword from "assets/images/icon_password.png"
+
+import SocialLogin from "components/socialLogin"
 
 type Inputs = {
   firstName: string,

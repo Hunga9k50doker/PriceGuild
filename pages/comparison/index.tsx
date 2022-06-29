@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import CardDetail, {RefType as RefTypeCardDetail} from "components/cardDetail";
 import { CardItemType, ManageCollectionType } from "interfaces";
 import { isEmpty, cloneDeep } from "lodash";
 import { Tab, Nav, Row, Col } from "react-bootstrap";
-import { formatCurrency, gen_card_url } from "utils/helper";
 import Skeleton from "react-loading-skeleton";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -11,26 +9,31 @@ import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import { useDispatch } from "react-redux";
 import { CompareAction } from "redux/actions/compare_action";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Head from 'next/head';
+
+import { formatCurrency, gen_card_url } from "utils/helper";
+
+import ImageLineChart from "assets/images/line_chart_placeholder.png";
+import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
 import IconPlus from "assets/images/plus.svg";
 import IconShare from "assets/images/share.svg";
 import IconHeart from "assets/images/icon-heart-v2.svg";
 import IconHeartFull from "assets/images/icon-heart-v2-active.svg";
 import IconFolder from "assets/images/icon-folder.svg";
 import IconFolderFull from "assets/images/icon-folder-active.svg";
+import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import IconDelete from "assets/images/delete.svg";
+
 import LoginModal from "components/modal/login"
 import ChosseCollection from "components/modal/chosseCollection";
 import SelectGrading from "components/modal/selectGrading";
-import { CardModel } from "model/data_sport/card_sport";
 import SaleChartComparison, {RefType as RefTypeSaleChart} from 'components/comparison/sale-chart'
-import CardPhotoBase from "assets/images/Card Photo Base.svg";
 import PlaceholderChart from "components/cardDetail/components/placeholder_chart"
-import ImageLineChart from "assets/images/line_chart_placeholder.png";
-import ImageSaleChart from "assets/images/sale_chart_placeholder.png";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
-import Head from 'next/head';
 import CaptCha from "components/modal/captcha";
+import { CardModel } from "model/data_sport/card_sport";
+import CardDetail, {RefType as RefTypeCardDetail} from "components/cardDetail";
 
 const ISSERVER = typeof window === "undefined";
 

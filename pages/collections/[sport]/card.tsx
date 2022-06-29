@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import CardListCollection from "components/profile/collection/cardListCollection"
 import { useRouter } from 'next/router'
 
-
+import CardListCollection from "components/profile/collection/cardListCollection"
 
 const CardByCollection = () => {
   const router = useRouter()

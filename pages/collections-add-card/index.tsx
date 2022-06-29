@@ -1,6 +1,7 @@
 import React from "react";
-import AddCard from "components/profile/addCard"
 import Head from 'next/head';
+
+import AddCard from "components/profile/addCard"
 
 type PropTypes = {
   location: any,

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Selectors from 'redux/selectors';
+
+import Head from 'next/head';
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import abCard from "assets/images/about-01.webp";
 import abGlobal from "assets/images/about-global.png";
 import abStatistics from "assets/images/about-statistics.png";
 import abCollection from "assets/images/about-add-to-collection.png";
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useSelector } from 'react-redux';
-import Selectors from 'redux/selectors';
+
 import PersonalPortfolio from "components/personalPortfolio"
 import DatabaseStats from "components/databaseStats/databaseStats"
-import Head from 'next/head';
 
 type PropTypes = {
 	location: any,

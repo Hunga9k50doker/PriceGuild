@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-
-import imgMaintenance from "assets/images/maintenance.svg";
-import imgInfo from "assets/images/alert-info.svg";
-import imgClose from "assets/images/cross-gray.svg";
 import { NextPage } from 'next';
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
 import { useRouter } from 'next/router'
 import cookies from 'next-cookies'
+
+import imgMaintenance from "assets/images/maintenance.svg";
+import imgInfo from "assets/images/alert-info.svg";
+import imgClose from "assets/images/cross-gray.svg";
 interface Props {
   status?: string;
   data?: any

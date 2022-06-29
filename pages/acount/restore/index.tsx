@@ -1,9 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import FriendDetail from "components/profile/friends/friendDetail";
-import { MyStorage } from "helper/local_storage";
-import { AuthActions } from "redux/actions/auth_action";
-import { useDispatch } from 'react-redux';
-import queryString from 'query-string';
 import { api } from 'configs/axios';
 import Skeleton from 'react-loading-skeleton';
 import { useRouter } from 'next/router';

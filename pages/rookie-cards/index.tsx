@@ -7,13 +7,14 @@ import { isEmpty } from "lodash"
 import { rowsPerPage } from "configs/common"
 import { RookieCardType } from "interfaces"
 import { api } from 'configs/axios';
-import SkeletonCard from "components/Skeleton/cardItem"
 import Skeleton from 'react-loading-skeleton';
 import { useDebouncedCallback } from "utils/useDebouncedEffect"
 import ReactPaginate from 'react-paginate';
 import Head from 'next/head';
 // @ts-ignore
 import $ from "jquery"
+
+import SkeletonCard from "components/Skeleton/cardItem"
 
 type ParamTypes = {
   id?: string,

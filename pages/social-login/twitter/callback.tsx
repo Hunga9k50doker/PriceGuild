@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import queryString from 'query-string';
 import { api } from 'configs/axios';
 import { useDispatch } from "react-redux";
 import { isEmpty } from "lodash";
@@ -15,10 +14,10 @@ type PropTypes = {
 }
 
 const CallbackTwiiter = (props: PropTypes) => {
-  
+
   const router = useRouter();
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (!isEmpty(router.query)) {
       // @ts-ignore 
@@ -42,12 +41,12 @@ const CallbackTwiiter = (props: PropTypes) => {
         token = btoa(JSON.stringify(token));
 
         if (isEmpty(response?.data?.user_data?.username) || response?.data?.user_data?.username === "") {
-         router.push( `/set-username/${token}`);
+          router.push(`/set-username/${token}`);
           // sessionStorage.setItem('redirect', `/set-username/${token}`);
           return;
         }
-       
-     
+
+
         return ToastSystem.success("Login successful");
       }
       ToastSystem.error(response.message);

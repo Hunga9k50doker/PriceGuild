@@ -6,7 +6,6 @@ import { RegexString } from 'utils/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MyStorage } from "helper/local_storage";
 import { api } from "configs/axios";
-import { ConfigAction } from "redux/actions/config_action";
 import { useRouter } from 'next/router'
 import { ToastSystem } from 'helper/toast_system';
 import { AuthActions } from 'redux/actions/auth_action';
@@ -14,7 +13,6 @@ import { User } from "model/user";
 import Selectors from "redux/selectors";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
-
 
 type Inputs = {
   username: string,
@@ -29,7 +27,7 @@ const SetUsername: React.FC = () => {
   const router = useRouter();
   const token = router.query.token as string;
   const { userInfo, loggingIn } = useSelector(Selectors.auth);
-  
+
   const validationSchema = Yup.object().shape({
     username: Yup.string()
       .required('Username is required')
@@ -47,16 +45,16 @@ const SetUsername: React.FC = () => {
                 } else {
                   resolve(true);
                 }
-            })
+              })
           })
         }
       ),
   });
 
   useEffect(() => {
-   if(!isEmpty(userInfo.username)) {
-    router.push('/')
-   }
+    if (!isEmpty(userInfo.username)) {
+      router.push('/')
+    }
   }, [])
   useEffect(() => {
     if (token) {

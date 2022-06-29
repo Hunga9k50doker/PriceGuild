@@ -4,25 +4,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { api } from "configs/axios";
 import { ToastSystem } from "helper/toast_system";
-import ConfirmPassword from "components/confirmPassword"
 import { useRouter } from 'next/router'
+
+import ConfirmPassword from "components/confirmPassword"
+
 type Inputs = {
-  email: string,
+	email: string,
 };
 
 
 const ForgotPassword = () => {
-    const router = useRouter()
+	const router = useRouter()
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const query: any = router.query;
 	const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .required('User name is required')
-      .email('Please provide a valid email address'),
+		email: Yup.string()
+			.required('User name is required')
+			.email('Please provide a valid email address'),
 
-  });
-  const formOptions = { resolver: yupResolver(validationSchema) }
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Inputs>(formOptions);
+	});
+	const formOptions = { resolver: yupResolver(validationSchema) }
+	const { register, handleSubmit, reset, formState: { errors } } = useForm<Inputs>(formOptions);
 
 
 	const onSubmit: SubmitHandler<Inputs> = async data => {
@@ -31,8 +33,8 @@ const ForgotPassword = () => {
 			const result = await api.v1.account.forgotPassword({ email: data.email });
 			if (result.success) {
 				setIsLoading(false)
-				reset({email: ""})
-				return	ToastSystem.success(result.message);
+				reset({ email: "" })
+				return ToastSystem.success(result.message);
 			}
 			setIsLoading(false)
 			ToastSystem.error(result.message);
@@ -40,12 +42,12 @@ const ForgotPassword = () => {
 			setIsLoading(false)
 			console.log(err);
 		}
-  };
+	};
 
 	return (
 		<section id="page-resd">
-			{(query?.email && query?.token) ? <ConfirmPassword  query={query}/> :
-					<div className="container">
+			{(query?.email && query?.token) ? <ConfirmPassword query={query} /> :
+				<div className="container">
 					<div className="row">
 						<div className="col-md-12">
 							<h2 className="title text-center mt-70"> Forgot Password </h2>
@@ -62,26 +64,8 @@ const ForgotPassword = () => {
 						</div>
 					</div>
 				</div>
-		}
-		
-			{/* <div className="container">
-				<div className="row">
-					<div className="col-md-12">
-						<h2 className="title text-center mt-70"> New Password </h2>
-						<form className="maxw-420">
-							<div className="form-group">
-								<label>New password</label>
-								<input type="text" className="form-control" placeholder="Enter your new password" />
-							</div>
-							<div className="form-group mb-30">
-								<label>Confirm password</label>
-								<input type="text" className="form-control" placeholder="Confirm your new password" />
-							</div>
-							<button type="submit" className="btn btn-primary">Change Password</button>
-						</form>
-					</div>
-				</div>
-			</div> */}
+			}
+
 		</section>
 	);
 }

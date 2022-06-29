@@ -6,7 +6,6 @@ import { RegexString } from 'utils/constant';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MyStorage } from "helper/local_storage";
 import { api } from "configs/axios";
-import { ConfigAction } from "redux/actions/config_action";
 import { useRouter } from 'next/router'
 import { ToastSystem } from 'helper/toast_system';
 import { AuthActions } from 'redux/actions/auth_action';
@@ -15,6 +14,7 @@ import Head from 'next/head';
 import Selectors from "redux/selectors";
 import { useSelector } from "react-redux";
 import { isEmpty } from "lodash";
+
 type Inputs = {
   username: string,
 };
@@ -44,16 +44,16 @@ const SetUsername: React.FC = () => {
                 } else {
                   resolve(true);
                 }
-            })
+              })
           })
         }
       ),
   });
   useEffect(() => {
-    if(!isEmpty(userInfo.username)) {
-     router.push('/')
+    if (!isEmpty(userInfo.username)) {
+      router.push('/')
     }
-   }, [])
+  }, [])
 
   useEffect(() => {
     if (token) {
@@ -79,17 +79,17 @@ const SetUsername: React.FC = () => {
 
     try {
       let tokenData = JSON.parse(atob(token));
-      
+
       const formRequest = { username: data.username };
-      await  api.v1.authorization.checkUsername({ username: data.username  })
-      .then(res => {
-        // @ts-ignore
-        if (res.username_available === false) {
-          ToastSystem.error("Username already taken")
-          return;
-        }
+      await api.v1.authorization.checkUsername({ username: data.username })
+        .then(res => {
+          // @ts-ignore
+          if (res.username_available === false) {
+            ToastSystem.error("Username already taken")
+            return;
+          }
         });
-     
+
       const result = await api.v1.account.setUserName(formRequest);
       if (result.success) {
         let userData = MyStorage.user;
@@ -107,9 +107,9 @@ const SetUsername: React.FC = () => {
   return (
     <>
       <Head>
-				<title>Set Username | PriceGuide.Cards</title>
-				<meta name="description" content="" />
-			</Head>
+        <title>Set Username | PriceGuide.Cards</title>
+        <meta name="description" content="" />
+      </Head>
       <div className="container authenticate-page pb-5">
         <div className="">
           <div className="d-flex justify-content-center">
@@ -134,7 +134,7 @@ const SetUsername: React.FC = () => {
       </div>
     </>
 
-  
+
   );
 }
 

@@ -8,43 +8,47 @@ import {
 } from "interfaces";
 import { api } from "configs/axios";
 import { isEmpty, pull } from "lodash";
-import ParameterTitle from "components/Skeleton/collection/parameterTitle";
-import { formatCurrency, gen_card_url, isFirefox } from "utils/helper";
-import CardElement from "components/cards/cardNode";
-import { CardModel } from "model/data_sport/card_sport";
 import Selectors from "redux/selectors";
 import { useSelector, useDispatch } from "react-redux";
-import LoginModal from "components/modal/login";
-import ChosseCollection from "components/modal/chosseCollection";
-import SelectGrading from "components/modal/selectGrading";
 import { useRouter } from 'next/router'
 import Link from 'next/link';
-import IconPlus from "components/icon/iconPlus";
-import IconMinis from "components/icon/iconMinis";
+import { useTranslation } from "react-i18next";
+import Head from "next/head";
+import { SearchFilterAction } from "redux/actions/search_filter_action";
+import { pageView, event } from "libs/ga"
+import { CompareAction } from "redux/actions/compare_action";
+import { ToastSystem } from "helper/toast_system";
+
+// @ts-ignore
+import $ from "jquery";
+
+import { formatCurrency, gen_card_url, isFirefox } from "utils/helper";
+
+import ImgCard from "assets/images/Collection_Card.png";
+import CardPhotoBase from "assets/images/Card Photo Base.svg";
+import IconCan from "assets/images/icon_can.svg";
+import IconCanFull from "assets/images/icon_can_tim.svg";
 import IconDot3 from "assets/images/dot-3.svg";
 import IconCloseMobile from "assets/images/close_mobile.svg";
 import IconFolder from "assets/images/icon-folder-svg.svg";
 import IconFolderFull from "assets/images/icon-folder-active.svg";
 import IconHeart from "assets/images/icon_heart.svg";
 import IconHeartFull from "assets/images/icon_heart_tim.svg";
-import IconCan from "assets/images/icon_can.svg";
-import IconCanFull from "assets/images/icon_can_tim.svg";
-import { CompareAction } from "redux/actions/compare_action";
-import { ToastSystem } from "helper/toast_system";
-import ImageBlurHash from "components/imageBlurHash";
-import ImgCard from "assets/images/Collection_Card.png";
+
+import CaptCha from "components/modal/captcha";
+import LazyLoadImg from "components/lazy/LazyLoadImg";
 import Pagination from "components/panigation";
 import SkeletonCard from "components/Skeleton/cardItem";
 import ListLine from "components/icon/listLine";
-// @ts-ignore
-import $ from "jquery";
-import CardPhotoBase from "assets/images/Card Photo Base.svg";
-import { useTranslation } from "react-i18next";
-import Head from "next/head";
-import CaptCha from "components/modal/captcha";
-import { SearchFilterAction } from "redux/actions/search_filter_action";
-import LazyLoadImg from "components/lazy/LazyLoadImg";
-import {pageView, event} from "libs/ga"
+import ImageBlurHash from "components/imageBlurHash";
+import IconPlus from "components/icon/iconPlus";
+import IconMinis from "components/icon/iconMinis";
+import LoginModal from "components/modal/login";
+import ChosseCollection from "components/modal/chosseCollection";
+import SelectGrading from "components/modal/selectGrading";
+import { CardModel } from "model/data_sport/card_sport";
+import CardElement from "components/cards/cardNode";
+import ParameterTitle from "components/Skeleton/collection/parameterTitle";
 
 const rowsPerPage = 100;
 
@@ -60,7 +64,7 @@ type FilterDataType = {
 
 const limit = 20;
 
-const CollectionBase = ({ ...props}) => {
+const CollectionBase = ({ ...props }) => {
   const [pagesSelected, setPagesSelected] = useState<Array<number>>([1]);
   const { loggingIn } = useSelector(Selectors.auth);
   const { cards } = useSelector(Selectors.compare);
@@ -77,7 +81,7 @@ const CollectionBase = ({ ...props}) => {
   const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
   const { type, color } = router.query;
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
-  
+
   const dispatch = useDispatch();
   const [wishList, setWishList] = React.useState<
     ManageCollectionType | undefined
@@ -105,9 +109,9 @@ const CollectionBase = ({ ...props}) => {
       getDetail(Boolean(isAddCardCheckList) && pageSelected ? [pageSelected] : [1]);
     }
   }, [router.query]);
-  
+
   const [t, i18n] = useTranslation("common")
-  const getDetail = async (page: number[] = [1],  headers: any = {}): Promise<void> => {
+  const getDetail = async (page: number[] = [1], headers: any = {}): Promise<void> => {
     try {
       setCollection((prevState) => {
         return {
@@ -162,7 +166,7 @@ const CollectionBase = ({ ...props}) => {
   const onSuccessCaptcha = (token: any) => {
     setIsCaptCha(false)
     const headers = { "captcha-token": token };
-    getDetail([1],headers);
+    getDetail([1], headers);
   }
 
   React.useEffect(() => {
@@ -248,8 +252,7 @@ const CollectionBase = ({ ...props}) => {
     dispatch(SearchFilterAction.updateIsAddCardCheckList(true))
 
     router.push(
-      `/collections-add-card?collection=${
-        item.group_ref
+      `/collections-add-card?collection=${item.group_ref
       }&code=${cardSelected.toString()}`
     );
   };
@@ -339,7 +342,7 @@ const CollectionBase = ({ ...props}) => {
   const onComparison = (cardData: any) => {
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
-    if ( dataOld.length === 9 ) {
+    if (dataOld.length === 9) {
       return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
     }
 
@@ -358,16 +361,16 @@ const CollectionBase = ({ ...props}) => {
       ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
       dispatch(CompareAction.addCard(cardNew));
     }
-    
+
     localStorage.setItem("comparison", JSON.stringify(dataOld));
 
     /* ga event */
     event({
       action: "card_added_to_comparison",
-      params : {
-        eventCategory:  'Comparison',
-        eventAction:    "card_added_to_comparison",
-        eventLabel:     "Card Added to Comparison"
+      params: {
+        eventCategory: 'Comparison',
+        eventAction: "card_added_to_comparison",
+        eventLabel: "Card Added to Comparison"
       }
     })
   };
@@ -396,16 +399,16 @@ const CollectionBase = ({ ...props}) => {
       isFirefox
         ? $("html, body").animate({ scrollTop: checkListRef.current.offsetTop })
         : window.scrollTo({
-            behavior: "smooth",
-            top: checkListRef.current.offsetTop,
-          });
+          behavior: "smooth",
+          top: checkListRef.current.offsetTop,
+        });
     }
     if (timerid) {
       clearTimeout(timerid);
     }
 
     dispatch(SearchFilterAction.updatePageSelected(event[0]))
-    
+
     timerid = setTimeout(() => {
       setPagesSelected(event);
       getDetail(event);
@@ -416,10 +419,10 @@ const CollectionBase = ({ ...props}) => {
     /* ga event */
     event({
       action: "multi_add_to_portfolio ",
-      params : {
-        eventCategory:  'Portfolio',
-        eventAction:    'multi_add_to_portfolio',
-        eventLabel:     'Multi Card Added to Portfolio'
+      params: {
+        eventCategory: 'Portfolio',
+        eventAction: 'multi_add_to_portfolio',
+        eventLabel: 'Multi Card Added to Portfolio'
       }
     })
   }
@@ -541,7 +544,7 @@ const CollectionBase = ({ ...props}) => {
                       onClick={() => {
                         setIsInline((prevState) => !prevState);
                         setIsSelect(false);
-                      } }
+                      }}
                       className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}
                     >
                       <ListLine />
@@ -552,8 +555,8 @@ const CollectionBase = ({ ...props}) => {
                     onClick={onHandleMode}
                     disabled={isInline && !cardSelected.length}
                     className={`ms-2  ${isInline && !cardSelected.length
-                        ? "opacity-50"
-                        : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}
+                      ? "opacity-50"
+                      : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}
                   >
                     {isSelect ? <IconMinis /> : <IconPlus />}
                   </button>
@@ -579,7 +582,7 @@ const CollectionBase = ({ ...props}) => {
                         } else {
                           setIsOpenLogin(true);
                         }
-                      } }
+                      }}
                       className="me-2 btn btn-portfolio"
                     >
                       {" "}
@@ -631,7 +634,7 @@ const CollectionBase = ({ ...props}) => {
                               } else {
                                 setIsOpenLogin(true);
                               }
-                            } }
+                            }}
                             className="me-2 btn  btn-portfolio"
                           >
                             {" "}
@@ -652,7 +655,7 @@ const CollectionBase = ({ ...props}) => {
                       key={item.id}
                       cardSelected={cardSelected}
                       onSelectItem={onSelectItem}
-                      imageUrl={ item?.image
+                      imageUrl={item?.image
                         ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
                         : undefined}
                       isSelect={isSelect}
@@ -671,7 +674,7 @@ const CollectionBase = ({ ...props}) => {
                         } else {
                           setIsOpenLogin(true);
                         }
-                      } }
+                      }}
                       item={{
                         ...item,
                         //@ts-ignore
@@ -707,7 +710,7 @@ const CollectionBase = ({ ...props}) => {
                               <input
                                 onChange={() => {
                                   isCheckAll ? onClear() : onSelectAll();
-                                } }
+                                }}
                                 checked={isCheckAll}
                                 className="form-check-input cursor-pointer mt-0"
                                 type="checkbox" />
@@ -885,14 +888,14 @@ const CollectionBase = ({ ...props}) => {
                                     onClick={() => onGoToCard(item)}
                                     className="cursor-pointer image-box-table mr-2"
                                   >
-                                    <LazyLoadImg 
-                                    className="w-100"
-                                    imgError={CardPhotoBase}
-                                     url={item?.image
-                                      ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
-                                        ? "ns"
-                                        : "sp"}/${item?.image}.jpg`
-                                      : CardPhotoBase} 
+                                    <LazyLoadImg
+                                      className="w-100"
+                                      imgError={CardPhotoBase}
+                                      url={item?.image
+                                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
+                                          ? "ns"
+                                          : "sp"}/${item?.image}.jpg`
+                                        : CardPhotoBase}
                                     />
                                   </div>
                                   <div
@@ -958,7 +961,7 @@ const CollectionBase = ({ ...props}) => {
                                         } else {
                                           setIsOpenLogin(true);
                                         }
-                                      } }
+                                      }}
                                       className="dropdown-menu-item d-flex cursor-pointer"
                                     >
                                       <div className="dropdown-menu-item__icon">
@@ -1096,7 +1099,7 @@ const CollectionBase = ({ ...props}) => {
             } else {
               setIsOpen(true);
             }
-          } }
+          }}
           isOpen={isOpenLogin}
           onClose={() => setIsOpenLogin(false)} />
         {cardData && loggingIn && (
@@ -1114,18 +1117,18 @@ const CollectionBase = ({ ...props}) => {
                   cards: dataNew,
                 };
               });
-            } }
+            }}
             setIsOpen={setIsOpenGrade} />
         )}
         <CaptCha
-        isOpen={isCaptCha}
-        onSuccess={onSuccessCaptcha}
-        onClose={() => setIsCaptCha(false)} />
+          isOpen={isCaptCha}
+          onSuccess={onSuccessCaptcha}
+          onClose={() => setIsCaptCha(false)} />
       </div></>
   );
 };
 
-export const getServerSideProps = async (context: any) => { 
+export const getServerSideProps = async (context: any) => {
   try {
     const ctx = context.query;
     let prms = {
@@ -1141,16 +1144,18 @@ export const getServerSideProps = async (context: any) => {
       },
       body: JSON.stringify(prms)
     }
-    
+
     const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/collections/checklist/page-title`, config);
     const data = await res.json();
-    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ' ' } | PriceGuide.Cards`;
+    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ' '} | PriceGuide.Cards`;
     let descriptionPage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} Checklist`;
 
-    return {props:{
-      titlePage,
-      descriptionPage,
-    }}
+    return {
+      props: {
+        titlePage,
+        descriptionPage,
+      }
+    }
 
   } catch (error) {
     /**/

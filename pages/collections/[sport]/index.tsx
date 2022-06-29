@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Collections from "components/collections";
 import Head from 'next/head';
+
+import Collections from "components/collections";
 
 const CollectionList = (props: any) => {
   return (

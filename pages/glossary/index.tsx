@@ -3,12 +3,14 @@ import { api } from 'configs/axios';
 import { ToastSystem } from 'helper/toast_system';
 import { GlossaryType } from "interfaces"
 import Skeleton from 'react-loading-skeleton';
-import { useDebouncedCallback } from "utils/useDebouncedEffect"
-import IconSearch from "assets/images/search.svg";
 import { isEmpty } from 'lodash';
 import Link from "next/link";
-import IconSearchGlossary from 'assets/images/icon-search-glossary.svg';
 import Head from 'next/head';
+
+import { useDebouncedCallback } from "utils/useDebouncedEffect"
+
+import IconSearch from "assets/images/search.svg";
+import IconSearchGlossary from 'assets/images/icon-search-glossary.svg';
 
 type DataType = {
   glossaries: GlossaryType[];
@@ -90,9 +92,9 @@ const Glossary = () => {
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link href="/" >
-                    <a title="Home">
-                        Home
-                    </a>
+                  <a title="Home">
+                    Home
+                  </a>
                 </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page"> Trading Card Glossary </li>
@@ -104,7 +106,7 @@ const Glossary = () => {
             <div className="d-flex justify-content-between">
               <h1 className="title-profile title-profile--glossary"><span>Trading Card</span> Glossary</h1>
               <div className="section-icon">
-                <img src={IconSearchGlossary} alt="" className="icon-search-mobile" onClick={() => setShowSearchMobile(!showSearchMobile)}/>
+                <img src={IconSearchGlossary} alt="" className="icon-search-mobile" onClick={() => setShowSearchMobile(!showSearchMobile)} />
               </div>
             </div>
             {data.isLoading && loadingArray?.map(item =>
@@ -120,7 +122,7 @@ const Glossary = () => {
               </div>
             )}
             {data.glossaries?.map((glossary, index) =>
-              <div key={index} className={`py-3 glossary-item ${index == 0 ? 'glossary-item-first' : ''}` }>
+              <div key={index} className={`py-3 glossary-item ${index == 0 ? 'glossary-item-first' : ''}`}>
                 <div className="fw-bold glossary-item__head">{glossary.category}</div>
                 <hr />
                 {glossary.glossary?.map((item, key) =>
@@ -145,7 +147,7 @@ const Glossary = () => {
                   className="form-control"
                   placeholder="Search"
                 />
-                <span className="close" onClick={() => {setShowSearchMobile(!showSearchMobile)}}> Close </span>
+                <span className="close" onClick={() => { setShowSearchMobile(!showSearchMobile) }}> Close </span>
               </div>
               <div className="mt-3 d-flex button-key flex-wrap">
                 {data?.categories?.map((item, key) =>

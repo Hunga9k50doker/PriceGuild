@@ -1,30 +1,12 @@
-import React, {useEffect, useRef} from 'react';
-import Personal from "components/profile/personal"
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router'
-import Link from 'next/link'
-import Collection from "components/profile/collection"
-import CollectionAnalytics from "components/profile/collection/analytics"
-import AddCard from "components/profile/addCard"
 import { useSelector, useDispatch } from 'react-redux';
 import Selectors from 'redux/selectors';
-import Settings from "components/profile/settings"
-import CardListCollection from "components/profile/collection/cardListCollection"
-import Messages from "components/profile/messages"
-import ReportCard from "components/profile/reportCard"
-import Friends from "components/profile/friends"
-import FriendDetail from "components/profile/friends/friendDetail"
-import RequestAPI from "components/profile/requestAPI"
-import FriendUnlogged from 'components/friends'
 import { MyStorage } from "helper/local_storage";
 import { AuthActions } from "redux/actions/auth_action";
-import IconUserProfile from "assets/images/icon-user.svg"
-import IconCollectionProfile from "assets/images/icon-collection.svg"
-import IconHeartProfile from "assets/images/icon-heart.svg"
-import IconFriendProfile from "assets/images/icon-users.svg"
-import IconMessageProfile from "assets/images/icon-chat.svg"
-import IconSettingProfile from "assets/images/icon-settings.svg"
-import IconCartProfile from "assets/images/icon-card-plus.svg"
-import IconCloudProfile from "assets/images/icon-api.svg"
+import useWindowDimensions from "utils/useWindowDimensions"
+import Head from 'next/head';
+import { useTranslation } from "react-i18next";
 
 import IconUserProfileActive from "assets/images/icon-user-filled.svg"
 import IconCollectionProfileActive from "assets/images/icon-collection-filled.svg"
@@ -34,11 +16,28 @@ import IconMessageProfileActive from "assets/images/icon-chat-filled.svg"
 import IconSettingProfileActive from "assets/images/icon-settings-filled.svg"
 import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg"
 import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
-import useWindowDimensions from "utils/useWindowDimensions"
-import cookies from 'next-cookies'
-import Head from 'next/head';
-import { useTranslation } from "react-i18next";
-import { isEmpty } from 'lodash';
+import IconCollectionProfile from "assets/images/icon-collection.svg"
+import IconHeartProfile from "assets/images/icon-heart.svg"
+import IconFriendProfile from "assets/images/icon-users.svg"
+import IconMessageProfile from "assets/images/icon-chat.svg"
+import IconSettingProfile from "assets/images/icon-settings.svg"
+import IconCartProfile from "assets/images/icon-card-plus.svg"
+import IconCloudProfile from "assets/images/icon-api.svg"
+import IconUserProfile from "assets/images/icon-user.svg"
+
+import Settings from "components/profile/settings"
+import CardListCollection from "components/profile/collection/cardListCollection"
+import Messages from "components/profile/messages"
+import ReportCard from "components/profile/reportCard"
+import Friends from "components/profile/friends"
+import FriendDetail from "components/profile/friends/friendDetail"
+import RequestAPI from "components/profile/requestAPI"
+import FriendUnlogged from 'components/friends'
+import Collection from "components/profile/collection"
+import CollectionAnalytics from "components/profile/collection/analytics"
+import AddCard from "components/profile/addCard"
+import Personal from "components/profile/personal"
+
 interface ParamTypes {
   page: string,
   action?: string
@@ -68,22 +67,22 @@ const Profile: React.FC = ({ ...props }) => {
         dispatch(AuthActions.logout());
       }
     }
-  
+
     if (Number(page)) {
       friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       switch (action) {
         case 'portfolio':
-            if (slug !== undefined) {
-                // @ts-ignore
-                return <div className="col-12 col-md-12 min-vh-100"><CardListCollection  isFriend={true} key="card-collection" isEditCard={false} userId={Number(page)} collection={type} /></div>
-            }
-              return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
-          case 'wishlists':
-            if (slug) {
-                // @ts-ignore
-                return <div className="col-12 col-md-12 min-vh-100 container-collection"><CardListCollection title="wishlist" table="wishlist" userId={Number(page)} isEditCard={false} collection={type} /></div>
-            }
-            return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
+          if (slug !== undefined) {
+            // @ts-ignore
+            return <div className="col-12 col-md-12 min-vh-100"><CardListCollection isFriend={true} key="card-collection" isEditCard={false} userId={Number(page)} collection={type} /></div>
+          }
+          return <div className="col-12 col-md-12 min-vh-100 container-collection"><Collection key={"collections"} userId={Number(page)} /></div>
+        case 'wishlists':
+          if (slug) {
+            // @ts-ignore
+            return <div className="col-12 col-md-12 min-vh-100 container-collection"><CardListCollection title="wishlist" table="wishlist" userId={Number(page)} isEditCard={false} collection={type} /></div>
+          }
+          return <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={Number(page)} table="wishlist" />
         default:
           return <FriendUnlogged />
       }
@@ -208,7 +207,7 @@ const Profile: React.FC = ({ ...props }) => {
         case "api":
           return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         default:
-          
+
       }
     }
   }
@@ -226,13 +225,13 @@ const Profile: React.FC = ({ ...props }) => {
 
       case '/profile/settings/account':
         return 'hide-menu';
-      
+
       case '/profile/settings/security':
         return 'hide-menu';
-      
+
       case '/profile/settings/confidentiality':
         return 'hide-menu';
-      
+
       default:
         break;
     }
@@ -243,7 +242,7 @@ const Profile: React.FC = ({ ...props }) => {
       "/profile/collections/:id/:name",
       "/profile/collections/edit-card"
     ];
-    
+
     for (let i = 0; i < list_route.length; i++) {
       // console.log(history.location.pathname, "");
       //    let match = matchPath(history.location.pathname, {
@@ -282,11 +281,11 @@ const Profile: React.FC = ({ ...props }) => {
     timerid = setTimeout(() => {
       renderRefMenu();
     }, 550);
-    
+
   }, [page])
   return (
     <>
-     <Head>
+      <Head>
         <title>{
           //@ts-ignore
           props?.titlePage ?? ''}</title>
@@ -294,81 +293,81 @@ const Profile: React.FC = ({ ...props }) => {
           //@ts-ignore
           props?.descriptionPage ?? ''} />
       </Head>
-    <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
-      <div className="row ">
-        <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
-          <div className="profile-menu">
-            <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
-              <span className="icon">
-                <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+      <div className={`${Boolean(Number(page)) ? "container" : "container-fluid"} page-profile`}>
+        <div className="row ">
+          <div className={`col-12 col-md-2 p-3 border-end pt-5 page-profile-list ${hideMenu(currentPage)} ${Boolean(Number(page)) ? "d-none" : ""}`}>
+            <div className="profile-menu">
+              <div onClick={() => gotoMenu("personal")} className={renderClass("personal")}>
+                <span className="icon">
+                  <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
+                </span>
+                <span className="profile-menu-text" ref={profileRef}> Profile </span>
+              </div>
+              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
+                <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
               </span>
-              <span className="profile-menu-text" ref={profileRef}> Profile </span>
-            </div>
-            <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
-              <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
-            </span>
-              <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
-            </div>
-            <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
-              <span className="icon">
-                <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
-              </span>
-              <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
-            </div>
-            <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
-              <span className="icon">
-                <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
-              </span>
-              <span className="profile-menu-text" ref={friendtRef}> Friends </span>
-            </div>
-            <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
-              <span className="icon">
-                <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
-              </span>
-              <span className="profile-menu-text" ref={messageRef}> Messages </span>
-            </div>
-            {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
+                <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
+              </div>
+              <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
+                <span className="icon">
+                  <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
+                </span>
+                <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
+              </div>
+              <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
+                <span className="icon">
+                  <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
+                </span>
+                <span className="profile-menu-text" ref={friendtRef}> Friends </span>
+              </div>
+              <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
+                <span className="icon">
+                  <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
+                </span>
+                <span className="profile-menu-text" ref={messageRef}> Messages </span>
+              </div>
+              {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
               <span className="icon">
                 <img src={IconMessageProfile} alt="Market" title="" />
               </span>
               <span className="profile-menu-text"> Market </span>
             </div> */}
-            <hr className="hr-color-profile" />
-            <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
-              <span className="icon">
-                <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
-              </span>
-              <span className="profile-menu-text"
-                ref={settingRef}
-              > Settings </span>
-            </div>
-            <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
-              <span className="icon">
-                <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
-              </span>
-              <span className="profile-menu-text"
-                ref={findCardRef}
-              > Can't find a card? </span>
-            </div>
-            <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
-              <span className="icon">
-                <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
-              </span>
-              <span className="profile-menu-text"
-                ref={apiRef}
-              > API </span>
+              <hr className="hr-color-profile" />
+              <div onClick={() => gotoMenu("settings")} className={renderClass("settings")}>
+                <span className="icon">
+                  <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={settingRef}
+                > Settings </span>
+              </div>
+              <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
+                <span className="icon">
+                  <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={findCardRef}
+                > Can't find a card? </span>
+              </div>
+              <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
+                <span className="icon">
+                  <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
+                </span>
+                <span className="profile-menu-text"
+                  ref={apiRef}
+                > API </span>
+              </div>
             </div>
           </div>
+          {renderContent()}
         </div>
-        {renderContent()}
-      </div>
       </div>
     </>
   );
 }
-export const getServerSideProps = async (context: any) => { 
+export const getServerSideProps = async (context: any) => {
   try {
-    
+
     const ctx = context?.query;
     const pageName = ctx.action === 'wishlists' ? 'Wishlists' : 'Profolio'
     let titlePage = `${ctx.slug} - Personal ${pageName} | PriceGuide.Cards`;
@@ -376,10 +375,11 @@ export const getServerSideProps = async (context: any) => {
     return {
       props: {
         titlePage,
-    }}
+      }
+    }
 
   } catch (error) {
-    
+
   }
   return {
     props: {},

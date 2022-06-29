@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link'
 import * as Yup from 'yup';
-import { RegexString } from 'utils/constant';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { api } from 'configs/axios';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import Head from 'next/head';
+
+import { RegexString } from 'utils/constant';
 
 type Inputs = {
 	name: string,

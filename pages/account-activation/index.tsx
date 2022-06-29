@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import queryString from 'query-string';
-import { AuthenticationApi } from 'api/authentication';
-import { useRouter } from 'next/router'
-import { isEmpty } from 'lodash';
-import Head from 'next/head';
 import { AuthActions } from 'redux/actions/auth_action';
 import { useDispatch, useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
+import { isEmpty } from 'lodash';
+
+import { useRouter } from 'next/router'
+import Head from 'next/head';
+
+import { AuthenticationApi } from 'api/authentication';
+
 type PropTypes = {
   location: any,
 }

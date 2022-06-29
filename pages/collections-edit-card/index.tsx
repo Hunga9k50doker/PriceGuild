@@ -1,4 +1,5 @@
 import React from "react";
+
 import EditCard from "components/profile/editCard"
 
 type PropTypes = {

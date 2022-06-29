@@ -1,5 +1,6 @@
 import React from "react";
 import Head from 'next/head';
+
 import Sport from "components/sport";
 
 function SportLandingPage({ ...props }) {
@@ -52,9 +53,9 @@ export const getServerSideProps = async (context: any) => {
     // }
 
     // METHOD 2 Check if the sport is a valid sport via hardcode
-    const accepted_sports = ["baseball", "football", "hockey", "basketball", 
-                             "racing", "soccer", "wrestling", "multi-sport", 
-                             "non-sport", "mma", "golf", "tennis", "boxing"];
+    const accepted_sports = ["baseball", "football", "hockey", "basketball",
+      "racing", "soccer", "wrestling", "multi-sport",
+      "non-sport", "mma", "golf", "tennis", "boxing"];
 
     if (!accepted_sports.includes(context?.query?.sportName)) {
       return {

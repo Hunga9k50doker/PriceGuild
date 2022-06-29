@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton'
+
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import Head from 'next/head';
+
+import { BlogData } from "interfaces";
+import { useDebouncedCallback } from "utils/useDebouncedEffect"
+import { api } from 'configs/axios';
+import moment from "moment";
+import { isFirefox } from "utils/helper"
+
+// @ts-ignore
+import $ from "jquery"
 
 import imgAdvertisement2 from "assets/images/advertisement-sidebar.jpg";
 import imgClose from "assets/images/cross-gray.svg";
 import imgClose2 from "assets/images/cross-black.svg";
 import imgSearch from "assets/images/search.svg";
 import imgHidSearch from "assets/images/hidden-search.svg";
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { BlogData } from "interfaces";
-import { useDebouncedCallback } from "utils/useDebouncedEffect"
-import { api } from 'configs/axios';
-import Skeleton from 'react-loading-skeleton'
+
 import Pagination from "components/panigation";
-import moment from "moment";
-import { isFirefox } from "utils/helper"
-import Head from 'next/head';
-// @ts-ignore
-import $ from "jquery"
-import queryString from 'query-string';
 
 type PropTypes = {
 	location: any,

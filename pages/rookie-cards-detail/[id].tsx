@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { RookieCardType } from "interfaces";
 import BlogsApis from "api/blog_api";
 import LazyLoad from "react-lazyload";
-import CardDetail from "components/cardDetail";
 import Link from 'next/link'
 import Skeleton from 'react-loading-skeleton';
-import { formatCurrency } from "utils/helper";
 import { useRouter } from 'next/router'
+
+import { formatCurrency } from "utils/helper";
+
+import CardDetail from "components/cardDetail";
+
 type ParamTypes = {
   id: string
 }
@@ -22,7 +25,7 @@ const RookieCardDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [rookieData, setRookieData] = useState<RookieCardType | undefined>();
-  
+
   const getDataRookie = async () => {
     try {
       let response = await BlogsApis.getRookieDetail(Number(id));
@@ -37,7 +40,7 @@ const RookieCardDetail = () => {
   }, []);
 
   const gotoCard = (code: string) => {
-   // history.push(`/card-detail?code=${code}`);
+    // history.push(`/card-detail?code=${code}`);
   }
 
   return (
