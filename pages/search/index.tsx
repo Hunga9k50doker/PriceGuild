@@ -55,7 +55,7 @@ import { CompareAction } from "redux/actions/compare_action";
 import Link from "next/link";
 import EditIconBlack from "assets/images/edit-icon-black.svg";
 import IconUnion from "assets/images/union_wishlist.svg";
-import {pageView, event} from "libs/ga"
+import { pageView, event } from "libs/ga"
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const defaultSort: SelectDefultType = {
@@ -86,7 +86,7 @@ type PrioritizeType = {
 const CardList = (props: PropTypes) => {
   const nameToolTip = "Login to see pricing"
   const { width } = useWindowDimensions();
-  const { loggingIn, userInfo} = useSelector(Selectors.auth);
+  const { loggingIn, userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const [isFirst, setIsFirst] = useState<boolean>(false)
   const [cardSelected, setCardSelected] = useState<Array<string | number>>([]);
@@ -115,7 +115,7 @@ const CardList = (props: PropTypes) => {
     // isLoadMore: false,
     // page: 1,
     rows: 0,
-    null_price_tooltip:'',
+    null_price_tooltip: '',
   })
   const { currency } = useSelector(Selectors.config);
   const [wishList, setWishList] = React.useState<
@@ -148,17 +148,17 @@ const CardList = (props: PropTypes) => {
   const [onActiveOption, setOnActiveOption] = useState<boolean>(false);
 
   useEffect(() => {
-    if ( router.isReady ) {
+    if (router.isReady) {
       setPrioritize([])
       resetPage(true);
       localStorage.setItem("url-search", `${location.pathname}${location.search}`)
     }
   }, [router.query])
-  
+
   useEffect(() => {
-      //@ts-ignore
-    if(width < 767.98) {
-      if(isSelect) {
+    //@ts-ignore
+    if (width < 767.98) {
+      if (isSelect) {
         dispatch(ConfigAction.updateShowTabBar(false));
       } else {
         dispatch(ConfigAction.updateShowTabBar(true));
@@ -195,17 +195,17 @@ const CardList = (props: PropTypes) => {
     let params: any = {}
     let filterOld = {};
     if (Boolean(isFilterStore)) {
-      filterOld = {...filterSearch}
+      filterOld = { ...filterSearch }
     } else {
-      filterOld = {...filterData}
+      filterOld = { ...filterData }
     }
-    
+
     // @ts-ignore
     if (filterOld?.isLoad !== undefined) {
       // @ts-ignore
       delete filterOld?.isLoad
     }
-  
+
     for (const [key, value] of Object.entries(filterOld ?? {})) {
       // @ts-ignore
       const arrayValue = value.map(item => {
@@ -216,7 +216,7 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
       }).sort((a, b) => a - b);
       if (key === "printRun") {
-         // @ts-ignore
+        // @ts-ignore
         if (value.length) {
           params.printRun = [
             [
@@ -271,15 +271,15 @@ const CardList = (props: PropTypes) => {
           params[key] = undefined
         }
         else {
-          params[key] = arrayValue?.length ? arrayValue: undefined
+          params[key] = arrayValue?.length ? arrayValue : undefined
         }
     }
     return params
   }
 
   const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}, isResetSearchBox: boolean = false) => {
-    
-    if (page[page.length-1] === 1) {
+
+    if (page[page.length - 1] === 1) {
       // dispatch(FilterAction.updateFiltersCardDetail({
       //   collections: [],
       //   auto_memo: [],
@@ -297,11 +297,11 @@ const CardList = (props: PropTypes) => {
 
     try {
       setData(prevState => {
-        return { ...prevState, isLoading: true, cards: page.length ===1 ? [] : [...prevState.cards] };
+        return { ...prevState, isLoading: true, cards: page.length === 1 ? [] : [...prevState.cards] };
       });
 
       let params: any = {};
-      
+
       if (query.sport || query?.sport_criteria) {
         params.sport = +(query?.sport ?? query?.sport_criteria);
       }
@@ -310,7 +310,7 @@ const CardList = (props: PropTypes) => {
         params.sport = +(userInfo?.userDefaultSport ?? 1)
       }
 
-      if (query.q ) {
+      if (query.q) {
         params.search_term = query.q;
       }
       if (!Boolean(isResetSearchBox)) {
@@ -327,13 +327,13 @@ const CardList = (props: PropTypes) => {
       }
 
       if (Boolean(isFilterStore) && isFilter) {
-         params.filter = getFilterSearch();
+        params.filter = getFilterSearch();
       } else {
         if (!isEmpty(filterData) && isFilter) {
           params.filter = getFilterSearch();
         }
       }
-     
+
       if (params.filter?.sport?.length) {
         params.sport = params.filter?.sport[0]
         delete params.filter?.sport
@@ -350,7 +350,7 @@ const CardList = (props: PropTypes) => {
       const paramsFilter = { ...params }
       params = {
         ...params,
-        page: page[page.length-1],
+        page: page[page.length - 1],
         limit: rowsPerPage,
         currency: currency,
         sort_dict: {
@@ -362,7 +362,7 @@ const CardList = (props: PropTypes) => {
       const result = await api.v1.elasticSearch.searchCard(params, headers);
       //@ts-ignore
       if (page[page.length - 1] === 1) {
-        if(!Boolean(isFilterStore)){
+        if (!Boolean(isFilterStore)) {
           // @ts-ignore
           dispatch(FilterAction.getFiltersCardDetail(paramsFilter, setDataFilterState));
         }
@@ -370,7 +370,7 @@ const CardList = (props: PropTypes) => {
           setIsChangeRouter(isChange)
         }
       } else {
-        if (Boolean(isFilterStore)) { 
+        if (Boolean(isFilterStore)) {
           setIsChangeRouter(isChange)
         }
       }
@@ -396,22 +396,22 @@ const CardList = (props: PropTypes) => {
           };
         });
       } else {
-        if(result?.error)
+        if (result?.error)
           ToastSystem.error(result?.error)
       }
-     
+
       setData(prevState => {
-        return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
+        return { ...prevState, isLoading: false, isLoadMore: false, rows: 0 };
       });
     } catch (err) {
       //@ts-ignore
       if (err?.response?.status === 409) {
         //@ts-ignore
-          setIsCaptCha(Boolean(err?.response?.data?.show_captcha))
+        setIsCaptCha(Boolean(err?.response?.data?.show_captcha))
       }
-      
+
       setData(prevState => {
-        return { ...prevState, isLoading: false, isLoadMore: false, rows: 0};
+        return { ...prevState, isLoading: false, isLoadMore: false, rows: 0 };
       });
     }
   }
@@ -421,13 +421,13 @@ const CardList = (props: PropTypes) => {
     const headers = { "captcha-token": token };
     getListCard(pageSelected ? [pageSelected] : [1], false, true, headers)
   }
-  
+
   const onLoadMore = () => {
-    dispatch(SearchFilterAction.updatePageSelected(pagesSelected[pagesSelected.length-1] + 1));
-    if (pagesSelected[pagesSelected.length-1] + 1 <= (Math.ceil((data.rows ?? 0) / rowsPerPage))) {
-      getListCard([...pagesSelected, pagesSelected[pagesSelected.length-1]+1], false)
+    dispatch(SearchFilterAction.updatePageSelected(pagesSelected[pagesSelected.length - 1] + 1));
+    if (pagesSelected[pagesSelected.length - 1] + 1 <= (Math.ceil((data.rows ?? 0) / rowsPerPage))) {
+      getListCard([...pagesSelected, pagesSelected[pagesSelected.length - 1] + 1], false)
       // setCurrentPage(currentPage + 1);
-      setPagesSelected([...pagesSelected, pagesSelected[pagesSelected.length-1]+1])
+      setPagesSelected([...pagesSelected, pagesSelected[pagesSelected.length - 1] + 1])
     }
   }
 
@@ -450,7 +450,7 @@ const CardList = (props: PropTypes) => {
         prms.sport = +(userInfo?.userDefaultSport ?? 1)
       }
 
-      if (query.q ) {
+      if (query.q) {
         prms.search_term = query.q;
       }
       if (filterData?.sport?.length) {
@@ -497,7 +497,7 @@ const CardList = (props: PropTypes) => {
     } else {
       if (prioritize[prioritize.length - 1].name === key && e.length === 0) {
 
-        dataSave = dataSave.filter(item => item.name === key ? ({...item, isChange: false}): item);
+        dataSave = dataSave.filter(item => item.name === key ? ({ ...item, isChange: false }) : item);
         if (dataSave.length) {
           dataSave[dataSave.length - 1] = {
             name: dataSave[dataSave.length - 1].name,
@@ -519,7 +519,7 @@ const CardList = (props: PropTypes) => {
       }
     })
     let dataFiler = dataSave?.filter((item, index) => index <= i).map(item => item.name);
-   
+
     let params = {};
     for (const element of dataFiler) {
       // @ts-ignore
@@ -528,7 +528,7 @@ const CardList = (props: PropTypes) => {
     if (key === "set") {
       typeRef?.current?.reset();
       colorRef?.current?.reset();
-      
+
       // @ts-ignore
       buttonRef?.current && buttonRef?.current.click();
       // @ts-ignore
@@ -536,8 +536,8 @@ const CardList = (props: PropTypes) => {
     }
     if (key === "type") {
       colorRef?.current?.reset();
-       // @ts-ignore
-       buttonRef?.current && buttonRef?.current.click();
+      // @ts-ignore
+      buttonRef?.current && buttonRef?.current.click();
       // btnSoftByRef?.current && btnSoftByRef?.current.click();
       // @ts-ignore
       return setFilterData({ ...params, [key]: e, color: [], isLoad: true });
@@ -548,14 +548,14 @@ const CardList = (props: PropTypes) => {
     buttonRef?.current && buttonRef?.current.click();
   }
 
-  const onChangeSearch = (e: any, key: string) => {    
+  const onChangeSearch = (e: any, key: string) => {
     loadSuggestions([1]);
     window.scrollTo(0, 0);
     buttonRef?.current && buttonRef?.current.click();
   }
 
   const loadSuggestions = useDebouncedCallback(getListCard, 550);
-  
+
   const removeFilter = (item: FilterType, key: string) => {
     if (key === "set") {
       typeRef?.current?.reset();
@@ -613,11 +613,11 @@ const CardList = (props: PropTypes) => {
       }
     })
   }
-  
+
   const handleOptionsPrintRun = () => {
-    const maxValue = filters.printRuns ? Math.max(...filters.printRuns): NaN;
-    const minValue = filters.printRuns ? Math.min(...filters.printRuns): NaN;
-    
+    const maxValue = filters.printRuns ? Math.max(...filters.printRuns) : NaN;
+    const minValue = filters.printRuns ? Math.min(...filters.printRuns) : NaN;
+
     const data = MetaData.printRun.filter((e) => {
       if (e.id === 1) {
         return maxValue > 0
@@ -641,7 +641,7 @@ const CardList = (props: PropTypes) => {
         return maxValue > 299
       }
     })
-    
+
     return data;
   }
 
@@ -739,7 +739,7 @@ const CardList = (props: PropTypes) => {
     let auto = automemoRef?.current?.getOptionData() ?? [];
     // let print = printRunRef?.current?.getOptionData() ?? [];
     let sport = sportRef?.current?.getOptionData() ?? [];
-      
+
     dispatch(FilterAction.updateFiltersCardDetail({
       //@ts-ignore
       publishers: publisher,
@@ -773,19 +773,19 @@ const CardList = (props: PropTypes) => {
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
         prioritizeState.push({ name: 'sport', isChange: true })
-      } 
+      }
       // @ts-ignore
       let publisherState = dataFilterState?.publishers?.find(publisher => publisher?.name === query?.publisherName);
       if (publisherState) {
         params.publisher = [publisherState];
         // @ts-ignore
         prioritizeState = prioritizeState.map(item => ({ ...item, isChange: false }));
-        prioritizeState.push({ name: 'publisher', isChange: true }); 
+        prioritizeState.push({ name: 'publisher', isChange: true });
         publisherRef?.current?.reset([publisherState]);
       } else {
         if (Boolean(isFilterStore)) {
           if (!isEmpty(dataFilterState?.publisher)) {
-            prioritizeState.push({ name: 'publisher', isChange: true }); 
+            prioritizeState.push({ name: 'publisher', isChange: true });
           }
           publisherRef?.current?.reset(dataFilterState?.publisher ?? []);
         }
@@ -823,16 +823,16 @@ const CardList = (props: PropTypes) => {
           setRef?.current?.reset(dataFilterState?.set ?? []);
         }
       }
-      if (Boolean(isFilterStore)) { 
-          if (!isEmpty(dataFilterState?.printRun)) {
-            prioritizeState.push({ name: 'printRun', isChange: true })
-          }
-          printRunRef?.current?.reset(dataFilterState?.printRun ?? []);
-        
-          if (!isEmpty(dataFilterState?.auto_memo)) {
-            prioritizeState.push({ name: 'auto_memo', isChange: true })
-          }
-          automemoRef?.current?.reset(dataFilterState?.auto_memo ?? []);
+      if (Boolean(isFilterStore)) {
+        if (!isEmpty(dataFilterState?.printRun)) {
+          prioritizeState.push({ name: 'printRun', isChange: true })
+        }
+        printRunRef?.current?.reset(dataFilterState?.printRun ?? []);
+
+        if (!isEmpty(dataFilterState?.auto_memo)) {
+          prioritizeState.push({ name: 'auto_memo', isChange: true })
+        }
+        automemoRef?.current?.reset(dataFilterState?.auto_memo ?? []);
       }
 
       if (isEmpty(query)) {
@@ -851,7 +851,7 @@ const CardList = (props: PropTypes) => {
     }
 
   }, [filters.years, filters.publishers, isChangeRouter, filters.collections, filters.sports])
-  
+
   const resetFilterUI = () => {
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {
@@ -873,28 +873,28 @@ const CardList = (props: PropTypes) => {
             </button>
           </div>)}</React.Fragment>
       })}
-      {!isEmpty(cardNumberRef.current?.getValue()) && 
-      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
-        <div className="btn-text-clear">{cardNumberRef.current?.getValue()}</div>
+      {!isEmpty(cardNumberRef.current?.getValue()) &&
+        <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+          <div className="btn-text-clear">{cardNumberRef.current?.getValue()}</div>
           <button type="button" onClick={() => {
             cardNumberRef.current?.clearSearch();
-        }} className="btn--hidden">
-          <img src={ButtonClear} alt="" />
-        </button>
-      </div>}
-      {!isEmpty(playerNameRef.current?.getValue()) && 
-      <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
-        <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
+          }} className="btn--hidden">
+            <img src={ButtonClear} alt="" />
+          </button>
+        </div>}
+      {!isEmpty(playerNameRef.current?.getValue()) &&
+        <div className="d-flex align-items-center ms-2 mb-2 btn-clear">
+          <div className="btn-text-clear">{playerNameRef.current?.getValue()}</div>
           <button type="button" onClick={() => {
             playerNameRef.current?.clearSearch();
-        }} className="btn--hidden">
-          <img src={ButtonClear} alt="" />
-        </button>
-      </div>}
+          }} className="btn--hidden">
+            <img src={ButtonClear} alt="" />
+          </button>
+        </div>}
     </>
   }
 
-   const resetFilterUIMobile = () => {
+  const resetFilterUIMobile = () => {
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {
       delete filterOld.isLoad
@@ -904,13 +904,13 @@ const CardList = (props: PropTypes) => {
         onClick={() => resetPage(false)}
         className="btn btn-primary clear-select"> Reset Filters </button>}
     </>
-   }
-  
+  }
+
   var timerid: any = null;
 
   const handlePageClick = (event: any) => {
     if (event.length === 1) {
-      isFirefox ? $('html, body').animate({scrollTop: 0}) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
     if (timerid) {
       clearTimeout(timerid);
@@ -938,7 +938,7 @@ const CardList = (props: PropTypes) => {
     }
     setScrollY(window.pageYOffset)
   };
-  
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -947,7 +947,7 @@ const CardList = (props: PropTypes) => {
   }, []);
 
   const renderTotal = () => {
-    return <> {data.isLoading ? "-" : data.cards.length ? <span className="number">{(pagesSelected[0] - 1) * rowsPerPage + 1}</span> : 0}-{data.isLoading ? "-" : <span className="number">{formatNumber((pagesSelected[pagesSelected.length-1] * rowsPerPage) > (data.rows ?? 0) ? data.rows : pagesSelected[pagesSelected.length-1] * rowsPerPage)}</span>} of {data.isLoading ? "-" : <span className="number">{formatNumber(data.rows)}</span>} results</>
+    return <> {data.isLoading ? "-" : data.cards.length ? <span className="number">{(pagesSelected[0] - 1) * rowsPerPage + 1}</span> : 0}-{data.isLoading ? "-" : <span className="number">{formatNumber((pagesSelected[pagesSelected.length - 1] * rowsPerPage) > (data.rows ?? 0) ? data.rows : pagesSelected[pagesSelected.length - 1] * rowsPerPage)}</span>} of {data.isLoading ? "-" : <span className="number">{formatNumber(data.rows)}</span>} results</>
   }
 
   const renderTitleFilterMobile = () => {
@@ -981,32 +981,32 @@ const CardList = (props: PropTypes) => {
     switch (filterValue) {
       case "publisher":
         return setTimeout(() => {
-          setLengthFilter(publisherRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(publisherRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "year":
         return setTimeout(() => {
-          setLengthFilter(yearRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(yearRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "set":
         return setTimeout(() => {
-          setLengthFilter(setRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(setRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "auto_memo":
         return setTimeout(() => {
-          setLengthFilter(automemoRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(automemoRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "type":
         return setTimeout(() => {
-          setLengthFilter(typeRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(typeRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "color":
         return setTimeout(() => {
-          setLengthFilter(colorRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(colorRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "printRun":
         return setTimeout(() => {
-          setLengthFilter(printRunRef?.current?.getLengthOption() ?? 0) ;
-        },350);
+          setLengthFilter(printRunRef?.current?.getLengthOption() ?? 0);
+        }, 350);
       case "sport":
         return Boolean(query.q) ? "" : sumBy(filters.sports, function (o) { return o.options?.length ?? 1; })
       case "playerName":
@@ -1053,7 +1053,7 @@ const CardList = (props: PropTypes) => {
             }}
             type="button"
             className="btn btn-primary clear-select"
-           >Clear Selected ({filterData?.year?.length}) </button> : ""
+          >Clear Selected ({filterData?.year?.length}) </button> : ""
       case "set":
         return Boolean(filterData?.set?.length) ?
           <button
@@ -1150,7 +1150,7 @@ const CardList = (props: PropTypes) => {
   }
 
   const resetFilterMobileUI = () => {
-    if(filterValue!=="all") return null;
+    if (filterValue !== "all") return null;
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {
       delete filterOld.isLoad
@@ -1165,7 +1165,7 @@ const CardList = (props: PropTypes) => {
   }
 
   const renderResetFilter = () => {
-    if(filterValue!=="all") return null;
+    if (filterValue !== "all") return null;
     const filterOld = { ...filterData };
     if (filterOld.isLoad !== undefined) {
       delete filterOld.isLoad
@@ -1188,7 +1188,7 @@ const CardList = (props: PropTypes) => {
       delete filterOld.sport
     }
     return <>
-      {Boolean(!checkFilter(filterOld ?? {})) &&  <span className="filter-number">{Object.values(filterOld).flat().length}</span> }
+      {Boolean(!checkFilter(filterOld ?? {})) && <span className="filter-number">{Object.values(filterOld).flat().length}</span>}
     </>
   }
   const onHandleMode = () => {
@@ -1207,26 +1207,26 @@ const CardList = (props: PropTypes) => {
     if (isEmpty(query)) {
       return userInfo?.userDefaultSport ?? 1
     }
-    
-  return +(query?.sport ?? query?.sport_criteria)
-  },[query])
+
+    return +(query?.sport ?? query?.sport_criteria)
+  }, [query])
 
   const onUpdateWishList = (code: string) => {
     // @ts-ignore
     setData(prevState => {
-      return { ...prevState, cards: prevState.cards?.map(item=> item.code === code ? ({...item,wishlist: 1}): item )};
+      return { ...prevState, cards: prevState.cards?.map(item => item.code === code ? ({ ...item, wishlist: 1 }) : item) };
     });
   }
   const onSortTable = (name: string) => {
     if (data?.rows) {
       let itemSort = MetaData.sort_card_list.find((item: any) => item?.sort_value === name && item?.sort_by === sortCards.sort_by);
-      
+
       //@ts-ignore
       itemSort = {
         ...itemSort,
         sort_by: itemSort?.sort_value === name && sortCards.sort_by === "desc" ? "asc" : "desc",
       }
-      
+
       // @ts-expect-error
       setSortCards(itemSort)
     }
@@ -1248,10 +1248,10 @@ const CardList = (props: PropTypes) => {
     return `/card-details/${item.code}/${url}`;
   };
   const onComparison = (cardData: any) => {
-     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
-     
+    let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
-    if ( dataOld.length === 9 ) {
+
+    if (dataOld.length === 9) {
       return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
     }
 
@@ -1271,23 +1271,23 @@ const CardList = (props: PropTypes) => {
       ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
       dispatch(CompareAction.addCard(cardNew));
     }
-    
+
     localStorage.setItem("comparison", JSON.stringify(dataOld));
 
     /* ga event */
     event({
       action: "card_added_to_comparison",
-      params : {
-        eventCategory:  'Comparison',
-        eventAction:    "card_added_to_comparison",
-        eventLabel:     "Card Added to Comparison"
+      params: {
+        eventCategory: 'Comparison',
+        eventAction: "card_added_to_comparison",
+        eventLabel: "Card Added to Comparison"
       }
     })
   };
   const renderCompareIcon = (data: any) => {
     return Boolean(cards.find((item) => item.code === data.code))
-    ? IconCanFull
-    : IconCan;
+      ? IconCanFull
+      : IconCan;
   };
 
   const renderOptionIcon = (data: any) => {
@@ -1304,10 +1304,10 @@ const CardList = (props: PropTypes) => {
   }, [cardSelected]);
 
   const onScroll = () => {
-    if(!$("#customScroll").hasClass('custom-scroll-sticky')) {
+    if (!$("#customScroll").hasClass('custom-scroll-sticky')) {
       $("#customScroll").addClass('custom-scroll-sticky');
     } else {
-      if($("#customScroll table").offset().left == 1 ) {
+      if ($("#customScroll table").offset().left == 1) {
         $("#customScroll").removeClass('custom-scroll-sticky');
       }
     }
@@ -1327,10 +1327,10 @@ const CardList = (props: PropTypes) => {
     /* ga event */
     event({
       action: "multi_add_to_portfolio ",
-      params : {
-        eventCategory:  'Portfolio',
-        eventAction:    'multi_add_to_portfolio',
-        eventLabel:     'Multi Card Added to Portfolio'
+      params: {
+        eventCategory: 'Portfolio',
+        eventAction: 'multi_add_to_portfolio',
+        eventLabel: 'Multi Card Added to Portfolio'
       }
     })
   }
@@ -1347,12 +1347,12 @@ const CardList = (props: PropTypes) => {
         onClose={() => setIsCaptCha(false)} />
       <div className="row">
         {
-            //@ts-ignore
-            width >= 768 &&
+          //@ts-ignore
+          width >= 768 &&
           <>
             <div className="col-lg-2 col-md-2 g-0 border-end">
               <div className="shop__sidebar mt-3">
-                <div className={`sidebar__categories ${!data.cards.length && !data.isLoading ? "d-none": ""} `}>
+                <div className={`sidebar__categories ${!data.cards.length && !data.isLoading ? "d-none" : ""} `}>
                   <div className="section-title">
                     <div className="accordion" id="sportFilter">
                       <div className="accordion-item">
@@ -1481,54 +1481,55 @@ const CardList = (props: PropTypes) => {
           {
             //@ts-ignore
             width < 768 && <>
-            <div className={`filter-mobile position-relative filter-mobile--search ${!data.cards.length && !data.isLoading ? "d-none": ""}`}>
-              <div className="button-filter ">
-                <button onClick={() => setFilterValue("sport")} type="button" className={`btn btn-primary btn-sm sport-button ${Boolean(filterData?.sport?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">
-                  {Boolean(filterData?.sport?.length) ? filterData?.sport[0]?.name : "All Sports"}
-                </button>
-                <button onClick={() => setFilterValue("publisher")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.publisher?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Publisher {Boolean(filterData?.publisher?.length) && <span>{filterData?.publisher?.length}</span>} </button>
-                <button onClick={() => setFilterValue("year")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.year?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Year {Boolean(filterData?.year?.length) && <span>{filterData?.year?.length}</span>}</button>
-                <button onClick={() => setFilterValue("set")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.set?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Collection {Boolean(filterData?.set?.length) && <span>{filterData?.set?.length}</span>}</button>
-                <button onClick={() => setFilterValue("auto_memo")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.auto_memo?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Autograph/Memorabilia {Boolean(filterData?.auto_memo?.length) && <span>{filterData?.auto_memo?.length}</span>}</button>
-                {Boolean(filterData?.set?.length) && <>
-                  <button onClick={() => setFilterValue("type")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.type?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Base/Insert {Boolean(filterData?.type?.length) && <span>{filterData?.type?.length}</span>}</button>
-                  {Boolean(filterData?.type?.length) && <button onClick={() => setFilterValue("color")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.color?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Parallel {Boolean(filterData?.color?.length) && <span>{filterData?.color?.length}</span>}</button>}
-                </>}
-                <button onClick={() => setFilterValue("printRun")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.printRun?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Print Run {Boolean(filterData?.printRun?.length) && <span>{filterData?.printRun?.length}</span>}</button>
-                <button onClick={() => setFilterValue("playerName")} type="button" className={`btn btn-primary btn-sm ${playerNameRef.current && playerNameRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Player Name </button>
-                <button onClick={() => setFilterValue("cardNumber")} type="button" className={`btn btn-primary btn-sm ${cardNumberRef.current && cardNumberRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Card Number </button>
-                {resetFilterUIMobile()}
-                <div className="btn btn-filter btn-primary btn-sm" >
-                  <button onClick={() => setFilterValue("all")} type="button" data-bs-toggle="modal" data-bs-target="#filterModal" className="btn btn-link p-0">
-                    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0.5 1.59025L0.5 0.6C0.5 0.268629 0.768629 0 1.1 0L14.9 0C15.2314 0 15.5 0.268629 15.5 0.6V1.59025C15.5 1.76301 15.4255 1.92739 15.2957 2.04131L9.70435 6.94576C9.57447 7.05968 9.5 7.22406 9.5 7.39682V11.2136C9.5 11.435 9.37808 11.6384 9.18283 11.7428L7.38283 12.7049C6.98314 12.9185 6.5 12.6289 6.5 12.1757L6.5 7.39682C6.5 7.22406 6.42553 7.05968 6.29565 6.94576L0.704347 2.04131C0.574469 1.92739 0.5 1.76301 0.5 1.59025Z" fill="#18213A" />
-                    </svg>
+              <div className={`filter-mobile position-relative filter-mobile--search ${!data.cards.length && !data.isLoading ? "d-none" : ""}`}>
+                <div className="button-filter ">
+                  <button onClick={() => setFilterValue("sport")} type="button" className={`btn btn-primary btn-sm sport-button ${Boolean(filterData?.sport?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">
+                    {Boolean(filterData?.sport?.length) ? filterData?.sport[0]?.name : "All Sports"}
                   </button>
-                  <span onClick={() => setFilterValue("all")} data-bs-toggle="modal" data-bs-target="#filterModal" >
-                    Filters {renderNumberFilter()}
-                  </span>
-                  <button onClick={() => setFilterValue("sport")} data-bs-toggle="modal" data-bs-target="#sortModal" type="button" className="btn btn-link p-0">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9697 4.37115L12.9697 16.3105L11.4697 16.3105L11.4697 4.37115L9.75 6.09082L8.68934 5.03016L12.2197 1.49983L15.75 5.03016L14.6893 6.09082L12.9697 4.37115Z" fill="#18213A" />
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.03033 13.4394L5.03033 1.5H6.53033L6.53033 13.4394L8.25 11.7197L9.31066 12.7804L5.78033 16.3107L2.25 12.7804L3.31066 11.7197L5.03033 13.4394Z" fill="#18213A" />
-                    </svg>
-                  </button>
-                </div>
-                {/* start modal */}
-                <div className="modal fade" id="sortModal" tabIndex={-1} aria-labelledby="sortModalLabel" aria-hidden="true">
-                  <div className={`modal-dialog ${filterValue === "all" ? "modal-all" : "align-items-end"}  modal-filter modal-lg modal-dialog-centered modal-sort`}>
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title" id="sortModalLabel"> Sort by </h5>
-                        <button ref={btnSoftByRef} type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close">  Close </button>
-                      </div>
-                      <div className={`modal-body filter-custom`}>
-                        <div className="position-relative">
-                          <div className=" col-lg-2 col-md-2 g-0 ">
-                            <div className="shop__sidebar mt-3">
-                              <div className="sidebar__categories">
-                                <div className="section-title">
-                                   <SortMobile className="section-title-item" onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} />
+                  <button onClick={() => setFilterValue("publisher")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.publisher?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Publisher {Boolean(filterData?.publisher?.length) && <span>{filterData?.publisher?.length}</span>} </button>
+                  <button onClick={() => setFilterValue("year")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.year?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Year {Boolean(filterData?.year?.length) && <span>{filterData?.year?.length}</span>}</button>
+                  <button onClick={() => setFilterValue("set")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.set?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Collection {Boolean(filterData?.set?.length) && <span>{filterData?.set?.length}</span>}</button>
+                  <button onClick={() => setFilterValue("auto_memo")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.auto_memo?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Autograph/Memorabilia {Boolean(filterData?.auto_memo?.length) && <span>{filterData?.auto_memo?.length}</span>}</button>
+                  {Boolean(filterData?.set?.length) && <>
+                    <button onClick={() => setFilterValue("type")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.type?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Base/Insert {Boolean(filterData?.type?.length) && <span>{filterData?.type?.length}</span>}</button>
+                    {Boolean(filterData?.type?.length) && <button onClick={() => setFilterValue("color")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.color?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal">Parallel {Boolean(filterData?.color?.length) && <span>{filterData?.color?.length}</span>}</button>}
+                  </>}
+                  <button onClick={() => setFilterValue("printRun")} type="button" className={`btn btn-primary btn-sm ${Boolean(filterData?.printRun?.length) ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Print Run {Boolean(filterData?.printRun?.length) && <span>{filterData?.printRun?.length}</span>}</button>
+                  <button onClick={() => setFilterValue("playerName")} type="button" className={`btn btn-primary btn-sm ${playerNameRef.current && playerNameRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Player Name </button>
+                  <button onClick={() => setFilterValue("cardNumber")} type="button" className={`btn btn-primary btn-sm ${cardNumberRef.current && cardNumberRef.current.getValue() !== "" ? "active" : ""}`} data-bs-toggle="modal" data-bs-target="#filterModal"> Card Number </button>
+                  {resetFilterUIMobile()}
+                  <div className="btn btn-filter btn-primary btn-sm" >
+                    <button onClick={() => setFilterValue("all")} type="button" data-bs-toggle="modal" data-bs-target="#filterModal" className="btn btn-link p-0">
+                      <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.5 1.59025L0.5 0.6C0.5 0.268629 0.768629 0 1.1 0L14.9 0C15.2314 0 15.5 0.268629 15.5 0.6V1.59025C15.5 1.76301 15.4255 1.92739 15.2957 2.04131L9.70435 6.94576C9.57447 7.05968 9.5 7.22406 9.5 7.39682V11.2136C9.5 11.435 9.37808 11.6384 9.18283 11.7428L7.38283 12.7049C6.98314 12.9185 6.5 12.6289 6.5 12.1757L6.5 7.39682C6.5 7.22406 6.42553 7.05968 6.29565 6.94576L0.704347 2.04131C0.574469 1.92739 0.5 1.76301 0.5 1.59025Z" fill="#18213A" />
+                      </svg>
+                    </button>
+                    <span onClick={() => setFilterValue("all")} data-bs-toggle="modal" data-bs-target="#filterModal" >
+                      Filters {renderNumberFilter()}
+                    </span>
+                    <button onClick={() => setFilterValue("sport")} data-bs-toggle="modal" data-bs-target="#sortModal" type="button" className="btn btn-link p-0">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9697 4.37115L12.9697 16.3105L11.4697 16.3105L11.4697 4.37115L9.75 6.09082L8.68934 5.03016L12.2197 1.49983L15.75 5.03016L14.6893 6.09082L12.9697 4.37115Z" fill="#18213A" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.03033 13.4394L5.03033 1.5H6.53033L6.53033 13.4394L8.25 11.7197L9.31066 12.7804L5.78033 16.3107L2.25 12.7804L3.31066 11.7197L5.03033 13.4394Z" fill="#18213A" />
+                      </svg>
+                    </button>
+                  </div>
+                  {/* start modal */}
+                  <div className="modal fade" id="sortModal" tabIndex={-1} aria-labelledby="sortModalLabel" aria-hidden="true">
+                    <div className={`modal-dialog ${filterValue === "all" ? "modal-all" : "align-items-end"}  modal-filter modal-lg modal-dialog-centered modal-sort`}>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="sortModalLabel"> Sort by </h5>
+                          <button ref={btnSoftByRef} type="button" className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close">  Close </button>
+                        </div>
+                        <div className={`modal-body filter-custom`}>
+                          <div className="position-relative">
+                            <div className=" col-lg-2 col-md-2 g-0 ">
+                              <div className="shop__sidebar mt-3">
+                                <div className="sidebar__categories">
+                                  <div className="section-title">
+                                    <SortMobile className="section-title-item" onChange={onChangeSort} value={sortCards} options={MetaData.sort_card_list} />
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1537,218 +1538,217 @@ const CardList = (props: PropTypes) => {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="modal fade" id="filterModal" tabIndex={-1} aria-labelledby="filterModalLabel" aria-hidden="true">
-                  <div className={`modal-dialog ${filterValue === "all" ? "modal-all" : "align-items-end"}  modal-filter modal-lg modal-dialog-centered ${filterValue ==="sport" ? 'modal-sport' : ''}
-                    ${filterValue ==="publisher" ? 'modal-publisher' : ''} 
-                    ${filterValue ==="year" ? 'modal-year' : ''} 
-                    ${filterValue ==="set" ? 'modal-collection' : ''} 
-                    ${filterValue ==="auto_memo" ? 'modal-auto_memo' : ''} 
-                    ${filterValue ==="printRun" ? 'modal-print_run' : ''} 
+                  <div className="modal fade" id="filterModal" tabIndex={-1} aria-labelledby="filterModalLabel" aria-hidden="true">
+                    <div className={`modal-dialog ${filterValue === "all" ? "modal-all" : "align-items-end"}  modal-filter modal-lg modal-dialog-centered ${filterValue === "sport" ? 'modal-sport' : ''}
+                    ${filterValue === "publisher" ? 'modal-publisher' : ''} 
+                    ${filterValue === "year" ? 'modal-year' : ''} 
+                    ${filterValue === "set" ? 'modal-collection' : ''} 
+                    ${filterValue === "auto_memo" ? 'modal-auto_memo' : ''} 
+                    ${filterValue === "printRun" ? 'modal-print_run' : ''} 
                     ${filterValue === "all" ? 'modal-all' : ''}
                     ${filterValue === "playerName" ? 'modal-player_name' : ''}
-                    ${filterValue ==="cardNumber" ? 'modal-card_number' : ''}`
-                  }>
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <div className="d-none">{renderLengthFilterMobile()}</div>
-                        <h5 className="modal-title" id="filterModalLabel">{renderTitleFilterMobile()} 
-                        <span>{(filterValue ==="sport" || filterValue=== "all" || filterValue=== "playerName" || filterValue=== "cardNumber" ) ? renderLengthFilterMobile() : lengthFilter}</span></h5>
-                        <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close"> Close </button>
-                      </div>
-                      <div className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""}`}>
-                        <div className="position-relative">
-                          <div className=" col-lg-2 col-md-2 g-0 border-end">
-                            <div className="shop__sidebar mt-3">
-                              <div className="sidebar__categories">
-                                <div className="section-title">
-                                  <div className={`accordion ${filterValue === "sport" || filterValue === "all" ? "" : "d-none"}`} id="sportFilter">
-                                    <div className="accordion-item">
-                                      {filterValue === "all" && <h2 className="accordion-header">
-                                        <button
-                                          type="button"
-                                          className="accordion-button"
-                                          data-bs-toggle="collapse"
-                                          data-bs-target="#collapsesportFilter"
-                                        > Sport <span>{sumBy(filters.sports, function (o) { return o.options?.length ?? 1; })}</span> </button>
-                                      </h2>}
-                                      <div id="collapsesportFilter" className="accordion-collapse collapse show" data-bs-parent="#sportFilter">
-                                        <div>
-                                          <FilterSport
-                                            isAll={Boolean(query.q)}
-                                            isDefault={(Boolean(query.q) && !Boolean(query?.sport))}
-                                            // @ts-ignore
-                                            ref={sportRef}
-                                            onChange={(e: any, key: string) => { 
-                                              onChangeFilter(e, key);
+                    ${filterValue === "cardNumber" ? 'modal-card_number' : ''}`
+                    }>
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <div className="d-none">{renderLengthFilterMobile()}</div>
+                          <h5 className="modal-title" id="filterModalLabel">{renderTitleFilterMobile()}
+                            <span>{(filterValue === "sport" || filterValue === "all" || filterValue === "playerName" || filterValue === "cardNumber") ? renderLengthFilterMobile() : lengthFilter}</span></h5>
+                          <button type="button" ref={buttonRef} className="btn btn-link text-decoration-none" data-bs-dismiss="modal" aria-label="Close"> Close </button>
+                        </div>
+                        <div className={`modal-body ${filterValue !== "all" ? "filter-custom" : ""}`}>
+                          <div className="position-relative">
+                            <div className=" col-lg-2 col-md-2 g-0 border-end">
+                              <div className="shop__sidebar mt-3">
+                                <div className="sidebar__categories">
+                                  <div className="section-title">
+                                    <div className={`accordion ${filterValue === "sport" || filterValue === "all" ? "" : "d-none"}`} id="sportFilter">
+                                      <div className="accordion-item">
+                                        {filterValue === "all" && <h2 className="accordion-header">
+                                          <button
+                                            type="button"
+                                            className="accordion-button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapsesportFilter"
+                                          > Sport <span>{sumBy(filters.sports, function (o) { return o.options?.length ?? 1; })}</span> </button>
+                                        </h2>}
+                                        <div id="collapsesportFilter" className="accordion-collapse collapse show" data-bs-parent="#sportFilter">
+                                          <div>
+                                            <FilterSport
+                                              isAll={Boolean(query.q)}
+                                              isDefault={(Boolean(query.q) && !Boolean(query?.sport))}
                                               // @ts-ignore
-                                              buttonRef?.current && buttonRef?.current.click();
-                                            }}
-                                            isSearch={false}
-                                            name="sport"
-                                            isCount={Boolean(query.q)}
-                                            defaultValue={defaultValueSport}
-                                            options={filters.sports} />
+                                              ref={sportRef}
+                                              onChange={(e: any, key: string) => {
+                                                onChangeFilter(e, key);
+                                                // @ts-ignore
+                                                buttonRef?.current && buttonRef?.current.click();
+                                              }}
+                                              isSearch={false}
+                                              name="sport"
+                                              isCount={Boolean(query.q)}
+                                              defaultValue={defaultValueSport}
+                                              options={filters.sports} />
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <div className={`accordion ${filterValue === "publisher" || filterValue === "all" ? "" : "d-none"}`} id="publisherFilter">
-                                    <div className="accordion-item">
-                                      <CheckBoxMobile
-                                        prioritize={prioritize}
-                                        ref={publisherRef}
-                                        setIsScroll={setIsScroll}
-                                        filterValue={filterValue}
-                                        onChange={onChangeFilter}
-                                        name="publisher"
-                                        options={filters.publishers}
-                                        title="Publisher"
-                                        isButton={filterValue === "all"}
-                                        numberFilter={filterData?.publisher?.length}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className={`accordion ${filterValue === "year" || filterValue === "all" ? "" : "d-none"}`} id="YearFilter">
-                                    <div className="accordion-item">
-                                      <CheckBoxMobile
-                                        prioritize={prioritize}
-                                        ref={yearRef}
-                                        onChange={onChangeFilter}
-                                        name="year"
-                                        options={filters.years}
-                                        title="Year"
-                                        isButton={filterValue === "all"}
-                                        numberFilter={filterData?.year?.length}
-                                        setIsScroll={setIsScroll}
-                                        filterValue={filterValue}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className={`accordion ${filterValue === "set" || filterValue === "all" ? "" : "d-none"}`} id="CollectionFilter">
-                                    <div className="accordion-item">
-                                      <CheckBoxMobile
-                                        prioritize={prioritize}
-                                        ref={setRef}
-                                        onChange={onChangeFilter}
-                                        name="set"
-                                        options={filters.collections}
-                                        title="Collection"
-                                        isButton={filterValue === "all"}
-                                        numberFilter={filterData?.set?.length}
-                                        setIsScroll={setIsScroll}
-                                        filterValue={filterValue}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className={`accordion ${filterValue === "auto_memo" || filterValue === "all" ? "" : "d-none"}`} id="auto_memoFilter">
-                                    <div className="accordion-item">
-                                      <CheckBoxMobile
-                                        prioritize={prioritize}
-                                        ref={automemoRef}
-                                        name="auto_memo"
-                                        onChange={onChangeFilter}
-                                        isSearch={false}
-                                        options={filters.auto_memo}
-                                        title="Autograph/Memorabilia"
-                                        isButton={filterValue === "all"}
-                                        numberFilter={filterData?.auto_memo?.length}
-                                        setIsScroll={setIsScroll}
-                                        filterValue={filterValue}
-                                      />
-                                    </div>
-                                  </div>
-                                  {Boolean(filterData?.set?.length) && <>
-                                    <div className={`accordion ${filterValue === "type" || filterValue === "all" ? "" : "d-none"}`} id="typeFilter">
+                                    <div className={`accordion ${filterValue === "publisher" || filterValue === "all" ? "" : "d-none"}`} id="publisherFilter">
                                       <div className="accordion-item">
                                         <CheckBoxMobile
                                           prioritize={prioritize}
-                                          ref={typeRef}
-                                          isRefresh={true}
+                                          ref={publisherRef}
+                                          setIsScroll={setIsScroll}
+                                          filterValue={filterValue}
                                           onChange={onChangeFilter}
-                                          name="type"
-                                          options={filterCollection.type}
-                                          title="Base/Insert"
+                                          name="publisher"
+                                          options={filters.publishers}
+                                          title="Publisher"
                                           isButton={filterValue === "all"}
-                                          numberFilter={filterData?.type?.length}
+                                          numberFilter={filterData?.publisher?.length}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className={`accordion ${filterValue === "year" || filterValue === "all" ? "" : "d-none"}`} id="YearFilter">
+                                      <div className="accordion-item">
+                                        <CheckBoxMobile
+                                          prioritize={prioritize}
+                                          ref={yearRef}
+                                          onChange={onChangeFilter}
+                                          name="year"
+                                          options={filters.years}
+                                          title="Year"
+                                          isButton={filterValue === "all"}
+                                          numberFilter={filterData?.year?.length}
                                           setIsScroll={setIsScroll}
                                           filterValue={filterValue}
                                         />
                                       </div>
                                     </div>
-                                    {Boolean(filterData?.type?.length) &&
-                                      <div className={`accordion ${filterValue === "color" || filterValue === "all" ? "" : "d-none"}`} id="ParallelFilter">
+                                    <div className={`accordion ${filterValue === "set" || filterValue === "all" ? "" : "d-none"}`} id="CollectionFilter">
+                                      <div className="accordion-item">
+                                        <CheckBoxMobile
+                                          prioritize={prioritize}
+                                          ref={setRef}
+                                          onChange={onChangeFilter}
+                                          name="set"
+                                          options={filters.collections}
+                                          title="Collection"
+                                          isButton={filterValue === "all"}
+                                          numberFilter={filterData?.set?.length}
+                                          setIsScroll={setIsScroll}
+                                          filterValue={filterValue}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className={`accordion ${filterValue === "auto_memo" || filterValue === "all" ? "" : "d-none"}`} id="auto_memoFilter">
+                                      <div className="accordion-item">
+                                        <CheckBoxMobile
+                                          prioritize={prioritize}
+                                          ref={automemoRef}
+                                          name="auto_memo"
+                                          onChange={onChangeFilter}
+                                          isSearch={false}
+                                          options={filters.auto_memo}
+                                          title="Autograph/Memorabilia"
+                                          isButton={filterValue === "all"}
+                                          numberFilter={filterData?.auto_memo?.length}
+                                          setIsScroll={setIsScroll}
+                                          filterValue={filterValue}
+                                        />
+                                      </div>
+                                    </div>
+                                    {Boolean(filterData?.set?.length) && <>
+                                      <div className={`accordion ${filterValue === "type" || filterValue === "all" ? "" : "d-none"}`} id="typeFilter">
                                         <div className="accordion-item">
                                           <CheckBoxMobile
                                             prioritize={prioritize}
-                                            ref={colorRef}
+                                            ref={typeRef}
                                             isRefresh={true}
                                             onChange={onChangeFilter}
-                                            name="color"
-                                            options={optionsParallel}
-                                            title="Parallel"
+                                            name="type"
+                                            options={filterCollection.type}
+                                            title="Base/Insert"
                                             isButton={filterValue === "all"}
-                                            numberFilter={filterData?.color?.length}
+                                            numberFilter={filterData?.type?.length}
                                             setIsScroll={setIsScroll}
                                             filterValue={filterValue}
                                           />
                                         </div>
                                       </div>
-                                    }
-                                  </>}
-                                  <div className={`accordion ${filterValue === "printRun" || filterValue === "all" ? "" : "d-none"}`} id="PrintRunFilter">
-                                    <div className="accordion-item">
-                                      <CheckBoxMobile
-                                        ref={printRunRef}
-                                        prioritize={prioritize}
-                                        onChange={onChangeFilter}
-                                        name="printRun"
-                                        options={optionsPrintRun}
-                                        title="Print Run"
-                                        isButton={filterValue === "all"}
-                                        numberFilter={filterData?.printRun?.length}
-                                        setIsScroll={setIsScroll}
-                                        filterValue={filterValue}
-                                      />
+                                      {Boolean(filterData?.type?.length) &&
+                                        <div className={`accordion ${filterValue === "color" || filterValue === "all" ? "" : "d-none"}`} id="ParallelFilter">
+                                          <div className="accordion-item">
+                                            <CheckBoxMobile
+                                              prioritize={prioritize}
+                                              ref={colorRef}
+                                              isRefresh={true}
+                                              onChange={onChangeFilter}
+                                              name="color"
+                                              options={optionsParallel}
+                                              title="Parallel"
+                                              isButton={filterValue === "all"}
+                                              numberFilter={filterData?.color?.length}
+                                              setIsScroll={setIsScroll}
+                                              filterValue={filterValue}
+                                            />
+                                          </div>
+                                        </div>
+                                      }
+                                    </>}
+                                    <div className={`accordion ${filterValue === "printRun" || filterValue === "all" ? "" : "d-none"}`} id="PrintRunFilter">
+                                      <div className="accordion-item">
+                                        <CheckBoxMobile
+                                          ref={printRunRef}
+                                          prioritize={prioritize}
+                                          onChange={onChangeFilter}
+                                          name="printRun"
+                                          options={optionsPrintRun}
+                                          title="Print Run"
+                                          isButton={filterValue === "all"}
+                                          numberFilter={filterData?.printRun?.length}
+                                          setIsScroll={setIsScroll}
+                                          filterValue={filterValue}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
                                     <div className={`accordion ${filterValue === "playerName" || filterValue === "all" ? "" : "d-none"} 
                                     ${
                                       //@ts-ignore
                                       width < 768 && filterValue !== "all" ? "mb-3" : ''
-                                    }`} id="PlayerNameFilter">
-                                    <TextSearchBoxDesktop
-                                      isButton={filterValue === "all"}
-                                      title="Player Name"
-                                      ref={playerNameRef}
-                                      onChange={onChangeSearch}
-                                      name="playerName"
-                                    />
-                                  </div>
-                                  <div className={`accordion ${filterValue === "cardNumber" || filterValue === "all" ? "": "d-none"} mb-3`} id="CardNumberFilter">
-                                    <TextSearchBoxDesktop
-                                      isButton={filterValue === "all"}
-                                      title="Card Number"
-                                      ref={cardNumberRef}
-                                      onChange={onChangeSearch}
-                                      name="cardNumber"
-                                    />
+                                      }`} id="PlayerNameFilter">
+                                      <TextSearchBoxDesktop
+                                        isButton={filterValue === "all"}
+                                        title="Player Name"
+                                        ref={playerNameRef}
+                                        onChange={onChangeSearch}
+                                        name="playerName"
+                                      />
+                                    </div>
+                                    <div className={`accordion ${filterValue === "cardNumber" || filterValue === "all" ? "" : "d-none"} mb-3`} id="CardNumberFilter">
+                                      <TextSearchBoxDesktop
+                                        isButton={filterValue === "all"}
+                                        title="Card Number"
+                                        ref={cardNumberRef}
+                                        onChange={onChangeSearch}
+                                        name="cardNumber"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
+                            {isScroll && renderButtonClear()}
+                            {resetFilterMobileUI()}
                           </div>
-                          {isScroll && renderButtonClear()}
-                          {resetFilterMobileUI()}
                         </div>
                       </div>
                     </div>
                   </div>
+                  {/* end modal */}
                 </div>
-                {/* end modal */}
               </div>
-            </div>
-          </>}
+            </>}
           <h1 className="filter-title"> {renderTitle()} </h1>
           <div className={`d-flex justify-content-between align-items-start p-head-search p-head-search--mobile ${isSelect ? 'p-sticky-header p-sticky-header--full' : ''}`}>
             {isSelect ? <div className={`d-flex align-items-center ml-1 btn-group-head-search ${scrollY > 400 ? 'sticky-zero' : ''}`}>
@@ -1767,7 +1767,7 @@ const CardList = (props: PropTypes) => {
                   }
                 }}
                 className="me-2 btn btn-portfolio"
-                > Add to { t('portfolio.text')} </button>
+              > Add to {t('portfolio.text')} </button>
               }
               {/* {cardSelected.length < 2 &&
                 <button type="button" className="me-2 btn btn-wishlist">Add to Wishlist</button>
@@ -1786,34 +1786,34 @@ const CardList = (props: PropTypes) => {
               <div className="only-mobile group-head-search-content">
                 <div className="p-head-search-collection-profile">
                   <div className="d-flex align-items-center ml-1 btn-group-head-search  btn-group-head-search--mobile">
-                      <div className="group-head-search-info">
-                        <div className="group-head-search-info-text d-flex">
-                          <div onClick={onSelectAll}> Select All </div>
-                          <div> <span className="fw-bold">{cardSelected.length}</span> cards selected</div>
-                        </div>
-                        <img onClick={onHandleMode} src={IconCloseMobile} alt="" title="" />
+                    <div className="group-head-search-info">
+                      <div className="group-head-search-info-text d-flex">
+                        <div onClick={onSelectAll}> Select All </div>
+                        <div> <span className="fw-bold">{cardSelected.length}</span> cards selected</div>
                       </div>
-                      {
-                        cardSelected.length > 0 &&
-                        <div className="group-head-search-btn">
-                          <button
-                            disabled={!cardSelected.length}
-                            type="button"
-                            onClick={() => {
-                              setCardData(undefined);
-                              addGAEvent();
-                              if (loggingIn) {
-                                setIsOpen(true)
-                              }
-                              else {
-                                setIsOpenLogin(true);
-                              }
-                            }}
-                            className="me-2 btn  btn-portfolio"
-                          > Add to { t('portfolio.text')} </button>
-                          {/* <button type="button" className="me-2 btn btn-wishlist">Add to Wishlist</button> */}
-                        </div>
-                      }
+                      <img onClick={onHandleMode} src={IconCloseMobile} alt="" title="" />
+                    </div>
+                    {
+                      cardSelected.length > 0 &&
+                      <div className="group-head-search-btn">
+                        <button
+                          disabled={!cardSelected.length}
+                          type="button"
+                          onClick={() => {
+                            setCardData(undefined);
+                            addGAEvent();
+                            if (loggingIn) {
+                              setIsOpen(true)
+                            }
+                            else {
+                              setIsOpenLogin(true);
+                            }
+                          }}
+                          className="me-2 btn  btn-portfolio"
+                        > Add to {t('portfolio.text')} </button>
+                        {/* <button type="button" className="me-2 btn btn-wishlist">Add to Wishlist</button> */}
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
@@ -1842,8 +1842,8 @@ const CardList = (props: PropTypes) => {
                 type="button"
                 onClick={onHandleMode}
                 className={`ms-2 ${isInline && !cardSelected.length
-                        ? "opacity-50"
-                        : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxx`}
+                  ? "opacity-50"
+                  : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxx`}
                 disabled={isInline && !cardSelected.length}
               >
                 {isSelect ? <IconMinis /> : <IconPlus />}
@@ -1851,7 +1851,7 @@ const CardList = (props: PropTypes) => {
             </div>
             <div className="only-mobile">
               <div className="action-list d-flex justify-content-start align-items-center">
-                
+
                 <div className="d-flex btn-group-card">
                   <button type="button" onClick={() => setIsInline(prevState => !prevState)} className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary p-0`}>
                     <IconDotMoBile isActive={!isInline ? true : false} />
@@ -1859,17 +1859,17 @@ const CardList = (props: PropTypes) => {
                   <button type="button" onClick={() => {
                     setIsInline(prevState => !prevState);
                     setIsSelect(false);
-                    }
+                  }
                   } className={` ${isInline ? "active" : ""} btn btn-outline-secondary pl-0`}>
                     <IconLineMoBile />
                   </button>
                 </div>
-                
+
                 <button
                   type="button" onClick={onHandleMode}
                   className={`ms-2 ${isInline && !cardSelected.length
-                        ? "opacity-50"
-                        : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxxx`}
+                    ? "opacity-50"
+                    : "opacity-100"} btn btn-outline-secondary ${isSelect ? "active" : ""} btn-search-plus d-flex justify-content-center align-items-center xxxxxx`}
                   disabled={isInline && !cardSelected.length}>
                   {isSelect ? <IconMinis /> : <IconPlus />}
                 </button>
@@ -1917,344 +1917,344 @@ const CardList = (props: PropTypes) => {
               <>
                 <div className="card-detail card-top-100 no-padding clear-margin-mobile">
                   <div className="pricing-grid search-table-mode mt-3">
-                      <div className="content-pricing-grid content-pricing-grid-custom p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
-                        <table
-                          className="table table-striped table-hover"
+                    <div className="content-pricing-grid content-pricing-grid-custom p-0 mt-2 mh-100 customScroll" id="customScroll" onScroll={onScroll}>
+                      <table
+                        className="table table-striped table-hover"
+                      >
+                        <thead
+                          className="p-sticky-header thead-search-table"
                         >
-                          <thead
-                            className="p-sticky-header thead-search-table"
-                          >
-                            <tr>
-                              <th
-                                style={{ width: "4%" }}
-                                scope="col"
-                                className="text-center"
+                          <tr>
+                            <th
+                              style={{ width: "4%" }}
+                              scope="col"
+                              className="text-center"
+                            >
+                              <input
+                                onChange={() => {
+                                  isCheckAll ? onClear() : onSelectAll();
+                                }}
+                                checked={isCheckAll}
+                                className="form-check-input cursor-pointer mt-1"
+                                type="checkbox" />
+                            </th>
+                            <th style={{ width: "46%" }} scope="col">
+                              {" "} Card
+                            </th>
+                            <th style={{ width: "15%" }} scope="col">
+                              <div
+                                className="d-flex cursor-pointer align-items-center"
                               >
+                                {" "}
+                                Min
+                              </div>
+                            </th>
+                            <th style={{ width: "15%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("maxPrice")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Max
+                                <div className="ms-1 sort-table d-flex flex-column-reverse">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "maxPrice",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "maxPrice",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "15%" }} scope="col">
+                              <div
+                                onClick={() => onSortTable("price")}
+                                className="d-flex cursor-pointer align-items-center"
+                              >
+                                {" "}
+                                Average
+                                <div className="ms-1 sort-table d-flex flex-column-reverse">
+                                  <i
+                                    className={`sort-asc ${renderSortTable(
+                                      "price",
+                                      true
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                  <i
+                                    className={`sort-desc ${renderSortTable(
+                                      "price",
+                                      false
+                                    )}`}
+                                    aria-hidden="true"
+                                  ></i>
+                                </div>
+                              </div>
+                            </th>
+                            <th style={{ width: "5%" }} scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data?.cards.map((item, index) => (
+                            <tr key={index} >
+                              <td className="text-center">
+                                {" "}
                                 <input
-                                  onChange={() => {
-                                    isCheckAll ? onClear() : onSelectAll();
-                                  } }
-                                  checked={isCheckAll}
-                                  className="form-check-input cursor-pointer mt-1"
+                                  onChange={() => onSelectItem(item.code)}
+                                  checked={cardSelected?.includes(item.code)}
+                                  className="form-check-input cursor-pointer"
                                   type="checkbox" />
-                              </th>
-                              <th style={{ width: "46%" }} scope="col">
-                                {" "} Card
-                              </th>
-                              <th style={{ width: "15%" }} scope="col">
-                                <div
-                                  className="d-flex cursor-pointer align-items-center"
-                                >
-                                  {" "}
-                                  Min
-                                </div>
-                              </th>
-                              <th style={{ width: "15%" }} scope="col">
-                                <div
-                                  onClick={() => onSortTable("maxPrice")}
-                                  className="d-flex cursor-pointer align-items-center"
-                                >
-                                  {" "}
-                                  Max
-                                  <div className="ms-1 sort-table d-flex flex-column-reverse">
-                                    <i
-                                      className={`sort-asc ${renderSortTable(
-                                        "maxPrice",
-                                        true
-                                      )}`}
-                                      aria-hidden="true"
-                                    ></i>
-                                    <i
-                                      className={`sort-desc ${renderSortTable(
-                                        "maxPrice",
-                                        false
-                                      )}`}
-                                      aria-hidden="true"
-                                    ></i>
-                                  </div>
-                                </div>
-                              </th>
-                              <th style={{ width: "15%" }} scope="col">
-                                <div
-                                  onClick={() => onSortTable("price")}
-                                  className="d-flex cursor-pointer align-items-center"
-                                >
-                                  {" "}
-                                  Average
-                                  <div className="ms-1 sort-table d-flex flex-column-reverse">
-                                    <i
-                                      className={`sort-asc ${renderSortTable(
-                                        "price",
-                                        true
-                                      )}`}
-                                      aria-hidden="true"
-                                    ></i>
-                                    <i
-                                      className={`sort-desc ${renderSortTable(
-                                        "price",
-                                        false
-                                      )}`}
-                                      aria-hidden="true"
-                                    ></i>
-                                  </div>
-                                </div>
-                              </th>
-                              <th style={{ width: "5%" }} scope="col"></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {data?.cards.map((item, index) => (
-                              <tr key={index} >
-                                <td className="text-center">
-                                  {" "}
-                                  <input
-                                    onChange={() => onSelectItem(item.code)}
-                                    checked={cardSelected?.includes(item.code)}
-                                    className="form-check-input cursor-pointer"
-                                    type="checkbox" />
-                                </td>
-                                <td>
-                                  <Link href={onGoToCard(item)}>
-                                    <a className="d-flex text-decoration-none c-dark-title-card">
-                                      <div
-                                        // onClick={() => onGoToCard(item)}
-                                        className="cursor-pointer image-box-table mr-2"
-                                      >
-                                        <LazyLoadImg 
-                                        className="w-100"
-                                          imgError={CardPhotoBase}
-                                          //@ts-ignore
-                                        url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase} 
-                                        />
-                                      </div>
-                                      <div
-                                        // onClick={() => onGoToCard(item)}
-                                        className="cursor-pointer image-box-table mr-2"
-                                      >
-                                        <img className="w-100" src={CardPhotoBase} alt="" />
-                                      </div>
-                                      <div className="ps-3 collection-card-table-detail">
-                                        <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
-                                          {item?.sport}
-                                          <i className="dot-margin"></i>
-                                          {item?.year}
-                                          <i className="dot-margin"></i>
-                                          {item?.publisher}
-                                        </div>
-                                        <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
-                                        {(Boolean(item.auto) || Boolean(item.memo)) && (
-                                          <div className="content-tag d-flex mt-2">
-                                            {Boolean(item.auto) && (
-                                              <div className="au-tag"> AU </div>
-                                            )}
-                                            {Boolean(item.memo) && (
-                                              <div className="mem-tag"> MEM </div>
-                                            )}
-                                          </div>
-                                        )}
-                                        </div>
-                                      </a>
-                                  </Link>
-                                </td>
-                                <td>
-                                  {" "}
-                                  {item.minPrice !== null ? (item.minPrice ? formatCurrency(item.minPrice, currency): "N/A") : <OverlayTrigger
-                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
-                                  >
-                                    {({ ref, ...triggerHandler }) => (
-                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
-                                        <a title="Login" className="range-price-card-custom text-decoration-none">
-                                          <span  className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
-                                        </a>
-                                      </Link>
-                                    )}
-                                  </OverlayTrigger>}
-                                </td>
-                                <td>
-                                  {" "}
-                                  {item.maxPrice !== null ? (item.maxPrice ? formatCurrency(item.maxPrice, currency) : "N/A") : <OverlayTrigger
-                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
-                                  >
-                                    {({ ref, ...triggerHandler }) => (
-                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
-                                        <a title="Login" className="range-price-card-custom text-decoration-none">
-                                          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
-                                        </a>
-                                      </Link>
-                                    )}
-                                  </OverlayTrigger>}
-                                </td>
-                                <td>
-                                  {" "}{
-                                  //@ts-ignore
-                                  item.avgPrice !== null ? (item.avgPrice ? formatCurrency(item.avgPrice, currency): "N/A") : <OverlayTrigger
-                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
-                                  >
-                                    {({ ref, ...triggerHandler }) => (
-                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login': '/verify-email'}>
-                                        <a title="Login" className="range-price-card-custom text-decoration-none">
-                                          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
-                                        </a>
-                                      </Link>
-                                    )}
-                                  </OverlayTrigger>}
-                                </td>
-                                <td>
-                                  <div className="dropdown dropdown--top">
-                                    <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"  onClick={() => setOnActiveOption(false) }> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                              </td>
+                              <td>
+                                <Link href={onGoToCard(item)}>
+                                  <a className="d-flex text-decoration-none c-dark-title-card">
                                     <div
-                                      className="dropdown-menu"
-                                      aria-labelledby="navbarDropdownDot"
-                                      data-bs-popper="none"
+                                      // onClick={() => onGoToCard(item)}
+                                      className="cursor-pointer image-box-table mr-2"
                                     >
-                                      <div
-                                        onClick={(e) => {
-                                          // e.preventDefault();
-                                          e.stopPropagation();
-                                          if(!item.portfolio) {
-                                            setCardData(undefined);
-                                            addGAEvent();
-                                            setCardPortfolio([item.code]);
-                                            if (loggingIn) {
-                                              setIsOpen(true);
-                                            } else {
-                                              setIsOpenLogin(true);
-                                            }
+                                      <LazyLoadImg
+                                        className="w-100"
+                                        imgError={CardPhotoBase}
+                                        //@ts-ignore
+                                        url={(item?.imgArr?.length && item?.imgArr[0] !== null) ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.imgArr[0]}.jpg` : CardPhotoBase}
+                                      />
+                                    </div>
+                                    <div
+                                      // onClick={() => onGoToCard(item)}
+                                      className="cursor-pointer image-box-table mr-2"
+                                    >
+                                      <img className="w-100" src={CardPhotoBase} alt="" />
+                                    </div>
+                                    <div className="ps-3 collection-card-table-detail">
+                                      <div className="mb-1 fs14 d-flex align-items-center collection-card-title">
+                                        {item?.sport}
+                                        <i className="dot-margin"></i>
+                                        {item?.year}
+                                        <i className="dot-margin"></i>
+                                        {item?.publisher}
+                                      </div>
+                                      <div className="mb-1  collection-card-desc fw-500 cursor-pointer"> {`${item.webName} ${isEmpty(item?.onCardCode) ? '' : ' - #' + item?.onCardCode}`} </div>
+                                      {(Boolean(item.auto) || Boolean(item.memo)) && (
+                                        <div className="content-tag d-flex mt-2">
+                                          {Boolean(item.auto) && (
+                                            <div className="au-tag"> AU </div>
+                                          )}
+                                          {Boolean(item.memo) && (
+                                            <div className="mem-tag"> MEM </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </a>
+                                </Link>
+                              </td>
+                              <td>
+                                {" "}
+                                {item.minPrice !== null ? (item.minPrice ? formatCurrency(item.minPrice, currency) : "N/A") : <OverlayTrigger
+                                  overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                >
+                                  {({ ref, ...triggerHandler }) => (
+                                    <Link href={data.null_price_tooltip === nameToolTip ? '/login' : '/verify-email'}>
+                                      <a title="Login" className="range-price-card-custom text-decoration-none">
+                                        <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                      </a>
+                                    </Link>
+                                  )}
+                                </OverlayTrigger>}
+                              </td>
+                              <td>
+                                {" "}
+                                {item.maxPrice !== null ? (item.maxPrice ? formatCurrency(item.maxPrice, currency) : "N/A") : <OverlayTrigger
+                                  overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                >
+                                  {({ ref, ...triggerHandler }) => (
+                                    <Link href={data.null_price_tooltip === nameToolTip ? '/login' : '/verify-email'}>
+                                      <a title="Login" className="range-price-card-custom text-decoration-none">
+                                        <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                      </a>
+                                    </Link>
+                                  )}
+                                </OverlayTrigger>}
+                              </td>
+                              <td>
+                                {" "}{
+                                  //@ts-ignore
+                                  item.avgPrice !== null ? (item.avgPrice ? formatCurrency(item.avgPrice, currency) : "N/A") : <OverlayTrigger
+                                    overlay={<Tooltip>{data.null_price_tooltip ?? ''}</Tooltip>}
+                                  >
+                                    {({ ref, ...triggerHandler }) => (
+                                      <Link href={data.null_price_tooltip === nameToolTip ? '/login' : '/verify-email'}>
+                                        <a title="Login" className="range-price-card-custom text-decoration-none">
+                                          <span className="cursor-pointer" ref={ref} {...triggerHandler}>$###</span>
+                                        </a>
+                                      </Link>
+                                    )}
+                                  </OverlayTrigger>}
+                              </td>
+                              <td>
+                                <div className="dropdown dropdown--top">
+                                  <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true" onClick={() => setOnActiveOption(false)}> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
+                                  <div
+                                    className="dropdown-menu"
+                                    aria-labelledby="navbarDropdownDot"
+                                    data-bs-popper="none"
+                                  >
+                                    <div
+                                      onClick={(e) => {
+                                        // e.preventDefault();
+                                        e.stopPropagation();
+                                        if (!item.portfolio) {
+                                          setCardData(undefined);
+                                          addGAEvent();
+                                          setCardPortfolio([item.code]);
+                                          if (loggingIn) {
+                                            setIsOpen(true);
                                           } else {
-                                           setOnActiveOption(!onActiveOption);
+                                            setIsOpenLogin(true);
                                           }
-                                          
-                                        } }
+                                        } else {
+                                          setOnActiveOption(!onActiveOption);
+                                        }
+
+                                      }}
+                                      className="dropdown-menu-item d-flex cursor-pointer"
+                                    >
+                                      <div className="dropdown-menu-item__icon mw-25">
+                                        <img
+                                          alt=""
+                                          src={!Boolean(item.portfolio)
+                                            ? IconFolder
+                                            : (onActiveOption ? ArrowRegular : IconFolderFull)} />
+                                      </div>
+                                      <div className="dropdown-menu-item__txt"> {" "} {onActiveOption || Boolean(item.portfolio) ? 'Added' : 'Add'} to {t('portfolio.text')} {" "} </div>
+                                    </div>
+                                    {onActiveOption ?
+                                      <><div
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
+                                        }}
                                         className="dropdown-menu-item d-flex cursor-pointer"
                                       >
                                         <div className="dropdown-menu-item__icon mw-25">
                                           <img
                                             alt=""
-                                            src={!Boolean(item.portfolio)
-                                              ? IconFolder
-                                              : ( onActiveOption ? ArrowRegular : IconFolderFull )} />
+                                            src={EditIconBlack} />
                                         </div>
-                                        <div className="dropdown-menu-item__txt"> {" "} {onActiveOption || Boolean(item.portfolio) ? 'Added' : 'Add'} to {t('portfolio.text')} {" "} </div>
-                                      </div>
-                                      {onActiveOption ? 
-                                       <><div
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
-                                          } }
-                                          className="dropdown-menu-item d-flex cursor-pointer"
-                                        >
+                                        <div className="dropdown-menu-item__txt"> Edit card in Portfolio </div>
+                                      </div><div
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          setCardData(undefined);
+                                          setCardPortfolio([item.code]);
+                                          if (loggingIn) {
+                                            setIsOpen(true);
+                                          } else {
+                                            setIsOpenLogin(true);
+                                          }
+                                        }
+                                        }
+                                        className="dropdown-menu-item  d-flex cursor-pointer"
+                                      >
                                           <div className="dropdown-menu-item__icon mw-25">
-                                            <img
-                                              alt=""
-                                              src={EditIconBlack} />
+                                            <img alt="" src={IconUnion} />
                                           </div>
-                                          <div className="dropdown-menu-item__txt"> Edit card in Portfolio </div>
-                                        </div><div
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              setCardData(undefined);
-                                              setCardPortfolio([item.code]);
-                                              if (loggingIn) {
-                                                setIsOpen(true);
-                                              } else {
-                                                setIsOpenLogin(true);
-                                              }
-                                            }
-                                            }
-                                          className="dropdown-menu-item  d-flex cursor-pointer"
-                                        >
-                                            <div className="dropdown-menu-item__icon mw-25">
-                                              <img alt="" src={IconUnion} />
-                                            </div>
-                                            <div className="dropdown-menu-item__txt"> {" "} Add New Entry {" "} </div>
-                                          </div></>
+                                          <div className="dropdown-menu-item__txt"> {" "} Add New Entry {" "} </div>
+                                        </div></>
                                       :
-                                       <><div
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            onAddWishList(
+                                      <><div
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          onAddWishList(
+                                            //@ts-ignore
+                                            {
                                               //@ts-ignore
-                                              {
-                                                //@ts-ignore
-                                                ...item,
-                                                code: item.code,
-                                              });
-                                          } }
-                                          className="dropdown-menu-item  d-flex cursor-pointer"
-                                        >
+                                              ...item,
+                                              code: item.code,
+                                            });
+                                        }}
+                                        className="dropdown-menu-item  d-flex cursor-pointer"
+                                      >
+                                        <div className="dropdown-menu-item__icon mw-25">
+                                          <img
+                                            alt=""
+                                            src={!Boolean(item.wishlist)
+                                              ? IconHeart
+                                              : IconHeartFull} />
+                                        </div>
+                                        <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
+                                      </div><div
+                                        onClick={() => onComparison(item)}
+                                        className="dropdown-menu-item  d-flex cursor-pointer"
+                                      >
                                           <div className="dropdown-menu-item__icon mw-25">
-                                            <img
-                                              alt=""
-                                              src={!Boolean(item.wishlist)
-                                                ? IconHeart
-                                                : IconHeartFull} />
+                                            <img alt="" src={renderCompareIcon(item)} />
                                           </div>
-                                          <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
-                                        </div><div
-                                          onClick={() => onComparison(item)}
-                                          className="dropdown-menu-item  d-flex cursor-pointer"
-                                        >
-                                            <div className="dropdown-menu-item__icon mw-25">
-                                              <img alt="" src={renderCompareIcon(item)} />
-                                            </div>
-                                            <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
-                                          </div></> }
-                                      <div>
+                                          <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                        </div></>}
+                                    <div>
 
-                                      </div>
                                     </div>
                                   </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                          {data?.isLoading &&
+                            Array.from(Array(16).keys())?.map((_e, index) => (
+                              <tr key={index}>
+                                <td className="text-center">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td className="cursor-pointer">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td className="cursor-pointer">
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <Skeleton />{" "}
                                 </td>
                               </tr>
                             ))}
-                            {data?.isLoading &&
-                              Array.from(Array(16).keys())?.map((_e, index) => (
-                                <tr key={index}>
-                                  <td className="text-center">
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                  <td className="cursor-pointer">
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                  <td className="cursor-pointer">
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    <Skeleton />{" "}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </>
             )}
-            <div className={`${!data.isLoading && Boolean(data.rows) ?"": "d-none"}`}>
-              {Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
-                (data?.rows ?? 0) / rowsPerPage )))  && (
-                  <div className="d-flex justify-content-center">
-                    <button
+          <div className={`${!data.isLoading && Boolean(data.rows) ? "" : "d-none"}`}>
+            {Boolean(pagesSelected[pagesSelected.length - 1] < (Math.ceil(
+              (data?.rows ?? 0) / rowsPerPage))) && (
+                <div className="d-flex justify-content-center">
+                  <button
                     onClick={onLoadMore}
                     type="button"
                     className="btn btn-light load-more"
-                    > Load More </button>
-                  </div>
-                )}
+                  > Load More </button>
+                </div>
+              )}
             <div className="d-flex justify-content-center mt-3">
               <Pagination pagesSelected={pagesSelected} onSelectPage={handlePageClick} totalPage={Math.ceil((data.rows ?? 0) / rowsPerPage)} />
             </div>
