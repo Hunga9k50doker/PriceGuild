@@ -34,7 +34,8 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
 
   const router = useRouter();
 
-  const getData = async (isAdd: boolean = false) => {
+  // Get a list of all the folders a user has
+  const getData = async () => {
     setIsLoading(true);
     try {
       const params = {
@@ -45,18 +46,6 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       if (result.success) {
         setCollections(result.data)
         setDataSearch(result.data)
-
-        // This is called when a new portfolio is created
-        if (isAdd) {
-
-          // selectCollection props are now set inside the collection model on
-          // function `onCreate`. Old props are commented out below but are not needed.
-          // let collectionNew = result.data[result.data.length - 1];
-          // props.selectCollection && props.selectCollection(collectionNew)
-
-          setIsOpen(false);
-          setIsModal(false)
-        }
       }
       if (!result.success) {
         // @ts-ignore
@@ -76,23 +65,27 @@ const ChosseCollection = ({ table = "portfolio", title = "collection", isOpen, s
       }
     }
   }
+
+  // Text search on folder names
   const onSeachCollection = (e: any) => {
     e.target.value = e.target.value.toLowerCase();
     const data = collections.filter(({ group_name }) => group_name.toLowerCase().includes(e.target.value));
     setDataSearch(data)
   }
 
+  // On Create New Folder Success
   const onCreateSuccess = () => {
-    getData(true);
     setIsOpen(false);
-    // setIsModal(false)
+    setIsModal(false);
   }
 
+  // On Close of the "Add New Collection" Model
   const onHandleModal = (status: boolean) => {
     setIsOpen(true);
     setIsModal(status)
   }
 
+  // For setting the selected collection in the URL / drop downs on page "Add Cards"
   const selectCollection = (item: ManageCollectionType) => {
     props.selectCollection && props.selectCollection(item)
   }
