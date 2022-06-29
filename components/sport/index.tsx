@@ -1,34 +1,38 @@
 import React, { useState, useEffect } from "react";
-import SmartSearch from "components/smartSearch";
-import { isEmpty } from "lodash";
-import CardBreakdown from "components/chart/cardBreakdown";
-import TopTradingCards from "components/homePage/topTradingCards";
 import Select from "react-select";
-import TopElementSlick from "components/cards/cardNode";
+import Selectors from "redux/selectors";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import LatestCollections from "components/homePage/componnents/latestCollections";
-import { Collection } from "model/portfolio/collection";
 import { SportType } from "interfaces"
+import { isEmpty } from "lodash";
 import Skeleton from 'react-loading-skeleton';
-import SlickCustom from "components/card-slick/slickCustom";
 import { api } from 'configs/axios';
 import { ToastSystem } from "helper/toast_system";
+
+import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
+
+import { HomeActions } from "redux/actions/home_action";
+import { CollectionApi } from "api/collection";
+import { CardDetailApis } from "api/CardDetailApis";
+
+import { CardModel, SaleData } from "model/data_sport/card_sport";
+import { Collection } from "model/portfolio/collection";
+
+import ImageCardSearch from "assets/images/card_search.png";
+import BackgroundHomePage from "assets/images/background-homepgae.webp";
+
 import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
 import DatabaseStats from "components/databaseStats/databaseStats"
-import BackgroundHomePage from "assets/images/background-homepgae.webp";
-import PersonalPortfolio from "components/personalPortfolio"
-import { CollectionApi } from "api/collection";
+import CardBreakdownChart from "components/chart/chartCardBreakdown";
+import TopTradingCards from "components/homePage/topTradingCards";
+import TopElementSlick from "components/cards/cardNode";
+import LatestCollections from "components/homePage/componnents/latestCollections";
 import FaqHomePage from "components/homePage/componnents/faqHomePage"
-import Selectors from "redux/selectors";
-import { useSelector, useDispatch } from "react-redux";
-import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
-import ImageCardSearch from "assets/images/card_search.png";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { CardModel, SaleData } from "model/data_sport/card_sport";
-import { CardDetailApis } from "api/CardDetailApis";
-import { HomeActions } from "redux/actions/home_action";
-// import Head from 'next/head';
+import SlickCustom from "components/card-slick/slickCustom";
+import SmartSearch from "components/smartSearch";
+import PersonalPortfolio from "components/personalPortfolio"
 
 export type Inputs = {
   sport: number;
@@ -328,7 +332,7 @@ function SportLandingPage({ ...props }) {
               </div>
             </div>
             <div className="col-12 col-md-6 col-lg-6 col-xl-6 content-break-down">
-              <CardBreakdown price_data={priceChart} />
+              <CardBreakdownChart price_data={priceChart} />
               <div className="data-chart-info">
                 <div className="row bold-chart-text">
                   <label className="col-8  col-sm-6 col-form-label">Change (% from first data):</label>

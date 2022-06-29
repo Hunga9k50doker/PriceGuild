@@ -1,34 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SmartSearch from "components/smartSearch";
-import CardBreakdown from "components/chart/cardBreakdown";
-import TopTradingCards from "components/homePage/topTradingCards";
 import Select from "react-select";
-import TopElementSlick from "components/cards/cardNode";
-import { useRouter } from 'next/router'
-import Link from 'next/link'
 import Selectors from "redux/selectors";
-import LatestCollections from "components/homePage/componnents/latestCollections";
 import { HomeActions } from "redux/actions/home_action";
 import { useTranslation, initReactI18next } from "react-i18next";
-import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
+import { useForm, SubmitHandler } from "react-hook-form";
+import Skeleton from 'react-loading-skeleton'
+
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import Head from 'next/head';
+
+import { api } from 'configs/axios';
+import { isEmpty } from "lodash";
+
+import { CardDetailApis } from "api/CardDetailApis";
+import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
+
+import { CardModel, SaleData } from "model/data_sport/card_sport";
+
+import ImageCardSearch from "assets/images/card_search.png";
+import imgInfo from "assets/images/alert-info.svg";
+import imgClose from "assets/images/cross-gray.svg";
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
+
 import SlickSport from "components/homePage/componnents/slickSport"
 import PersonalPortfolio from "components/personalPortfolio"
 import DatabaseStats from "components/databaseStats/databaseStats"
 import SlickPublishers from "components/homePage/componnents/slickPublishers"
 import FaqHomePage from "components/homePage/componnents/faqHomePage"
-import { api } from 'configs/axios';
-import { useForm, SubmitHandler } from "react-hook-form";
-import { isEmpty } from "lodash";
-import { CardModel, SaleData } from "model/data_sport/card_sport";
-import Skeleton from 'react-loading-skeleton'
-import { CardDetailApis } from "api/CardDetailApis";
-import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
-import ImageCardSearch from "assets/images/card_search.png";
-import Head from 'next/head';
-import imgInfo from "assets/images/alert-info.svg";
-import imgClose from "assets/images/cross-gray.svg";
+import SmartSearch from "components/smartSearch";
+import CardBreakdownChart from "components/chart/chartCardBreakdown";
+// import CardBreakDown from "components/cardbreakdown/CardBreakdown";
+import TopTradingCards from "components/homePage/topTradingCards";
+import TopElementSlick from "components/cards/cardNode";
+import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
+import LatestCollections from "components/homePage/componnents/latestCollections";
 
 export type Inputs = {
   sport: number;
@@ -182,19 +189,15 @@ function HomePage() {
         </div>
       </div>
       <TopTradingCards routerLink="" cardElement={TopElementSlick} />
+
+      {/* <CardBreakDown /> */}
+
       <div className="popular-publishers py-5">
         <div className="row">
           <div className="card-breakdown col-12 col-md-6 col-lg-6 col-xl-6">
             <h2 className="mb-2 text-title"> Card Breakdown </h2>
             <div className="mb-2 sub-title"> Select card and get actual information about the after-market activity of sales value </div>
             <div className="d-flex justify-content-center align-items-center picture-box">
-              {/* <div
-                style={{
-                  width: "50%",
-                  backgroundColor: "#ececec",
-                  height: 250,
-                }}
-              ></div> */}
               <img
                 onError={({ currentTarget }) => {
                   currentTarget.onerror = null; // prevents looping
@@ -336,20 +339,11 @@ function HomePage() {
             </div>
           </div>
           <div className="col-12 col-md-6 col-lg-6 col-xl-6 content-break-down">
-            <CardBreakdown
-              price_data={priceChart}
-            // sale_data={ saleData }
-            />
+            <CardBreakdownChart price_data={priceChart} />
             <div className="data-chart-info">
               <div className="row bold-chart-text">
                 <label className="col-8  col-sm-6 col-form-label"> Change (% from first data): </label>
                 <div className="col-4 col-sm-6 value-input">
-                  {/* <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value="+0%"
-                  /> */}
                   {cardPrice?.change ?
                     <input
                       type="text"

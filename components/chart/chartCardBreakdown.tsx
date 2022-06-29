@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Chart, LineAdvance } from 'bizcharts';
-import { SaleData } from "model/data_sport/card_sport";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
-import moment from 'moment';
 import { isEmpty } from 'lodash';
 import { formatCurrency, formatNumber, formatCurrencyIcon } from "utils/helper"
 import { useSelector } from "react-redux";
@@ -167,6 +164,7 @@ const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
     }
     return (refChart?.current as unknown as HighchartsReact.RefObject).chart;
   };
+
   useEffect(() => {
     const renderDataChartConfig = () => {
       var chart = chartRef();
@@ -187,8 +185,6 @@ const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
         data = [...data, [+key, +price_data[key]]]
       }
       
-      
-
       options.series[0].data = data;
       // @ts-ignore
       options.tooltip.pointFormatter = 
@@ -207,7 +203,6 @@ const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
           }
         }
       
-      
       // @ts-ignore
       chart.update({ ...options } as Highcharts.Options);
     } 
@@ -217,8 +212,7 @@ const ChartCardBreakdown = ({ price_data = {} ,...props }: PropsType) => {
     }
   },[price_data, currency])
 
-
-  {/* @ts-ignore */}
+  // @ts-ignore
   return <HighchartsReact highcharts={Highcharts} options={options} ref={refChart} />;
 }
 
