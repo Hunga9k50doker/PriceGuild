@@ -29,8 +29,8 @@ import DatabaseStats from "components/databaseStats/databaseStats"
 import CardBreakdownChart from "components/chart/chartCardBreakdown";
 import TopTradingCards from "components/homePage/topTradingCards";
 import TopElementSlick from "components/cards/cardNode";
-import LatestCollections from "components/homePage/componnents/latestCollections";
-import FaqHomePage from "components/homePage/componnents/faqHomePage"
+import LatestCollections from "components/homePage/latestCollections";
+import FaqHomePage from "components/homePage/faqHomePage"
 import SlickCustom from "components/card-slick/slickCustom";
 import SmartSearch from "components/smartSearch";
 import PersonalPortfolio from "components/personalPortfolio"

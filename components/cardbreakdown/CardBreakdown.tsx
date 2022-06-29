@@ -1,76 +1,135 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import Skeleton from 'react-loading-skeleton'
-import { useForm, SubmitHandler } from "react-hook-form";
 import Selectors from "redux/selectors";
-
-import Link from 'next/link'
+import { HomeActions } from "redux/actions/home_action";
+import { useTranslation, initReactI18next } from "react-i18next";
+import { useForm, SubmitHandler } from "react-hook-form";
+import Skeleton from 'react-loading-skeleton'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { api } from 'configs/axios';
+import { isEmpty } from "lodash";
 
+import { CardDetailApis } from "api/CardDetailApis";
 import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
+
+import { CardModel, SaleData } from "model/data_sport/card_sport";
 
 import ImageCardSearch from "assets/images/card_search.png";
 
 import CardBreakdownChart from "components/chart/chartCardBreakdown";
 
-
-type PropTypes = {
-    cardData?: any;
-}
-
-type defaultProps = {
-    cardData: {
-        webName: 'foobar',
-        onCardCode: 'foobar',
-        sport: { name: 'Baseball' },
-        cardFrontImage: {
-            id: 'Baseball',
-            img: ''
-        },
-        set: { name: 'None' },
-        type: { name: 'None' },
-        color: { name: 'None' },
-    }
-};
-
 export type Inputs = {
     sport: number;
 }
 
-const CardBreakDown = ({ cardData = {
-    webName: '',
-    onCardCode: '',
-    sport: { name: 'Baseball' },
-    cardFrontImage: {
-        id: '',
-        img: ''
-    },
-    set: { name: '' },
-    type: { name: '' },
-    color: { name: '' }
-}, ...props }: PropTypes) => {
+function CardBreakDown() {
+    const [t, i18n] = useTranslation("common");
+    const router = useRouter();
+    const { currency } = useSelector(Selectors.config);
+    const { cardBreakDown } = useSelector(Selectors.home);
+    const { userInfo } = useSelector(Selectors.auth);
+    const dispatch = useDispatch();
+    const { formState: { errors }, setValue } = useForm<Inputs>();
+    const [cardSelected, setCardSelected] = useState<any>();
+    const [cardPrice, setCardPrice] = useState<any>();
+    const [cardData, setCardData] = useState<CardModel | undefined>()
+    const [priceChart, setPriceChart] = useState<any>({});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        dispatch(HomeActions.getLatestCollection());
+        getOptionCardBreakDown(1);
+    }, [])
+
+    const getOptionValue = (option: any) => option.order;
+
+    // Set a card selected on "Card Breakdown" when the cardBreakDown data is ready
+    useEffect(() => {
+        if (!isEmpty(cardBreakDown)) {
+            setCardSelected(cardBreakDown[0]);
+        }
+    }, [cardBreakDown])
+
+    // Get new data when selected Card Breakdown card is changed
+    useEffect(() => {
+        if (!isEmpty(cardSelected)) {
+            getCardBreakdownCardDetail();
+        }
+    }, [cardSelected])
+
+    // Re-draw the Card Breakdown MA line on currency or data change
+    useEffect(() => {
+        if (!isEmpty(cardData)) {
+            getCardBreakdownMALineData();
+        }
+    }, [cardData, currency])
+
+    // Get the list of cards featured in the "Card Breakdown" section
+    const getOptionCardBreakDown = async (sportId: number) => {
+        try {
+            let prms = {
+                "sport": sportId
+            }
+            const res = await api.v1.cards_break_down.cardBreakDown(prms);
+            if (res.success) {
+                dispatch(HomeActions.updateCardBreakDown(res.data));
+            }
+        } catch (error) {
+            console.log('error.....', error)
+        }
+    }
+
+    // Card Details for "Card Breakdown" section
+    const getCardBreakdownCardDetail = async () => {
+        setIsLoading(true);
+        try {
+            let prms = {
+                card_code: cardSelected?.cardCode,
+                currency: userInfo.userDefaultCurrency,
+            }
+            const res = await CardDetailApis.loadCardDetail(prms);
+            setIsLoading(false);
+            if (res.success) {
+                setCardData(new CardModel(res.data?.card_detail))
+            }
+        } catch (error) {
+            setIsLoading(false);
+        }
+    }
+
+    // Line Chart for "Card Breakdown" section
+    const getCardBreakdownMALineData = async () => {
+        try {
+            let card_code = cardData?.code;
+            if (card_code) {
+                let prms = {
+                    card_code: card_code,
+                    grade_company: 'all',
+                    grade_value: 'all',
+                    time_period: 365,
+                    currency: currency,
+                    resample: "D"
+                }
+                // pg_app_calc_ma_line_featured
+                const res = await api.v1.mc_line_home_fuature.getCalcMaLineFuature(prms);
+                if (res.success) {
+                    setPriceChart(res.data.price);
+                    setCardPrice(res.data.stats)
+                }
+            }
+
+        } catch (error) {
+
+        }
+    }
 
     // "See Detailed Overview" button for "Card Breakdown" section
     const gotoCardDetail = () => {
-        // const url = gen_card_url(cardData?.webName ?? '', cardData?.onCardCode ?? '');
-        // return `/card-details/${cardData?.code}/${url}`;
-        return `aaa`;
+        const url = gen_card_url(cardData?.webName ?? '', cardData?.onCardCode ?? '');
+        return `/card-details/${cardData?.code}/${url}`;
     }
-
-    const genS3ImageLink = () => {
-        return `https://img.priceguide.cards/${cardData?.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData?.cardFrontImage?.img}.jpg`;
-    }
-
-    const router = useRouter();
-    const { formState: { errors }, setValue } = useForm<Inputs>();
-    const [cardSelected, setCardSelected] = useState<any>();
-    const { cardBreakDown } = useSelector(Selectors.home);
-    const getOptionValue = (option: any) => option.order;
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [priceChart, setPriceChart] = useState<any>({});
-    const [cardPrice, setCardPrice] = useState<any>();
-    const { is_browse, currency } = useSelector(Selectors.config);
 
     return (
         <div className="popular-publishers py-5">
@@ -88,12 +147,9 @@ const CardBreakDown = ({ cardData = {
                             }}
                             className="img-product-element"
                             height="277"
-                            src={genS3ImageLink()}
+                            src={`https://img.priceguide.cards/${cardData?.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData?.cardFrontImage?.img}.jpg`}
                             alt="" title="" />
-                        {/* <ImageBlurHash
-                className=""
-                src={`https://img.priceguide.cards/${cardData?.sport.name==="Non-Sport"?"ns":"sp"}/${cardData?.cardFrontImage?.img}.jpg`}
-              /> */}
+
                     </div>
 
                     <div className="mb-3">
@@ -334,6 +390,3 @@ const CardBreakDown = ({ cardData = {
 }
 
 export default React.memo(CardBreakDown);
-
-
-
