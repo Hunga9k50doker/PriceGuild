@@ -173,7 +173,7 @@ const App = ({
       urlObject.sport = sport.id
     }
     // @ts-ignore
-    urlObject.q = valueState.replace("#", "%23")
+    urlObject.q = valueState.replace("#", "%23").replace("&", "%26")
     redirects(urlObject)
   }
 

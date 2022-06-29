@@ -277,19 +277,13 @@ const CardList = (props: PropTypes) => {
     return params
   }
 
-  const getListCard = async (page = [1], isChange: boolean = false, isFilter = true, headers: any = {}, isResetSearchBox: boolean = false) => {
-
-    if (page[page.length - 1] === 1) {
-      // dispatch(FilterAction.updateFiltersCardDetail({
-      //   collections: [],
-      //   auto_memo: [],
-      //   printRuns: [],
-      //   publishers: [],
-      //   years: [],
-      //   sports: [],
-      //   grades: [],
-      // }));
-    }
+  const getListCard = async (
+    page = [1],
+    isChange: boolean = false,
+    isFilter = true,
+    headers: any = {},
+    isResetSearchBox: boolean = false
+  ) => {
 
     if (!isFirst) {
       setIsFirst(true)
@@ -313,6 +307,7 @@ const CardList = (props: PropTypes) => {
       if (query.q) {
         params.search_term = query.q;
       }
+
       if (!Boolean(isResetSearchBox)) {
         if (!isEmpty(playerNameRef.current?.getValue())) {
           params.player_name = playerNameRef.current?.getValue();
@@ -338,6 +333,7 @@ const CardList = (props: PropTypes) => {
         params.sport = params.filter?.sport[0]
         delete params.filter?.sport
       }
+
       if (params.sport === +query?.sport_criteria || isEmpty(params)) {
         params.search_criteria = {
           playerName: query.q,
@@ -347,6 +343,7 @@ const CardList = (props: PropTypes) => {
           year: query?.year,
         }
       }
+
       const paramsFilter = { ...params }
       params = {
         ...params,
