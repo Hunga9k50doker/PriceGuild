@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useSelector } from 'react-redux';
 import Selectors from 'redux/selectors';
 import PersonalPortfolio from "components/personalPortfolio"
+import DatabaseStats from "components/databaseStats/databaseStats"
 import Head from 'next/head';
 
 type PropTypes = {
@@ -93,21 +94,7 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 			</div>
 			<div className="ab-number">
 				<div className="container">
-					<div className="row g-0 statistical">
-						<div className="col">
-							<div className="text-statistical">250M</div>
-							<div className="sub-text-statistical">Recorded Sales Prices</div>
-						</div>
-						<div className="col">
-							<div className="text-statistical">10.5M</div>
-							<div className="sub-text-statistical">Cards Featured</div>
-						</div>
-						<div className="col">
-							<div className="text-statistical">135K</div>
-							<div className="sub-text-statistical">Active Collectors</div>
-						</div>
-						<div className="line-bottom"></div>
-					</div>
+					<DatabaseStats />
 				</div>
 			</div>
 			<PersonalPortfolio />

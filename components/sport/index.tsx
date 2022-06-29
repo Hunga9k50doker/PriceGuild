@@ -15,6 +15,7 @@ import SlickCustom from "components/card-slick/slickCustom";
 import { api } from 'configs/axios';
 import { ToastSystem } from "helper/toast_system";
 import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
+import DatabaseStats from "components/databaseStats/databaseStats"
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
 import PersonalPortfolio from "components/personalPortfolio"
 import { CollectionApi } from "api/collection";
@@ -436,21 +437,7 @@ function SportLandingPage({ ...props }) {
             <LeaderboardHomePage sportId={sportSelected?.id} />
           </div>
         </div>
-        <div className="row g-0 statistical">
-          <div className="col">
-            <div className="text-statistical"> 250M </div>
-            <div className="sub-text-statistical"> Recorded Sales Prices </div>
-          </div>
-          <div className="col">
-            <div className="text-statistical"> 10.5M </div>
-            <div className="sub-text-statistical"> Cards Featured </div>
-          </div>
-          <div className="col">
-            <div className="text-statistical"> 135K </div>
-            <div className="sub-text-statistical"> Active Collectors </div>
-          </div>
-          <div className="line-bottom"></div>
-        </div>
+        <DatabaseStats />
         <FaqHomePage />
         <PersonalPortfolio />
         {/* <Footer></Footer> */}

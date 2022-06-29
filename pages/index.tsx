@@ -15,6 +15,7 @@ import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
 import SlickSport from "components/homePage/componnents/slickSport"
 import PersonalPortfolio from "components/personalPortfolio"
+import DatabaseStats from "components/databaseStats/databaseStats"
 import SlickPublishers from "components/homePage/componnents/slickPublishers"
 import FaqHomePage from "components/homePage/componnents/faqHomePage"
 import { api } from 'configs/axios';
@@ -180,7 +181,6 @@ function HomePage() {
           <SlickSport />
         </div>
       </div>
-      {/* Popular Publisher */}
       <TopTradingCards routerLink="" cardElement={TopElementSlick} />
       <div className="popular-publishers py-5">
         <div className="row">
@@ -461,21 +461,7 @@ function HomePage() {
           <LeaderboardHomePage sportId={1} />
         </div>
       </div>
-      <div className="row g-0 statistical">
-        <div className="col">
-          <div className="text-statistical"> 250M </div>
-          <div className="sub-text-statistical"> Recorded Sales Prices </div>
-        </div>
-        <div className="col">
-          <div className="text-statistical"> 10.5M </div>
-          <div className="sub-text-statistical"> Cards Featured </div>
-        </div>
-        <div className="col">
-          <div className="text-statistical"> 135K </div>
-          <div className="sub-text-statistical"> Active Collectors </div>
-        </div>
-        <div className="line-bottom"></div>
-      </div>
+      <DatabaseStats />
       {/* <Market cardElement={TopElementSlick} /> */}
       {/* <div className="container-fluid">
         <div className="row">
@@ -519,24 +505,10 @@ function HomePage() {
         className="popular-publishers">
         <h2 className="pt-3 text-title mb-5"> Popular Publishers </h2>
         <div className="row pb-5">
-          {/* {popularPublishers.map((item: PopularType, index: number) => <div key={index} className="col">
-            <div className="d-flex justify-content-center align-items-center bg-white" >
-              <img src={TopImage} />
-            </div>
-            <ul className="list-group publishers-item-sport">
-              {item.sports?.map((sport, key) =>
-                <li key={key} className="list-group-item d-flex justify-content-between align-items-center">
-                  {sport.sportName}
-                </li>
-              )}
-            </ul>
-          </div>)} */}
           <SlickPublishers />
         </div>
       </div>
       <PersonalPortfolio />
-      {/* <ButtonText /> */}
-      {/* <Footer></Footer> */}
     </div>
   );
 }
