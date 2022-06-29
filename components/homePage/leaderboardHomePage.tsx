@@ -35,11 +35,11 @@ const LeaderboardHomePage = (props: PropTypes) => {
   useEffect(() => {
     let isCheckSportId = false;
     if (props.sportId) {
-      getListCard() 
+      getListCard()
       isCheckSportId = true;
     }
-    if(!isCheckSportId) {
-      getListCard() 
+    if (!isCheckSportId) {
+      getListCard()
     }
   }, [props.sportId, currency])
 
@@ -105,9 +105,9 @@ const LeaderboardHomePage = (props: PropTypes) => {
                       <Link href={userInfo.userid === item.userid ? `/profile/personal` : `/profile/${item.userid}`}>
                         <a className="text-reset text-decoration-none">
                           {item.username === "Unknown" ? `Unknown #${item.userid}` : item.username}
-                        </a> 
+                        </a>
                       </Link>
-                       
+
                     </td>
                     <td> {formatCurrency(item.total_value, currency)} </td>
                     <td className="th-upload-total">{formatNumber(item.total_upload)}</td>
@@ -116,18 +116,18 @@ const LeaderboardHomePage = (props: PropTypes) => {
               </tbody>
             </table>
           </div>
-          {!data.isLoading && !data.cards.length && <Loading type="warning" /> }
-          {data.isLoading ? 
-            <Loading  type ="loading" />
-          // dataLoader?.map((item, key) =>
+          {!data.isLoading && !data.cards.length && <Loading type="warning" />}
+          {data.isLoading ?
+            <Loading type="loading" />
+            // dataLoader?.map((item, key) =>
             // <div className="my-2" key={key}>
             //   <Skeleton height={30} />
             // </div>
-          :
+            :
             <div className="d-flex justify-content-center align-items-center mt-4">
               <Link href={"/leaderboard"}>
-                <a  className="btn see-more btn-primary" title="See Leaderboard">
-                  See Leaderboard 
+                <a className="btn see-more btn-primary" title="See Leaderboard">
+                  See Leaderboard
                 </a>
               </Link>
             </div>}

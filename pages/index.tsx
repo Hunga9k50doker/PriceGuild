@@ -9,36 +9,26 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Selectors from "redux/selectors";
 import LatestCollections from "components/homePage/componnents/latestCollections";
-import { PopularType } from "interfaces"
 import { HomeActions } from "redux/actions/home_action";
 import { useTranslation, initReactI18next } from "react-i18next";
 import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
 import SlickSport from "components/homePage/componnents/slickSport"
-import TopImage from "assets/images/topps.png";
 import PersonalPortfolio from "components/personalPortfolio"
 import SlickPublishers from "components/homePage/componnents/slickPublishers"
 import FaqHomePage from "components/homePage/componnents/faqHomePage"
-import { ConfigAction } from "redux/actions/config_action";
 import { api } from 'configs/axios';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { isEmpty } from "lodash";
 import { CardModel, SaleData } from "model/data_sport/card_sport";
 import Skeleton from 'react-loading-skeleton'
 import { CardDetailApis } from "api/CardDetailApis";
-import ImageBlurHash from "components/imageBlurHash"
 import { formatCurrency, gen_card_url, formatNumber } from "utils/helper"
 import ImageCardSearch from "assets/images/card_search.png";
 import Head from 'next/head';
-import { getDetailMaintenance } from "utils/maintenance";
 import imgInfo from "assets/images/alert-info.svg";
 import imgClose from "assets/images/cross-gray.svg";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
 export type Inputs = {
   sport: number;
 }
@@ -58,38 +48,17 @@ function HomePage() {
   const [priceChart, setPriceChart] = useState<any>({});
   const [maintenance, setMaintenance] = useState<Array<any>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(HomeActions.getLatestCollection());
     // eslint-disable-next-line react-hooks/exhaustive-deps
     getOptionCardBreakDown(1);
-    
-    // maintainceMode();
-
   }, [])
 
-  // const maintainceMode = async () => {
-
-  //   let main = await getDetailMaintenance();
-  //   console.log(main, 'vicimer542');
-  //   setMaintenance(main);
-  // }
   const changeTransaction = () => {
     const languageCode = i18n.language === "vi" ? "en" : "vi";
     i18n.changeLanguage(languageCode)
     localStorage.setItem("langCode", languageCode)
-  }
-
-  const onCreatePersonalPortfolio = () => {
-    router.push("/profile/collections")
-  }
-  const updateIsBrose = () => {
-    dispatch(ConfigAction.updateBrowse(true));
-  }
-
-  const renderLink = () => {
-		if (!loggingIn) return '/login';
-		
-		return '/profile/collections';
   }
 
   const getOptionValue = (option: any) => option.order;
@@ -98,12 +67,11 @@ function HomePage() {
     if (!isEmpty(cardBreakDown)) {
       setCardSelected(cardBreakDown[0]);
     }
-  },[cardBreakDown])
+  }, [cardBreakDown])
 
   useEffect(() => {
     if (!isEmpty(cardSelected)) {
       getCardDetail();
-      // getSaleChartData();
     }
   }, [cardSelected])
 
@@ -114,12 +82,13 @@ function HomePage() {
       isCardData = true;
       getMClineData();
     }
-    if(!isCardData) {
+    if (!isCardData) {
       getMClineData();
     }
-  },[cardData, currency])
-  const getOptionCardBreakDown = async (sportId: number) => {
+  }, [cardData, currency])
 
+  // Get the list of cards featured in the "Card Breakdown" section
+  const getOptionCardBreakDown = async (sportId: number) => {
     try {
       let prms = {
         "sport": sportId
@@ -132,47 +101,30 @@ function HomePage() {
       console.log('error.....', error)
     }
   }
-  
+
+  // Card Details for "Card Breakdown" section
   const getCardDetail = async () => {
-    await setIsLoading(true);
+    setIsLoading(true);
     try {
       let prms = {
         card_code: cardSelected?.cardCode,
         currency: userInfo.userDefaultCurrency,
       }
-
-      // const res = await api.v1.card_detail_home.cardDetail(prms);
       const res = await CardDetailApis.loadCardDetail(prms);
-      await setIsLoading(false);
-      if (res.success) { 
+      setIsLoading(false);
+      if (res.success) {
         setCardData(new CardModel(res.data?.card_detail))
       }
     } catch (error) {
-      await setIsLoading(false);
+      setIsLoading(false);
     }
   }
 
-  // const getSaleChartData = async () => {
-  //   try {
-  //     let prms = {
-  //       card_code: cardSelected?.cardCode,
-  //       currency: userInfo.userDefaultCurrency,
-  //     }
-  //     const res = await CardDetailApis.loadSaleData(prms);
-      
-  //     if (res.success) {
-  //       setSaleData(res.data.sale_data);
-  //       setCardPrice(res.data.price_data);
-  //     }
-  //   } catch (error) {
-      
-  //   }
-  // }
-
+  // Line Chart for "Card Breakdown" section
   const getMClineData = async () => {
     try {
-      let card_code = cardData?.code; 
-      if(card_code) {
+      let card_code = cardData?.code;
+      if (card_code) {
         let prms = {
           card_code: card_code,
           grade_company: 'all',
@@ -188,25 +140,17 @@ function HomePage() {
           setCardPrice(res.data.stats)
         }
       }
-     
+
     } catch (error) {
-      
+
     }
   }
 
+  // "See Detailed Overview" button for "Card Breakdown" section
   const gotoCardDetail = () => {
-    //@ts-ignore
     const url = gen_card_url(cardData?.webName ?? '', cardData?.onCardCode ?? '');
     return `/card-details/${cardData?.code}/${url}`;
   }
-
-  // useEffect(() => {
-  //   if (maintenance?.length) {
-  //     if (maintenance?.[0]?.type === 2) {
-  //       router.push('/maintenance')
-  //     }
-  //   }
-  // },[maintenance])
 
   return (
     <div
@@ -223,21 +167,12 @@ function HomePage() {
           <h1 className="title-header">Sports Card Price Guide</h1>
           <div className="sub-title-header"> Find actual prices from a quarter of a billion card sales </div>
           <SmartSearch isHomePage={1} isArrow={1} />
-          <div>
-            <button className="btn btn-primary btn-find-card" onClick={updateIsBrose} title="Find Cards"> Find Cards </button>
-          </div>
-          <div>
-            <Link href={renderLink()}>
-              <a className="btn btn-primary btn-create-portfolio">
-                Create Personal Portfolio
-              </a></Link>
-          </div> 
           {maintenance && maintenance?.[0]?.type === 1 &&
-          <div className="alert alert-maintenance" role="alert">
-            <img src={imgInfo} alt="" title="" />
-            <div className="content">Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)</div>
-            <span> <img className="close" src={imgClose} alt="" title="" /> </span>
-          </div>}
+            <div className="alert alert-maintenance" role="alert">
+              <img src={imgInfo} alt="" title="" />
+              <div className="content">Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)</div>
+              <span> <img className="close" src={imgClose} alt="" title="" /> </span>
+            </div>}
         </div>
       </div>
       <div className="content-home content-slick mb-10 position-relative mt-5">
@@ -261,22 +196,22 @@ function HomePage() {
                 }}
               ></div> */}
               <img
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null; // prevents looping
-                    if (ImageCardSearch) {
-                      currentTarget.src=ImageCardSearch.src;
-                    }
-                  }}
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null; // prevents looping
+                  if (ImageCardSearch) {
+                    currentTarget.src = ImageCardSearch.src;
+                  }
+                }}
                 className="img-product-element"
                 height="277"
-                 src={`https://img.priceguide.cards/${cardData?.sport.name==="Non-Sport"?"ns":"sp"}/${cardData?.cardFrontImage?.img}.jpg`}
+                src={`https://img.priceguide.cards/${cardData?.sport.name === "Non-Sport" ? "ns" : "sp"}/${cardData?.cardFrontImage?.img}.jpg`}
                 alt="" title="" />
-               {/* <ImageBlurHash
+              {/* <ImageBlurHash
                 className=""
                 src={`https://img.priceguide.cards/${cardData?.sport.name==="Non-Sport"?"ns":"sp"}/${cardData?.cardFrontImage?.img}.jpg`}
               /> */}
             </div>
-            
+
             <div className="mb-3">
               <label className="form-label select-card">Select Card</label>
               <Select
@@ -286,7 +221,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
-                isSearchable={ false }
+                isSearchable={false}
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
@@ -307,11 +242,11 @@ function HomePage() {
                 {
                   isLoading ? <Skeleton style={{ width: 100 }} /> :
                     <>
-                    {cardData?.fullNameWithCode ? <input
+                      {cardData?.fullNameWithCode ? <input
                         type="text"
                         readOnly
                         className="form-control-plaintext"
-                        value={cardData?.fullNameWithCode} />  : <Skeleton style={{ width: 100 }} />}
+                        value={cardData?.fullNameWithCode} /> : <Skeleton style={{ width: 100 }} />}
                     </>
                 }
               </div>
@@ -322,10 +257,10 @@ function HomePage() {
                 {
                   isLoading ? <Skeleton style={{ width: 100 }} /> :
                     <>
-                    {cardData?.sport?.name ? 
-                      <Link  href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
-                        <a className="text-reset" title={cardData?.sport?.name}>{cardData?.sport?.name}</a>
-                      </Link> : ''}
+                      {cardData?.sport?.name ?
+                        <Link href={`/collections/${cardData?.sport?.name.replace(/\s/g, '').toLowerCase()}`}>
+                          <a className="text-reset" title={cardData?.sport?.name}>{cardData?.sport?.name}</a>
+                        </Link> : ''}
                     </>
                 }
               </div>
@@ -336,13 +271,13 @@ function HomePage() {
                 {
                   isLoading ? <Skeleton style={{ width: 100 }} /> :
                     <>
-                      {cardData?.publisher?.name ? 
-                      <input
-                        type="text"
-                        readOnly
-                        className="form-control-plaintext"
-                        value={cardData?.publisher?.name}
-                      /> : <Skeleton style={{ width: 100 }} />}
+                      {cardData?.publisher?.name ?
+                        <input
+                          type="text"
+                          readOnly
+                          className="form-control-plaintext"
+                          value={cardData?.publisher?.name}
+                        /> : <Skeleton style={{ width: 100 }} />}
                     </>
                 }
               </div>
@@ -354,11 +289,11 @@ function HomePage() {
                   isLoading ? <Skeleton style={{ width: 100 }} /> :
                     <>
                       {cardData?.set.name ?
-                      <Link href={`/${cardData?.set.url}`}>
-                        <a className="text-reset" title={cardData.set.name}>
-                          {cardData.set.name}
-                        </a>
-                      </Link> : <Skeleton style={{ width: 100 }} />}
+                        <Link href={`/${cardData?.set.url}`}>
+                          <a className="text-reset" title={cardData.set.name}>
+                            {cardData.set.name}
+                          </a>
+                        </Link> : <Skeleton style={{ width: 100 }} />}
                     </>
                 }
               </div>
@@ -366,20 +301,20 @@ function HomePage() {
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Base/Insert:</label>
               <div className="col-8 col-sm-9">
-              {
-                isLoading ? <Skeleton style={{ width: 100 }} /> :
-                  <>
-                  {cardData?.type.name ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={cardData?.type?.name}
-                  /> : <Skeleton style={{ width: 100 }} />}
-                </>
-              }
-                </div>
-          
+                {
+                  isLoading ? <Skeleton style={{ width: 100 }} /> :
+                    <>
+                      {cardData?.type.name ?
+                        <input
+                          type="text"
+                          readOnly
+                          className="form-control-plaintext"
+                          value={cardData?.type?.name}
+                        /> : <Skeleton style={{ width: 100 }} />}
+                    </>
+                }
+              </div>
+
             </div>
             <div className="row picture-box-data">
               <label className="col-4 col-sm-3 col-form-label">Parallel:</label>
@@ -387,15 +322,15 @@ function HomePage() {
               <div className="col-8 col-sm-9">
                 {
                   isLoading ? <Skeleton style={{ width: 100 }} /> :
-                  <>
-                    {cardData?.color.name ? 
-                    <input
-                      type="text"
-                      readOnly
-                      className="form-control-plaintext"
-                      value={cardData?.color.name}
-                    />  : <Skeleton style={{ width: 100 }} />}
-                  </>
+                    <>
+                      {cardData?.color.name ?
+                        <input
+                          type="text"
+                          readOnly
+                          className="form-control-plaintext"
+                          value={cardData?.color.name}
+                        /> : <Skeleton style={{ width: 100 }} />}
+                    </>
                 }
               </div>
             </div>
@@ -403,7 +338,7 @@ function HomePage() {
           <div className="col-12 col-md-6 col-lg-6 col-xl-6 content-break-down">
             <CardBreakdown
               price_data={priceChart}
-              // sale_data={ saleData }
+            // sale_data={ saleData }
             />
             <div className="data-chart-info">
               <div className="row bold-chart-text">
@@ -415,73 +350,73 @@ function HomePage() {
                     className="form-control-plaintext"
                     value="+0%"
                   /> */}
-                   {cardPrice?.change ?
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={`+${formatNumber(cardPrice?.change)}%`}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                  {cardPrice?.change ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={`+${formatNumber(cardPrice?.change)}%`}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
               <div className="row">
                 <label className="col-8  col-sm-6 col-form-label"> Latest Value: </label>
                 <div className="col-4 col-sm-6 value-input">
                   {cardPrice?.latest ?
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.latest, currency)}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={formatCurrency(cardPrice?.latest, currency)}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
               <div className="row">
                 <label className="col-8  col-sm-6 col-form-label"> Lowest Value: </label>
                 <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.min ? 
-                  <input
+                  {cardPrice?.min ?
+                    <input
                       type="text"
                       readOnly
                       className="form-control-plaintext"
                       value={formatCurrency(cardPrice?.min, currency)}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
               <div className="row">
                 <label className="col-8  col-sm-6 col-form-label"> Highest Value: </label>
                 <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.max ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.max, currency)}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                  {cardPrice?.max ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={formatCurrency(cardPrice?.max, currency)}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
               <div className="row">
                 <label className="col-8  col-sm-6 col-form-label"> Average Value: </label>
                 <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.average ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={formatCurrency(cardPrice?.average, currency)}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                  {cardPrice?.average ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={formatCurrency(cardPrice?.average, currency)}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
               <div className="row">
                 <label className="col-8  col-sm-6 col-form-label"> Total Trades: </label>
                 <div className="col-4 col-sm-6 value-input">
-                  {cardPrice?.total_trades ? 
-                  <input
-                    type="text"
-                    readOnly
-                    className="form-control-plaintext"
-                    value={cardPrice?.total_trades}
-                  /> : <Skeleton style={{ width: 100 }} />}
+                  {cardPrice?.total_trades ?
+                    <input
+                      type="text"
+                      readOnly
+                      className="form-control-plaintext"
+                      value={cardPrice?.total_trades}
+                    /> : <Skeleton style={{ width: 100 }} />}
                 </div>
               </div>
             </div>
@@ -494,7 +429,7 @@ function HomePage() {
                   setCardSelected(value)
                 }}
                 value={cardSelected}
-                isSearchable={ false }
+                isSearchable={false}
                 options={cardBreakDown}
                 getOptionValue={getOptionValue}
                 getOptionLabel={(option) => option.webName}
@@ -579,7 +514,7 @@ function HomePage() {
           </div>
         </div>
       </div> */}
-      <FaqHomePage/>
+      <FaqHomePage />
       <div
         className="popular-publishers">
         <h2 className="pt-3 text-title mb-5"> Popular Publishers </h2>
