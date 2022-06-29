@@ -46,7 +46,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
   // Get the data for the portfolio leaderboard
   const getLeaderboardData = async () => {
 
-    console.log('LeaderboardHomePage - getLeaderboardData', currency, props)
+    // console.log('LeaderboardHomePage - getLeaderboardData', currency, props)
 
     try {
       setData(prevState => {
