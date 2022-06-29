@@ -1,4 +1,4 @@
-import { Collection } from "model/portfolio/collection";
+import { Collection } from "model/collections/collection";
 import { ActionTypes } from "./action_types";
 import { PopularType, OptionCardBreakDown } from "interfaces";
 

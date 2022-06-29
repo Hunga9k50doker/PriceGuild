@@ -1,6 +1,8 @@
 import React from "react";
 import MyCardSlickElement from "components/card-slick/card_slick/MyCardSlickElement";
-import { Collection } from "model/portfolio/collection";
+
+import { Collection } from "model/collections/collection";
+
 import CollectionItem from './collection_item';
 
 type PropTypes = {

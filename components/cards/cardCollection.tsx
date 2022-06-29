@@ -1,8 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { Collection } from "model/portfolio/collection";
+
 import ImgCard from "assets/images/Collection_Card.png"
+
 import ImageBlurHash from "components/imageBlurHash"
+
+import { Collection } from "model/collections/collection";
 
 type PropTypes = {
   item: Collection,

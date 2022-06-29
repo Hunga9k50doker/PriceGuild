@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 import { TopElementType } from "interfaces"
 import { api } from 'configs/axios';
-import CardSlickElement from "components/card-slick/cardSlickElement"
 import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
+
+import CardSlickElement from "components/card-slick/cardSlickElement"
 
 type PropTypes = {
   cardElement: FC<any>,

@@ -3,10 +3,11 @@ import {
   CollectionResponse,
   CollectionType,
 } from "api/collection";
-import { Collection } from "model/portfolio/collection";
 import { takeLatest, call, put } from "redux-saga/effects";
 import { ActionTypes } from "redux/actions/action_types";
 import { HomeActions } from "redux/actions/home_action";
+
+import { Collection } from "model/collections/collection";
 
 function* latestCollection(action: any) {
   try {

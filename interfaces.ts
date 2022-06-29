@@ -1,4 +1,4 @@
-import { Collection } from "model/portfolio/collection";
+import { Collection } from "model/collections/collection";
 import { User } from "model/user";
 
 export type BaseType = {

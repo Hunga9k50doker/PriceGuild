@@ -1,32 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { api } from "configs/axios";
 import { FilterType, SelectDefultType } from "interfaces";
-import Cards from "components/cards";
-import { FilterHandle } from "components/filter/customCheckBox";
 import { isEmpty, sumBy } from "lodash";
-import CardElement from "components/cards/cardCollection";
-import { Collection } from "model/portfolio/collection";
 import { CollectionApi } from "api/collection";
 import Select from "react-select";
-import { MetaData } from "utils/constant";
-import { convertListDataToGrouped, formatNumber, isFirefox } from "utils/helper";
-import FilterSport, {FilterHandle as FilterHandleSport} from "components/filter/filterSport";
 import { useSelector } from "react-redux";
 import Selectors from "redux/selectors";
 import Skeleton from "react-loading-skeleton";
+import { useRouter } from 'next/router'
+// @ts-ignore
+import $ from "jquery"
+
+import { Collection } from "model/collections/collection";
+
+import { MetaData } from "utils/constant";
+import { convertListDataToGrouped, formatNumber, isFirefox } from "utils/helper";
 import { useDebouncedCallback } from "utils/useDebouncedEffect";
+import useWindowDimensions from "utils/useWindowDimensions";
+
+import IconSearch from "assets/images/search.png";
 import ButtonClear from "assets/images/Clear.png";
 import imgClose2 from "assets/images/cross-black.svg";
-import useWindowDimensions from "utils/useWindowDimensions";
+
+import CardElement from "components/cards/cardCollection";
+import FilterSport, {FilterHandle as FilterHandleSport} from "components/filter/filterSport";
+import Cards from "components/cards";
+import { FilterHandle } from "components/filter/customCheckBox";
 import CheckBoxDesktop from "components/filter/checkBoxDesktop";
 import CheckBoxMobile from "components/filter/checkBoxMobile";
 import SortMobile from "components/filter/sortMobile";
 import Pagination from "components/panigation";
-import { useRouter } from 'next/router'
-import IconSearch from "assets/images/search.png";
-import Link from 'next/link'
-// @ts-ignore
-import $ from "jquery"
+
+
 
 const rowsPerPage = 16;
 

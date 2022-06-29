@@ -1,5 +1,6 @@
 import { NewHttpClient } from "./axiosClients";
-import { Collection } from "model/portfolio/collection";
+
+import { Collection } from "model/collections/collection";
 
 export class CollectionApi {
   static getCollection(body: CollectionParam) {

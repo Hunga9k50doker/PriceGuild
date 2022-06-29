@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { api } from 'configs/axios';
 import { LeaderboardType } from "interfaces"
-import { formatCurrency, formatNumber } from "utils/helper";
-import Skeleton from 'react-loading-skeleton';
-import CardContentHomePage from "components/homePage/cardContentHomePage";
-import JoinCommunityImage from "assets/images/join-community.png";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Loading from "components/loading/loading"
 import { useSelector } from 'react-redux';
 import Selectors from "redux/selectors";
+
+import { formatCurrency, formatNumber } from "utils/helper";
+
+import CardContentHomePage from "components/homePage/cardContentHomePage";
+import Loading from "components/loading/loading"
 
 const dataLoader = Array.from(Array(10).keys());
 

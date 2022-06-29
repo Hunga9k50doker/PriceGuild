@@ -18,10 +18,11 @@ import { CollectionApi } from "api/collection";
 import { CardDetailApis } from "api/CardDetailApis";
 
 import { CardModel, SaleData } from "model/data_sport/card_sport";
-import { Collection } from "model/portfolio/collection";
 
 import ImageCardSearch from "assets/images/card_search.png";
 import BackgroundHomePage from "assets/images/background-homepgae.webp";
+
+import { Collection } from "model/collections/collection";
 
 import LeaderboardHomePage from "components/homePage/leaderboardHomePage"
 import DatabaseStats from "components/databaseStats/databaseStats"
