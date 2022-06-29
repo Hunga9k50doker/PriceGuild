@@ -35,15 +35,19 @@ const LeaderboardHomePage = (props: PropTypes) => {
   useEffect(() => {
     let isCheckSportId = false;
     if (props.sportId) {
-      getListCard()
+      getLeaderboardData()
       isCheckSportId = true;
     }
     if (!isCheckSportId) {
-      getListCard()
+      getLeaderboardData()
     }
   }, [props.sportId, currency])
 
-  const getListCard = async () => {
+  // Get the data for the portfolio leaderboard
+  const getLeaderboardData = async () => {
+
+    console.log('LeaderboardHomePage - getLeaderboardData', currency, props)
+
     try {
       setData(prevState => {
         return { ...prevState, isLoading: true };
@@ -73,7 +77,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
     }
   }
 
-
+  // For button "Create Personal Portfolio"
   const onCreatePersonalPortfolio = () => {
     router.push("/profile/portfolio")
   }
