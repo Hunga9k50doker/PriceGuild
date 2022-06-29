@@ -31,7 +31,7 @@ const EditNote = ({ cardDetail, isOpen = false, ...props }: PropTypes) => {
 
   const onUpdate = async (data: CollectionForm) => {
     // @ts-ignore
-    router.push(`/profile/collections/edit-card?collection=${cardDetail.group_ref}&code=${cardDetail.code}`)
+    router.push(`/profile/portfolio/edit-card?collection=${cardDetail.group_ref}&code=${cardDetail.code}`)
     // try {
     //   const params = {
     //     table: "portfolio",

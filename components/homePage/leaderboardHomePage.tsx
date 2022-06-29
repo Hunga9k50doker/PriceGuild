@@ -75,7 +75,7 @@ const LeaderboardHomePage = (props: PropTypes) => {
 
 
   const onCreatePersonalPortfolio = () => {
-    router.push("/profile/collections")
+    router.push("/profile/portfolio")
   }
 
   return (

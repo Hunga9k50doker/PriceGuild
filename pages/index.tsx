@@ -88,10 +88,10 @@ function HomePage() {
 
     if (!isEmpty(cardData)) {
       isCardData = true;
-      getMClineData();
+      getCardBreakdownMALineData();
     }
     if (!isCardData) {
-      getMClineData();
+      getCardBreakdownMALineData();
     }
   }, [cardData, currency])
 
@@ -129,7 +129,7 @@ function HomePage() {
   }
 
   // Line Chart for "Card Breakdown" section
-  const getMClineData = async () => {
+  const getCardBreakdownMALineData = async () => {
     try {
       let card_code = cardData?.code;
       if (card_code) {

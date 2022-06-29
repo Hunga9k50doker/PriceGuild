@@ -425,7 +425,7 @@ const CardDetail = React.forwardRef<RefType, PropTypes>((props, ref) => {
 
   const onEdit = (e: any) => {
     e.stopPropagation();
-    router.push(`/profile/collections/edit-card?collection=${cardData?.group_ref ?? 0}&code=${router?.query?.cardCodeDetail}`)
+    router.push(`/profile/portfolio/edit-card?collection=${cardData?.group_ref ?? 0}&code=${router?.query?.cardCodeDetail}`)
   }
 
 

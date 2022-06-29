@@ -18,7 +18,7 @@ const CardContentHomePage = (props: PropTypes) => {
  	const renderLink = () => {
 		if (!loggingIn) return '/login';
 		
-		return '/profile/collections';
+		return '/profile/portfolio';
   }
   
   return (

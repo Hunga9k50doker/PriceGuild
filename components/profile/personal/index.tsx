@@ -16,7 +16,7 @@ const Personal = ({ isFriend = false }: PropTypes) => {
   const onTabDetail = (value: string) => {
     switch (value) {
       case "collection":
-        router.push("/profile/collections")
+        router.push("/profile/portfolio")
         break;
       default:
         router.push("/profile/wishlists")

@@ -680,7 +680,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     // setValue("agree_share", dataEntry.agree_share);
   };
   const onCancle = () => {
-    // router.push("/profile/collections");
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
       router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/', '-') : 'All Cards'}`);
@@ -1006,7 +1005,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             </>
           ) : (
             <Link
-              href={`/profile/collections`}
+              href={`/profile/portfolio`}
             >
               <a className="container-collection-profile-head">
                 <img

@@ -2140,7 +2140,7 @@ const CardList = (props: PropTypes) => {
                                       <><div
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          router.push(`/profile/collections/edit-card?collection=0&code=${item.code}`)
+                                          router.push(`/profile/portfolio/edit-card?collection=0&code=${item.code}`)
                                         }}
                                         className="dropdown-menu-item d-flex cursor-pointer"
                                       >

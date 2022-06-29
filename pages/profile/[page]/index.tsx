@@ -224,9 +224,9 @@ const Profile: React.FC = ({ ...props }) => {
     }
 
     const list_route = [
-      "/profile/collections/:id/analytics",
-      "/profile/collections/:id/:name",
-      "/profile/collections/edit-card"
+      "/profile/portfolio/:id/analytics",
+      "/profile/portfolio/:id/:name",
+      "/profile/portfolio/edit-card"
     ];
 
     for (let i = 0; i < list_route.length; i++) {

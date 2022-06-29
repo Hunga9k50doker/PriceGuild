@@ -26,13 +26,13 @@ const AboutPage: React.FC<PropTypes> = (props) => {
 		if (!loggingIn) {
 			return router.push('/login')
 		}
-		router.push("/profile/collections")
+		router.push("/profile/portfolio")
 	}
 
 	const renderLink = () => {
 		if (!loggingIn) return '/login';
 		
-		return '/profile/collections';
+		return '/profile/portfolio';
 	}
 	return (
 		<section id="page-resd">

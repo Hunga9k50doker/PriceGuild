@@ -110,12 +110,12 @@ function SportLandingPage({ ...props }) {
   }
 
   const onCreatePersonalPortfolio = () => {
-    router.push("/profile/collections")
+    router.push("/profile/portfolio")
   }
 
   const renderLink = () => {
     if (!loggingIn) return '/login';
-    return '/profile/collections';
+    return '/profile/portfolio';
   }
 
   const getOptionValue = (option: any) => option.order;

@@ -84,9 +84,9 @@ const CardNode = ({ namePrice = "ma28", isTable = false, isInline = false, isWis
     dispatch(SearchFilterAction.updateCardSelectedProfile(props.item));
 
     if(isPortfolioAll){
-     return router.push(`/profile/collections/edit-card?collection=0&code=${props.item.code}`)
+     return router.push(`/profile/portfolio/edit-card?collection=0&code=${props.item.code}`)
     }
-    !props.isSelect && router.push(`/profile/collections/edit-card?collection=${props.item.group_ref ?? 0}&code=${props.item.code}`)
+    !props.isSelect && router.push(`/profile/portfolio/edit-card?collection=${props.item.group_ref ?? 0}&code=${props.item.code}`)
   }
 
   const onSelectItem = () => {

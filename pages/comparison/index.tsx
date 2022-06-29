@@ -274,7 +274,7 @@ const Comparison: React.FC = ({ ...props}) => {
                       <div
                         onClick={() => {
                           if (Boolean(item?.portfolio)) {
-                            return router.push(`/profile/collections`)
+                            return router.push(`/profile/portfolio`)
                           }
                           setCardData(undefined);
                           //@ts-ignore

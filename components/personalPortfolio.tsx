@@ -12,12 +12,12 @@ const PersonalPortfolio: React.FC = () => {
   const { loggingIn } = useSelector(Selectors.auth);
 
   const onCreatePersonalPortfolio = () => {
-    router.push("/profile/collections");
+    router.push("/profile/portfolio");
   }
   const renderLink = () => {
     if (!loggingIn) return '/login';
     
-    return '/profile/collections';
+    return '/profile/portfolio';
   }
   
   return (
