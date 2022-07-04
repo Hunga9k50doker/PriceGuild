@@ -1,58 +1,57 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useSelector, useDispatch } from 'react-redux';
-import Selectors from 'redux/selectors';
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import Selectors from "redux/selectors";
 import { MyStorage } from "helper/local_storage";
 import { AuthActions } from "redux/actions/auth_action";
-import Head from 'next/head';
+import Head from "next/head";
 import { useTranslation } from "react-i18next";
-import cookies from 'next-cookies'
+import cookies from "next-cookies";
 
-import useWindowDimensions from "utils/useWindowDimensions"
+import useWindowDimensions from "utils/useWindowDimensions";
 
-import IconUserProfileActive from "assets/images/icon-user-filled.svg"
-import IconCollectionProfileActive from "assets/images/icon-collection-filled.svg"
-import IconHeartProfileActive from "assets/images/icon-heart-filled.svg"
-import IconFriendProfileActive from "assets/images/icon-users-filled.svg"
-import IconMessageProfileActive from "assets/images/icon-chat-filled.svg"
-import IconSettingProfileActive from "assets/images/icon-settings-filled.svg"
-import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg"
-import IconCloudProfileActive from "assets/images/icon-api-filled.svg"
-import IconUserProfile from "assets/images/icon-user.svg"
-import IconCollectionProfile from "assets/images/icon-collection.svg"
-import IconHeartProfile from "assets/images/icon-heart.svg"
-import IconFriendProfile from "assets/images/icon-users.svg"
-import IconMessageProfile from "assets/images/icon-chat.svg"
-import IconSettingProfile from "assets/images/icon-settings.svg"
-import IconCartProfile from "assets/images/icon-card-plus.svg"
-import IconCloudProfile from "assets/images/icon-api.svg"
+import IconUserProfileActive from "assets/images/icon-user-filled.svg";
+import IconCollectionProfileActive from "assets/images/icon-collection-filled.svg";
+import IconHeartProfileActive from "assets/images/icon-heart-filled.svg";
+import IconFriendProfileActive from "assets/images/icon-users-filled.svg";
+import IconMessageProfileActive from "assets/images/icon-chat-filled.svg";
+import IconSettingProfileActive from "assets/images/icon-settings-filled.svg";
+import IconCartProfileActive from "assets/images/icon-card-plus-filled.svg";
+import IconCloudProfileActive from "assets/images/icon-api-filled.svg";
+import IconUserProfile from "assets/images/icon-user.svg";
+import IconCollectionProfile from "assets/images/icon-collection.svg";
+import IconHeartProfile from "assets/images/icon-heart.svg";
+import IconFriendProfile from "assets/images/icon-users.svg";
+import IconMessageProfile from "assets/images/icon-chat.svg";
+import IconSettingProfile from "assets/images/icon-settings.svg";
+import IconCartProfile from "assets/images/icon-card-plus.svg";
+import IconCloudProfile from "assets/images/icon-api.svg";
 
-import Settings from "components/profile/settings"
-import CardListCollection from "components/profile/collection/cardListCollection"
-import Messages from "components/profile/messages"
-import ReportCard from "components/profile/reportCard"
-import Friends from "components/profile/friends"
-import FriendDetail from "components/profile/friends/friendDetail"
-import RequestAPI from "components/profile/requestAPI"
-import FriendUnlogged from 'components/friends'
-import Collection from "components/profile/collection"
-import CollectionAnalytics from "components/profile/collection/analytics"
-import AddCard from "components/profile/addCard"
-import Personal from "components/profile/personal"
+import Settings from "components/profile/settings";
+import CardListCollection from "components/profile/collection/cardListCollection";
+import Messages from "components/profile/messages";
+import ReportCard from "components/profile/reportCard";
+import Friends from "components/profile/friends";
+import FriendDetail from "components/profile/friends/friendDetail";
+import RequestAPI from "components/profile/requestAPI";
+import FriendUnlogged from "components/friends";
+import Collection from "components/profile/collection";
+import CollectionAnalytics from "components/profile/collection/analytics";
+import AddCard from "components/profile/addCard";
+import Personal from "components/profile/personal";
 
 interface ParamTypes {
-  page: string,
-  action?: string
-  type?: string
+  page: string;
+  action?: string;
+  type?: string;
 }
 
 const Profile: React.FC = ({ ...props }) => {
-
   const { userInfo } = useSelector(Selectors.auth);
   const router = useRouter();
   const { page, action, type } = router.query;
-  const [currentPage, setCurrentPage] = React.useState<string>('');
+  const [currentPage, setCurrentPage] = React.useState<string>("");
 
   const profileRef = useRef<HTMLDivElement>(null);
   const collectionsRef = useRef<HTMLDivElement>(null);
@@ -74,41 +73,81 @@ const Profile: React.FC = ({ ...props }) => {
     }
 
     if (Number(page)) {
-      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      return <FriendUnlogged />
+      friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      return <FriendUnlogged />;
     }
 
     switch (page) {
       case "personal":
-        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        return <div className="col-12 col-md-10 min-vh-100"><Personal isFriend={true} /></div>
+        profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        return (
+          <div className="col-12 col-md-10 min-vh-100">
+            <Personal isFriend={true} />
+          </div>
+        );
       case "portfolio":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        collectionsRef &&
+          collectionsRef.current &&
+          collectionsRef?.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         if (action === "add-card") {
-          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 col-edit-card ">
+              <AddCard />
+            </div>
+          );
         }
         if (action === "edit-card") {
-          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"><AddCard isEdit={true} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 col-edit-card ">
+              <AddCard isEdit={true} />
+            </div>
+          );
         }
         if (action === "analytics") {
-          return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile">
+              <CollectionAnalytics collection={"all"} />
+            </div>
+          );
         }
         if (type === "analytics") {
           //@ts-ignore
-          return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={action} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile">
+              <CollectionAnalytics collection={action} />
+            </div>
+          );
         }
         if (type !== undefined) {
           //@ts-ignore
-          return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100">
+              <CardListCollection isSelectCard={true} isEditCard={true} collection={action} />
+            </div>
+          );
         }
-        return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
+        return (
+          <div className="col-12 col-md-10 min-vh-100 container-collection">
+            <Collection key={"collections"} userId={userInfo?.userid} />
+          </div>
+        );
       case "collections":
-        collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        collectionsRef &&
+          collectionsRef.current &&
+          collectionsRef?.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         if (action === "add-card") {
-          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding"> <AddCard /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 col-edit-card ">
+              <AddCard />
+            </div>
+          );
         }
         if (action === "edit-card") {
-          return <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding clear-padding-add"><AddCard isEdit={true} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 col-edit-card clear-padding clear-padding-add">
+              <AddCard isEdit={true} />
+            </div>
+          );
         }
         // if(action ==="analytics") {
         //   return <div className="col-12 col-md-10 min-vh-100 py-30 profile-collection-analytics--mobile"><CollectionAnalytics collection={"all"} /></div>
@@ -118,116 +157,145 @@ const Profile: React.FC = ({ ...props }) => {
         // }
         if (type !== undefined) {
           //@ts-ignore
-          return <div className="col-12 col-md-10 min-vh-100"><CardListCollection isSelectCard={true} isEditCard={true} collection={action} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100">
+              <CardListCollection isSelectCard={true} isEditCard={true} collection={action} />
+            </div>
+          );
         }
-        return <div className="col-12 col-md-10 min-vh-100 container-collection"><Collection key={"collections"} userId={userInfo?.userid} /></div>
+        return (
+          <div className="col-12 col-md-10 min-vh-100 container-collection">
+            <Collection key={"collections"} userId={userInfo?.userid} />
+          </div>
+        );
       case "wishlists":
-        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         if (type) {
           //@ts-ignore
-          return <div className="col-12 col-md-10 min-vh-100 container-collection"><CardListCollection isSelectCard={true} title="wishlist" table="wishlist" isEditCard={false} collection={action} /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100 container-collection">
+              <CardListCollection isSelectCard={true} title="wishlist" table="wishlist" isEditCard={false} collection={action} />
+            </div>
+          );
         }
-        return <div className="col-12 col-md-10 min-vh-100 container-collection">
-          <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={userInfo?.userid} table="wishlist" />
-        </div>
-      case "market":
-        return <div className="col-12 col-md-10 min-vh-100">
-          <Collection />
-        </div>
-      case "analytics":
-        return <div className="col-12 col-md-10 min-vh-100 container-collection"><CollectionAnalytics /></div>
-      case "friends":
-        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        if (action) {
-          return <div className="col-12 col-md-10 min-vh-100 container-collection">
-            <FriendDetail userId={Number(action)} />
+        return (
+          <div className="col-12 col-md-10 min-vh-100 container-collection">
+            <Collection title="wishlist" key={"wishlists"} isAnalytics={false} userId={userInfo?.userid} table="wishlist" />
           </div>
+        );
+      case "market":
+        return (
+          <div className="col-12 col-md-10 min-vh-100">
+            <Collection />
+          </div>
+        );
+      case "analytics":
+        return (
+          <div className="col-12 col-md-10 min-vh-100 container-collection">
+            <CollectionAnalytics />
+          </div>
+        );
+      case "friends":
+        friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        if (action) {
+          return (
+            <div className="col-12 col-md-10 min-vh-100 container-collection">
+              <FriendDetail userId={Number(action)} />
+            </div>
+          );
         }
-        return <Friends />
+        return <Friends />;
       case "messages":
-        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        return <Messages userId={Number(action)} />
+        messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        return <Messages userId={Number(action)} />;
       case "settings":
-        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         const checkData = [undefined, "account", "security", "confidentiality"];
         //@ts-ignore
         if (checkData.includes(action)) {
-          return <div className="col-12 col-md-10 min-vh-100"><Settings /></div>
+          return (
+            <div className="col-12 col-md-10 min-vh-100">
+              <Settings />
+            </div>
+          );
         }
-        return router.push("/404")
+        return router.push("/404");
       case "help":
-        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        return <ReportCard />
+        findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        return <ReportCard />;
       case "api":
-        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        return <RequestAPI />
+        apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        return <RequestAPI />;
       default:
-        return <div className="col-12 col-md-10 min-vh-100">
-          <Personal isFriend={false} />
-        </div>
+        return (
+          <div className="col-12 col-md-10 min-vh-100">
+            <Personal isFriend={false} />
+          </div>
+        );
     }
-  }
+  };
 
   const renderClass = (pageName: string) => {
-    if (pageName === 'collections' && page === 'portfolio') {
-      return `title-menu active`
+    if (pageName === "collections" && page === "portfolio") {
+      return `title-menu active`;
     }
-    return `title-menu ${Boolean(page === pageName) && "active"}`
-  }
+    return `title-menu ${Boolean(page === pageName) && "active"}`;
+  };
 
   const renderRefMenu = () => {
     //@ts-ignore
     if (width < 768) {
       switch (page) {
         case "personal":
-          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return profileRef && profileRef.current && profileRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         case "collections":
-          return collectionsRef && collectionsRef.current && collectionsRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return (
+            collectionsRef &&
+            collectionsRef.current &&
+            collectionsRef?.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+          );
         case "wishlists":
-          return wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return (
+            wishlistRef && wishlistRef.current && wishlistRef?.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+          );
         case "market":
         case "analytics":
         case "friends":
-          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return friendtRef && friendtRef.current && friendtRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         case "messages":
-          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return messageRef && messageRef.current && messageRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         case "settings":
-          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return settingRef && settingRef.current && settingRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         case "help":
-          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return findCardRef && findCardRef.current && findCardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         case "api":
-          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          return apiRef && apiRef.current && apiRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         default:
-
       }
     }
-  }
+  };
   const gotoMenu = (pageName: string) => {
     setCurrentPage(pageName);
-    router.push(`/profile/${pageName}`)
-  }
+    router.push(`/profile/${pageName}`);
+  };
 
   const hideMenu = (pageName: string) => {
     // if (history.location.pathname === '/profile/settings') return 'hide-menu';
 
     switch (router.pathname) {
-      case '/profile/settings':
-        return 'hide-menu';
-      case '/profile/settings/account':
-        return 'hide-menu';
-      case '/profile/settings/security':
-        return 'hide-menu';
-      case '/profile/settings/confidentiality':
-        return 'hide-menu';
+      case "/profile/settings":
+        return "hide-menu";
+      case "/profile/settings/account":
+        return "hide-menu";
+      case "/profile/settings/security":
+        return "hide-menu";
+      case "/profile/settings/confidentiality":
+        return "hide-menu";
       default:
         break;
     }
 
-    const list_route = [
-      "/profile/portfolio/:id/analytics",
-      "/profile/portfolio/:id/:name",
-      "/profile/portfolio/edit-card"
-    ];
+    const list_route = ["/profile/portfolio/:id/analytics", "/profile/portfolio/:id/:name", "/profile/portfolio/edit-card"];
 
     for (let i = 0; i < list_route.length; i++) {
       // console.log(history.location.pathname, "");
@@ -238,7 +306,7 @@ const Profile: React.FC = ({ ...props }) => {
       //   });
       let match = true;
       if (match) {
-        return 'hide-menu';
+        return "hide-menu";
       }
     }
     // const match_route = matchPath(history.location.pathname, {
@@ -258,7 +326,7 @@ const Profile: React.FC = ({ ...props }) => {
     //   return 'hide-menu';
     // }
     // return '';
-  }
+  };
 
   var timerid: any = null;
 
@@ -267,18 +335,24 @@ const Profile: React.FC = ({ ...props }) => {
     timerid = setTimeout(() => {
       renderRefMenu();
     }, 550);
-
-  }, [page])
+  }, [page]);
 
   return (
     <>
       <Head>
-        <title>{
-          //@ts-ignore
-          props?.titlePage ?? ''}</title>
-        <meta name="description" content={
-          //@ts-ignore
-          props?.descriptionPage ?? ''} />
+        <title>
+          {
+            //@ts-ignore
+            props?.titlePage ?? ""
+          }
+        </title>
+        <meta
+          name="description"
+          content={
+            //@ts-ignore
+            props?.descriptionPage ?? ""
+          }
+        />
       </Head>
       <div className="container-fluid page-profile">
         <div className="row ">
@@ -288,30 +362,45 @@ const Profile: React.FC = ({ ...props }) => {
                 <span className="icon">
                   <img src={page === "personal" ? IconUserProfileActive : IconUserProfile} alt="Profile" title="Profile" />
                 </span>
-                <span className="profile-menu-text" ref={profileRef}> Profile </span>
+                <span className="profile-menu-text" ref={profileRef}>
+                  Profile
+                </span>
               </div>
-              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}> <span className="icon">
-                <img src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile} alt={t('portfolio.text_upper')} title={t('portfolio.text_upper')} />
-              </span>
-                <span className="profile-menu-text" ref={collectionsRef}> {t('portfolio.text_upper')} </span>
+              <div onClick={() => gotoMenu("portfolio")} className={renderClass("collections")}>
+                <span className="icon">
+                  <img
+                    src={page === "collections" || page === "portfolio" ? IconCollectionProfileActive : IconCollectionProfile}
+                    alt={t("portfolio.text_upper")}
+                    title={t("portfolio.text_upper")}
+                  />
+                </span>
+                <span className="profile-menu-text" ref={collectionsRef}>
+                  {t("portfolio.text_upper")}
+                </span>
               </div>
               <div onClick={() => gotoMenu("wishlists")} className={renderClass("wishlists")}>
                 <span className="icon">
                   <img src={page === "wishlists" ? IconHeartProfileActive : IconHeartProfile} alt="Wishlists" title="Wishlists" />
                 </span>
-                <span className="profile-menu-text" ref={wishlistRef}> Wishlists </span>
+                <span className="profile-menu-text" ref={wishlistRef}>
+                  Wishlists
+                </span>
               </div>
               <div onClick={() => gotoMenu("friends")} className={renderClass("friends")}>
                 <span className="icon">
                   <img src={page === "friends" ? IconFriendProfileActive : IconFriendProfile} alt="Friends" title="Friends" />
                 </span>
-                <span className="profile-menu-text" ref={friendtRef}> Friends </span>
+                <span className="profile-menu-text" ref={friendtRef}>
+                  Friends
+                </span>
               </div>
               <div onClick={() => gotoMenu("messages")} className={renderClass("messages")}>
                 <span className="icon">
                   <img src={page === "messages" ? IconMessageProfileActive : IconMessageProfile} alt="Messages" title="Messages" />
                 </span>
-                <span className="profile-menu-text" ref={messageRef}> Messages </span>
+                <span className="profile-menu-text" ref={messageRef}>
+                  Messages
+                </span>
               </div>
               {/* <div onClick={() => gotoMenu("market")} className={renderClass("market")}>
                 <span className="icon">
@@ -324,25 +413,25 @@ const Profile: React.FC = ({ ...props }) => {
                 <span className="icon">
                   <img src={page === "settings" ? IconSettingProfileActive : IconSettingProfile} alt="Settings" title="Settings" />
                 </span>
-                <span className="profile-menu-text"
-                  ref={settingRef}
-                > Settings </span>
+                <span className="profile-menu-text" ref={settingRef}>
+                  Settings
+                </span>
               </div>
               <div onClick={() => gotoMenu("help")} className={renderClass("help")}>
                 <span className="icon">
                   <img src={page === "help" ? IconCartProfileActive : IconCartProfile} alt="Can't find a card?" title="Can't find a card?" />
                 </span>
-                <span className="profile-menu-text"
-                  ref={findCardRef}
-                > Can't find a card? </span>
+                <span className="profile-menu-text" ref={findCardRef}>
+                  Can't find a card?
+                </span>
               </div>
               <div onClick={() => gotoMenu("api")} className={renderClass("api")}>
                 <span className="icon">
                   <img src={page === "api" ? IconCloudProfileActive : IconCloudProfile} alt="API" title="API" />
                 </span>
-                <span className="profile-menu-text"
-                  ref={apiRef}
-                > API </span>
+                <span className="profile-menu-text" ref={apiRef}>
+                  API
+                </span>
               </div>
             </div>
           </div>
@@ -351,7 +440,7 @@ const Profile: React.FC = ({ ...props }) => {
       </div>
     </>
   );
-}
+};
 
 export const getServerSideProps = async (context: any) => {
   try {
@@ -361,98 +450,96 @@ export const getServerSideProps = async (context: any) => {
     let titlePage = "";
     let descriptionPage = "";
 
-    if (pageCurr === 'api') {
+    if (pageCurr === "api") {
       titlePage = "API";
       descriptionPage = "API for accessing PriceGuide.Cards' data";
     }
 
-    if (pageCurr === 'help') {
+    if (pageCurr === "help") {
       titlePage = "Can't find a Card?";
       descriptionPage = "Can't find a Card? Get in touch with use via this form and we'll do our best to help.";
     }
 
-    if (pageCurr === 'friends') {
+    if (pageCurr === "friends") {
       titlePage = "Friends";
       descriptionPage = "Build your network of collectors on PriceGuide.Cards with new friends.";
     }
 
-    if (pageCurr === 'messages') {
+    if (pageCurr === "messages") {
       titlePage = "Messages";
       descriptionPage = "Connect with other collectors on PriceGuide.Cards";
     }
 
-    if (pageCurr === 'settings') {
+    if (pageCurr === "settings") {
       titlePage = "Profile Settings";
       descriptionPage = "Manage your profile settings on PriceGuide.Cards";
     }
 
-    if (actionCurr === 'account') {
+    if (actionCurr === "account") {
       titlePage = "Account Settings";
       descriptionPage = "Manage your account settings on PriceGuide.Cards";
     }
 
-    if (actionCurr === 'security') {
+    if (actionCurr === "security") {
       titlePage = "Security Settings";
       descriptionPage = "Manage your security settings on PriceGuide.Cards";
     }
 
-    if (actionCurr === 'confidentiality') {
+    if (actionCurr === "confidentiality") {
       titlePage = "Confidentiality Settings";
       descriptionPage = "Manage your confidentiality settings on PriceGuide.Cards";
     }
 
-    if (pageCurr === 'wishlists') {
+    if (pageCurr === "wishlists") {
       titlePage = "Personal Wishlists";
       descriptionPage = "A list of your personal wishlists on PriceGuide.Cards";
     }
 
-    if (pageCurr === 'portfolio') {
+    if (pageCurr === "portfolio") {
       titlePage = "Personal Portfolios";
       descriptionPage = "A list of your personal portfolios on PriceGuide.Cards";
     }
 
-    if (pageCurr === 'personal') {
+    if (pageCurr === "personal") {
       titlePage = "Personal Profile";
       descriptionPage = "Personal Profile on PriceGuide.Cards";
     }
     if (Boolean(Number(pageCurr))) {
-
       let token = cookies(context).TOKEN_KEY;
 
       const params = {
-        profileid: +Number(pageCurr)
+        profileid: +Number(pageCurr),
       };
 
       const config = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
         },
         //@ts-ignore
-        body: JSON.stringify(params)
-      }
+        body: JSON.stringify(params),
+      };
 
       const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/profile/profile-username-from-id`, config);
       data = await res.json();
 
       if (data.success) {
-        titlePage = data?.username + " Personal Profile"
+        titlePage = data?.username + " Personal Profile";
       } else {
-        titlePage = "Unknown Personal Profile"
+        titlePage = "Unknown Personal Profile";
       }
     }
 
-    titlePage += ' | PriceGuide.Cards';
+    titlePage += " | PriceGuide.Cards";
 
     return {
       props: {
         titlePage,
         descriptionPage,
-      }
-    }
-
+      },
+    };
   } catch (e) {
     console.error(e);
   }

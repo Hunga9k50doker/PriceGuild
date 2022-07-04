@@ -1468,18 +1468,36 @@ const CardListCollection = ({
   const goToCollection = () => {
     router.push(`/profile/${Number(router.query.page)}/portfolio`);
   };
+
+  const pathBreadCrumb = router.query;
+  const renderBreadcrumbs = () => {
+    return (
+      <nav aria-label="breadcrumb" className="breadcrumb-nav breadcrumb-nav__tablet ">
+        <ol className="breadcrumb cursor-default" vocab="https://schema.org/" typeof="BreadcrumbList">
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
+            <Link href={`/profile/${pathBreadCrumb.page}`}>{pathBreadCrumb.page}</Link>
+            <meta property="position" content="1"></meta>
+          </li>
+          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
+            <Link href={`/profile/${pathBreadCrumb.page}`}>{pathBreadCrumb.type}</Link>
+          </li>
+        </ol>
+      </nav>
+    );
+  };
+
   const renderTab = () => {
     return (
       <>
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <a onClick={goToProfile} href="javascript:void(0)">
+              <a onClick={goToProfile} href="">
                 {friend?.username}
               </a>
             </li>
             <li className="breadcrumb-item">
-              <a onClick={goToCollection} href="javascript:void(0)">
+              <a onClick={goToCollection} href="">
                 {t("portfolio.text")}
               </a>
             </li>
@@ -1516,67 +1534,74 @@ const CardListCollection = ({
         <div className="row container-collection-profile-row page-profile">
           <div className="col-lg-12 col-md-12 pt-4 pb-5 py-0 container-collection-content">
             {!isSearchMobile && (
-              <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
-                <h2 className="col-8 title">
-                  {data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />}
-                  {Boolean(data?.group_type === 2) && <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>}
-                </h2>
-                <div className="col-4 d-flex justify-content-end align-items-center">
-                  <div
-                    className="search-mobile"
-                    onClick={() => {
-                      setIsSearchMobile(true);
-                    }}
-                  >
-                    <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
-                  </div>
+              <>
+                <div>{!data.group_name ? <Skeleton width={300} /> : width >= 768 ? renderBreadcrumbs() : null}</div>
+                <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
+                  <h2 className="col-8 title">
+                    {data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />}
+                    {Boolean(data?.group_type === 2) && <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>}
+                  </h2>
+                  <div className="col-4 d-flex justify-content-end align-items-center">
+                    {width <= 576 ? (
+                      <div
+                        className="search-mobile"
+                        onClick={() => {
+                          setIsSearchMobile(true);
+                        }}
+                      >
+                        <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
+                      </div>
+                    ) : (
+                      ""
+                    )}
 
-                  <div className="search-form d-none d-md-block">
-                    <div className="input-group">
-                      <button type="submit">
-                        <img src={IconSearch.src} alt="" title="" />
-                      </button>
-                      <input
-                        type="text"
-                        className="form-control"
-                        ref={inputSearchRef}
-                        onChange={handleChange}
-                        defaultValue={defaultSearch}
-                        placeholder="Search"
-                      />
-                    </div>
-                  </div>
-                  {Boolean(isEditCard || title === "wishlist") && !isMatchUser && (
-                    <div className="option-collection ms-2">
-                      <div className="dropdown">
-                        <button
-                          className="btn btn-secondary dropdown-toggle px-0"
-                          type="button"
-                          id="dropdownMenu2"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <img src={IconDot3} alt="" />
+                    <div className="search-form d-none d-md-block">
+                      <div className="input-group">
+                        <button type="submit">
+                          <img src={IconSearch.src} alt="" title="" />
                         </button>
-                        <ul className="dropdown-menu dropdown-menu--collection " aria-labelledby="dropdownMenu2">
-                          <li>
-                            <button onClick={() => setIsOpenEdit(true)} className="dropdown-item text-truncate" type="button">
-                              Edit {title === "wishlist" ? "wishlist" : t("portfolio.text")}
-                            </button>
-                          </li>
-                          {title === "collection" && (
-                            <li>
-                              <button onClick={onAnalytics} className="dropdown-item" type="button">
-                                Analytics
-                              </button>
-                            </li>
-                          )}
-                        </ul>
+                        <input
+                          type="text"
+                          className="form-control"
+                          ref={inputSearchRef}
+                          onChange={handleChange}
+                          defaultValue={defaultSearch}
+                          placeholder="Search"
+                        />
                       </div>
                     </div>
-                  )}
+                    {Boolean(isEditCard || title === "wishlist") && !isMatchUser && (
+                      <div className="option-collection ms-2">
+                        <div className="dropdown">
+                          <button
+                            className="btn btn-secondary dropdown-toggle px-0"
+                            type="button"
+                            id="dropdownMenu2"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            <img src={IconDot3} alt="" />
+                          </button>
+                          <ul className="dropdown-menu dropdown-menu--collection " aria-labelledby="dropdownMenu2">
+                            <li>
+                              <button onClick={() => setIsOpenEdit(true)} className="dropdown-item text-truncate" type="button">
+                                Edit {title === "wishlist" ? "wishlist" : t("portfolio.text")}
+                              </button>
+                            </li>
+                            {title === "collection" && (
+                              <li>
+                                <button onClick={onAnalytics} className="dropdown-item" type="button">
+                                  Analytics
+                                </button>
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
             {isSearchMobile && (
               <div className="only-mobile">
@@ -1600,6 +1625,7 @@ const CardListCollection = ({
                       type="text"
                       className="form-control"
                       placeholder="Search"
+                      autoFocus
                     />
                     <svg
                       onClick={() => {

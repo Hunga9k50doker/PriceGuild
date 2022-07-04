@@ -1,21 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
 import Skeleton from "react-loading-skeleton";
-import {
-  ManageCollectionType,
-  CollectionType,
-  CardCollectionType,
-} from "interfaces";
+import { ManageCollectionType, CollectionType, CardCollectionType } from "interfaces";
 import { api } from "configs/axios";
 import { isEmpty, pull } from "lodash";
 import Selectors from "redux/selectors";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from 'next/router'
-import Link from 'next/link';
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
-import { pageView, event } from "libs/ga"
+import { pageView, event } from "libs/ga";
 import { CompareAction } from "redux/actions/compare_action";
 import { ToastSystem } from "helper/toast_system";
 
@@ -83,9 +79,7 @@ const CollectionBase = ({ ...props }) => {
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-  const [wishList, setWishList] = React.useState<
-    ManageCollectionType | undefined
-  >();
+  const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
 
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [filterData, setFilterData] = useState<FilterDataType>({
@@ -110,7 +104,7 @@ const CollectionBase = ({ ...props }) => {
     }
   }, [router.query]);
 
-  const [t, i18n] = useTranslation("common")
+  const [t, i18n] = useTranslation("common");
   const getDetail = async (page: number[] = [1], headers: any = {}): Promise<void> => {
     try {
       setCollection((prevState) => {
@@ -129,7 +123,7 @@ const CollectionBase = ({ ...props }) => {
           sort_value: filterData?.sort?.by,
           sort_by: filterData?.sort?.asc ? "asc" : "desc",
         },
-        currency: currency
+        currency: currency,
       };
 
       const result = await api.v1.collection.checkList({ ...params }, headers);
@@ -158,16 +152,16 @@ const CollectionBase = ({ ...props }) => {
       //@ts-ignore
       if (error?.response?.status === 409) {
         //@ts-ignore
-        setIsCaptCha(Boolean(error?.response?.data?.show_captcha))
+        setIsCaptCha(Boolean(error?.response?.data?.show_captcha));
       }
     }
   };
 
   const onSuccessCaptcha = (token: any) => {
-    setIsCaptCha(false)
+    setIsCaptCha(false);
     const headers = { "captcha-token": token };
     getDetail([1], headers);
-  }
+  };
 
   React.useEffect(() => {
     if (Boolean(collection.rows)) {
@@ -178,20 +172,12 @@ const CollectionBase = ({ ...props }) => {
 
   const renderSortTable = (name: string, asc: boolean) => {
     if (asc) {
-      if (
-        filterData?.sort?.by === name &&
-        !filterData?.sort?.asc &&
-        collection.rows
-      ) {
+      if (filterData?.sort?.by === name && !filterData?.sort?.asc && collection.rows) {
         return "ic-caret-down active";
       }
       return "ic-caret-down";
     }
-    if (
-      filterData?.sort?.by === name &&
-      filterData?.sort?.asc &&
-      collection.rows
-    ) {
+    if (filterData?.sort?.by === name && filterData?.sort?.asc && collection.rows) {
       return "ic-caret-down revert active";
     }
     return "ic-caret-down revert";
@@ -216,11 +202,7 @@ const CollectionBase = ({ ...props }) => {
       <nav aria-label="breadcrumb" className="breadcrumb-nav">
         <ol className="breadcrumb cursor-default" vocab="https://schema.org/" typeof="BreadcrumbList">
           <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
-            <Link
-              href={`/collections/${collection?.sport?.name
-                ?.replace(/\s/g, "")
-                ?.toLowerCase()}`}
-            >
+            <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, "")?.toLowerCase()}`}>
               <a title={`${collection?.sport?.name} Card Collections`} property="item" typeof="WebPage">
                 <span property="name"> {collection?.sport?.name} Card Collections </span>
               </a>
@@ -249,12 +231,9 @@ const CollectionBase = ({ ...props }) => {
   };
 
   const selectCollection = (item: ManageCollectionType) => {
-    dispatch(SearchFilterAction.updateIsAddCardCheckList(true))
+    dispatch(SearchFilterAction.updateIsAddCardCheckList(true));
 
-    router.push(
-      `/collections-add-card?collection=${item.group_ref
-      }&code=${cardSelected.toString()}`
-    );
+    router.push(`/collections-add-card?collection=${item.group_ref}&code=${cardSelected.toString()}`);
   };
 
   const onGoToCard = (item: any) => {
@@ -328,22 +307,22 @@ const CollectionBase = ({ ...props }) => {
   }, [isOpenWishList, isOpen]);
 
   const renderCompareIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.cardCode))
-      ? IconCanFull
-      : IconCan;
+    return Boolean(cards.find((item) => item.code === data.cardCode)) ? IconCanFull : IconCan;
   };
 
   const renderOptionIcon = (data: any) => {
-    return Boolean(cards.find((item) => item.code === data.cardCode))
-      ? IconCanFull
-      : IconDot3;
+    return Boolean(cards.find((item) => item.code === data.cardCode)) ? IconCanFull : IconDot3;
   };
 
   const onComparison = (cardData: any) => {
     let dataOld = JSON.parse(localStorage.getItem("comparison") ?? "[]") ?? [];
 
     if (dataOld.length === 9) {
-      return ToastSystem.error(<span> Max number of 9 cards reached on <Link href="/comparison">comparison list</Link> </span>);
+      return ToastSystem.error(
+        <span>
+          Max number of 9 cards reached on <Link href="/comparison">comparison list</Link>
+        </span>
+      );
     }
 
     const cardNew = {
@@ -355,10 +334,18 @@ const CollectionBase = ({ ...props }) => {
     if (dataOld.find((item: any) => item.code === cardData.cardCode)) {
       dataOld = dataOld.filter((item: any) => item.code !== cardData.cardCode);
       dispatch(CompareAction.removeCard(cardData.cardCode));
-      ToastSystem.success(<span>Card removed from <Link href="/comparison">comparison list</Link> </span>);
+      ToastSystem.success(
+        <span>
+          Card removed from <Link href="/comparison">comparison list</Link>
+        </span>
+      );
     } else {
       dataOld.push(cardNew);
-      ToastSystem.success(<span> Card added to <Link href="/comparison">comparison list</Link> </span>);
+      ToastSystem.success(
+        <span>
+          Card added to <Link href="/comparison">comparison list</Link>
+        </span>
+      );
       dispatch(CompareAction.addCard(cardNew));
     }
 
@@ -368,27 +355,18 @@ const CollectionBase = ({ ...props }) => {
     event({
       action: "card_added_to_comparison",
       params: {
-        eventCategory: 'Comparison',
+        eventCategory: "Comparison",
         eventAction: "card_added_to_comparison",
-        eventLabel: "Card Added to Comparison"
-      }
-    })
+        eventLabel: "Card Added to Comparison",
+      },
+    });
   };
 
   const onLoadMore = () => {
-    if (
-      pagesSelected[pagesSelected.length - 1] + 1 <=
-      Math.ceil((collection.rows ?? 0) / rowsPerPage)
-    ) {
-      getDetail([
-        ...pagesSelected,
-        pagesSelected[pagesSelected.length - 1] + 1,
-      ]);
+    if (pagesSelected[pagesSelected.length - 1] + 1 <= Math.ceil((collection.rows ?? 0) / rowsPerPage)) {
+      getDetail([...pagesSelected, pagesSelected[pagesSelected.length - 1] + 1]);
 
-      setPagesSelected([
-        ...pagesSelected,
-        pagesSelected[pagesSelected.length - 1] + 1,
-      ]);
+      setPagesSelected([...pagesSelected, pagesSelected[pagesSelected.length - 1] + 1]);
     }
   };
 
@@ -399,15 +377,15 @@ const CollectionBase = ({ ...props }) => {
       isFirefox
         ? $("html, body").animate({ scrollTop: checkListRef.current.offsetTop })
         : window.scrollTo({
-          behavior: "smooth",
-          top: checkListRef.current.offsetTop,
-        });
+            behavior: "smooth",
+            top: checkListRef.current.offsetTop,
+          });
     }
     if (timerid) {
       clearTimeout(timerid);
     }
 
-    dispatch(SearchFilterAction.updatePageSelected(event[0]))
+    dispatch(SearchFilterAction.updatePageSelected(event[0]));
 
     timerid = setTimeout(() => {
       setPagesSelected(event);
@@ -420,32 +398,32 @@ const CollectionBase = ({ ...props }) => {
     event({
       action: "multi_add_to_portfolio ",
       params: {
-        eventCategory: 'Portfolio',
-        eventAction: 'multi_add_to_portfolio',
-        eventLabel: 'Multi Card Added to Portfolio'
-      }
-    })
-  }
+        eventCategory: "Portfolio",
+        eventAction: "multi_add_to_portfolio",
+        eventLabel: "Multi Card Added to Portfolio",
+      },
+    });
+  };
 
   return (
     <>
       <Head>
-        <title>{
-          //@ts-ignore
-          props?.titlePage ?? ''}</title>
-        <meta name="description" content={
-          //@ts-ignore
-          props?.descriptionPage ?? ''} />
+        <title>
+          {
+            //@ts-ignore
+            props?.titlePage ?? ""
+          }
+        </title>
+        <meta
+          name="description"
+          content={
+            //@ts-ignore
+            props?.descriptionPage ?? ""
+          }
+        />
       </Head>
       <div className="container-fluid card-detail collection-detail collection-detail--checklist  collection-detail--mobile">
-        <div>
-          {" "}
-          {!Boolean(collection?.id) ? (
-            <Skeleton width={300} />
-          ) : (
-            renderBreadcrumbs()
-          )}{" "}
-        </div>
+        <div>{!Boolean(collection?.id) ? <Skeleton width={300} /> : renderBreadcrumbs()}</div>
         <div className="content-home template-collection-detail  template-collection-detail--mobile mt-5 mb-3">
           <div className="row">
             <div className="col-sm-6 col-12">
@@ -459,9 +437,8 @@ const CollectionBase = ({ ...props }) => {
                         height={"100%"}
                         width={"100%"}
                         className="w-100"
-                        src={collection?.image
-                          ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${collection?.image}`
-                          : ImgCard.src} />
+                        src={collection?.image ? `${process.env.REACT_APP_IMAGE_COLLECTION_URL}/${collection?.image}` : ImgCard.src}
+                      />
                     )}
                   </div>
                 </div>
@@ -472,36 +449,24 @@ const CollectionBase = ({ ...props }) => {
             ) : (
               <div className="col-md-6 col-12 ps-4 col-detail-base">
                 <div className="collection-title-topic d-flex align-items-center">
-                  <div>{collection?.sport?.name}</div>{" "}
-                  <i className="dot-margin" />{" "}
-                  <div>{collection?.year}</div>{" "}
-                  <i className="dot-margin" />{" "}
+                  <div>{collection?.sport?.name}</div>
+                  <i className="dot-margin" />
+                  <div>{collection?.year}</div>
+                  <i className="dot-margin" />
                   <div>{collection?.publisher?.name}</div>
                 </div>
-                <h1 className=" collection-title mb-3">
-                  {" "}
-                  {`${collection?.title} - ${collection?.type} - ${collection?.color}`}{" "}
-                </h1>
+                <h1 className=" collection-title mb-3">{`${collection?.title} - ${collection?.type} - ${collection?.color}`}</h1>
                 <ul className="collection-gallery-info">
                   <li>
-                    <label>Release Date:</label>{" "}
+                    <label>Release Date:</label>
                     {typeof collection?.release_date === "number"
                       ? collection?.release_date
-                      : moment(collection?.release_date, "MM/DD/YYYY").format(
-                        "MMM Do YYYY"
-                      )}
+                      : moment(collection?.release_date, "MM/DD/YYYY").format("MMM Do YYYY")}
                   </li>
                   <li>
-                    <label>Sport:</label>{" "}
-                    <Link
-                      href={`/collections/${collection?.sport?.name
-                        ?.replace(/\s/g, "")
-                        ?.toLowerCase()}`}
-                    >
-                      <a title={collection?.sport?.name}>
-                        {" "}
-                        {collection?.sport?.name}{" "}
-                      </a>
+                    <label>Sport:</label>
+                    <Link href={`/collections/${collection?.sport?.name?.replace(/\s/g, "")?.toLowerCase()}`}>
+                      <a title={collection?.sport?.name}>{collection?.sport?.name}</a>
                     </Link>
                   </li>
                   <li>
@@ -511,10 +476,11 @@ const CollectionBase = ({ ...props }) => {
                     <label>Year:</label> {collection?.year}
                   </li>
                   <li>
-                    <label>Includes:</label>{" "}
+                    <label>Includes:</label>
                     {
                       // @ts-ignore
-                      collection?.auto_memo?.name}
+                      collection?.auto_memo?.name
+                    }
                   </li>
                   <li>
                     <label>Cards in Checklist: </label> {collection?.rows}
@@ -536,8 +502,7 @@ const CollectionBase = ({ ...props }) => {
                       onClick={() => setIsInline((prevState) => !prevState)}
                       className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}
                     >
-                      {" "}
-                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>{" "}
+                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>
                     </button>
                     <button
                       type="button"
@@ -554,21 +519,19 @@ const CollectionBase = ({ ...props }) => {
                     type="button"
                     onClick={onHandleMode}
                     disabled={isInline && !cardSelected.length}
-                    className={`ms-2  ${isInline && !cardSelected.length
-                      ? "opacity-50"
-                      : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${isSelect ? "active" : ""} d-flex justify-content-center align-items-center`}
+                    className={`ms-2  ${isInline && !cardSelected.length ? "opacity-50" : "opacity-100"}  btn btn-outline-secondary btn-search-plus ${
+                      isSelect ? "active" : ""
+                    } d-flex justify-content-center align-items-center`}
                   >
                     {isSelect ? <IconMinis /> : <IconPlus />}
                   </button>
                 </div>
               </div>
               {isSelect && (
-                <div
-                  className={`d-flex justify-content-between align-items-start p-head-search p-10 ${isSelect ? "p-sticky-header" : ""}`}
-                >
+                <div className={`d-flex justify-content-between align-items-start p-head-search p-10 ${isSelect ? "p-sticky-header" : ""}`}>
                   <div className="d-flex align-items-center ml-1 btn-group-head-search">
                     <div className="me-2  btn-group-head-search-title">
-                      <span className="fw-bold">{cardSelected.length} </span>{" "}
+                      <span className="fw-bold">{cardSelected.length} </span>
                       cards selected
                     </div>
                     <button
@@ -585,21 +548,12 @@ const CollectionBase = ({ ...props }) => {
                       }}
                       className="me-2 btn btn-portfolio"
                     >
-                      {" "}
-                      Add To Portfolio{" "}
+                      Add To Portfolio
                     </button>
-                    <button
-                      type="button"
-                      onClick={onSelectAll}
-                      className="me-2 btn btn-secondary btn-select-all"
-                    >
+                    <button type="button" onClick={onSelectAll} className="me-2 btn btn-secondary btn-select-all">
                       Select All
                     </button>
-                    <button
-                      type="button"
-                      onClick={onClear}
-                      className="me-2 btn btn-outline-secondary btn-clear-section"
-                    >
+                    <button type="button" onClick={onClear} className="me-2 btn btn-outline-secondary btn-clear-section">
                       Clear
                     </button>
                   </div>
@@ -609,17 +563,11 @@ const CollectionBase = ({ ...props }) => {
                         <div className="group-head-search-info-text d-flex">
                           <div> Select All </div>
                           <div>
-                            {" "}
-                            <span className="fw-bold">
-                              {cardSelected.length}
-                            </span>{" "}
-                            cards selected{" "}
+                            <span className="fw-bold">{cardSelected.length}</span>
+                            cards selected
                           </div>
                         </div>
-                        <img
-                          alt=""
-                          onClick={onHandleMode}
-                          src={IconCloseMobile} />
+                        <img alt="" onClick={onHandleMode} src={IconCloseMobile} />
                       </div>
                       {cardSelected.length > 0 && (
                         <div className="group-head-search-btn">
@@ -637,8 +585,7 @@ const CollectionBase = ({ ...props }) => {
                             }}
                             className="me-2 btn  btn-portfolio"
                           >
-                            {" "}
-                            Add to {t('portfolio.text')}{" "}
+                            Add to {t("portfolio.text")}
                           </button>
                         </div>
                       )}
@@ -655,16 +602,18 @@ const CollectionBase = ({ ...props }) => {
                       key={item.id}
                       cardSelected={cardSelected}
                       onSelectItem={onSelectItem}
-                      imageUrl={item?.image
-                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
-                        : undefined}
+                      imageUrl={
+                        item?.image ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg` : undefined
+                      }
                       isSelect={isSelect}
                       gotoCard={() => onGoToCard(item)}
                       // @ts-ignore
-                      onAddWishList={() => onAddWishList({
-                        ...item,
-                        code: item.cardCode,
-                      })}
+                      onAddWishList={() =>
+                        onAddWishList({
+                          ...item,
+                          code: item.cardCode,
+                        })
+                      }
                       onAddCollection={() => {
                         setCardData(undefined);
                         //@ts-ignore
@@ -684,17 +633,15 @@ const CollectionBase = ({ ...props }) => {
                         code: item.cardCode,
                         // @ts-ignore
                         publisher: collection?.publisher?.name ?? "",
-                      }} />
+                      }}
+                    />
                   ))}
                 </div>
               ) : (
                 <>
                   <div className="pricing-grid mt-3">
                     <div className="content-pricing-grid p-0 customScroll custom-scroll-sticky">
-                      <table
-                        className="table table-hover"
-                        style={{ minWidth: "1140px" }}
-                      >
+                      <table className="table table-hover" style={{ minWidth: "1140px" }}>
                         <thead
                           style={{
                             top: isSelect ? 52 : 0,
@@ -702,169 +649,68 @@ const CollectionBase = ({ ...props }) => {
                           className="p-sticky-header"
                         >
                           <tr>
-                            <th
-                              style={{ width: "4%" }}
-                              scope="col"
-                              className="text-center"
-                            >
+                            <th style={{ width: "4%" }} scope="col" className="text-center">
                               <input
                                 onChange={() => {
                                   isCheckAll ? onClear() : onSelectAll();
                                 }}
                                 checked={isCheckAll}
                                 className="form-check-input cursor-pointer mt-0"
-                                type="checkbox" />
+                                type="checkbox"
+                              />
                             </th>
-                            <th style={{ width: "12%" }} scope="col">
-                              {" "}
-                            </th>
+                            <th style={{ width: "12%" }} scope="col"></th>
                             <th style={{ width: "13%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("onCardCode")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("onCardCode")} className="d-flex cursor-pointer align-items-center">
                                 Card No.
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "onCardCode",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "onCardCode",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("onCardCode", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("onCardCode", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
                             <th style={{ width: "24%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("Name")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("Name")} className="d-flex cursor-pointer align-items-center">
                                 Player Name
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "Name",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "Name",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("Name", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("Name", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
                             <th style={{ width: "8%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("minPrice")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("minPrice")} className="d-flex cursor-pointer align-items-center">
                                 Min
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "minPrice",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "minPrice",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("minPrice", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("minPrice", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
                             <th style={{ width: "8%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("maxPrice")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("maxPrice")} className="d-flex cursor-pointer align-items-center">
                                 Max
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "maxPrice",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "maxPrice",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("maxPrice", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("maxPrice", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
                             <th style={{ width: "15%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("count")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("count")} className="d-flex cursor-pointer align-items-center">
                                 No. of Trades
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "count",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "count",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("count", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("count", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
                             <th style={{ width: "10%" }} scope="col">
-                              <div
-                                onClick={() => onSortTable("printRun")}
-                                className="d-flex cursor-pointer align-items-center"
-                              >
-                                {" "}
+                              <div onClick={() => onSortTable("printRun")} className="d-flex cursor-pointer align-items-center">
                                 Print Run
                                 <div className="ms-1 sort-table">
-                                  <i
-                                    className={`sort-asc ${renderSortTable(
-                                      "printRun",
-                                      true
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
-                                  <i
-                                    className={`sort-desc ${renderSortTable(
-                                      "printRun",
-                                      false
-                                    )}`}
-                                    aria-hidden="true"
-                                  ></i>
+                                  <i className={`sort-asc ${renderSortTable("printRun", true)}`} aria-hidden="true"></i>
+                                  <i className={`sort-desc ${renderSortTable("printRun", false)}`} aria-hidden="true"></i>
                                 </div>
                               </div>
                             </th>
@@ -875,82 +721,53 @@ const CollectionBase = ({ ...props }) => {
                           {collection.cards?.map((item, index) => (
                             <tr key={index}>
                               <td className="text-center">
-                                {" "}
                                 <input
                                   onChange={() => onSelectItem(item.cardCode)}
                                   checked={cardSelected?.includes(item.cardCode)}
                                   className="form-check-input cursor-pointer"
-                                  type="checkbox" />
+                                  type="checkbox"
+                                />
                               </td>
                               <td>
                                 <div className="d-flex">
-                                  <div
-                                    onClick={() => onGoToCard(item)}
-                                    className="cursor-pointer image-box-table mr-2"
-                                  >
+                                  <div onClick={() => onGoToCard(item)} className="cursor-pointer image-box-table mr-2">
                                     <LazyLoadImg
                                       className="w-100"
                                       imgError={CardPhotoBase}
-                                      url={item?.image
-                                        ? `https://img.priceguide.cards/${item.sport === "Non-Sport"
-                                          ? "ns"
-                                          : "sp"}/${item?.image}.jpg`
-                                        : CardPhotoBase}
+                                      url={
+                                        item?.image
+                                          ? `https://img.priceguide.cards/${item.sport === "Non-Sport" ? "ns" : "sp"}/${item?.image}.jpg`
+                                          : CardPhotoBase
+                                      }
                                     />
                                   </div>
-                                  <div
-                                    onClick={() => onGoToCard(item)}
-                                    className="cursor-pointer image-box-table mr-2"
-                                  >
+                                  <div onClick={() => onGoToCard(item)} className="cursor-pointer image-box-table mr-2">
                                     <img className="w-100" src={CardPhotoBase} alt="" />
                                   </div>
                                 </div>
                               </td>
-                              <td
-                                onClick={() => onGoToCard(item)}
-                                className="cursor-pointer"
-                              >
-                                {" "}
+                              <td onClick={() => onGoToCard(item)} className="cursor-pointer">
                                 {item.onCardCode}
                               </td>
-                              <td
-                                onClick={() => onGoToCard(item)}
-                                className="cursor-pointer"
-                              >
+                              <td onClick={() => onGoToCard(item)} className="cursor-pointer">
                                 <div> {item.Name} </div>
                                 {(Boolean(item.auto) || Boolean(item.memo)) && (
                                   <div className="content-tag d-flex mt-2">
-                                    {Boolean(item.auto) && (
-                                      <div className="au-tag"> AU </div>
-                                    )}
-                                    {Boolean(item.memo) && (
-                                      <div className="mem-tag"> MEM </div>
-                                    )}
+                                    {Boolean(item.auto) && <div className="au-tag"> AU </div>}
+                                    {Boolean(item.memo) && <div className="mem-tag"> MEM </div>}
                                   </div>
                                 )}
                               </td>
-                              <td>
-                                {" "}
-                                {item.minPrice
-                                  ? formatCurrency(item.minPrice, currency)
-                                  : "N/A"}{" "}
-                              </td>
-                              <td>
-                                {" "}
-                                {item.maxPrice
-                                  ? formatCurrency(item.maxPrice, currency)
-                                  : "N/A"}{" "}
-                              </td>
+                              <td>{item.minPrice ? formatCurrency(item.minPrice, currency) : "N/A"}</td>
+                              <td>{item.maxPrice ? formatCurrency(item.maxPrice, currency) : "N/A"}</td>
                               <td> {item.count} </td>
                               <td> {item.printRun} </td>
                               <td>
                                 <div className="dropdown dropdown--top">
-                                  <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true"> {" "} <img alt="" src={renderOptionIcon(item)} /> {" "} </a>
-                                  <div
-                                    className="dropdown-menu"
-                                    aria-labelledby="navbarDropdownDot"
-                                    data-bs-popper="none"
-                                  >
+                                  <a href="#" id="navbarDropdownDot" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                                    <img alt="" src={renderOptionIcon(item)} />
+                                  </a>
+                                  <div className="dropdown-menu" aria-labelledby="navbarDropdownDot" data-bs-popper="none">
                                     <div
                                       onClick={() => {
                                         setCardData(undefined);
@@ -965,38 +782,29 @@ const CollectionBase = ({ ...props }) => {
                                       className="dropdown-menu-item d-flex cursor-pointer"
                                     >
                                       <div className="dropdown-menu-item__icon">
-                                        <img
-                                          alt=""
-                                          src={!Boolean(item.portfolio)
-                                            ? IconFolder
-                                            : IconFolderFull} />
+                                        <img alt="" src={!Boolean(item.portfolio) ? IconFolder : IconFolderFull} />
                                       </div>
-                                      <div className="dropdown-menu-item__txt"> {" "} Add to {t('portfolio.text')} {" "} </div>
+                                      <div className="dropdown-menu-item__txt"> Add to {t("portfolio.text")} </div>
                                     </div>
                                     <div
-                                      onClick={() => onAddWishList({
-                                        ...item,
-                                        code: item.cardCode,
-                                      })}
+                                      onClick={() =>
+                                        onAddWishList({
+                                          ...item,
+                                          code: item.cardCode,
+                                        })
+                                      }
                                       className="dropdown-menu-item  d-flex cursor-pointer"
                                     >
                                       <div className="dropdown-menu-item__icon">
-                                        <img
-                                          alt=""
-                                          src={!Boolean(item.wishlist)
-                                            ? IconHeart
-                                            : IconHeartFull} />
+                                        <img alt="" src={!Boolean(item.wishlist) ? IconHeart : IconHeartFull} />
                                       </div>
                                       <div className="dropdown-menu-item__txt"> Add to Wishlist </div>
                                     </div>
-                                    <div
-                                      onClick={() => onComparison(item)}
-                                      className="dropdown-menu-item  d-flex cursor-pointer"
-                                    >
+                                    <div onClick={() => onComparison(item)} className="dropdown-menu-item  d-flex cursor-pointer">
                                       <div className="dropdown-menu-item__icon">
                                         <img alt="" src={renderCompareIcon(item)} />
                                       </div>
-                                      <div className="dropdown-menu-item__txt"> {" "} Add to Comparison {" "} </div>
+                                      <div className="dropdown-menu-item__txt"> Add to Comparison </div>
                                     </div>
                                   </div>
                                 </div>
@@ -1007,40 +815,31 @@ const CollectionBase = ({ ...props }) => {
                             Array.from(Array(16).keys())?.map((e, index) => (
                               <tr key={index}>
                                 <td className="text-center">
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td className="cursor-pointer">
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td className="cursor-pointer">
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                                 <td>
-                                  {" "}
-                                  <Skeleton />{" "}
+                                  <Skeleton />
                                 </td>
                               </tr>
                             ))}
@@ -1050,47 +849,28 @@ const CollectionBase = ({ ...props }) => {
                   </div>
                 </>
               )}
-              <div className="row row-list">
-                {collection.isLoading && (
-                  <>{!isInline && <SkeletonCard numberLine={28} />}</>
-                )}
-              </div>
+              <div className="row row-list">{collection.isLoading && <>{!isInline && <SkeletonCard numberLine={28} />}</>}</div>
             </div>
-            <div
-              className={`${!collection.isLoading && Boolean(collection.rows) ? "" : "d-none"}`}
-            >
-              {Boolean(
-                pagesSelected[pagesSelected.length - 1] <
-                Math.ceil((collection?.rows ?? 0) / rowsPerPage)
-              ) && (
-                  <div className="d-flex justify-content-center">
-                    <button
-                      onClick={onLoadMore}
-                      type="button"
-                      className="btn btn-light load-more"
-                      title="Load More"
-                    > {" "} Load More {" "} </button>
-                  </div>
-                )}
+            <div className={`${!collection.isLoading && Boolean(collection.rows) ? "" : "d-none"}`}>
+              {Boolean(pagesSelected[pagesSelected.length - 1] < Math.ceil((collection?.rows ?? 0) / rowsPerPage)) && (
+                <div className="d-flex justify-content-center">
+                  <button onClick={onLoadMore} type="button" className="btn btn-light load-more" title="Load More">
+                    Load More
+                  </button>
+                </div>
+              )}
               <div className="d-flex justify-content-center mt-3">
                 <Pagination
                   pagesSelected={pagesSelected}
                   onSelectPage={handlePageClick}
-                  totalPage={Math.ceil((collection.rows ?? 0) / rowsPerPage)} />
+                  totalPage={Math.ceil((collection.rows ?? 0) / rowsPerPage)}
+                />
               </div>
             </div>
           </div>
         </div>
-        <ChosseCollection
-          selectCollection={selectWishlist}
-          table="wishlist"
-          title="wishlist"
-          isOpen={isOpenWishList}
-          setIsOpen={setIsOpenWishList} />
-        <ChosseCollection
-          selectCollection={selectCollection}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen} />
+        <ChosseCollection selectCollection={selectWishlist} table="wishlist" title="wishlist" isOpen={isOpenWishList} setIsOpen={setIsOpenWishList} />
+        <ChosseCollection selectCollection={selectCollection} isOpen={isOpen} setIsOpen={setIsOpen} />
         <LoginModal
           onSuccess={() => {
             setIsOpenLogin(false);
@@ -1101,7 +881,8 @@ const CollectionBase = ({ ...props }) => {
             }
           }}
           isOpen={isOpenLogin}
-          onClose={() => setIsOpenLogin(false)} />
+          onClose={() => setIsOpenLogin(false)}
+        />
         {cardData && loggingIn && (
           <SelectGrading
             wishList={wishList}
@@ -1109,8 +890,7 @@ const CollectionBase = ({ ...props }) => {
             isOpen={isOpenGrade}
             onSuccess={(code) => {
               let dataNew = [...(collection?.cards ?? [])];
-              dataNew = dataNew.map((card) => card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }
-              );
+              dataNew = dataNew.map((card) => (card.cardCode === code ? { ...card, wishlist: 1 } : { ...card }));
               return setCollection((prevState) => {
                 return {
                   ...prevState,
@@ -1118,13 +898,12 @@ const CollectionBase = ({ ...props }) => {
                 };
               });
             }}
-            setIsOpen={setIsOpenGrade} />
+            setIsOpen={setIsOpenGrade}
+          />
         )}
-        <CaptCha
-          isOpen={isCaptCha}
-          onSuccess={onSuccessCaptcha}
-          onClose={() => setIsCaptCha(false)} />
-      </div></>
+        <CaptCha isOpen={isCaptCha} onSuccess={onSuccessCaptcha} onClose={() => setIsCaptCha(false)} />
+      </div>
+    </>
   );
 };
 
@@ -1133,35 +912,34 @@ export const getServerSideProps = async (context: any) => {
     const ctx = context.query;
     let prms = {
       type: Number(context.query.type),
-      color: context.query.color
-    }
+      color: context.query.color,
+    };
 
     const config = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(prms)
-    }
+      body: JSON.stringify(prms),
+    };
 
     const res = await fetch(`${process.env.REACT_APP_API_LOCAL}/collections/checklist/page-title`, config);
     const data = await res.json();
-    let titlePage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ' '} | PriceGuide.Cards`;
-    let descriptionPage = `${data?.data?.title ?? ''} - ${data?.data?.type ?? ''} - ${data?.data?.color ?? ''} Checklist`;
+    let titlePage = `${data?.data?.title ?? ""} - ${data?.data?.type ?? ""} - ${data?.data?.color ?? " "} | PriceGuide.Cards`;
+    let descriptionPage = `${data?.data?.title ?? ""} - ${data?.data?.type ?? ""} - ${data?.data?.color ?? ""} Checklist`;
 
     return {
       props: {
         titlePage,
         descriptionPage,
-      }
-    }
-
+      },
+    };
   } catch (error) {
     /**/
   }
   return {
     props: {},
   };
-}
+};
 export default CollectionBase;

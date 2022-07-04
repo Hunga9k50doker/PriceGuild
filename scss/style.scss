@@ -6085,10 +6085,6 @@ input[type="number"] {
   }
 }
 
-.search-mobile {
-  display: none;
-}
-
 @media screen and (max-width: 768px) {
   .content-home {
     padding-left: 15px;
@@ -6097,9 +6093,9 @@ input[type="number"] {
 }
 
 @media screen and (max-width: 576px) {
-  .search-mobile {
-    display: block;
-  }
+  // .search-mobile {
+  //   display: block;
+  // }
 }
 .tui-image-editor-container {
   .tui-image-editor-help-menu {

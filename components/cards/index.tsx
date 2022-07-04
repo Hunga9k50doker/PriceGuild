@@ -226,9 +226,9 @@ const Cards = <T,>({
             {isProfile && nameSearch === "" && props.cards.length === 0 && isEmpty(dataFilterStore) ? (
               <>
                 <div ref={skeletonCustomRef} className="skeleton_custom">
-                  <Skeleton height="300px" width="300px" />;
+                  <Skeleton height="300px" width="300px" />
                 </div>
-                <div ref={cardNoDataRef} className="d-none">
+                <div ref={cardNoDataRef} className="card_no_data" style={{ display: "none" }}>
                   <CardNoData title={router?.query?.page === "wishlists" ? "wishlist " : "portfolio"} />;
                 </div>
               </>
