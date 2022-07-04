@@ -67,11 +67,11 @@ const Cards = <T,>({
   const skeletonCustomRef = useRef(null);
   const cardNoDataRef = useRef(null);
   useEffect(() => {
-    window.clearTimeout();
     setTimeout(() => {
       skeletonCustomRef?.current?.style.display = "none";
       cardNoDataRef?.current?.style.display = "block";
     }, 3000);
+    window.clearTimeout();
   }, [nameSearch === ""]);
   return (
     <div className="row row-list mt-30">
