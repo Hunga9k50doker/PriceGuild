@@ -12,9 +12,7 @@ type PropTypes = {
   onClose?: () => void;
   onSuccess?: (item?: any) => void;
 };
-
 const LoginOrRegister = ({ isOpen = false, ...props }: PropTypes) => {
-
   return (
     <Modal
       show={isOpen}
@@ -27,21 +25,9 @@ const LoginOrRegister = ({ isOpen = false, ...props }: PropTypes) => {
       className="modal-collection modal-login"
     >
       <Modal.Header className="justify-content-start">
-        <Modal.Title className="text-capitalize">
-          Login or Create Account
-        </Modal.Title>
-        <button
-          onClick={() => props?.onClose && props.onClose()}
-          type="button"
-          className="close mt-2"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 21"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+        <Modal.Title className="text-capitalize">Login or Create Account</Modal.Title>
+        <button onClick={() => props?.onClose && props.onClose()} type="button" className="close mt-2">
+          <svg width="20" height="20" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import Selectors from 'redux/selectors';
-import Head from 'next/head';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import Selectors from "redux/selectors";
+import Head from "next/head";
 
-import LoginComponent from "components/modal/login/loginComponent"
+import LoginComponent from "components/modal/login/loginComponent";
 
 const LoginPage: React.FC = () => {
   const { is_set_username, is_email_verify } = useSelector(Selectors.config);
@@ -23,6 +23,6 @@ const LoginPage: React.FC = () => {
       </div>
     </>
   );
-}
+};
 
 export default LoginPage;

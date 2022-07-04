@@ -1035,7 +1035,7 @@ const CardListCollection = ({
 
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
-  const handleChange = (event: any) => {
+  const handleChange = () => {
     setPagesSelected([1]);
     loadSuggestions([1]);
   };
@@ -1281,7 +1281,6 @@ const CardListCollection = ({
   const renderTotal = () => {
     return (
       <>
-        {" "}
         {data.isLoading ? "-" : data.cards.length ? <span className="number">{(pagesSelected[0] - 1) * rowsPerPage + 1}</span> : 0}-
         {data.isLoading ? (
           "-"
@@ -1293,7 +1292,7 @@ const CardListCollection = ({
                 : pagesSelected[pagesSelected.length - 1] * rowsPerPage
             )}
           </span>
-        )}{" "}
+        )}
         of {data.isLoading ? "-" : <span className="number">{formatNumber(data.rows)}</span>} results
       </>
     );
@@ -1519,8 +1518,8 @@ const CardListCollection = ({
             {!isSearchMobile && (
               <div className="d-flex justify-content-between align-items-center mb-4 container-collection-content-head">
                 <h2 className="col-8 title">
-                  {data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />}{" "}
-                  {Boolean(data?.group_type === 2) && <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>}{" "}
+                  {data.group_name ? data.group_name : <Skeleton style={{ height: 30, width: 150 }} />}
+                  {Boolean(data?.group_type === 2) && <i className="ms-1 ic-padlock fz-70" aria-hidden="true"></i>}
                 </h2>
                 <div className="col-4 d-flex justify-content-end align-items-center">
                   <div
@@ -1535,8 +1534,7 @@ const CardListCollection = ({
                   <div className="search-form d-none d-md-block">
                     <div className="input-group">
                       <button type="submit">
-                        {" "}
-                        <img src={IconSearch.src} alt="" title="" />{" "}
+                        <img src={IconSearch.src} alt="" title="" />
                       </button>
                       <input
                         type="text"
@@ -1558,8 +1556,7 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
-                          <img src={IconDot3} alt="" />{" "}
+                          <img src={IconDot3} alt="" />
                         </button>
                         <ul className="dropdown-menu dropdown-menu--collection " aria-labelledby="dropdownMenu2">
                           <li>
@@ -1584,7 +1581,6 @@ const CardListCollection = ({
             {isSearchMobile && (
               <div className="only-mobile">
                 <div className="container-collection-content-search--mobile d-flex">
-                  
                   <div
                     className={`search-mobile ${isSearchMobile ? "d-none" : "d-block"}`}
                     onClick={() => {
@@ -1595,8 +1591,7 @@ const CardListCollection = ({
                   </div>
                   <div className={`search d-flex ${inputSearchRef?.current?.value ? "active" : ""} `}>
                     <i className="icon-search">
-                      {" "}
-                      <img src={IconSearch.src} alt="" />{" "}
+                      <img src={IconSearch.src} alt="" />
                     </i>
                     <input
                       ref={inputSearchRef}
@@ -1606,7 +1601,17 @@ const CardListCollection = ({
                       className="form-control"
                       placeholder="Search"
                     />
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      onClick={() => {
+                        inputSearchRef?.current?.value = "";
+                        handleChange();
+                      }}
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         fill-rule="evenodd"
                         clip-rule="evenodd"
@@ -1616,8 +1621,7 @@ const CardListCollection = ({
                     </svg>
                   </div>
                   <a onClick={() => setIsSearchMobile(false)} title="Close">
-                    {" "}
-                    Close{" "}
+                    Close
                   </a>
                 </div>
               </div>
@@ -1641,18 +1645,15 @@ const CardListCollection = ({
                           className="mb-1 me-2 btn btn-wishlist btn-remove"
                           title="Remove"
                         >
-                          {" "}
-                          Remove{" "}
+                          Remove
                         </button>
                       )}
                       <button type="button" onClick={onSelectAll} className="me-2 btn btn-select-all btn-select-all--profile" title="Select All">
-                        {" "}
-                        Select All{" "}
+                        Select All
                       </button>
                       {Boolean(cardSelected.length) && (
                         <button type="button" onClick={onClear} className="me-2 btn btn-clear-section p-0" title="Clear">
-                          {" "}
-                          Clear{" "}
+                          Clear
                         </button>
                       )}
                     </div>
@@ -1663,7 +1664,6 @@ const CardListCollection = ({
                             <div className="group-head-search-info-text d-flex">
                               <div> Select All </div>
                               <div>
-                                {" "}
                                 <span className="fw-bold">{cardSelected.length}</span> cards selected
                               </div>
                             </div>
@@ -1677,8 +1677,7 @@ const CardListCollection = ({
                                 className="me-2 mb-1 btn btn-portfolio"
                                 onClick={() => setIsShow(true)}
                               >
-                                {" "}
-                                {table === "wishlist" ? `Add to ${t("portfolio.text")}` : `Move to ${t("portfolio.text")}`}{" "}
+                                {table === "wishlist" ? `Add to ${t("portfolio.text")}` : `Move to ${t("portfolio.text")}`}
                               </button>
                               <button
                                 disabled={!cardSelected.length}
@@ -1686,8 +1685,7 @@ const CardListCollection = ({
                                 onClick={() => setIsOpenModal(true)}
                                 className="mb-1 me-2 btn  btn-wishlist btn-remove"
                               >
-                                {" "}
-                                Remove{" "}
+                                Remove
                               </button>
                             </div>
                           )}
@@ -1700,8 +1698,7 @@ const CardListCollection = ({
                     <div className="d-flex align-items-center fz-14 fz-12-mob">
                       <span className="fw-bold me-1">{count?.count_cards}</span> {t("portfolio.card_in_portfolio")}
                       <span className="icon-circle clear-padding margin-10">
-                        {" "}
-                        <i className="dot-margin" />{" "}
+                        <i className="dot-margin" />
                       </span>
                       <span className="fw-bold me-1">{count?.count_non_duplicate_cards}</span> Non-duplicate Cards
                     </div>
@@ -1731,7 +1728,7 @@ const CardListCollection = ({
                       }}
                       className={` ${!isInline ? "active" : ""} ms-2 btn btn-outline-secondary clear-padding`}
                     >
-                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>{" "}
+                      <i className={`${!isInline ? "active" : ""} ic-grid-view`} aria-hidden="true"></i>
                     </button>
                     <button
                       type="button"
@@ -1775,8 +1772,7 @@ const CardListCollection = ({
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {" "}
-                            Portfolio{" "}
+                            Portfolio
                             {
                               // @ts-ignore
                               Boolean(filterData?.group_refs?.length) && <span className="filter-number"> {filterData?.group_refs?.length} </span>
@@ -1806,8 +1802,7 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
-                          Sport{" "}
+                          Sport
                           {
                             // @ts-ignore
                             Boolean(filterData?.sports?.length) && <span className="filter-number"> {filterData?.sports?.length} </span>
@@ -1836,8 +1831,7 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
-                          Grade{" "}
+                          Grade
                           {
                             // @ts-ignore
                             Boolean(filterData?.grades?.length) && (
@@ -1871,7 +1865,6 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
                           Publisher
                           {
                             // @ts-ignore
@@ -1901,7 +1894,6 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
                           Year
                           {
                             // @ts-ignore
@@ -1931,7 +1923,6 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
                           Collection
                           {
                             // @ts-ignore
@@ -1961,8 +1952,7 @@ const CardListCollection = ({
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
                         >
-                          {" "}
-                          Autograph/Memorabilia{" "}
+                          Autograph/Memorabilia
                           {
                             // @ts-ignore
                             Boolean(filterData?.auto_memo?.length) && <span className="filter-number">{filterData?.auto_memo?.length}</span>
@@ -2019,11 +2009,8 @@ const CardListCollection = ({
                               data-bs-toggle="modal"
                               data-bs-target="#filterModal"
                             >
-                              {" "}
-                              Portfolio{" "}
-                              {Boolean(filterData?.group_refs?.length) && (
-                                <span className="filter-number">{filterData?.group_refs?.length}</span>
-                              )}{" "}
+                              Portfolio
+                              {Boolean(filterData?.group_refs?.length) && <span className="filter-number">{filterData?.group_refs?.length}</span>}
                             </button>
                           )}
                           <button
@@ -2033,8 +2020,7 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Sport {Boolean(filterData?.sports?.length) && <span className="filter-number">{filterData?.sports?.length}</span>}{" "}
+                            Sport {Boolean(filterData?.sports?.length) && <span className="filter-number">{filterData?.sports?.length}</span>}
                           </button>
                           <button
                             onClick={() => setFilterValue("grades")}
@@ -2043,13 +2029,12 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Grade{" "}
+                            Grade
                             {Boolean(filterData?.grades?.length) && (
                               <span className="filter-number">
                                 {gradeRef?.current ? gradeRef?.current?.getLengthChecked() : filterData?.grades?.length}
                               </span>
-                            )}{" "}
+                            )}
                           </button>
                           <button
                             onClick={() => setFilterValue("publishers")}
@@ -2058,8 +2043,7 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Publisher{" "}
+                            Publisher
                             {Boolean(filterData?.publishers?.length) && <span className="filter-number">{filterData?.publishers?.length}</span>}
                           </button>
                           <button
@@ -2069,8 +2053,7 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Year {Boolean(filterData?.years?.length) && <span className="filter-number">{filterData?.years?.length}</span>}{" "}
+                            Year {Boolean(filterData?.years?.length) && <span className="filter-number">{filterData?.years?.length}</span>}
                           </button>
                           <button
                             onClick={() => setFilterValue("collections")}
@@ -2079,8 +2062,7 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Collection{" "}
+                            Collection
                             {Boolean(filterData?.collections?.length) && <span className="filter-number">{filterData?.collections?.length}</span>}
                           </button>
                           <button
@@ -2090,8 +2072,7 @@ const CardListCollection = ({
                             data-bs-toggle="modal"
                             data-bs-target="#filterModal"
                           >
-                            {" "}
-                            Autograph/Memorabilia{" "}
+                            Autograph/Memorabilia
                             {Boolean(filterData?.auto_memo?.length) && <span className="filter-number">{filterData?.auto_memo?.length}</span>}
                           </button>
                           <div className="btn btn-filter btn-primary btn-sm">
@@ -2102,18 +2083,15 @@ const CardListCollection = ({
                               data-bs-target="#filterModal"
                               className="btn btn-link p-0"
                             >
-                              {" "}
                               <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                {" "}
                                 <path
                                   d="M0.5 1.59025L0.5 0.6C0.5 0.268629 0.768629 0 1.1 0L14.9 0C15.2314 0 15.5 0.268629 15.5 0.6V1.59025C15.5 1.76301 15.4255 1.92739 15.2957 2.04131L9.70435 6.94576C9.57447 7.05968 9.5 7.22406 9.5 7.39682V11.2136C9.5 11.435 9.37808 11.6384 9.18283 11.7428L7.38283 12.7049C6.98314 12.9185 6.5 12.6289 6.5 12.1757L6.5 7.39682C6.5 7.22406 6.42553 7.05968 6.29565 6.94576L0.704347 2.04131C0.574469 1.92739 0.5 1.76301 0.5 1.59025Z"
                                   fill="#18213A"
-                                />{" "}
+                                />
                               </svg>
                             </button>
                             <span onClick={() => setFilterValue("all")} data-bs-toggle="modal" data-bs-target="#filterModal">
-                              {" "}
-                              Filters{" "}
+                              Filters
                             </span>
                             <button
                               onClick={() => setFilterValue("year")}
@@ -2148,8 +2126,7 @@ const CardListCollection = ({
                               <div className="modal-content">
                                 <div className="modal-header">
                                   <h5 className="modal-title" id="sortModalLabel">
-                                    {" "}
-                                    Sort by{" "}
+                                    Sort by
                                   </h5>
                                   <button
                                     ref={btnSoftByRef}
@@ -2158,8 +2135,7 @@ const CardListCollection = ({
                                     data-bs-dismiss="modal"
                                     aria-label="Close"
                                   >
-                                    {" "}
-                                    Close{" "}
+                                    Close
                                   </button>
                                 </div>
                                 <div className={`modal-body filter-custom`}>
@@ -2208,7 +2184,6 @@ const CardListCollection = ({
                                     data-bs-dismiss="modal"
                                     aria-label="Close"
                                   >
-                                    {" "}
                                     Close
                                   </button>
                                 </div>
