@@ -4,6 +4,7 @@ import { ManageCollectionType, PgAppProfileType } from "interfaces";
 import Collection from "components/modal/collection";
 import CollectionSkeleton from "components/profile/collection/skeleton/collection";
 import { ToastSystem } from "helper/toast_system";
+import { ConfigAction } from "redux/actions/config_action";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -45,6 +46,8 @@ type CollectionListType = {
   title?: string;
   table?: string;
   profileFriend?: PgAppProfileType | undefined;
+  onClose?: () => void;
+  onShow?: (isShow: boolean) => void;
 };
 
 type ParamTypes = {
@@ -309,6 +312,20 @@ const CollectionList = ({
     if (tab === "friend") return;
     return router.push(`/${tab === "collection" ? `profile/${router.query.page}/portfolio` : `profile/${router.query.page}/${tab + "s"}`}`);
   };
+  const onFocus = () => {
+    dispatch(ConfigAction.updateShowTabBar(false));
+  };
+  // @ts-ignore
+  const handleOnBlur = () => {
+    dispatch(ConfigAction.updateShowTabBar(true));
+    props.onShow && props.onShow(false);
+  };
+
+   const onEnter = (e:any) => {
+     if (e.key === "Enter" || e.key == 13) {
+       e.target.blur();
+     }
+   };
 
   return (
     <>
@@ -338,7 +355,17 @@ const CollectionList = ({
                   <button type="submit">
                     <img src={IconSearch.src} alt="" title="" />
                   </button>
-                  <input type="text" autoFocus className="form-control" placeholder="Search" value={searchKey} onChange={(e) => onChangeSearch(e)} />
+                  <input
+                    type="text"
+                    onFocus={onFocus}
+                    onBlur={handleOnBlur}
+                    autoFocus
+                    className="form-control"
+                    placeholder="Search"
+                    value={searchKey}
+                    onChange={(e) => onChangeSearch(e)}
+                    onKeyUp={onEnter}
+                  />
                   {searchKey && (
                     <div
                       className="position-absolute ic-close-search"

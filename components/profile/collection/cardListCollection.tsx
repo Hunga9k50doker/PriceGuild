@@ -1042,6 +1042,7 @@ const CardListCollection = ({
     }
   };
 
+  // console.log($(".input__control__mobile"));
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
   const handleChange = (e: any) => {
@@ -1495,6 +1496,12 @@ const CardListCollection = ({
     props.onShow && props.onShow(false);
   };
 
+  const onEnter = (e: any) => {
+    if (e.key === "Enter" || e.key == 13) {
+      e.target.blur();
+    }
+  };
+
   function capitalizeFirstLetter(string: any) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -1585,11 +1592,12 @@ const CardListCollection = ({
                     )}
 
                     <div className="search-form d-none d-md-block">
-                      <form className="input-group">
+                      <div className="input-group">
                         <button type="submit">
                           <img src={IconSearch.src} alt="" title="" />
                         </button>
                         <input
+                          onKeyUp={onEnter}
                           type="text"
                           className="form-control"
                           ref={inputSearchRef}
@@ -1599,7 +1607,7 @@ const CardListCollection = ({
                           onFocus={onFocus}
                           onBlur={handleOnBlur}
                         />
-                      </form>
+                      </div>
                     </div>
                     {Boolean(isEditCard || title === "wishlist") && !isMatchUser && (
                       <div className="option-collection ms-2">
@@ -1646,7 +1654,7 @@ const CardListCollection = ({
                   >
                     <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
                   </div>
-                  <form className={`search d-flex ${inputSearchRef?.current?.value ? "active" : ""} `}>
+                  <div className={`search d-flex ${inputSearchRef?.current?.value ? "active" : ""} `}>
                     <i className="icon-search">
                       <img src={IconSearch.src} alt="" />
                     </i>
@@ -1656,11 +1664,12 @@ const CardListCollection = ({
                       value={searchKey}
                       defaultValue={defaultSearch}
                       type="text"
-                      className="form-control"
+                      className="form-control input__control__mobile"
                       placeholder="Search"
                       autoFocus
                       onFocus={onFocus}
                       onBlur={handleOnBlur}
+                      onKeyUp={onEnter}
                     />
                     {searchKey && (
                       <svg
@@ -1681,7 +1690,7 @@ const CardListCollection = ({
                         />
                       </svg>
                     )}
-                  </form>
+                  </div>
                   <span
                     style={{
                       margin: " 0 0 0px 8px",
