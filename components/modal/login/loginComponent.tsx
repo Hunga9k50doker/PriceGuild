@@ -39,9 +39,7 @@ const LoginPage = (props: PropTypes) => {
       // .min(3, 'Usernames can only contain letters of the alphabet, numbers, -,  _ and a minimum of 3 characters')
       // .max(150, 'Usernames can only contain letters of the alphabet, numbers, -,  _, a minimum of 3 and a maximum of 150 characters')
       .required("Username or Email is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "At least 6 characters long"),
+    password: Yup.string().required("Password is required").min(6, "At least 6 characters long"),
   });
   const dispatch = useDispatch();
   const [typePassword, setTypePassword] = useState<string>("password");
@@ -78,15 +76,7 @@ const LoginPage = (props: PropTypes) => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setIsLoading(true);
     const headers = { "captcha-token": token };
-    dispatch(
-      AuthActions.login(
-        { username: data.userName, password: data.password },
-        onSuccess,
-        headers,
-        router,
-        onFail
-      )
-    );
+    dispatch(AuthActions.login({ username: data.userName, password: data.password }, onSuccess, headers, router, onFail));
   };
 
   const onFail = () => {
@@ -111,13 +101,7 @@ const LoginPage = (props: PropTypes) => {
   const renderIcon = () => {
     if (!watchPassword) {
       return (
-        <svg
-          width="12"
-          height="16"
-          viewBox="0 0 12 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M10.5 6H10V4C10 1.794 8.206 0 6 0C3.794 0 2 1.794 2 4V6H1.5C0.673333 6 0 6.67267 0 7.5V14.5C0 15.3273 0.673333 16 1.5 16H10.5C11.3267 16 12 15.3273 12 14.5V7.5C12 6.67267 11.3267 6 10.5 6ZM3.33333 4C3.33333 2.52933 4.52933 1.33333 6 1.33333C7.47067 1.33333 8.66667 2.52933 8.66667 4V6H3.33333V4ZM6.66667 11.148V12.6667C6.66667 13.0347 6.36867 13.3333 6 13.3333C5.63133 13.3333 5.33333 13.0347 5.33333 12.6667V11.148C4.93667 10.9167 4.66667 10.4913 4.66667 10C4.66667 9.26467 5.26467 8.66667 6 8.66667C6.73533 8.66667 7.33333 9.26467 7.33333 10C7.33333 10.4913 7.06333 10.9167 6.66667 11.148Z"
             fill="#6D7588"
@@ -126,13 +110,7 @@ const LoginPage = (props: PropTypes) => {
       );
     }
     return typePassword === "password" ? (
-      <svg
-        width="16"
-        height="12"
-        viewBox="0 0 16 12"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
@@ -141,13 +119,7 @@ const LoginPage = (props: PropTypes) => {
         />
       </svg>
     ) : (
-      <svg
-        width="16"
-        height="15"
-        viewBox="0 0 16 15"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
@@ -177,11 +149,7 @@ const LoginPage = (props: PropTypes) => {
     <>
       <div className="login-form">
         <form onSubmit={handleSubmit(onSubmit)} className="row">
-          <div
-            className={`col-12 form-data ${
-              errors.userName ? "error-validation" : ""
-            }`}
-          >
+          <div className={`col-12 form-data ${errors.userName ? "error-validation" : ""}`}>
             <label className="text-form mt-1">Username or Email</label>
             <input
               {...register("userName")}
@@ -193,17 +161,9 @@ const LoginPage = (props: PropTypes) => {
               onBlur={() => handleOnBlur()}
             />
             {/* errors will return when field validation fails  */}
-            {errors.userName?.message && (
-              <div className="invalid-feedback d-inline">
-                {errors.userName?.message}
-              </div>
-            )}
+            {errors.userName?.message && <div className="invalid-feedback d-inline">{errors.userName?.message}</div>}
           </div>
-          <div
-            className={`col-12 position-relative form-data password ${
-              errors.password ? "error-validation" : ""
-            }`}
-          >
+          <div className={`col-12 position-relative form-data password ${errors.password ? "error-validation" : ""}`}>
             <label className="text-form  mt-3">Password</label>
             <div className="password-input position-relative">
               <input
@@ -215,30 +175,17 @@ const LoginPage = (props: PropTypes) => {
                 onFocus={() => handleOnFocus()}
                 onBlur={() => handleOnBlur()}
               />
-              <button
-                onClick={onChangeTypePassword}
-                type="button"
-                className="btn position-absolute"
-              >
+              <button onClick={onChangeTypePassword} type="button" className="btn position-absolute">
                 {renderIcon()}
               </button>
             </div>
-            {errors.password?.message && (
-              <div className="invalid-feedback d-inline">
-                {errors.password?.message}
-              </div>
-            )}
+            {errors.password?.message && <div className="invalid-feedback d-inline">{errors.password?.message}</div>}
           </div>
           <div className="col-12 mt-4 form-data mb-3">
             <div className="form-check ps-0">
-              <label
-                className="form-check-label forget-password"
-                htmlFor="rememberMe"
-              >
+              <label className="form-check-label forget-password" htmlFor="rememberMe">
                 <Link href={"/password/reset"}>
-                  <a className="text-reset text-decoration-none">
-                    Forgot Your Password?
-                  </a>
+                  <a className="text-reset text-decoration-none">Forgot Your Password?</a>
                 </Link>
               </label>
             </div>
@@ -257,11 +204,7 @@ const LoginPage = (props: PropTypes) => {
             size={width >= 430 ? "normal" : "compact"}
           />
           <div className="d-grid gap-2 form-data mt-3">
-            <button
-              disabled={!token || isLoading}
-              className="btn btn-primary btn-login"
-              type="submit"
-            >
+            <button disabled={!token || isLoading} className="btn btn-primary btn-login" type="submit">
               Login
             </button>
           </div>
@@ -275,9 +218,7 @@ const LoginPage = (props: PropTypes) => {
       </div>
 
       <div className="col-12 section-account">
-        <p className="text-center mb-0 text-have-account">
-          Don't have an account?
-        </p>
+        <p className="text-center mb-0 text-have-account">Don't have an account?</p>
         <p className="text-center mb-0 create-account mt-2">
           <Link href={"/register"}>Create Account</Link>
         </p>

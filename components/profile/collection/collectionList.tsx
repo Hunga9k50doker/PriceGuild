@@ -338,7 +338,7 @@ const CollectionList = ({
                   <button type="submit">
                     <img src={IconSearch.src} alt="" title="" />
                   </button>
-                  <input type="text" className="form-control" placeholder="Search" value={searchKey} onChange={(e) => onChangeSearch(e)} />
+                  <input type="text" autoFocus className="form-control" placeholder="Search" value={searchKey} onChange={(e) => onChangeSearch(e)} />
                   {searchKey && (
                     <div
                       className="position-absolute ic-close-search"

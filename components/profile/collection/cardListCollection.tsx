@@ -3,6 +3,7 @@ import { api } from "configs/axios";
 import { SelectDefultType, FilterType, filterDataType, CountType, ManageCollectionType } from "interfaces";
 import Cards from "components/cards";
 import { rowsPerPage } from "configs/common";
+import { ConfigAction } from "redux/actions/config_action";
 import CheckBoxFilter, { FilterHandle } from "components/filter/customCheckBox";
 import CardElement from "components/cards/cardNode";
 import { CardModel } from "model/data_sport/card_sport";
@@ -58,7 +59,11 @@ type PropTypes = {
   title?: string;
   isSelectCard?: boolean;
   isFriend?: boolean;
+  error?: boolean;
+  placeholder?: string;
   setGotoFriend?: (item: any) => void;
+  onClose?: () => void;
+  onShow?: (isShow: boolean) => void;
 };
 
 type DataLoadType = {
@@ -128,6 +133,7 @@ const CardListCollection = ({
     group_name: "",
     group_type: 1,
   });
+
   const [filterValue, setFilterValue] = useState<string>("years");
   const [isSearchMobile, setIsSearchMobile] = useState<boolean>(false);
   const [filterData, setFilterData] = useState<{ [key: string]: Array<FilterType> } | undefined>(undefined);
@@ -138,12 +144,15 @@ const CardListCollection = ({
   const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isMatchUser, setIsMatchUser] = useState<boolean>(false);
   const [trackFilter, setTrackFilter] = useState<Array<TrackData>>([]);
+  const [searchKey, setSearchKey] = useState<string>("");
   const [dataUpdate, setDataUpdate] = useState<any>({});
   const [wishList, setWishList] = React.useState<ManageCollectionType | undefined>();
   const [isOpenWishList, setIsOpenWishList] = React.useState(false);
   const [isOpenGrade, setIsOpenGrade] = React.useState(false);
   const [cardData, setCardData] = useState<CardModel | undefined>();
   const [newGradeChangedState, setNewGradeChangedstate] = useState<any>({});
+  const { is_browse, is_show_card_detail_collection, is_show_tab_bar } = useSelector(Selectors.config);
+  // console.log((is_show_tab_bar = false));
   const {
     isEditCardData,
     pageSelected,
@@ -1035,9 +1044,10 @@ const CardListCollection = ({
 
   const loadSuggestions = useDebouncedCallback(getListCard, 450);
 
-  const handleChange = () => {
+  const handleChange = (e: any) => {
     setPagesSelected([1]);
     loadSuggestions([1]);
+    setSearchKey(e.target.value);
   };
 
   const renderLengthFilterMobile = () => {
@@ -1462,6 +1472,13 @@ const CardListCollection = ({
     }
   };
 
+  const handleClearDataInputSearch = (e: any) => {
+    if (inputSearchRef && inputSearchRef?.current?.value !== "") {
+      inputSearchRef?.current?.value = "";
+      handleChange(e);
+    }
+  };
+
   const goToProfile = () => {
     router.push(`/profile/${Number(router.query.page)}`);
   };
@@ -1469,17 +1486,29 @@ const CardListCollection = ({
     router.push(`/profile/${Number(router.query.page)}/portfolio`);
   };
 
+  const onFocus = () => {
+    dispatch(ConfigAction.updateShowTabBar(false));
+  };
+  // @ts-ignore
+  const handleOnBlur = () => {
+    dispatch(ConfigAction.updateShowTabBar(true));
+    props.onShow && props.onShow(false);
+  };
+
+  function capitalizeFirstLetter(string: any) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   const pathBreadCrumb = router.query;
   const renderBreadcrumbs = () => {
     return (
       <nav aria-label="breadcrumb" className="breadcrumb-nav breadcrumb-nav__tablet ">
         <ol className="breadcrumb cursor-default" vocab="https://schema.org/" typeof="BreadcrumbList">
           <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
-            <Link href={`/profile/${pathBreadCrumb.page}`}>{pathBreadCrumb.page}</Link>
+            <Link href={`/profile/${pathBreadCrumb.page}`}>{capitalizeFirstLetter(pathBreadCrumb.page)}</Link>
             <meta property="position" content="1"></meta>
           </li>
-          <li className="breadcrumb-item" property="itemListElement" typeof="ListItem">
-            <Link href={`/profile/${pathBreadCrumb.page}`}>{pathBreadCrumb.type}</Link>
+          <li className="breadcrumb-item disabled" property="itemListElement" typeof="ListItem">
+            <a href="">{pathBreadCrumb.type}</a>
           </li>
         </ol>
       </nav>
@@ -1556,7 +1585,7 @@ const CardListCollection = ({
                     )}
 
                     <div className="search-form d-none d-md-block">
-                      <div className="input-group">
+                      <form className="input-group">
                         <button type="submit">
                           <img src={IconSearch.src} alt="" title="" />
                         </button>
@@ -1567,8 +1596,10 @@ const CardListCollection = ({
                           onChange={handleChange}
                           defaultValue={defaultSearch}
                           placeholder="Search"
+                          onFocus={onFocus}
+                          onBlur={handleOnBlur}
                         />
-                      </div>
+                      </form>
                     </div>
                     {Boolean(isEditCard || title === "wishlist") && !isMatchUser && (
                       <div className="option-collection ms-2">
@@ -1603,6 +1634,7 @@ const CardListCollection = ({
                 </div>
               </>
             )}
+
             {isSearchMobile && (
               <div className="only-mobile">
                 <div className="container-collection-content-search--mobile d-flex">
@@ -1614,41 +1646,54 @@ const CardListCollection = ({
                   >
                     <img className="pr-2 icon-search" src={IconSearch.src} alt="" title="" />
                   </div>
-                  <div className={`search d-flex ${inputSearchRef?.current?.value ? "active" : ""} `}>
+                  <form className={`search d-flex ${inputSearchRef?.current?.value ? "active" : ""} `}>
                     <i className="icon-search">
                       <img src={IconSearch.src} alt="" />
                     </i>
                     <input
                       ref={inputSearchRef}
-                      onChange={handleChange}
+                      onChange={(e) => handleChange(e)}
+                      value={searchKey}
                       defaultValue={defaultSearch}
                       type="text"
                       className="form-control"
                       placeholder="Search"
                       autoFocus
+                      onFocus={onFocus}
+                      onBlur={handleOnBlur}
                     />
-                    <svg
-                      onClick={() => {
-                        inputSearchRef?.current?.value = "";
-                        handleChange();
-                      }}
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M6.99985 8.2801L12.1199 13.4001L13.3999 12.1201L8.27985 7.0001L13.3999 1.8801L12.1199 0.600098L6.99985 5.7201L1.87985 0.600098L0.599854 1.8801L5.71985 7.0001L0.599854 12.1201L1.87985 13.4001L6.99985 8.2801Z"
-                        fill="#18213A"
-                      />
-                    </svg>
-                  </div>
-                  <a onClick={() => setIsSearchMobile(false)} title="Close">
+                    {searchKey && (
+                      <svg
+                        onClick={(e) => {
+                          handleClearDataInputSearch(e);
+                        }}
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M6.99985 8.2801L12.1199 13.4001L13.3999 12.1201L8.27985 7.0001L13.3999 1.8801L12.1199 0.600098L6.99985 5.7201L1.87985 0.600098L0.599854 1.8801L5.71985 7.0001L0.599854 12.1201L1.87985 13.4001L6.99985 8.2801Z"
+                          fill="#18213A"
+                        />
+                      </svg>
+                    )}
+                  </form>
+                  <span
+                    style={{
+                      margin: " 0 0 0px 8px",
+                      cursor: "pointer",
+                      color: "blue",
+                      fontWeight: "500",
+                    }}
+                    onClick={() => setIsSearchMobile(false)}
+                    title="Close"
+                  >
                     Close
-                  </a>
+                  </span>
                 </div>
               </div>
             )}
