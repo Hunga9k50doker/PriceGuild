@@ -321,11 +321,12 @@ const CollectionList = ({
     props.onShow && props.onShow(false);
   };
 
-   const onEnter = (e:any) => {
-     if (e.key === "Enter" || e.key == 13) {
-       e.target.blur();
-     }
-   };
+  const onEnter = (e: any) => {
+    e.preventDefault();
+    if (e.key === "Enter" || e.key == 13) {
+      e.target.blur();
+    }
+  };
 
   return (
     <>

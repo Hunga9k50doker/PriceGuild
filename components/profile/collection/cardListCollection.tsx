@@ -1497,6 +1497,7 @@ const CardListCollection = ({
   };
 
   const onEnter = (e: any) => {
+    e.preventDefault();
     if (e.key === "Enter" || e.key == 13) {
       e.target.blur();
     }
