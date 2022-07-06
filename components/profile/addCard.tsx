@@ -669,6 +669,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     }
   };
 
+  const a = imageFrontRef?.current;
+  console.log(a);
   const onSubmitForm = () => {
     let newDataForm = null;
     // if (width >= 768) {

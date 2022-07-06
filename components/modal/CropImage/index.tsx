@@ -24,11 +24,12 @@ type PropTypes = {
 };
 export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   const [isLand, setIsLand] = useState<boolean>(false);
+  const [isAspectRatio, setIsAspectRatio] = useState<number>(0);
   const [btnActive, setBtnActive] = useState<boolean>(false);
   const imageEditorRef = React.useRef<any>(null);
   const [zoom, setZoom] = useState<number>(0.5);
   const [image, setImage] = useState<any | undefined>(src);
-  // const [cropData, setCropData] = useState<any>("#");
+  const [cropData, setCropData] = useState<any>("#");
   const [cropper, setCropper] = useState<any | undefined>(undefined);
   const [box, setBox] = useState<any | undefined>(undefined);
   const [boxLand, setBoxLand] = useState<any | undefined>(undefined);
@@ -53,8 +54,8 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   //   if (typeof cropper !== "undefined") {
   //     setCropData(cropper.getCroppedCanvas().toDataURL());
   //   }
+  //   console.log(cropData);
   // };
-
   const onDragMode = (type: string) => {
     type === "move" ? imageEditorRef.current.cropper.setDragMode("move") : imageEditorRef.current.cropper.setDragMode("crop");
   };
@@ -78,41 +79,52 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
 
   const updateRatio = (value: boolean) => {
     let cropper = imageEditorRef.current.cropper.getCropBoxData();
+    let imgData = imageEditorRef.current.cropper.getImageData();
 
     if (value) {
       if (isLand !== value) {
         setBoxLand(cropper);
       }
-      imageEditorRef.current.cropper.setAspectRatio(16 / 9);
+      imageEditorRef.current.cropper.setAspectRatio(
+        imgData.naturalWidth > imgData.naturalHeight ? imgData.naturalWidth / imgData.naturalHeight : imgData.naturalHeight / imgData.naturalWidth
+      );
       if (box) {
         imageEditorRef.current.cropper.setCropBoxData(box);
       }
     } else {
       if (isLand !== value) {
-        setBox(cropper);
+        setBoxLand(cropper);
       }
-      imageEditorRef.current.cropper.setAspectRatio(9 / 16);
-      if (boxLand) {
-        imageEditorRef.current.cropper.setCropBoxData(boxLand);
+      imageEditorRef.current.cropper.setAspectRatio(
+        imgData.naturalWidth <= imgData.naturalHeight ? imgData.naturalWidth / imgData.naturalHeight : imgData.naturalHeight / imgData.naturalWidth
+      );
+      if (box) {
+        imageEditorRef.current.cropper.setCropBoxData(box);
       }
     }
     setIsLand(value);
   };
   const cropStart = (e: any) => {
-    // console.log(e.detail,"e nè")
+    let imgData = imageEditorRef.current.cropper.getImageData();
+    console.log(imgData);
+    +imgData.naturalWidth > +imgData.naturalHeight ? setIsLand(true) : setIsLand(false);
+    setIsAspectRatio(imgData.aspectRatio);
   };
   useEffect(() => {
     props.onGetImage && props.onGetImage(imageEditorRef);
   }, [imageEditorRef]);
-  useEffect(() => imageEditorRef.current.cropper.setDragMode("crop"), []);
+  useEffect(() => {
+    imageEditorRef.current.cropper.setDragMode("crop");
+    updateRatio(isLand);
+  }, []);
+
   return (
     <div>
       <div style={{ width: "100%" }}>
         <Cropper
           style={{ minHeight: 400, width: "100%" }}
           zoomTo={zoom}
-          // initialAspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5}
-          // aspectRatio={!isLand ? 1.2 / 1.5 : 1.5 / 1.2}
+          initialAspectRatio={isAspectRatio <= 0 ? isAspectRatio : 1 / isAspectRatio}
           preview=".img-preview"
           src={image}
           viewMode={0}
@@ -126,7 +138,8 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
             setCropper(instance);
           }}
           guides={true}
-          // crop={cropStart}
+          crop={cropStart}
+          center={true}
           ref={imageEditorRef}
         />
       </div>
