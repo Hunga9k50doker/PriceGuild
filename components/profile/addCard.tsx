@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Selectors from "redux/selectors";
 import { api } from "configs/axios";
-import {
-  GradeCompanyType,
-  Datum,
-  SelectDefultType,
-  CardsAddType,
-} from "interfaces";
+import { GradeCompanyType, Datum, SelectDefultType, CardsAddType } from "interfaces";
 import Skeleton from "react-loading-skeleton";
 import Select, { components } from "react-select";
 import DatePicker from "react-datepicker";
@@ -20,24 +15,24 @@ import { useForm, Controller } from "react-hook-form";
 import queryString from "query-string";
 import { formatCurrencyCustom, isFirefox } from "utils/helper";
 import moment from "moment";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { ToastSystem } from "helper/toast_system";
 import IconArrow from "assets/images/arrow_nav.png";
 import IconQuestion from "assets/images/icon_question.png";
 import IconDelete from "assets/images/delete.png";
-import Link from 'next/link'
+import Link from "next/link";
 import useWindowDimensions from "utils/useWindowDimensions";
 import ArrowProfile from "assets/images/arrow_profile.svg";
 import rotateLeft from "assets/images/rotate-left.svg";
 // @ts-ignore
 import $ from "jquery";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import { ConfigAction } from "redux/actions/config_action";
 import { useTranslation } from "react-i18next";
 import { SearchFilterAction } from "redux/actions/search_filter_action";
 import "react-datepicker/dist/react-datepicker.css";
-import { pageView, event } from "libs/ga"
+import { pageView, event } from "libs/ga";
 import ModalDeleteCollection from "components/modal/delete/collection/index";
 
 const ungraded = "ungraded";
@@ -109,25 +104,18 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     url: imageUpload.src,
     path: "",
   });
-  const [gradeCompanys, setGradeCompanys] = useState<Array<GradeCompanyType>>(
-    []
-  );
+  const [gradeCompanys, setGradeCompanys] = useState<Array<GradeCompanyType>>([]);
   const { currencies, is_show_card_detail_collection } = useSelector(Selectors.config);
-  const { 
-    isFilterStore, 
-    isFilterStoreTop100, 
-    isAddCardCheckList, 
-    isAddCardProfile, 
-    cardSelectedStore, 
-    dataFilterStore 
-  } = useSelector(Selectors.searchFilter);
+  const { isFilterStore, isFilterStoreTop100, isAddCardCheckList, isAddCardProfile, cardSelectedStore, dataFilterStore } = useSelector(
+    Selectors.searchFilter
+  );
   const {
     register,
     getValues,
     watch,
     setValue,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm<CardForm>();
   const [gradeValue, setGradeValue] = useState<Array<any>>([]);
   const watchGrade = watch("grade_company");
@@ -148,16 +136,14 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     groups: [],
     cards: undefined,
   });
-  const [cardIds] = useState(
-    typeof dataQueries.code === "string" ? dataQueries?.code.split(",") : ""
-  );
+  const [cardIds] = useState(typeof dataQueries.code === "string" ? dataQueries?.code.split(",") : "");
   const [activeEntry, setActiveEntry] = useState({
     cardIndex: 0,
     entryIndex: 0,
   });
 
   const [activeEntryData, setActiveEntryData] = useState<Datum>();
-  const [t, i18n] = useTranslation("common")
+  const [t, i18n] = useTranslation("common");
   const [groupRef, setGroupRef] = useState<GroupRefType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [windowWidth, setWindowWidth] = useState(0);
@@ -167,8 +153,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     setWindowWidth(window.innerWidth);
   };
 
-  const [showContentAddCollection, SetShowContentAddCollection] =
-    React.useState<boolean>(false);
+  const [showContentAddCollection, SetShowContentAddCollection] = React.useState<boolean>(false);
   const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   // @ts-ignore
@@ -188,48 +173,44 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   //   return () => window.removeEventListener("resize", resizeWindow);
   // }, [windowWidth]);
   React.useEffect(() => {
-    if (!Boolean(isFilterState))
-      setIsFilterState(isFilterStore);
-  }, [isFilterStore])
+    if (!Boolean(isFilterState)) setIsFilterState(isFilterStore);
+  }, [isFilterStore]);
 
   React.useEffect(() => {
     if (Boolean(isFilterState) && Boolean(isFilterStore)) {
-      dispatch(SearchFilterAction.updateIsFilter(false))
+      dispatch(SearchFilterAction.updateIsFilter(false));
     }
-  }, [isFilterState])
+  }, [isFilterState]);
 
   React.useEffect(() => {
-    if ((Boolean(isFilterTop100State) && Boolean(isFilterStoreTop100))) {
-      dispatch(SearchFilterAction.updateIsFilterTop100(false))
+    if (Boolean(isFilterTop100State) && Boolean(isFilterStoreTop100)) {
+      dispatch(SearchFilterAction.updateIsFilterTop100(false));
     }
-  }, [isFilterTop100State])
+  }, [isFilterTop100State]);
 
   React.useEffect(() => {
-    if ((Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList))) {
-      dispatch(SearchFilterAction.updateIsAddCardCheckList(false))
+    if (Boolean(isSaveCardCheckList) && Boolean(isAddCardCheckList)) {
+      dispatch(SearchFilterAction.updateIsAddCardCheckList(false));
     }
-  }, [isSaveCardCheckList])
+  }, [isSaveCardCheckList]);
 
   React.useEffect(() => {
-    if ((Boolean(isSaveCardProfile) && Boolean(isAddCardProfile))) {
-      dispatch(SearchFilterAction.updateIsAddCardProfile(false))
+    if (Boolean(isSaveCardProfile) && Boolean(isAddCardProfile)) {
+      dispatch(SearchFilterAction.updateIsAddCardProfile(false));
     }
-  }, [isSaveCardProfile])
+  }, [isSaveCardProfile]);
 
   React.useEffect(() => {
-    if (!Boolean(isFilterState))
-      setIsFilterState(isFilterStoreTop100);
-  }, [isFilterStoreTop100])
+    if (!Boolean(isFilterState)) setIsFilterState(isFilterStoreTop100);
+  }, [isFilterStoreTop100]);
 
   React.useEffect(() => {
-    if (!Boolean(isSaveCardCheckList))
-      setIsSaveCardCheckList(isSaveCardCheckList);
-  }, [isAddCardCheckList])
+    if (!Boolean(isSaveCardCheckList)) setIsSaveCardCheckList(isSaveCardCheckList);
+  }, [isAddCardCheckList]);
 
   React.useEffect(() => {
-    if (!Boolean(isSaveCardProfile))
-      setIsSaveCardProfile(isSaveCardProfile);
-  }, [isAddCardProfile])
+    if (!Boolean(isSaveCardProfile)) setIsSaveCardProfile(isSaveCardProfile);
+  }, [isAddCardProfile]);
 
   const getDataCards = async () => {
     try {
@@ -251,11 +232,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           // if (width < 768) {
           // setCardsMobile(cloneDeep(data));
           // }
-          const dataEntry =
-            data?.cards[0].data[0];
-          const selecedData = data?.groups?.find(
-            (item) => item.id === dataEntry.group_ref
-          );
+          const dataEntry = data?.cards[0].data[0];
+          const selecedData = data?.groups?.find((item) => item.id === dataEntry.group_ref);
           setGroupRef({
             id: selecedData?.id,
             name: selecedData?.group_name,
@@ -264,17 +242,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           if (isEmpty(cardSelectedStore)) {
             setFromValue(dataEntry);
           }
-
         } else {
-          const selecedData = data?.groups?.find(
-            (item) => item.id === +(dataQueries?.collection ?? 0)
-          );
+          const selecedData = data?.groups?.find((item) => item.id === +(dataQueries?.collection ?? 0));
           setValue("group_ref", selecedData);
           data.cards = result.data?.cards?.map((card) => ({
             ...card,
-            data: [
-              { ...cloneDeep(defaultCard), group_ref: selecedData?.id ?? 0 },
-            ],
+            data: [{ ...cloneDeep(defaultCard), group_ref: selecedData?.id ?? 0 }],
           }));
           setCards(data);
           // if (width < 768) {
@@ -311,7 +284,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       getDataGrade();
       setWindowWidth(window.innerWidth);
     }
-
   }, [router.query]);
   const onUploadFileInput = (e: any, name: string) => {
     var file = e.target.files[0];
@@ -323,8 +295,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     }
     if (file) {
       var url = URL.createObjectURL(file);
-      let current_path: string =
-        name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
+      let current_path: string = name === "Front" ? imageFront?.path ?? "" : imageBack?.path ?? "";
       EditImageRef?.current?.action(url, name, current_path, file?.type);
     }
 
@@ -332,11 +303,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     event({
       action: "portfolio_image_upload ",
       params: {
-        eventCategory: 'Portfolio',
-        eventAction: 'portfolio_image_upload',
-        eventLabel: 'Image Uploaded to Portfolio'
-      }
-    })
+        eventCategory: "Portfolio",
+        eventAction: "portfolio_image_upload",
+        eventLabel: "Image Uploaded to Portfolio",
+      },
+    });
   };
 
   const onUpLoadFile = (value: string) => {
@@ -368,9 +339,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (gradeCompanys.length) {
       setGradeValue([]);
       onUpdateValue(watchGrade, "grade_company");
-      const grade = gradeCompanys.find(
-        (item) => item.name === watchGrade?.name
-      );
+      const grade = gradeCompanys.find((item) => item.name === watchGrade?.name);
       const dataGradeValue = grade?.values ?? [];
       setGradeValue(dataGradeValue);
     }
@@ -387,23 +356,15 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       let newData = { ...cards };
       if (newData?.cards?.length) {
         if (!isEmpty(imageFront.url)) {
-          newData.cards[activeEntry.cardIndex].data[
-            activeEntry.entryIndex
-          ].image_upload.front = imageFront.url;
+          newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].image_upload.front = imageFront.url;
         }
         //@ts-ignore
-        newData.cards[activeEntry.cardIndex].data[
-          activeEntry.entryIndex
-        ]?.front_image = imageFront.path;
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.front_image = imageFront.path;
         if (!isEmpty(imageBack.url)) {
-          newData.cards[activeEntry.cardIndex].data[
-            activeEntry.entryIndex
-          ].image_upload.back = imageBack.url;
+          newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].image_upload.back = imageBack.url;
         }
         //@ts-ignore
-        newData.cards[activeEntry.cardIndex].data[
-          activeEntry.entryIndex
-        ]?.back_image = imageBack.path;
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.back_image = imageBack.path;
         setCards(newData);
       }
 
@@ -432,7 +393,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         return setUndoChangeStatus(false);
       }
     }
-
   }, [imageFront, imageBack]);
 
   React.useEffect(() => {
@@ -459,18 +419,21 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         let cardData = cloneDeep(cards.cards);
         let index = cardData?.[activeEntry.cardIndex]?.data.findIndex((item: any) => item.port_id === cardSelectedStore?.portid);
 
-        return onActiveEntry(activeEntry.cardIndex, index ?? 0, cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]);
-
+        return onActiveEntry(
+          activeEntry.cardIndex,
+          index ?? 0,
+          cardData?.[activeEntry.cardIndex]?.data[index] ?? cardData?.[activeEntry.cardIndex]?.data[0]
+        );
       }
     }
-  }, [cards?.cards])
+  }, [cards?.cards]);
 
   React.useEffect(() => {
     if (isEmpty(oldValueActive)) {
       // @ts-ignore
-      setOldValueActive({ ...cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex] })
+      setOldValueActive({ ...cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex] });
     }
-  }, [activeEntryData])
+  }, [activeEntryData]);
 
   const onCreate = async (params: any) => {
     try {
@@ -500,7 +463,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             dispatch(SearchFilterAction.updateIsEditSaveCard(true));
           }
           //@ts-ignore
-          router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/", "-") : 'All Cards'}`);
+          router.push(
+            `${"/profile/portfolio/"}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${
+              +router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/", "-") : "All Cards"
+            }`
+          );
         } else {
           router.back();
         }
@@ -510,7 +477,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       if (!result.success) {
         // @ts-ignore
         if (result.data?.verify_redirect) {
-          return router.push('/verify-email')
+          return router.push("/verify-email");
         }
       }
       setIsLoading(false);
@@ -518,7 +485,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     } catch (err: any) {
       setIsLoading(false);
       if (err?.response?.status === 403) {
-        return router.push('/verify-email')
+        return router.push("/verify-email");
       }
       // console.log(err);
     }
@@ -527,14 +494,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const onUpdateValue = (e: any, key: string) => {
     let newData = { ...cards };
     if (newData?.cards?.length) {
-      if (key === 'date_acq') {
+      if (key === "date_acq") {
         //@ts-ignore
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
-          moment(e?.value ?? e).format("YYYY-MM-DD");
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] = moment(e?.value ?? e).format("YYYY-MM-DD");
       } else {
         //@ts-ignore
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] =
-          e?.value ?? e;
+        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.[key] = e?.value ?? e;
       }
 
       setCards(newData);
@@ -559,9 +524,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const onNewEntry = () => {
     // @ts-ignore
     if (width < 768) {
-      $('.d-block-add-collection').animate({
-        scrollTop: 0
-      }, 300);
+      $(".d-block-add-collection").animate(
+        {
+          scrollTop: 0,
+        },
+        300
+      );
     }
     let newData = { ...cards };
 
@@ -581,19 +549,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       setFromValue(newEntry);
     }
 
-    isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    isFirefox ? $("html, body").animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const onDuplicateEntry = () => {
     let newData = { ...cards };
     if (newData.cards?.length) {
-      let newEntry = cloneDeep(
-        newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
-      );
+      let newEntry = cloneDeep(newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]);
       newEntry.image_upload = {
         front: backgroundImage.src,
         back: backgroundImage.src,
-      }
+      };
       newData?.cards[activeEntry.cardIndex].data.push({ ...newEntry });
 
       setCards(newData);
@@ -602,14 +568,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         // @ts-ignore
         return { ...prevState, entryIndex: newData?.cards[activeEntry.cardIndex].data.length - 1 };
       });
-      isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      isFirefox ? $("html, body").animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       // @ts-ignore
       if (width < 768) {
-        $('.d-block-add-collection').animate({
-          scrollTop: 0
-        }, 300);
+        $(".d-block-add-collection").animate(
+          {
+            scrollTop: 0,
+          },
+          300
+        );
       }
-      onActiveEntry(activeEntry.cardIndex, newData?.cards[activeEntry.cardIndex].data.length - 1, newEntry)
+      onActiveEntry(activeEntry.cardIndex, newData?.cards[activeEntry.cardIndex].data.length - 1, newEntry);
       // @ts-ignore
       // cardsOld?.cards?.[activeEntry.cardIndex]?.data.push({ ...newEntry });
       // setCardsOld(cardsOld);
@@ -654,12 +623,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     });
     setValue("user_price", dataEntry.user_price.toString());
     // @ts-ignore: Unreachable code error
-    setValue(
-      "date_acq",
-      typeof dataEntry.date_acq === "string"
-        ? new Date(dataEntry.date_acq)
-        : dataEntry.date_acq
-    );
+    setValue("date_acq", typeof dataEntry.date_acq === "string" ? new Date(dataEntry.date_acq) : dataEntry.date_acq);
     if (cards.groups?.length) {
       setValue(
         "group_ref",
@@ -682,7 +646,11 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const onCancle = () => {
     if (isEdit) {
       dispatch(SearchFilterAction.updateIsEditSaveCard(true));
-      router.push(`${'/profile/portfolio/'}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${+router?.query?.collection !== 0 ? groupRef?.name?.replaceAll('/', '-') : 'All Cards'}`);
+      router.push(
+        `${"/profile/portfolio/"}${+router?.query?.collection !== 0 ? groupRef?.id : 0}/${
+          +router?.query?.collection !== 0 ? groupRef?.name?.replaceAll("/", "-") : "All Cards"
+        }`
+      );
     } else {
       if (Boolean(isFilterState)) {
         dispatch(SearchFilterAction.updateIsFilter(isFilterState));
@@ -699,7 +667,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
 
       router.back();
     }
-
   };
 
   const onSubmitForm = () => {
@@ -730,15 +697,17 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           }
 
           if (card?.grade_value !== cardSelectedStore?.grade_value) {
-            flag = true
+            flag = true;
           }
 
           if (flag) {
             dispatch(SearchFilterAction.updateChangedGradeValue(true));
-            dispatch(SearchFilterAction.updateNewGradeValue({
-              company: card?.grade_company,
-              value: card?.grade_value
-            }))
+            dispatch(
+              SearchFilterAction.updateNewGradeValue({
+                company: card?.grade_company,
+                value: card?.grade_value,
+              })
+            );
           }
         }
       });
@@ -753,10 +722,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   const onUndo = () => {
     let newData = { ...cards };
     if (cardsOld?.cards?.length && newData?.cards?.length) {
-      const dataEntry =
-        cardsOld.cards[activeEntry.cardIndex].data[activeEntry.entryIndex];
-      newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex] =
-        cloneDeep(dataEntry);
+      const dataEntry = cardsOld.cards[activeEntry.cardIndex].data[activeEntry.entryIndex];
+      newData.cards[activeEntry.cardIndex].data[activeEntry.entryIndex] = cloneDeep(dataEntry);
       setOldValueActive(dataEntry);
       setFromValue(dataEntry);
       setCards(newData);
@@ -790,9 +757,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   React.useEffect(() => {
     // @ts-ignore
     if (is_show_card_detail_collection && width < 768) {
-
     } else {
-
     }
   }, [is_show_card_detail_collection]);
 
@@ -804,8 +769,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
   }, [width]);
 
   const onSaveEntry = () => {
-    dispatch(ConfigAction.updateShowMenuCollection(false))
-    isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    dispatch(ConfigAction.updateShowMenuCollection(false));
+    isFirefox ? $("html, body").animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const renderTextButton = () => {
@@ -828,7 +793,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       // }
 
       if (newData && newData[0].data.length > 1) {
-        isFirefox ? $('html, body').animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        isFirefox ? $("html, body").animate({ scrollTop: 0 }) : window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       }
     } catch (error) {
       //
@@ -841,8 +806,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           table: "portfolio",
           portid_list: [
             // @ts-ignore
-            cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]
-              .port_id,
+            cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex].port_id,
           ],
         };
         const result = await api.v1.portfolio.deleteCardsPortfolio(params);
@@ -864,7 +828,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
           //   cards: undefined,
           // });
           // SetShowContentAddCollection(false);
-          dispatch(ConfigAction.updateShowMenuCollection(false))
+          dispatch(ConfigAction.updateShowMenuCollection(false));
           getDataCards();
           setIsLoadingDelete(false);
           // // onHandleToast()
@@ -895,10 +859,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     //   newData = cloneDeep([...(cardsMobile?.cards ?? [])]);
     // }
     newData = newData.filter((item: any, i: number) => {
-      const dataSearch = item?.data.filter(
-        (entry: any, k: number) =>
-          !(i === dataKey.cardIndex && dataKey.entryIndex === k)
-      );
+      const dataSearch = item?.data.filter((entry: any, k: number) => !(i === dataKey.cardIndex && dataKey.entryIndex === k));
       item.data = dataSearch;
       return true;
     });
@@ -917,29 +878,21 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (newData?.length) {
       // console.log(newData)
       const dataEntry = { ...newData[0].data[0] };
-      onActiveEntry(0, 0, dataEntry)
+      onActiveEntry(0, 0, dataEntry);
     }
     // SetShowContentAddCollection(false);
-    dispatch(ConfigAction.updateShowMenuCollection(false))
+    dispatch(ConfigAction.updateShowMenuCollection(false));
     setIsLoadingDelete(false);
   };
 
   const renderGradeValue = (entry: any) => {
     const grade_company_name =
-      entry?.grade_company?.name == ungraded && entry.grade_value != NotSpecified
-        ? ""
-        : entry?.grade_company?.name === ungraded
-          ? ungraded
-          : "";
-    const values = gradeCompanys?.find(item => item?.id == entry?.grade_company?.id)?.values ?? [];
+      entry?.grade_company?.name == ungraded && entry.grade_value != NotSpecified ? "" : entry?.grade_company?.name === ungraded ? ungraded : "";
+    const values = gradeCompanys?.find((item) => item?.id == entry?.grade_company?.id)?.values ?? [];
 
-    const gradeCompanyShow = values?.find(
-      (item: any) => item?.value == entry?.grade_value
-    );
+    const gradeCompanyShow = values?.find((item: any) => item?.value == entry?.grade_value);
     const grade_value_name =
-      entry?.grade_company?.name === ungraded && entry.grade_value == NotSpecified
-        ? ""
-        : gradeCompanyShow?.display_value ?? entry.grade_value;
+      entry?.grade_company?.name === ungraded && entry.grade_value == NotSpecified ? "" : gradeCompanyShow?.display_value ?? entry.grade_value;
     return (
       <>
         <span className="text-transform-capitalize">{grade_company_name}</span>
@@ -953,20 +906,20 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
     if (width < 768) {
       return "Remove Card";
     }
-    return `Remove Card from ${t('portfolio.text')}`
-  }
+    return `Remove Card from ${t("portfolio.text")}`;
+  };
 
   const scrollTopAsync = (d: number, fn: Function) => {
     let timer: any = null;
-    $('html, body').animate({ scrollTop: 0 }, d);
+    $("html, body").animate({ scrollTop: 0 }, d);
 
     if (timer) {
       clearTimeout(timer);
     }
     setTimeout(() => {
       fn(ConfigAction.updateShowMenuCollection(true));
-    }, 550)
-  }
+    }, 550);
+  };
 
   const formatOptionPortfolio = ({ id, group_name, type }: any) => (
     <>
@@ -981,48 +934,35 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         <div className="only-mobile">
           {isEdit ? (
             <>
-              {+router?.query?.collection !== 0 ? <Link
-                href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
-              >
-                <a className="container-collection-profile-head" title={groupRef?.name}>
-                  <img
-                    src={ArrowProfile}
-                    alt=""
-                  />
-                  {groupRef?.name}
-                </a>
-              </Link> :
+              {+router?.query?.collection !== 0 ? (
+                <Link href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? "")}`}>
+                  <a className="container-collection-profile-head" title={groupRef?.name}>
+                    <img src={ArrowProfile} alt="" />
+                    {groupRef?.name}
+                  </a>
+                </Link>
+              ) : (
                 <Link href={`/profile/portfolio/0/All Cards`}>
                   <a className="container-collection-profile-head" title="All Cards">
-                    <img
-                      src={ArrowProfile}
-                      alt=""
-                    />
+                    <img src={ArrowProfile} alt="" />
                     All Cards
                   </a>
                 </Link>
-              }
+              )}
             </>
           ) : (
-            <Link
-              href={`/profile/portfolio`}
-            >
+            <Link href={`/profile/portfolio`}>
               <a className="container-collection-profile-head">
-                <img
-                  src={ArrowProfile}
-                  alt=""
-                />
-                {t('portfolio.text')}
+                <img src={ArrowProfile} alt="" />
+                {t("portfolio.text")}
               </a>
             </Link>
           )}
         </div>
       </div>
-      <div className="only-mobile add-collection-title" >
-        {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}
-      </div>
+      <div className="only-mobile add-collection-title">{isEdit ? `Edit Card in ${t("portfolio.text")}` : `Add Card to ${t("portfolio.text")}`}</div>
       <div className="pr-3 row g-0">
-        <div className={`col-md-4 col-12 add-collection-left ml-0 ${is_show_card_detail_collection === false ? '' : 'd-none'}`}>
+        <div className={`col-md-4 col-12 add-collection-left ml-0 ${is_show_card_detail_collection === false ? "" : "d-none"}`}>
           {!cards.cards?.length && (
             <div>
               <Skeleton style={{ width: 150 }} />
@@ -1045,31 +985,27 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 {cards?.cards?.map((item, key) => (
                   <div key={key} className="card-add">
                     <div className="card-add-info d-flex align-items-center">
-                      {item?.sport}{" "}
-                      <i className="dot-margin" />{" "}
-                      {item?.year}{" "}
-                      <i className="dot-margin" />{" "}
-                      {item?.publisher}
+                      {item?.sport} <i className="dot-margin" /> {item?.year} <i className="dot-margin" /> {item?.publisher}
                     </div>
-                    <div className="mb-3 fs-5 card-add-description mt-2">
-                      {item?.web_name}
-                    </div>
-                    {(Boolean(item.auto) || Boolean(item.memo)) && <div className="card-add-group mb-3">
-                      <div className="btn-group">
-                        {Boolean(item.auto) && (
-                          <button
-                            type="button"
-                            className="btn btn-au--custom cursor-default"
-                          > AU </button>
-                        )}
-                        {Boolean(item.memo) && (
-                          <button
-                            type="button"
-                            className="btn btn-mem--custom cursor-default"
-                          > MEM </button>
-                        )}
+                    <div className="mb-3 fs-5 card-add-description mt-2">{item?.web_name}</div>
+                    {(Boolean(item.auto) || Boolean(item.memo)) && (
+                      <div className="card-add-group mb-3">
+                        <div className="btn-group">
+                          {Boolean(item.auto) && (
+                            <button type="button" className="btn btn-au--custom cursor-default">
+                              {" "}
+                              AU{" "}
+                            </button>
+                          )}
+                          {Boolean(item.memo) && (
+                            <button type="button" className="btn btn-mem--custom cursor-default">
+                              {" "}
+                              MEM{" "}
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>}
+                    )}
 
                     {item?.data?.map((entry, k) => (
                       <div
@@ -1083,17 +1019,15 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         className="mb-3 card-add-detail entry"
                       >
                         <div
-                          className={`d-flex justify-content-between ${activeEntry.cardIndex === key &&
-                              activeEntry.entryIndex === k
-                              ? "active"
-                              : ""
-                            }  rounded border border-1 p-2`}
+                          className={`d-flex justify-content-between ${
+                            activeEntry.cardIndex === key && activeEntry.entryIndex === k ? "active" : ""
+                          }  rounded border border-1 p-2`}
                           onClick={() => {
                             //@ts-ignore
                             if (width < 768) {
                               onActiveEntry(key, k, entry);
                               // setCards(cloneDeep(cardsMobile));
-                              scrollTopAsync(0, dispatch)
+                              scrollTopAsync(0, dispatch);
                               // dispatch(ConfigAction.updateShowMenuCollection(true))
                               setFromValue(entry);
                               // SetShowContentAddCollection(true);
@@ -1103,65 +1037,38 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                           <div className="box-left">
                             <div className="d-block justify-content-between align-items-center card-add-detail__txt">
                               <div
-                                className={`me-1 ${entry?.grade_company &&
-                                    entry?.grade_company?.name == ungraded &&
-                                    `${entry.grade_value}` == NotSpecified
+                                className={`me-1 ${
+                                  entry?.grade_company && entry?.grade_company?.name == ungraded && `${entry.grade_value}` == NotSpecified
                                     ? ""
                                     : "card-add-detail-grade text-nowrap"
-                                  }`}
+                                }`}
                                 style={{
                                   backgroundColor:
-                                    entry?.grade_company &&
-                                      entry?.grade_company?.name === ungraded &&
-                                      `${entry.grade_value}` == NotSpecified
+                                    entry?.grade_company && entry?.grade_company?.name === ungraded && `${entry.grade_value}` == NotSpecified
                                       ? "transparent"
-                                      : entry?.grade_company?.color_2 ??
-                                      entry?.grade_company?.grade_color_2,
+                                      : entry?.grade_company?.color_2 ?? entry?.grade_company?.grade_color_2,
                                   color:
-                                    entry?.grade_company?.name === ungraded &&
-                                      `${entry.grade_value}` == NotSpecified
+                                    entry?.grade_company?.name === ungraded && `${entry.grade_value}` == NotSpecified
                                       ? "#18213A"
-                                      : entry?.grade_company?.color_1 ??
-                                      entry?.grade_company?.grade_color_1,
+                                      : entry?.grade_company?.color_1 ?? entry?.grade_company?.grade_color_1,
                                 }}
                               >
                                 {renderGradeValue(entry)}
                               </div>
                               <strong className="text-ellipsis">
-                                {Boolean(+entry.user_price) && formatCurrencyCustom(
-                                  entry.user_price,
-                                  entry.user_currency
-                                )}
+                                {Boolean(+entry.user_price) && formatCurrencyCustom(entry.user_price, entry.user_currency)}
                               </strong>{" "}
                             </div>
                             <div className="card-add-detail__name">
-                              {cards?.groups?.find(
-                                (item) =>
-                                  item.id ===
-                                  (entry?.group_ref?.id ?? entry?.group_ref)
-                              )?.group_name ?? ""}
+                              {cards?.groups?.find((item) => item.id === (entry?.group_ref?.id ?? entry?.group_ref))?.group_name ?? ""}
                             </div>
                           </div>
                           <div className="d-flex images justify-content-center align-items-center">
                             <div className="hide-tablet aspect-sm">
-                              <img
-                                src={
-                                  entry?.image_upload?.front
-                                    ? entry?.image_upload?.front
-                                    : backgroundImage.src
-                                }
-                                alt=""
-                              />
+                              <img src={entry?.image_upload?.front ? entry?.image_upload?.front : backgroundImage.src} alt="" />
                             </div>
                             <div className="ms-2 hide-tablet aspect-sm">
-                              <img
-                                src={
-                                  entry?.image_upload?.back
-                                    ? entry?.image_upload?.back
-                                    : backgroundImage.src
-                                }
-                                alt=""
-                              />
+                              <img src={entry?.image_upload?.back ? entry?.image_upload?.back : backgroundImage.src} alt="" />
                             </div>
                             <span>
                               <img src={IconArrow.src} alt="" />
@@ -1176,37 +1083,20 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
               <hr className="hr--color mt-4 mb-3" />
               {Boolean(cards.cards?.length) && (
                 <div className="mt-2 d-flex justify-content-between align-items-center card-add-group-button">
-                  <button
-                    onClick={onCancle}
-                    type="button"
-                    className="btn-lg btn btn-cancel mb-2"
-                  > Cancel </button>
-                  <button
-                    onClick={onSubmitForm}
-                    disabled={isLoading}
-                    type="button"
-                    className="btn-lg btn btn-add mb-2"
-                  >
-                    {isEdit
-                      ? "Save Changes"
-                      : `Add Card${renderTextButton()} to ${t('portfolio.text')}`}
-                    {isLoading && (
-                      <span
-                        className="spinner-grow spinner-grow-sm"
-                        role="status"
-                        aria-hidden="true"
-                      />
-                    )}
+                  <button onClick={onCancle} type="button" className="btn-lg btn btn-cancel mb-2">
+                    {" "}
+                    Cancel{" "}
+                  </button>
+                  <button onClick={onSubmitForm} disabled={isLoading} type="button" className="btn-lg btn btn-add mb-2">
+                    {isEdit ? "Save Changes" : `Add Card${renderTextButton()} to ${t("portfolio.text")}`}
+                    {isLoading && <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />}
                   </button>
                 </div>
               )}
             </div>
           </div>
         </div>
-        <div
-          className={`col-md-8 col-12 add-collection-right ${is_show_card_detail_collection ? "d-block-add-collection" : ""
-            }`}
-        >
+        <div className={`col-md-8 col-12 add-collection-right ${is_show_card_detail_collection ? "d-block-add-collection" : ""}`}>
           {
             //@ts-ignore
             width < 768 && is_show_card_detail_collection === true && (
@@ -1233,21 +1123,15 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 {cards.cards?.map((item, key) => (
                   <div key={key} className="card-add">
                     {item?.data?.map((entry, k) => (
-                      <div
-                        key={k}
-                        onClick={() => onActiveEntry(key, k, entry)}
-                        className="mb-3 card-add-detail entry"
-                      >
+                      <div key={k} onClick={() => onActiveEntry(key, k, entry)} className="mb-3 card-add-detail entry">
                         <div
-                          className={`d-flex justify-content-between card-add-mobile ${activeEntry.cardIndex === key &&
-                              activeEntry.entryIndex === k
-                              ? "active"
-                              : "d-none"
-                            }  rounded border border-1 p-2`}
+                          className={`d-flex justify-content-between card-add-mobile ${
+                            activeEntry.cardIndex === key && activeEntry.entryIndex === k ? "active" : "d-none"
+                          }  rounded border border-1 p-2`}
                           onClick={() => {
                             // setCards(cloneDeep(cardsMobile))
                             // SetShowContentAddCollection(false);
-                            dispatch(ConfigAction.updateShowMenuCollection(false))
+                            dispatch(ConfigAction.updateShowMenuCollection(false));
                           }}
                         >
                           <div className="arrowBack">
@@ -1257,44 +1141,31 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             <div className="d-block justify-content-between align-items-center card-add-detail__txt box-left">
                               <div className="d-block align-items-center">
                                 <div
-                                  className={`me-1 ${entry?.grade_company &&
-                                      entry?.grade_company?.name == ungraded &&
-                                      `${entry.grade_value}` == NotSpecified
+                                  className={`me-1 ${
+                                    entry?.grade_company && entry?.grade_company?.name == ungraded && `${entry.grade_value}` == NotSpecified
                                       ? ""
                                       : "card-add-detail-grade text-nowrap"
-                                    }`}
+                                  }`}
                                   style={{
                                     backgroundColor:
-                                      entry?.grade_company &&
-                                        entry?.grade_company?.name === ungraded &&
-                                        `${entry.grade_value}` == NotSpecified
+                                      entry?.grade_company && entry?.grade_company?.name === ungraded && `${entry.grade_value}` == NotSpecified
                                         ? "transparent"
-                                        : entry?.grade_company?.color_2 ??
-                                        entry?.grade_company?.grade_color_2,
+                                        : entry?.grade_company?.color_2 ?? entry?.grade_company?.grade_color_2,
                                     color:
-                                      entry?.grade_company?.name === ungraded &&
-                                        `${entry.grade_value}` == NotSpecified
+                                      entry?.grade_company?.name === ungraded && `${entry.grade_value}` == NotSpecified
                                         ? "#18213A"
-                                        : entry?.grade_company?.color_1 ??
-                                        entry?.grade_company?.grade_color_1,
+                                        : entry?.grade_company?.color_1 ?? entry?.grade_company?.grade_color_1,
                                   }}
                                 >
                                   {renderGradeValue(entry)}
                                 </div>
                                 <strong className="ms-1 text-ellipsis">
-                                  {Boolean(+entry.user_price) && formatCurrencyCustom(
-                                    entry.user_price,
-                                    entry.user_currency
-                                  )}
+                                  {Boolean(+entry.user_price) && formatCurrencyCustom(entry.user_price, entry.user_currency)}
                                 </strong>
                               </div>
                             </div>
                             <div className="card-add-detail__name">
-                              {cards?.groups?.find(
-                                (item) =>
-                                  item.id ===
-                                  (entry?.group_ref?.id ?? entry?.group_ref)
-                              )?.group_name ?? ""}
+                              {cards?.groups?.find((item) => item.id === (entry?.group_ref?.id ?? entry?.group_ref))?.group_name ?? ""}
                             </div>
                           </div>
                           {/*<div className="d-flex images justify-content-center align-items-center">
@@ -1325,7 +1196,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   </div>
                 ))}
               </>
-            )}
+            )
+          }
           {
             //@ts-ignore
             width >= 768 && (
@@ -1337,102 +1209,75 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     <ol className="breadcrumb breadcrumb-edit-card mt-1">
                       <li className="breadcrumb-item">
                         <Link href="/profile/portfolio">
-                          <a title={t('portfolio.text')}>
-                            {t('portfolio.text')}
-                          </a>
+                          <a title={t("portfolio.text")}>{t("portfolio.text")}</a>
                         </Link>
                       </li>
                       <li className="breadcrumb-item active" aria-current="page">
                         {isEdit ? (
                           <>
-                            {+router?.query?.collection !== 0 ? <Link
-                              href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? '')}`}
-                            >
-                              <a title={groupRef?.name}>
-                                {groupRef?.name}
-                              </a>
-                            </Link> :
+                            {+router?.query?.collection !== 0 ? (
+                              <Link href={`/profile/portfolio/${groupRef?.id}/${encodeURIComponent(groupRef?.name?.replaceAll("/", "-") ?? "")}`}>
+                                <a title={groupRef?.name}>{groupRef?.name}</a>
+                              </Link>
+                            ) : (
                               <Link href={`/profile/portfolio/0/All Cards`}>
                                 <a title="All Cards"> All Cards </a>
                               </Link>
-                            }
+                            )}
                           </>
                         ) : (
                           "Add Card"
                         )}
                       </li>
                       {isEdit && (
-                        <li
-                          className="breadcrumb-item active"
-                          aria-current="page"
-                        > Edit Card </li>
+                        <li className="breadcrumb-item active" aria-current="page">
+                          {" "}
+                          Edit Card{" "}
+                        </li>
                       )}
                     </ol>
                   </nav>
                 )}
               </>
-            )}
+            )
+          }
 
           <div className="add-collection-right-content">
             <div className="d-flex justify-content-between align-items-center add-collection-right__title">
-              <h2 className="minhei-32">
-                {isEdit ? `Edit Card in ${t('portfolio.text')}` : `Add Card to ${t('portfolio.text')}`}{" "}
-              </h2>
-              { // @ts-ignore
-                isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards[activeEntry.cardIndex]?.data[activeEntry?.entryIndex]?.port_id) && undoChangeStatus && (
-                  <button type="button" onClick={onUndo} className="btn btn-undo m-0">
-                    <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes
-                  </button>
-                )}
-              {// @ts-ignore
-                Boolean(cards?.cards?.length) && !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.port_id) && renderTextButton() === "s" && (
-                  <button
-                    type="button"
-                    onClick={onRemoveEntry}
-                    className="btn btn-remove-entry"
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M3.35559 5.66221L3.35559 15.1827C3.35559 15.7454 3.56345 16.2738 3.92657 16.653C4.28801 17.0332 4.79102 17.2491 5.31745 17.25H12.6826C13.2091 17.2491 13.7121 17.0332 14.0734 16.653C14.4365 16.2738 14.6444 15.7454 14.6444 15.1827L14.6444 5.66221C15.3662 5.47202 15.834 4.77979 15.7374 4.04455C15.6407 3.30945 15.0098 2.75956 14.2629 2.75941H12.2699V2.27639C12.2721 1.8702 12.1104 1.48017 11.8207 1.19322C11.531 0.906428 11.1375 0.74673 10.7283 0.750051L7.2717 0.750051C6.86251 0.74673 6.46899 0.906428 6.17932 1.19322C5.88964 1.48017 5.72785 1.8702 5.73013 2.27639V2.75941L3.7371 2.75941C2.99019 2.75956 2.3593 3.30945 2.26259 4.04455C2.16604 4.77979 2.63377 5.47202 3.35559 5.66221ZM12.6826 16.4772H5.31745C4.65189 16.4772 4.13413 15.9096 4.13413 15.1827L4.13413 5.69617L13.8659 5.69617L13.8659 15.1827C13.8659 15.9096 13.3481 16.4772 12.6826 16.4772ZM6.50867 2.27639C6.50609 2.07518 6.58577 1.88152 6.72961 1.73949C6.87331 1.59745 7.06886 1.51941 7.2717 1.52288L10.7283 1.52288C10.9311 1.51941 11.1267 1.59745 11.2704 1.73949C11.4142 1.88137 11.4939 2.07518 11.4913 2.27639V2.75941L6.50867 2.75941V2.27639ZM3.7371 3.53224L14.2629 3.53224C14.6499 3.53224 14.9636 3.84364 14.9636 4.22779C14.9636 4.61194 14.6499 4.92334 14.2629 4.92334L3.7371 4.92334C3.35012 4.92334 3.03642 4.61194 3.03642 4.22779C3.03642 3.84364 3.35012 3.53224 3.7371 3.53224Z"
-                        fill="#CA1130"
-                        stroke="#CA1130"
-                        stroke-width="0.4"
-                        stroke-linejoin="round"
-                      />
-                      <rect
-                        x="5.94141"
-                        y="7.5"
-                        width="1.14"
-                        height="7.32"
-                        rx="0.57"
-                        fill="#CA1130"
-                      />
-                      <rect
-                        x="8.42969"
-                        y="7.5"
-                        width="1.14"
-                        height="7.32"
-                        rx="0.57"
-                        fill="#CA1130"
-                      />
-                      <rect
-                        x="10.9219"
-                        y="7.5"
-                        width="1.14"
-                        height="7.32"
-                        rx="0.57"
-                        fill="#CA1130"
-                      />
-                    </svg>
-                    Remove Entry
-                  </button>
-                )}
+              <h2 className="minhei-32">{isEdit ? `Edit Card in ${t("portfolio.text")}` : `Add Card to ${t("portfolio.text")}`} </h2>
+              {
+                // @ts-ignore
+                isEdit &&
+                  Boolean(cards?.cards?.length) &&
+                  Boolean(cards?.cards[activeEntry.cardIndex]?.data[activeEntry?.entryIndex]?.port_id) &&
+                  undoChangeStatus && (
+                    <button type="button" onClick={onUndo} className="btn btn-undo m-0">
+                      <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes
+                    </button>
+                  )
+              }
+              {
+                // @ts-ignore
+                Boolean(cards?.cards?.length) &&
+                  !Boolean(cards?.cards[activeEntry.cardIndex].data[activeEntry.entryIndex]?.port_id) &&
+                  renderTextButton() === "s" && (
+                    <button type="button" onClick={onRemoveEntry} className="btn btn-remove-entry">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M3.35559 5.66221L3.35559 15.1827C3.35559 15.7454 3.56345 16.2738 3.92657 16.653C4.28801 17.0332 4.79102 17.2491 5.31745 17.25H12.6826C13.2091 17.2491 13.7121 17.0332 14.0734 16.653C14.4365 16.2738 14.6444 15.7454 14.6444 15.1827L14.6444 5.66221C15.3662 5.47202 15.834 4.77979 15.7374 4.04455C15.6407 3.30945 15.0098 2.75956 14.2629 2.75941H12.2699V2.27639C12.2721 1.8702 12.1104 1.48017 11.8207 1.19322C11.531 0.906428 11.1375 0.74673 10.7283 0.750051L7.2717 0.750051C6.86251 0.74673 6.46899 0.906428 6.17932 1.19322C5.88964 1.48017 5.72785 1.8702 5.73013 2.27639V2.75941L3.7371 2.75941C2.99019 2.75956 2.3593 3.30945 2.26259 4.04455C2.16604 4.77979 2.63377 5.47202 3.35559 5.66221ZM12.6826 16.4772H5.31745C4.65189 16.4772 4.13413 15.9096 4.13413 15.1827L4.13413 5.69617L13.8659 5.69617L13.8659 15.1827C13.8659 15.9096 13.3481 16.4772 12.6826 16.4772ZM6.50867 2.27639C6.50609 2.07518 6.58577 1.88152 6.72961 1.73949C6.87331 1.59745 7.06886 1.51941 7.2717 1.52288L10.7283 1.52288C10.9311 1.51941 11.1267 1.59745 11.2704 1.73949C11.4142 1.88137 11.4939 2.07518 11.4913 2.27639V2.75941L6.50867 2.75941V2.27639ZM3.7371 3.53224L14.2629 3.53224C14.6499 3.53224 14.9636 3.84364 14.9636 4.22779C14.9636 4.61194 14.6499 4.92334 14.2629 4.92334L3.7371 4.92334C3.35012 4.92334 3.03642 4.61194 3.03642 4.22779C3.03642 3.84364 3.35012 3.53224 3.7371 3.53224Z"
+                          fill="#CA1130"
+                          stroke="#CA1130"
+                          stroke-width="0.4"
+                          stroke-linejoin="round"
+                        />
+                        <rect x="5.94141" y="7.5" width="1.14" height="7.32" rx="0.57" fill="#CA1130" />
+                        <rect x="8.42969" y="7.5" width="1.14" height="7.32" rx="0.57" fill="#CA1130" />
+                        <rect x="10.9219" y="7.5" width="1.14" height="7.32" rx="0.57" fill="#CA1130" />
+                      </svg>
+                      Remove Entry
+                    </button>
+                  )
+              }
             </div>
             <div>
               {!isEmpty(gradeCompanys) && (
@@ -1468,11 +1313,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 <label htmlFor="" className="form-label">
                   Select Grade Value
                 </label>
-                <div
-                  className="w-100 btn-group btn-group-sm grade-value-checkbox"
-                  role="group"
-                  aria-label="Basic radio toggle button group"
-                >
+                <div className="w-100 btn-group btn-group-sm grade-value-checkbox" role="group" aria-label="Basic radio toggle button group">
                   {gradeValue?.map((item, key) => (
                     <div key={key} className="item-value">
                       <input
@@ -1486,14 +1327,8 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       />
                       <label
                         style={{
-                          backgroundColor:
-                            +watchGradeValue === +item.value
-                              ? watchGrade?.color_4
-                              : "#FFF",
-                          color:
-                            +watchGradeValue === +item.value
-                              ? watchGrade?.color_3
-                              : "#18213A",
+                          backgroundColor: +watchGradeValue === +item.value ? watchGrade?.color_4 : "#FFF",
+                          color: +watchGradeValue === +item.value ? watchGrade?.color_3 : "#18213A",
                         }}
                         className="btn btn-light text-capitalize"
                         htmlFor={`grade-${item.value}`}
@@ -1517,16 +1352,12 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                   <label htmlFor="inputEmail4" className="form-label">
                     Purchase Price{" "}
                     <OverlayTrigger
-                      overlay={<Tooltip>This value is private. It can be used in the collection analytics as a substitute value for missing prices.</Tooltip>}
+                      overlay={
+                        <Tooltip>This value is private. It can be used in the collection analytics as a substitute value for missing prices.</Tooltip>
+                      }
                     >
                       {({ ref, ...triggerHandler }) => (
-                        <img
-                          ref={ref}
-                          {...triggerHandler}
-                          className="ml-1 label-icon cursor-pointer"
-                          src={IconQuestion.src}
-                          alt=""
-                        />
+                        <img ref={ref} {...triggerHandler} className="ml-1 label-icon cursor-pointer" src={IconQuestion.src} alt="" />
                       )}
                     </OverlayTrigger>
                   </label>
@@ -1549,9 +1380,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                             // @ts-ignore
                             dropdownIndicator: (provided, state) => ({
                               ...provided,
-                              transition: 'all .2s ease',
-                              transform: state.selectProps.menuIsOpen && "rotate(180deg)"
-                            })
+                              transition: "all .2s ease",
+                              transform: state.selectProps.menuIsOpen && "rotate(180deg)",
+                            }),
                           }}
                         />
                       )}
@@ -1581,13 +1412,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         overlay={<Tooltip>This date is private, it is used in collection analytics to chart your portfolio value over time.</Tooltip>}
                       >
                         {({ ref, ...triggerHandler }) => (
-                          <img
-                            ref={ref}
-                            {...triggerHandler}
-                            className="ml-1 label-icon cursor-pointer"
-                            src={IconQuestion.src}
-                            alt=""
-                          />
+                          <img ref={ref} {...triggerHandler} className="ml-1 label-icon cursor-pointer" src={IconQuestion.src} alt="" />
                         )}
                       </OverlayTrigger>
                     </span>
@@ -1601,7 +1426,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                         dateFormat="MMM, d, yyyy"
                         maxDate={new Date()}
                         selected={value}
-                        onFocus={e => e.target.blur()}
+                        onFocus={(e) => e.target.blur()}
                         onChange={(e) => {
                           if (!e) {
                             onChange(new Date());
@@ -1622,7 +1447,7 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
             <div className="mb-3 mt-4">
               <label htmlFor="" className="form-label">
                 {" "}
-                {t('portfolio.text')}{" "}
+                {t("portfolio.text")}{" "}
               </label>
               <Controller
                 control={control}
@@ -1646,19 +1471,16 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                       // @ts-ignore
                       dropdownIndicator: (provided, state) => ({
                         ...provided,
-                        transition: 'all .2s ease',
-                        transform: state.selectProps.menuIsOpen && "rotate(180deg)"
-                      })
+                        transition: "all .2s ease",
+                        transform: state.selectProps.menuIsOpen && "rotate(180deg)",
+                      }),
                     }}
                   />
                 )}
               />
             </div>
             <div className="row image-upload">
-              <div
-                onClick={() => onUpLoadFile("Front")}
-                className="col-6 text-center"
-              >
+              <div onClick={() => onUpLoadFile("Front")} className="col-6 text-center">
                 <div className="border-img">
                   <input
                     ref={imageFrontRef}
@@ -1667,26 +1489,31 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Front")}
                     accept="image/*"
-                    onClick={(e: any) => { e.target.value = '' }}
+                    onClick={(e: any) => {
+                      e.target.value = "";
+                    }}
                   />
                   <img
                     className="cursor-pointer w-100"
                     src={
-                      imageFront.url ? (imageFront.url === backgroundImage.src ? backgroundImageUpload.src : imageFront.url) : backgroundImageUpload.src
+                      imageFront.url
+                        ? imageFront.url === backgroundImage.src
+                          ? backgroundImageUpload.src
+                          : imageFront.url
+                        : backgroundImageUpload.src
                     }
                     alt=""
                   />
                 </div>
                 <div className="mt-1 form-label"> Card Front </div>
               </div>
-              <div
-                onClick={() => onUpLoadFile("Back")}
-                className="col-6 text-center"
-              >
+              <div onClick={() => onUpLoadFile("Back")} className="col-6 text-center">
                 <div className="border-img">
                   <img
                     className="cursor-pointer w-100"
-                    src={imageBack.url ? imageBack.url === backgroundImage.src ? backgroundImageUpload.src : imageBack.url : backgroundImageUpload.src}
+                    src={
+                      imageBack.url ? (imageBack.url === backgroundImage.src ? backgroundImageUpload.src : imageBack.url) : backgroundImageUpload.src
+                    }
                     alt=""
                   />
                   <input
@@ -1696,7 +1523,9 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                     type="file"
                     onChange={(e) => onUploadFileInput(e, "Back")}
                     accept="image/*"
-                    onClick={(e: any) => { e.target.value = '' }}
+                    onClick={(e: any) => {
+                      e.target.value = "";
+                    }}
                   />
                 </div>
                 <div className="mt-1 form-label"> Card Back </div>
@@ -1729,83 +1558,73 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
                 Note{" "}
                 <OverlayTrigger overlay={<Tooltip>This note is private.</Tooltip>}>
                   {({ ref, ...triggerHandler }) => (
-                    <img
-                      ref={ref}
-                      {...triggerHandler}
-                      className="ml-1 label-icon cursor-pointer"
-                      src={IconQuestion.src}
-                      alt=""
-                    />
+                    <img ref={ref} {...triggerHandler} className="ml-1 label-icon cursor-pointer" src={IconQuestion.src} alt="" />
                   )}
                 </OverlayTrigger>
                 (optional)
               </label>
-              <textarea
-                {...register("note")}
-                className="form-control"
-                rows={4}
-                cols={50}
-              ></textarea>
+              <textarea {...register("note")} className="form-control" rows={4} cols={50}></textarea>
             </div>
             <div className="mt-56 mb-5 d-flex justify-content-between align-items-center btn-group-entry">
               {
                 //@ts-ignore
                 width < 768 && (
-                  <button
-                    onClick={onSaveEntry}
-                    type="button"
-                    className="btn-lg btn btn-light btn-save w-50 mr-2"
-                  > Save Entry 	&amp; Back </button>
-                )}
-              <button
-                onClick={onNewEntry}
-                type="button"
-                className="btn-lg btn btn-light btn-add w-50 mr-2"
-              > Add New Entry </button>
-              <button
-                onClick={onDuplicateEntry}
-                type="button"
-                className="btn-lg btn btn-light btn-duplicate w-50 ml-2"
-              > Duplicate Entry </button>
+                  <button onClick={onSaveEntry} type="button" className="btn-lg btn btn-light btn-save w-50 mr-2">
+                    {" "}
+                    Save Entry &amp; Back{" "}
+                  </button>
+                )
+              }
+              <button onClick={onNewEntry} type="button" className="btn-lg btn btn-light btn-add w-50 mr-2">
+                {" "}
+                Add New Entry{" "}
+              </button>
+              <button onClick={onDuplicateEntry} type="button" className="btn-lg btn btn-light btn-duplicate w-50 ml-2">
+                {" "}
+                Duplicate Entry{" "}
+              </button>
             </div>
-            { // @ts-ignore
+            {
+              // @ts-ignore
               isEdit && Boolean(cards?.cards?.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
                 <div className="d-flex justify-content-center btn-remove-card-collection">
-                  <button
-                    disabled={isLoadingDelete}
-                    onClick={() => setIsOpenModal(true)}
-                    className="btn btn-remove"
-                  > <img src={IconDelete.src} alt="" /> {renderTitleRemove()} </button>
+                  <button disabled={isLoadingDelete} onClick={() => setIsOpenModal(true)} className="btn btn-remove">
+                    {" "}
+                    <img src={IconDelete.src} alt="" /> {renderTitleRemove()}{" "}
+                  </button>
                 </div>
-              )}
+              )
+            }
             {
               // @ts-ignore
               width < 768 && Boolean(cards?.cards.length) && !Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
                 <div className="d-flex justify-content-center btn-remove-card-collection">
-                  <button
-                    disabled={isLoadingDelete}
-                    onClick={onRemoveEntry}
-                    className="btn btn-remove"
-                  > <img src={IconDelete.src} alt="Remove Entry" title="Remove Entry" /> Remove Entry </button>
+                  <button disabled={isLoadingDelete} onClick={onRemoveEntry} className="btn btn-remove">
+                    {" "}
+                    <img src={IconDelete.src} alt="Remove Entry" title="Remove Entry" /> Remove Entry{" "}
+                  </button>
                 </div>
-              )}
-            { // @ts-ignore
-              width < 768 && isEdit && Boolean(cards?.cards.length) && Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
-                <div className="d-flex justify-content-center btn-remove-card-collection">
-                  <button
-                    onClick={onUndo}
-                    className="btn btn-undo"
-                  >  <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes </button>
-                </div>
-              )}
+              )
+            }
+            {
+              // @ts-ignore
+              width < 768 &&
+                isEdit &&
+                Boolean(cards?.cards.length) &&
+                Boolean(cards?.cards?.[activeEntry.cardIndex]?.data[activeEntry.entryIndex]?.port_id) && (
+                  <div className="d-flex justify-content-center btn-remove-card-collection">
+                    <button onClick={onUndo} className="btn btn-undo">
+                      {" "}
+                      <img src={rotateLeft} alt="Undo Changes" title="Undo Changes" /> Undo Changes{" "}
+                    </button>
+                  </div>
+                )
+            }
           </div>
         </div>
       </div>
       <EditImage
-        code={`${cards?.cards?.length
-            ? cards?.cards[activeEntry.cardIndex].card_id
-            : ""
-          }`}
+        code={`${cards?.cards?.length ? cards?.cards[activeEntry.cardIndex].card_id : ""}`}
         onSuccessFile={onSuccessFile}
         ref={EditImageRef}
       />
@@ -1813,7 +1632,10 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
         isOpen={isOpenModal}
         title={`Are you sure you want to remove this card from your collection?`}
         onClose={() => setIsOpenModal(false)}
-        onSuccess={() => { setIsOpenModal(false); onRemoveCard() }}
+        onSuccess={() => {
+          setIsOpenModal(false);
+          onRemoveCard();
+        }}
       />
     </div>
   );
