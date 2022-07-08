@@ -668,9 +668,6 @@ const AddCard = ({ isEdit = false }: PropTypes) => {
       router.back();
     }
   };
-
-  const a = imageFrontRef?.current;
-  console.log(a);
   const onSubmitForm = () => {
     let newDataForm = null;
     // if (width >= 768) {

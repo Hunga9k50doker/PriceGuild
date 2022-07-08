@@ -33,7 +33,14 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   const [box, setBox] = useState<any | undefined>(undefined);
   const [boxLand, setBoxLand] = useState<any | undefined>(undefined);
   // const [move, setMove] = useState<{ horizontal: number; vertical: number }>({ horizontal: 0, vertical: 0 });
-
+  const [imgPro, setimgPro] = useState({
+    width: 0,
+    height: 0,
+  });
+  const [cropPro, setcropPro] = useState({
+    width: 0,
+    height: 0,
+  });
   const onChange = (e: any) => {
     e.preventDefault();
     let files;
@@ -70,52 +77,71 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     imageEditorRef.current.cropper.rotate(value);
   };
 
+  // const updateRatio = (value: boolean) => {
+  //   let cropper = imageEditorRef.current.cropper.getCropBoxData();
+  //   let imgData = imageEditorRef.current.cropper.getImageData();
+  //   // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
+  //   if (value) {
+  //     if (isLand !== value) {
+  //       setBoxLand(cropper);
+  //     }
+  //     imageEditorRef.current.cropper.setAspectRatio(
+  //       +imgData.naturalWidth > +imgData.naturalHeight
+  //         ? +imgData.naturalWidth / +imgData.naturalHeight
+  //         : +imgData.naturalHeight / +imgData.naturalWidth
+  //       // isLand ? crop[0] / crop[1] : crop[1] / crop[0]
+  //     );
+  //     if (box) {
+  //       imageEditorRef.current.cropper.setCropBoxData(box);
+  //     }
+  //   } else {
+  //     if (isLand !== value) {
+  //       setBoxLand(cropper);
+  //     }
+  //     imageEditorRef.current.cropper.setAspectRatio(
+  //       +imgData.naturalWidth <= +imgData.naturalHeight
+  //         ? +imgData.naturalWidth / +imgData.naturalHeight
+  //         : +imgData.naturalHeight / +imgData.naturalWidth
+  //       // !isLand ? crop[0] / crop[1] : crop[1] / crop[0]
+  //     );
+  //     if (box) {
+  //       imageEditorRef.current.cropper.setCropBoxData(box);
+  //     }
+  //   }
+  //   setIsLand(value);
+  // };
   const updateRatio = (value: boolean) => {
     let cropper = imageEditorRef.current.cropper.getCropBoxData();
-    // let imgData = imageEditorRef.current.cropper.getImageData();
-    // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
+
     if (value) {
       if (isLand !== value) {
         setBoxLand(cropper);
       }
-      imageEditorRef.current.cropper.setAspectRatio(
-        // +imgData.naturalWidth > +imgData.naturalHeight
-        //   ? +imgData.naturalWidth / +imgData.naturalHeight
-        //   : +imgData.naturalHeight / +imgData.naturalWidth
-        // crop[1] / crop[0]
-        3.5 / 2.5
-      );
+      imageEditorRef.current.cropper.setAspectRatio(3.5 / 2.5);
       if (box) {
         imageEditorRef.current.cropper.setCropBoxData(box);
       }
     } else {
       if (isLand !== value) {
-        setBoxLand(cropper);
+        setBox(cropper);
       }
-      imageEditorRef.current.cropper.setAspectRatio(
-        // +imgData.naturalWidth <= +imgData.naturalHeight
-        //   ? +imgData.naturalWidth / +imgData.naturalHeight
-        //   : +imgData.naturalHeight / +imgData.naturalWidth
-        // crop[0] / crop[1]
-        2.5 / 3.5
-      );
-      if (box) {
-        imageEditorRef.current.cropper.setCropBoxData(box);
+      imageEditorRef.current.cropper.setAspectRatio(2.5 / 3.5);
+      if (boxLand) {
+        imageEditorRef.current.cropper.setCropBoxData(boxLand);
       }
     }
     setIsLand(value);
   };
-
   const cropStartCustom = () => {
     let imgData = imageEditorRef.current.cropper.getImageData();
+    // Call Tom's resize Crop Area function
     let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
-    imageEditorRef.current.cropper.initialAspectRatio = isLand ? 3.5 / 2.5 : 2.5 / 3.5;
-    // console.log(crop);
-    // imageEditorRef.current.cropper.setAspectRatio(crop[0] / crop[1]);
+    imageEditorRef.current.cropper.initialAspectRatio = crop[0] / crop[1];
   };
 
+  // This is Tom's Python resize Crop Area - begin
   const initialCropSize = (imageWidth = 350, imageHeight = 400) => {
-    let imgData = imageEditorRef.current.cropper.getImageData();
+    // let imgData = imageEditorRef.current.cropper.getImageData();
     // # Config the ratios: W, H
     let portraitRatio = { width: 2.5, height: 3.5 };
     let landscapeRatio = { width: 3.5, height: 2.5 };
@@ -157,21 +183,19 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     limitingDimension === "H" ? (cropHeight = imageHeight) : (cropHeight = imageWidth * (ratio["height"] / ratio["width"]));
     return [cropWidth, cropHeight];
   };
-
+  // This is Tom's Python resize Crop Area - end
   useEffect(() => {
     props.onGetImage && props.onGetImage(imageEditorRef);
   }, [imageEditorRef]);
   useEffect(() => {
     imageEditorRef.current.cropper.setDragMode("crop");
   }, []);
-  const divStyle = { maxHeight: "calc(50vh - 6rem)", width: "100%" };
   return (
     <div>
       <div style={{ width: "100%" }}>
         <Cropper
-          style={divStyle}
+          style={{ maxHeight: 400, width: "100%" }}
           zoomTo={zoom}
-          initialAspectRatio={isLand ? 3.5 / 2.5 : 2.5 / 3.5}
           crop={() => {
             cropStartCustom();
           }}
@@ -194,7 +218,7 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
       </div>
       <div>
         <div className="box"></div>
-        <div className="box ">
+        <div className="box">
           <div className="box-action d-flex justify-content-center align-item-center">
             <div className="box-action-drag-mode box-action-content d-flex">
               <button

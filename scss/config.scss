@@ -2071,7 +2071,7 @@
 
 @media (min-width: 767.98px) {
   .modal-footer.modal-footer-crop {
-    padding: 32px;
+    padding: 16px 32px;
   }
 }
 
@@ -6005,7 +6005,7 @@ table {
       border-radius: 5px;
       .btn {
         box-shadow: none !important;
-        padding: 9px 12px;
+        padding: 4px 8px;
         &:hover {
           background-color: #e9eaed;
         }

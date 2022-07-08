@@ -129,9 +129,12 @@ const EditImage = React.forwardRef<EditImageType, PropTypes>((props, ref) => {
     setIsOpen(false);
     props.onClose && props.onClose();
   };
+  const divStyle = { maxHeight: "calc(100vh - 6rem)", width: "100%" };
 
   return (
-    <Modal onHide={onClose} centered show={isOpen} size="lg" className="modal-profile-collection">
+    <Modal onHide={onClose} centered show={isOpen} size="lg" className="modal-profile-collection"
+    
+    >
       <div>
         <Modal.Header>
           <Modal.Title>Crop Photo</Modal.Title>

@@ -1069,6 +1069,8 @@ input {
   .modal-body {
     overflow-y: auto;
     padding: 1.5rem 2rem;
+    max-height: calc(100vh - 6rem);
+
     .collection {
       max-height: 400px;
       overflow-y: scroll;
@@ -2115,8 +2117,6 @@ input[type="number"] {
     }
   }
 }
-
-
 
 .row-list {
   .collection-card-base {
