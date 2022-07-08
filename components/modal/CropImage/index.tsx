@@ -77,39 +77,6 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     imageEditorRef.current.cropper.rotate(value);
   };
 
-  // const updateRatio = (value: boolean) => {
-  //   let cropper = imageEditorRef.current.cropper.getCropBoxData();
-  //   let imgData = imageEditorRef.current.cropper.getImageData();
-  //   // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
-  //   if (value) {
-  //     if (isLand !== value) {
-  //       setBoxLand(cropper);
-  //     }
-  //     imageEditorRef.current.cropper.setAspectRatio(
-  //       +imgData.naturalWidth > +imgData.naturalHeight
-  //         ? +imgData.naturalWidth / +imgData.naturalHeight
-  //         : +imgData.naturalHeight / +imgData.naturalWidth
-  //       // isLand ? crop[0] / crop[1] : crop[1] / crop[0]
-  //     );
-  //     if (box) {
-  //       imageEditorRef.current.cropper.setCropBoxData(box);
-  //     }
-  //   } else {
-  //     if (isLand !== value) {
-  //       setBoxLand(cropper);
-  //     }
-  //     imageEditorRef.current.cropper.setAspectRatio(
-  //       +imgData.naturalWidth <= +imgData.naturalHeight
-  //         ? +imgData.naturalWidth / +imgData.naturalHeight
-  //         : +imgData.naturalHeight / +imgData.naturalWidth
-  //       // !isLand ? crop[0] / crop[1] : crop[1] / crop[0]
-  //     );
-  //     if (box) {
-  //       imageEditorRef.current.cropper.setCropBoxData(box);
-  //     }
-  //   }
-  //   setIsLand(value);
-  // };
   const updateRatio = (value: boolean) => {
     let cropper = imageEditorRef.current.cropper.getCropBoxData();
 
@@ -141,16 +108,12 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
 
   // This is Tom's Python resize Crop Area - begin
   const initialCropSize = (imageWidth = 350, imageHeight = 400) => {
-    // let imgData = imageEditorRef.current.cropper.getImageData();
     // # Config the ratios: W, H
     let portraitRatio = { width: 2.5, height: 3.5 };
     let landscapeRatio = { width: 3.5, height: 2.5 };
     let ratio, limitingDimension, cropWidth, cropHeight;
+
     // # Step 1 Check if image is Portrait or Landscape
-    // if(imgData.naturalWidth <imgData.naturalHeight)
-    //     ratio = portraitRatio
-    // else:
-    //     ratio = landscapeRatio
     if (+imageWidth <= +imageHeight) {
       //      portraitRatio
       setIsLand(false);
@@ -162,24 +125,13 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     }
 
     // # Step 2 Check the limiting dimension
-    // if (imageHeight / imageWidth) > (ratio['height'] / ratio['width']):
-    //     limitingDimension = 'H'
-    // else
-    //     limitingDimension = 'W'
     +imageHeight / +imageWidth > ratio["height"] / ratio["width"] ? (limitingDimension = "H") : (limitingDimension = "W");
 
     // # Step 3 Set the Initial Crop Size
     // # 3.1 - Width
-    // if limitingDimension == 'W'
-    //     cropWidth = imageWidth
-    // else
-    //     cropWidth = imageHeight * (ratio['width'] / ratio['height'])
     limitingDimension === "W" ? (cropWidth = imageWidth) : (cropWidth = imageHeight * (ratio["width"] / ratio["height"]));
-    // // # 3.2 - Height
-    // if limitingDimension == 'H':
-    //     cropHeight = imageHeight
-    // else
-    //     cropHeight = imageWidth * (ratio['height'] / ratio['width'])
+
+    // # 3.2 - Height
     limitingDimension === "H" ? (cropHeight = imageHeight) : (cropHeight = imageWidth * (ratio["height"] / ratio["width"]));
     return [cropWidth, cropHeight];
   };

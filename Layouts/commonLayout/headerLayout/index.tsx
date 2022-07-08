@@ -1021,6 +1021,8 @@ const Header = (props: any) => {
           <div className="tab-navigation d-flex justify-content-around">
             <div className="d-flex flex-column tab-item">
               <img
+                width="25px"
+                height="24px"
                 src={IconBowse}
                 alt="Browse"
                 onClick={() => {
@@ -1037,13 +1039,15 @@ const Header = (props: any) => {
                 setShowCollectionMenu(true);
               }}
             >
-              <img src={IconInfo} alt="Collections" /> Collections
+              <img width="32px" height="24px" src={IconInfo} alt="Collections" /> Collections
             </div>
             <div className="d-flex flex-column tab-item" onClick={() => gotoAccount()}>
               {loggingIn ? (
                 <>
                   <div className="avatar">
                     <img
+                      width="28px"
+                      height="28px"
                       src={userInfo.userImg ? `${userInfo.userImg}` : "http://cdn.onlinewebfonts.com/svg/img_568656.png"}
                       className="rounded-circle"
                       data-src="holder.js/171x180"
@@ -1055,7 +1059,7 @@ const Header = (props: any) => {
                 </>
               ) : (
                 <>
-                  <img src={IconAccount} alt="Account" /> Account
+                  <img width="28px" height="28px" src={IconAccount} alt="Account" /> Account
                 </>
               )}
             </div>

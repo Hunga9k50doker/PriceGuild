@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Head from "next/head";
-
+import Image from "next/image";
 import { CardModel } from "model/data_sport/card_sport";
 
 import imgInfo from "assets/images/alert-info.svg";
@@ -53,9 +53,7 @@ function HomePage() {
   return (
     <div style={{ backgroundColor: "#fafafb" }}>
       <Head>
-        <title>
-          Free Card Price Guide - Baseball, Basketball, Hockey, Soccer, Football, MMA & more | PriceGuide.Cards
-        </title>
+        <title>Free Card Price Guide - Baseball, Basketball, Hockey, Soccer, Football, MMA & more | PriceGuide.Cards</title>
         <meta
           name="description"
           content="Sports Card Price Guide. Find actual prices from a quarter of a billion card sales. Search sport card values for Baseball, Football, Basketball, Hockey & more."
@@ -78,8 +76,7 @@ function HomePage() {
                 Our database upgrade in <span className="cblue">3:00pm - 4:00pm</span> (CES)
               </div>
               <span>
-                {" "}
-                <img className="close" src={imgClose} alt="" title="" />{" "}
+                <img className="close" src={imgClose} alt="" title="" />
               </span>
             </div>
           )}
