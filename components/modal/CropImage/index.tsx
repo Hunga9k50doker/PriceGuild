@@ -26,7 +26,7 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   const [isLand, setIsLand] = useState<boolean>(false);
   const [btnActive, setBtnActive] = useState<boolean>(false);
   const imageEditorRef = React.useRef<any>(null);
-  const [zoom, setZoom] = useState<number>(0.5);
+  const [zoom, setZoom] = useState<number>(0);
   const [image, setImage] = useState<any | undefined>(src);
   const [cropData, setCropData] = useState<any>("#");
   const [cropper, setCropper] = useState<any | undefined>(undefined);
@@ -72,15 +72,18 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
 
   const updateRatio = (value: boolean) => {
     let cropper = imageEditorRef.current.cropper.getCropBoxData();
-    let imgData = imageEditorRef.current.cropper.getImageData();
+    // let imgData = imageEditorRef.current.cropper.getImageData();
+    // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
     if (value) {
       if (isLand !== value) {
         setBoxLand(cropper);
       }
       imageEditorRef.current.cropper.setAspectRatio(
-        +imgData.naturalWidth > +imgData.naturalHeight
-          ? +imgData.naturalWidth / +imgData.naturalHeight
-          : +imgData.naturalHeight / +imgData.naturalWidth
+        // +imgData.naturalWidth > +imgData.naturalHeight
+        //   ? +imgData.naturalWidth / +imgData.naturalHeight
+        //   : +imgData.naturalHeight / +imgData.naturalWidth
+        // crop[1] / crop[0]
+        3.5 / 2.5
       );
       if (box) {
         imageEditorRef.current.cropper.setCropBoxData(box);
@@ -90,9 +93,11 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
         setBoxLand(cropper);
       }
       imageEditorRef.current.cropper.setAspectRatio(
-        +imgData.naturalWidth <= +imgData.naturalHeight
-          ? +imgData.naturalWidth / +imgData.naturalHeight
-          : +imgData.naturalHeight / +imgData.naturalWidth
+        // +imgData.naturalWidth <= +imgData.naturalHeight
+        //   ? +imgData.naturalWidth / +imgData.naturalHeight
+        //   : +imgData.naturalHeight / +imgData.naturalWidth
+        // crop[0] / crop[1]
+        2.5 / 3.5
       );
       if (box) {
         imageEditorRef.current.cropper.setCropBoxData(box);
@@ -103,11 +108,54 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
 
   const cropStartCustom = () => {
     let imgData = imageEditorRef.current.cropper.getImageData();
-    +imgData.naturalWidth <= +imgData.naturalHeight ? setIsLand(false) : setIsLand(true);
+    let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
     imageEditorRef.current.cropper.initialAspectRatio = isLand ? 3.5 / 2.5 : 2.5 / 3.5;
-    // imageEditorRef.current.cropper.setAspectRatio(() => (isLand ? 3.5 / 2.5 : 2.5 / 3.5));
-    // updateRatio(imgData.aspectRatio <= 1 ? false : true);
-    // console.log(imgData);
+    // console.log(crop);
+    // imageEditorRef.current.cropper.setAspectRatio(crop[0] / crop[1]);
+  };
+
+  const initialCropSize = (imageWidth = 350, imageHeight = 400) => {
+    let imgData = imageEditorRef.current.cropper.getImageData();
+    // # Config the ratios: W, H
+    let portraitRatio = { width: 2.5, height: 3.5 };
+    let landscapeRatio = { width: 3.5, height: 2.5 };
+    let ratio, limitingDimension, cropWidth, cropHeight;
+    // # Step 1 Check if image is Portrait or Landscape
+    // if(imgData.naturalWidth <imgData.naturalHeight)
+    //     ratio = portraitRatio
+    // else:
+    //     ratio = landscapeRatio
+    if (+imageWidth <= +imageHeight) {
+      //      portraitRatio
+      setIsLand(false);
+      ratio = portraitRatio;
+    } else {
+      //     landscapeRatio
+      setIsLand(true);
+      ratio = landscapeRatio;
+    }
+
+    // # Step 2 Check the limiting dimension
+    // if (imageHeight / imageWidth) > (ratio['height'] / ratio['width']):
+    //     limitingDimension = 'H'
+    // else
+    //     limitingDimension = 'W'
+    +imageHeight / +imageWidth > ratio["height"] / ratio["width"] ? (limitingDimension = "H") : (limitingDimension = "W");
+
+    // # Step 3 Set the Initial Crop Size
+    // # 3.1 - Width
+    // if limitingDimension == 'W'
+    //     cropWidth = imageWidth
+    // else
+    //     cropWidth = imageHeight * (ratio['width'] / ratio['height'])
+    limitingDimension === "W" ? (cropWidth = imageWidth) : (cropWidth = imageHeight * (ratio["width"] / ratio["height"]));
+    // // # 3.2 - Height
+    // if limitingDimension == 'H':
+    //     cropHeight = imageHeight
+    // else
+    //     cropHeight = imageWidth * (ratio['height'] / ratio['width'])
+    limitingDimension === "H" ? (cropHeight = imageHeight) : (cropHeight = imageWidth * (ratio["height"] / ratio["width"]));
+    return [cropWidth, cropHeight];
   };
 
   useEffect(() => {
@@ -116,13 +164,14 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   useEffect(() => {
     imageEditorRef.current.cropper.setDragMode("crop");
   }, []);
-
+  const divStyle = { maxHeight: "calc(50vh - 6rem)", width: "100%" };
   return (
     <div>
       <div style={{ width: "100%" }}>
         <Cropper
-          style={{ maxHeight: "100vh", width: "100%" }}
+          style={divStyle}
           zoomTo={zoom}
+          initialAspectRatio={isLand ? 3.5 / 2.5 : 2.5 / 3.5}
           crop={() => {
             cropStartCustom();
           }}
