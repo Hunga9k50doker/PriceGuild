@@ -82,6 +82,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.14",
     "@types/lodash": "^4.14.172",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-helmet": "^6.1.5",

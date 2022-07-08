@@ -23,7 +23,7 @@ type PropTypes = {
   onGetImage?: (value: any) => void;
 };
 export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
-  const [isLand, setIsLand] = useState<boolean>(false);
+  const [isLand, setIsLand] = useState<boolean>(true);
   const [btnActive, setBtnActive] = useState<boolean>(false);
   const imageEditorRef = React.useRef<any>(null);
   const [zoom, setZoom] = useState<number>(0);
@@ -33,11 +33,11 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
   const [box, setBox] = useState<any | undefined>(undefined);
   const [boxLand, setBoxLand] = useState<any | undefined>(undefined);
   // const [move, setMove] = useState<{ horizontal: number; vertical: number }>({ horizontal: 0, vertical: 0 });
-  const [imgPro, setimgPro] = useState({
+  const [imgPro, setImgPro] = useState({
     width: 0,
     height: 0,
   });
-  const [cropPro, setcropPro] = useState({
+  const [cropPro, setCropPro] = useState({
     width: 0,
     height: 0,
   });
@@ -79,7 +79,6 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
 
   const updateRatio = (value: boolean) => {
     let cropper = imageEditorRef.current.cropper.getCropBoxData();
-
     if (value) {
       if (isLand !== value) {
         setBoxLand(cropper);
@@ -99,18 +98,22 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     }
     setIsLand(value);
   };
+
   const cropStartCustom = () => {
-    let imgData = imageEditorRef.current.cropper.getImageData();
+    const imgData = imageEditorRef.current.cropper.getImageData();
     // Call Tom's resize Crop Area function
-    let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
-    imageEditorRef.current.cropper.initialAspectRatio = crop[0] / crop[1];
+    const crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
+    console.log(crop[0] / crop[1]);
+    // updateRatio(crop[0] / crop[1] < 1 ? false : true);
+    // imageEditorRef.current.cropper.initialAspectRatio = crop[0] / crop[1];
+    // imageEditorRef.current.cropper.setAspectRatio(crop[0] / crop[1]);
   };
 
   // This is Tom's Python resize Crop Area - begin
-  const initialCropSize = (imageWidth = 350, imageHeight = 400) => {
+  const initialCropSize = (imageWidth: number, imageHeight: number) => {
     // # Config the ratios: W, H
-    let portraitRatio = { width: 2.5, height: 3.5 };
-    let landscapeRatio = { width: 3.5, height: 2.5 };
+    const portraitRatio = { width: 2.5, height: 3.5 };
+    const landscapeRatio = { width: 3.5, height: 2.5 };
     let ratio, limitingDimension, cropWidth, cropHeight;
 
     // # Step 1 Check if image is Portrait or Landscape
@@ -140,7 +143,10 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
     props.onGetImage && props.onGetImage(imageEditorRef);
   }, [imageEditorRef]);
   useEffect(() => {
+    // let imgData = imageEditorRef.current.cropper.getImageData();
+    // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
     imageEditorRef.current.cropper.setDragMode("crop");
+    // updateRatio(true);
   }, []);
   return (
     <div>
@@ -151,7 +157,10 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
           crop={() => {
             cropStartCustom();
           }}
+          // initialAspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5}
+          // aspectRatio={!isLand ? 2.5 / 3.5 : 3.5 / 2.5}
           preview=".img-preview"
+          // initialAspectRatio={}
           src={image}
           viewMode={0}
           minCropBoxHeight={20}
@@ -169,7 +178,23 @@ export const CropImage = ({ src = defaultSrc, ...props }: PropTypes) => {
         />
       </div>
       <div>
-        <div className="box"></div>
+        <div className="box">
+          <button
+            className="p-4 m-4"
+            onClick={() => {
+              // let imgData = imageEditorRef.current.cropper.getImageData();
+              // let crop = initialCropSize(imgData.naturalWidth, imgData.naturalHeight);
+              // imageEditorRef.current.cropper.setDragMode("crop");
+              // imageEditorRef.current.cropper.setAspectRatio(2888 / 4000);
+              // console.log(imageEditorRef.current);
+              // imageEditorRef.current.cropper.setAspectRatio(2.5 / 3.5);
+              // imageEditorRef.current.cropper.initialAspectRatio = 2.5 / 3.5;
+              updateRatio(false);
+            }}
+          >
+            handle
+          </button>
+        </div>
         <div className="box">
           <div className="box-action d-flex justify-content-center align-item-center">
             <div className="box-action-drag-mode box-action-content d-flex">
